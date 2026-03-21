@@ -5,19 +5,20 @@ import db from '../database'
 const router = Router()
 
 // Get RSVPs for an invitation
-router.get('/:invitationId', (req: Request, res: Response) => {
+router.get('/:invitationId', async (req: Request, res: Response) => {
   try {
-    const rsvps = db.prepare(`
-      SELECT * FROM rsvps WHERE invitation_id = ? ORDER BY created_at DESC
-    `).all(req.params.invitationId)
-    res.json(rsvps)
+    const { rows } = await db.execute({
+      sql: 'SELECT * FROM rsvps WHERE invitation_id = ? ORDER BY created_at DESC',
+      args: [req.params.invitationId]
+    })
+    res.json(rows)
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch RSVPs' })
   }
 })
 
 // Submit RSVP
-router.post('/', (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
     const { invitation_id, guest_name, attendance, guest_count, message } = req.body
 
@@ -26,13 +27,18 @@ router.post('/', (req: Request, res: Response) => {
     }
 
     const id = uuidv4()
-    db.prepare(`
-      INSERT INTO rsvps (id, invitation_id, guest_name, attendance, guest_count, message)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(id, invitation_id, guest_name, attendance, guest_count || 1, message || '')
+    await db.execute({
+      sql: `INSERT INTO rsvps (id, invitation_id, guest_name, attendance, guest_count, message)
+            VALUES (?, ?, ?, ?, ?, ?)`,
+      args: [id, invitation_id, guest_name, attendance, guest_count || 1, message || '']
+    })
 
-    const rsvp = db.prepare('SELECT * FROM rsvps WHERE id = ?').get(id)
-    res.status(201).json(rsvp)
+    const { rows } = await db.execute({
+      sql: 'SELECT * FROM rsvps WHERE id = ?',
+      args: [id]
+    })
+    
+    res.status(201).json(rows[0])
   } catch (error) {
     res.status(500).json({ error: 'Failed to submit RSVP' })
   }

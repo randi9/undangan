@@ -5,69 +5,78 @@ import db from '../database'
 const router = Router()
 
 // Get all invitations
-router.get('/', (_req: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response) => {
   try {
-    const invitations = db.prepare(`
+    const { rows } = await db.execute(`
       SELECT i.*, 
         (SELECT COUNT(*) FROM photos WHERE invitation_id = i.id) as photo_count,
         (SELECT COUNT(*) FROM rsvps WHERE invitation_id = i.id) as rsvp_count
       FROM invitations i 
       ORDER BY i.created_at DESC
-    `).all()
-    res.json(invitations)
+    `)
+    res.json(rows)
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch invitations' })
   }
 })
 
 // Get invitation by slug
-router.get('/slug/:slug', (req: Request, res: Response) => {
+router.get('/slug/:slug', async (req: Request, res: Response) => {
   try {
-    const invitation = db.prepare(`
-      SELECT * FROM invitations WHERE slug = ?
-    `).get(req.params.slug)
+    const invRes = await db.execute({
+      sql: 'SELECT * FROM invitations WHERE slug = ?',
+      args: [req.params.slug]
+    })
+    
+    const invitation = invRes.rows[0]
 
     if (!invitation) {
       return res.status(404).json({ error: 'Invitation not found' })
     }
 
-    const photos = db.prepare(`
-      SELECT * FROM photos WHERE invitation_id = ? ORDER BY sort_order ASC
-    `).all((invitation as any).id)
+    const photosRes = await db.execute({
+      sql: 'SELECT * FROM photos WHERE invitation_id = ? ORDER BY sort_order ASC',
+      args: [invitation.id as string]
+    })
 
-    const rsvps = db.prepare(`
-      SELECT * FROM rsvps WHERE invitation_id = ? ORDER BY created_at DESC
-    `).all((invitation as any).id)
+    const rsvpsRes = await db.execute({
+      sql: 'SELECT * FROM rsvps WHERE invitation_id = ? ORDER BY created_at DESC',
+      args: [invitation.id as string]
+    })
 
-    res.json({ ...invitation, photos, rsvps })
+    res.json({ ...invitation, photos: photosRes.rows, rsvps: rsvpsRes.rows })
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch invitation' })
   }
 })
 
 // Get invitation by ID
-router.get('/:id', (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const invitation = db.prepare(`
-      SELECT * FROM invitations WHERE id = ?
-    `).get(req.params.id)
+    const invRes = await db.execute({
+      sql: 'SELECT * FROM invitations WHERE id = ?',
+      args: [req.params.id]
+    })
+    
+    const invitation = invRes.rows[0]
 
     if (!invitation) {
       return res.status(404).json({ error: 'Invitation not found' })
     }
 
-    const photos = db.prepare(`
-      SELECT * FROM photos WHERE invitation_id = ? ORDER BY sort_order ASC
-    `).all(req.params.id)
+    const photosRes = await db.execute({
+      sql: 'SELECT * FROM photos WHERE invitation_id = ? ORDER BY sort_order ASC',
+      args: [req.params.id]
+    })
 
-    res.json({ ...invitation, photos })
+    res.json({ ...invitation, photos: photosRes.rows })
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch invitation' })
   }
 })
 
 // Create invitation
-router.post('/', (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
     const id = uuidv4()
     const {
@@ -79,13 +88,16 @@ router.post('/', (req: Request, res: Response) => {
       love_story, quote, bank_name, bank_account, bank_holder, photos
     } = req.body
 
-    // Check slug uniqueness
-    const existing = db.prepare('SELECT id FROM invitations WHERE slug = ?').get(slug)
-    if (existing) {
+    const existingRes = await db.execute({
+      sql: 'SELECT id FROM invitations WHERE slug = ?',
+      args: [slug]
+    })
+    if (existingRes.rows.length > 0) {
       return res.status(400).json({ error: 'Slug sudah digunakan. Pilih slug lain.' })
     }
 
-    const stmt = db.prepare(`
+    await db.execute({
+      sql: `
       INSERT INTO invitations (
         id, slug, theme, groom_name, bride_name, groom_full_name, bride_full_name,
         groom_father, groom_mother, bride_father, bride_mother,
@@ -100,31 +112,30 @@ router.post('/', (req: Request, res: Response) => {
         ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?
-      )
-    `)
+      )`,
+      args: [
+        id, slug, theme || 'elegant', groom_name, bride_name, groom_full_name || '', bride_full_name || '',
+        groom_father || '', groom_mother || '', bride_father || '', bride_mother || '',
+        groom_photo || '', bride_photo || '', cover_photo || '',
+        akad_date || '', akad_time || '', akad_venue || '', akad_address || '', akad_map_url || '',
+        resepsi_date || '', resepsi_time || '', resepsi_venue || '', resepsi_address || '', resepsi_map_url || '',
+        JSON.stringify(love_story || []), quote || '', bank_name || '', bank_account || '', bank_holder || ''
+      ]
+    })
 
-    stmt.run(
-      id, slug, theme || 'elegant', groom_name, bride_name, groom_full_name || '', bride_full_name || '',
-      groom_father || '', groom_mother || '', bride_father || '', bride_mother || '',
-      groom_photo || '', bride_photo || '', cover_photo || '',
-      akad_date || '', akad_time || '', akad_venue || '', akad_address || '', akad_map_url || '',
-      resepsi_date || '', resepsi_time || '', resepsi_venue || '', resepsi_address || '', resepsi_map_url || '',
-      JSON.stringify(love_story || []), quote || '', bank_name || '', bank_account || '', bank_holder || ''
-    )
-
-    // Insert gallery photos
-    if (photos && Array.isArray(photos)) {
-      const photoStmt = db.prepare(`
-        INSERT INTO photos (id, invitation_id, url, caption, sort_order)
-        VALUES (?, ?, ?, ?, ?)
-      `)
-      photos.forEach((photo: any, index: number) => {
-        photoStmt.run(uuidv4(), id, photo.url, photo.caption || '', index)
-      })
+    if (photos && Array.isArray(photos) && photos.length > 0) {
+      const queries = photos.map((photo: any, index: number) => ({
+        sql: `INSERT INTO photos (id, invitation_id, url, caption, sort_order) VALUES (?, ?, ?, ?, ?)`,
+        args: [uuidv4(), id, photo.url, photo.caption || '', index]
+      }))
+      await db.batch(queries)
     }
 
-    const created = db.prepare('SELECT * FROM invitations WHERE id = ?').get(id)
-    res.status(201).json(created)
+    const created = await db.execute({
+      sql: 'SELECT * FROM invitations WHERE id = ?',
+      args: [id]
+    })
+    res.status(201).json(created.rows[0])
   } catch (error: any) {
     console.error('Create invitation error:', error)
     res.status(500).json({ error: 'Failed to create invitation' })
@@ -132,10 +143,15 @@ router.post('/', (req: Request, res: Response) => {
 })
 
 // Update invitation
-router.put('/:id', (req: Request, res: Response) => {
+router.put('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const existing = db.prepare('SELECT * FROM invitations WHERE id = ?').get(id)
+    const existingRes = await db.execute({
+      sql: 'SELECT * FROM invitations WHERE id = ?',
+      args: [id]
+    })
+    
+    const existing = existingRes.rows[0]
     if (!existing) {
       return res.status(404).json({ error: 'Invitation not found' })
     }
@@ -149,15 +165,18 @@ router.put('/:id', (req: Request, res: Response) => {
       love_story, quote, bank_name, bank_account, bank_holder, photos
     } = req.body
 
-    // Check slug uniqueness if changed
-    if (slug && slug !== (existing as any).slug) {
-      const slugExists = db.prepare('SELECT id FROM invitations WHERE slug = ? AND id != ?').get(slug, id)
-      if (slugExists) {
+    if (slug && slug !== existing.slug) {
+      const slugExists = await db.execute({
+        sql: 'SELECT id FROM invitations WHERE slug = ? AND id != ?',
+        args: [slug, id]
+      })
+      if (slugExists.rows.length > 0) {
         return res.status(400).json({ error: 'Slug sudah digunakan.' })
       }
     }
 
-    const stmt = db.prepare(`
+    await db.execute({
+      sql: `
       UPDATE invitations SET
         slug = COALESCE(?, slug),
         theme = COALESCE(?, theme),
@@ -188,34 +207,39 @@ router.put('/:id', (req: Request, res: Response) => {
         bank_account = COALESCE(?, bank_account),
         bank_holder = COALESCE(?, bank_holder),
         updated_at = datetime('now')
-      WHERE id = ?
-    `)
+      WHERE id = ?`,
+      args: [
+        slug, theme, groom_name, bride_name, groom_full_name, bride_full_name,
+        groom_father, groom_mother, bride_father, bride_mother,
+        groom_photo, bride_photo, cover_photo,
+        akad_date, akad_time, akad_venue, akad_address, akad_map_url,
+        resepsi_date, resepsi_time, resepsi_venue, resepsi_address, resepsi_map_url,
+        love_story ? JSON.stringify(love_story) : null, quote,
+        bank_name, bank_account, bank_holder,
+        id
+      ]
+    })
 
-    stmt.run(
-      slug, theme, groom_name, bride_name, groom_full_name, bride_full_name,
-      groom_father, groom_mother, bride_father, bride_mother,
-      groom_photo, bride_photo, cover_photo,
-      akad_date, akad_time, akad_venue, akad_address, akad_map_url,
-      resepsi_date, resepsi_time, resepsi_venue, resepsi_address, resepsi_map_url,
-      love_story ? JSON.stringify(love_story) : null, quote,
-      bank_name, bank_account, bank_holder,
-      id
-    )
-
-    // Update gallery photos if provided
     if (photos && Array.isArray(photos)) {
-      db.prepare('DELETE FROM photos WHERE invitation_id = ?').run(id)
-      const photoStmt = db.prepare(`
-        INSERT INTO photos (id, invitation_id, url, caption, sort_order)
-        VALUES (?, ?, ?, ?, ?)
-      `)
-      photos.forEach((photo: any, index: number) => {
-        photoStmt.run(photo.id || uuidv4(), id, photo.url, photo.caption || '', index)
+      await db.execute({
+        sql: 'DELETE FROM photos WHERE invitation_id = ?',
+        args: [id]
       })
+      
+      if (photos.length > 0) {
+        const queries = photos.map((photo: any, index: number) => ({
+          sql: `INSERT INTO photos (id, invitation_id, url, caption, sort_order) VALUES (?, ?, ?, ?, ?)`,
+          args: [photo.id || uuidv4(), id, photo.url, photo.caption || '', index]
+        }))
+        await db.batch(queries)
+      }
     }
 
-    const updated = db.prepare('SELECT * FROM invitations WHERE id = ?').get(id)
-    res.json(updated)
+    const updated = await db.execute({
+      sql: 'SELECT * FROM invitations WHERE id = ?',
+      args: [id]
+    })
+    res.json(updated.rows[0])
   } catch (error: any) {
     console.error('Update invitation error:', error)
     res.status(500).json({ error: 'Failed to update invitation' })
@@ -223,17 +247,23 @@ router.put('/:id', (req: Request, res: Response) => {
 })
 
 // Delete invitation
-router.delete('/:id', (req: Request, res: Response) => {
+router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const existing = db.prepare('SELECT * FROM invitations WHERE id = ?').get(id)
-    if (!existing) {
+    const existingReq = await db.execute({
+      sql: 'SELECT * FROM invitations WHERE id = ?',
+      args: [id]
+    })
+    if (existingReq.rows.length === 0) {
       return res.status(404).json({ error: 'Invitation not found' })
     }
 
-    db.prepare('DELETE FROM photos WHERE invitation_id = ?').run(id)
-    db.prepare('DELETE FROM rsvps WHERE invitation_id = ?').run(id)
-    db.prepare('DELETE FROM invitations WHERE id = ?').run(id)
+    const queries = [
+      { sql: 'DELETE FROM photos WHERE invitation_id = ?', args: [id] },
+      { sql: 'DELETE FROM rsvps WHERE invitation_id = ?', args: [id] },
+      { sql: 'DELETE FROM invitations WHERE id = ?', args: [id] }
+    ]
+    await db.batch(queries)
 
     res.json({ message: 'Invitation deleted successfully' })
   } catch (error) {

@@ -10,12 +10,12 @@ const PORT = process.env.PORT || 3000
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: true, // Allow all origins for production Vercel deployment
   credentials: true
 }))
 app.use(express.json())
 
-// Serve uploaded files statically
+// Serve uploaded files statically (Not recommended for Vercel, but kept for local)
 const uploadsDir = path.join(__dirname, '..', 'uploads')
 app.use('/uploads', express.static(uploadsDir))
 
@@ -29,8 +29,11 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`)
-})
+// Only listen locally, Vercel Serverless will auto-handle requests
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`)
+  })
+}
 
 export default app
