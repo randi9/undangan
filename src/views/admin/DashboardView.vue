@@ -189,7 +189,7 @@ function getInvitationUrl(slug: string) {
   const port = window.location.port ? `:${window.location.port}` : ''
   const protocol = window.location.protocol
   
-  if (host === 'localhost' || host === '127.0.0.1') {
+  if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('.vercel.app')) {
     return `${protocol}//${host}${port}/invitation/${slug}`
   }
   const mainDomain = host.replace('www.', '').replace('admin.', '')
@@ -198,7 +198,7 @@ function getInvitationUrl(slug: string) {
 
 function getInvitationDisplayUrl(slug: string) {
   const host = window.location.hostname
-  if (host === 'localhost' || host === '127.0.0.1') {
+  if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('.vercel.app')) {
     return `/invitation/${slug}`
   }
   const mainDomain = host.replace('www.', '').replace('admin.', '')
