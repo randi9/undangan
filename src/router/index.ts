@@ -9,9 +9,14 @@ if (host === 'localhost' || host === '127.0.0.1') {
   if (parts.length >= 2 && parts[0] !== 'localhost' && parts[0] !== '127') {
     subdomain = parts[0] || null
   }
+} else if (host.endsWith('.vercel.app')) {
+  // Untuk domain bawaan Vercel: project-name.vercel.app (3 bagian)
+  // Jika ada subdomain beneran: romi-juli.project-name.vercel.app (4 bagian)
+  if (parts.length >= 4) {
+    subdomain = parts[0] || null
+  }
 } else {
-  // e.g., andi-sarah.domain.com -> parts = ['andi-sarah', 'domain', 'com']
-  // avoid www or admin or main domain without subdomain
+  // Domain biasa misal: mydomain.com (2 bagian) -> romi-juli.mydomain.com (3 bagian)
   if (parts.length >= 3 && parts[0] !== 'www' && parts[0] !== 'admin') {
     subdomain = parts[0] || null
   }
