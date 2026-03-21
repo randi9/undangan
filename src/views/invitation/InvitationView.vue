@@ -295,7 +295,7 @@
     <div v-if="lightboxOpen && invitation.photos" class="lightbox" @click="lightboxOpen = false">
       <button class="lightbox-close" @click.stop="lightboxOpen = false">×</button>
       <button v-if="lightboxIndex > 0" class="lightbox-nav lightbox-prev" @click.stop="lightboxIndex--">‹</button>
-      <img v-if="invitation.photos?.[lightboxIndex]" :src="apiBase + invitation.photos![lightboxIndex].url" @click.stop />
+      <img v-if="currentPhotoUrl" :src="currentPhotoUrl" @click.stop />
       <button v-if="invitation.photos && lightboxIndex < invitation.photos.length - 1" class="lightbox-nav lightbox-next" @click.stop="lightboxIndex++">›</button>
     </div>
   </div>
@@ -368,6 +368,12 @@ function copyAccount() {
   copied.value = true
   setTimeout(() => { copied.value = false }, 2000)
 }
+
+const currentPhotoUrl = computed(() => {
+  if (!invitation.value?.photos || invitation.value.photos.length === 0) return ''
+  const photo = invitation.value.photos[lightboxIndex.value]
+  return photo ? apiBase + photo.url : ''
+})
 
 function updateCountdown() {
   const dateStr = invitation.value?.akad_date || invitation.value?.resepsi_date
