@@ -295,8 +295,8 @@
     <div v-if="lightboxOpen && invitation.photos" class="lightbox" @click="lightboxOpen = false">
       <button class="lightbox-close" @click.stop="lightboxOpen = false">×</button>
       <button v-if="lightboxIndex > 0" class="lightbox-nav lightbox-prev" @click.stop="lightboxIndex--">‹</button>
-      <img v-if="invitation.photos[lightboxIndex]" :src="apiBase + invitation.photos[lightboxIndex].url" @click.stop />
-      <button v-if="lightboxIndex < invitation.photos!.length - 1" class="lightbox-nav lightbox-next" @click.stop="lightboxIndex++">›</button>
+      <img v-if="invitation.photos?.[lightboxIndex]" :src="apiBase + invitation.photos![lightboxIndex].url" @click.stop />
+      <button v-if="invitation.photos && lightboxIndex < invitation.photos.length - 1" class="lightbox-nav lightbox-next" @click.stop="lightboxIndex++">›</button>
     </div>
   </div>
 </template>
