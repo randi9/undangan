@@ -1,19 +1,22 @@
 import { Router, Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
-import db from '../database'
+import supabase from '../database'
 
 const router = Router()
 
 // Get RSVPs for an invitation
 router.get('/:invitationId', async (req: Request, res: Response) => {
   try {
-    const { rows } = await db.execute({
-      sql: 'SELECT * FROM rsvps WHERE invitation_id = ? ORDER BY created_at DESC',
-      args: [req.params.invitationId]
-    })
-    res.json(rows)
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch RSVPs' })
+    const { data, error } = await supabase
+      .from('rsvps')
+      .select('*')
+      .eq('invitation_id', req.params.invitationId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    res.json(data || [])
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to fetch RSVPs' })
   }
 })
 
@@ -26,21 +29,23 @@ router.post('/', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Missing required fields' })
     }
 
-    const id = uuidv4()
-    await db.execute({
-      sql: `INSERT INTO rsvps (id, invitation_id, guest_name, attendance, guest_count, message)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-      args: [id, invitation_id, guest_name, attendance, guest_count || 1, message || '']
-    })
+    const { data, error } = await supabase
+      .from('rsvps')
+      .insert([{
+        id: uuidv4(),
+        invitation_id,
+        guest_name,
+        attendance,
+        guest_count: guest_count || 1,
+        message: message || ''
+      }])
+      .select()
+      .single()
 
-    const { rows } = await db.execute({
-      sql: 'SELECT * FROM rsvps WHERE id = ?',
-      args: [id]
-    })
-    
-    res.status(201).json(rows[0])
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to submit RSVP' })
+    if (error) throw error
+    res.status(201).json(data)
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to submit RSVP' })
   }
 })
 
