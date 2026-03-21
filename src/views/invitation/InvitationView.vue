@@ -309,7 +309,7 @@ import type { Invitation, LoveStoryItem, Rsvp } from '@/types/invitation'
 
 const route = useRoute()
 const store = useInvitationStore()
-const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const apiBase = import.meta.env.VITE_API_URL || ''
 
 const loading = ref(true)
 const invitation = ref<Invitation | null>(null)

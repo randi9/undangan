@@ -153,7 +153,7 @@ const store = useInvitationStore()
 const searchQuery = ref('')
 const deleteTarget = ref<Invitation | null>(null)
 const toast = ref<{ type: string; message: string } | null>(null)
-const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const apiBase = import.meta.env.VITE_API_URL || ''
 
 const invitations = computed(() => store.invitations)
 
