@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 const dbPath = path.join(__dirname, '..', 'database.sqlite')
-const dbUrl = process.env.TURSO_DATABASE_URL || `file:${dbPath}`
+const dbUrl = process.env.TURSO_DATABASE_URL || process.env.TURSO_URL || `file:${dbPath}`
 const dbAuthToken = process.env.TURSO_AUTH_TOKEN
 
 const db = createClient({
