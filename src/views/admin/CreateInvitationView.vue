@@ -295,7 +295,7 @@ import type { LoveStoryItem, Photo } from '@/types/invitation'
 const router = useRouter()
 const route = useRoute()
 const store = useInvitationStore()
-const apiBase = 'http://localhost:3000'
+const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
 const submitting = ref(false)
 const coverDragover = ref(false)
