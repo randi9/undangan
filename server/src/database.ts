@@ -4,18 +4,20 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 const supabaseUrl = process.env.SUPABASE_URL || "";
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  "";
 
 if (!supabaseUrl || !supabaseKey) {
   console.warn(
-    "⚠️ Environment variables belum lengkap (SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY wajib diisi)",
+    "⚠️ Supabase env vars belum lengkap! Pastikan SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY atau SUPABASE_ANON_KEY sudah diisi.",
   );
+  console.warn("   SUPABASE_URL:", supabaseUrl ? "✅ ada" : "❌ kosong");
+  console.warn("   SUPABASE_SERVICE_ROLE_KEY:", process.env.SUPABASE_SERVICE_ROLE_KEY ? "✅ ada" : "❌ kosong");
+  console.warn("   SUPABASE_ANON_KEY:", process.env.SUPABASE_ANON_KEY ? "✅ ada" : "❌ kosong");
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Tidak seperti SQLite, Supabase tidak dapat melakukan "CREATE TABLE IF NOT EXISTS"
-// secara langsung dari kode JS. Anda HARUS meng-copy-paste isi file "supabase_schema.sql"
-// ke dalam menu SQL Editor di halaman dashboard Supabase Anda.
 
 export default supabase;
