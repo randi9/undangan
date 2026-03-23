@@ -1,42 +1,69 @@
-# ./
+# Undangan Generator
 
-This template should help get you started developing with Vue 3 in Vite.
+Aplikasi generator undangan pernikahan dengan frontend Vue dan backend Express + Supabase.
 
-## Recommended IDE Setup
+## Arsitektur
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Frontend: Vue 3 + Vite.
+- Backend routes: `server/src/routes/*`.
+- Serverless adapter: `api/index.ts` (export app Express yang sama untuk Vercel).
+- Database & storage: Supabase (`invitations`, `photos`, `rsvps`, bucket `uploads`).
 
-## Recommended Browser Setup
+## Menjalankan lokal
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+1. Install dependency root:
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+2. Install dependency backend:
 
 ```sh
+cd server
+npm install
+```
+
+3. Siapkan env backend:
+
+- Copy `server/.env.example` menjadi `server/.env`.
+- Isi `SUPABASE_URL` dan `SUPABASE_SERVICE_ROLE_KEY`.
+
+4. Jalankan frontend dan backend (terminal terpisah):
+
+```sh
+# root
+npm run dev
+
+# server
+cd server
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## Build checks
 
 ```sh
+# root
+npm run build
+
+# server
+cd server
 npm run build
 ```
+
+## Kontrak upload
+
+Upload menggunakan `multipart/form-data` secara konsisten:
+
+- `POST /api/upload/single` (field: `photo`)
+- `POST /api/upload/multiple` (field: `photos[]`)
+
+## Keamanan wajib
+
+1. Jangan commit `.env`.
+2. Rotasi secret jika pernah terekspos.
+3. Batasi `CORS_ORIGINS` ke domain resmi.
+
+## Deploy
+
+Lihat panduan lengkap di `deployment_guide.md`.
