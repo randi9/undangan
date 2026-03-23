@@ -27,11 +27,12 @@ CREATE TABLE IF NOT EXISTS invitations (
   resepsi_map_url TEXT DEFAULT '',
   love_story JSONB DEFAULT '[]'::jsonb,
   quote TEXT DEFAULT '',
-  bank_name TEXT DEFAULT '',
-  bank_account TEXT DEFAULT '',
-  bank_holder TEXT DEFAULT '',
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  bank_name TEXT,
+  bank_account TEXT,
+  bank_holder TEXT,
+  music_url TEXT DEFAULT '',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS photos (

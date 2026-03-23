@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import multer from "multer";
 import path from "path";
+import sharp from "sharp";
 import { createClient } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
 
@@ -154,6 +155,7 @@ app.post("/api/invitations", async (req, res) => {
       bank_name: body.bank_name || "",
       bank_account: body.bank_account || "",
       bank_holder: body.bank_holder || "",
+      music_url: body.music_url || "",
     };
 
     const { data: created, error: createError } = await supabase
@@ -200,7 +202,7 @@ app.put("/api/invitations/:id", async (req, res) => {
       "groom_photo", "bride_photo", "cover_photo",
       "akad_date", "akad_time", "akad_venue", "akad_address", "akad_map_url",
       "resepsi_date", "resepsi_time", "resepsi_venue", "resepsi_address", "resepsi_map_url",
-      "quote", "bank_name", "bank_account", "bank_holder",
+      "quote", "bank_name", "bank_account", "bank_holder", "music_url",
     ];
     for (const f of fields) {
       if (body[f] !== undefined) updateData[f] = body[f];
@@ -234,8 +236,52 @@ app.put("/api/invitations/:id", async (req, res) => {
 // DELETE
 app.delete("/api/invitations/:id", async (req, res) => {
   try {
-    const { error } = await supabase.from("invitations").delete().eq("id", req.params.id);
+    const id = req.params.id;
+
+    // 1. Fetch invitation to get file URLs
+    const { data: inv } = await supabase.from("invitations").select("*").eq("id", id).single();
+    const { data: photos } = await supabase.from("photos").select("url").eq("invitation_id", id);
+
+    // 2. Collect storage file names to delete
+    const uploadsToDelete: string[] = [];
+    const musicToDelete: string[] = [];
+
+    const extractFileName = (url: string) => {
+      if (!url) return null;
+      const parts = url.split("/");
+      return parts[parts.length - 1]; // last segment is the filename
+    };
+
+    if (inv) {
+      for (const field of ["cover_photo", "groom_photo", "bride_photo"]) {
+        const name = extractFileName((inv as any)[field]);
+        if (name) uploadsToDelete.push(name);
+      }
+      const musicName = extractFileName(inv.music_url);
+      if (musicName) musicToDelete.push(musicName);
+    }
+
+    if (photos) {
+      for (const p of photos) {
+        const name = extractFileName(p.url);
+        if (name) uploadsToDelete.push(name);
+      }
+    }
+
+    // 3. Delete files from Storage (best-effort, don't block on errors)
+    if (uploadsToDelete.length > 0) {
+      await supabase.storage.from("uploads").remove(uploadsToDelete).catch(() => {});
+    }
+    if (musicToDelete.length > 0) {
+      await supabase.storage.from("music").remove(musicToDelete).catch(() => {});
+    }
+
+    // 4. Delete DB records
+    await supabase.from("photos").delete().eq("invitation_id", id);
+    await supabase.from("rsvps").delete().eq("invitation_id", id);
+    const { error } = await supabase.from("invitations").delete().eq("id", id);
     if (error) throw error;
+
     res.json({ message: "Invitation deleted successfully" });
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Failed to delete invitation" });
@@ -289,22 +335,41 @@ app.post("/api/rsvp", async (req, res) => {
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 20 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
-    if (["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.mimetype)) {
+    if (["image/jpeg", "image/png", "image/webp", "image/gif", "audio/mpeg", "audio/aac", "audio/mp4", "audio/wav", "audio/ogg", "audio/x-m4a"].includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Only JPEG, PNG, WebP, and GIF are allowed"));
+      cb(new Error("Only JPEG, PNG, WebP, GIF, and standard Audio formats are allowed"));
     }
   },
 });
 
+async function compressImage(buffer: Buffer): Promise<Buffer> {
+  return sharp(buffer)
+    .resize({ width: 1920, withoutEnlargement: true })
+    .webp({ quality: 85 })
+    .toBuffer();
+}
+
 async function uploadToSupabaseStorage(file: Express.Multer.File) {
-  const ext = path.extname(file.originalname).replace(/[^a-zA-Z0-9.]/g, "") || ".jpg";
+  const isImage = file.mimetype.startsWith("image/");
+
+  let buffer = file.buffer;
+  let ext = path.extname(file.originalname).replace(/[^a-zA-Z0-9.]/g, "") || ".jpg";
+  let contentType = file.mimetype;
+
+  if (isImage) {
+    buffer = await compressImage(buffer);
+    ext = ".webp";
+    contentType = "image/webp";
+  }
+
   const name = `${uuidv4()}${ext}`;
-  const { error } = await supabase.storage.from("uploads").upload(name, file.buffer, { contentType: file.mimetype });
+  const bucket = file.mimetype.startsWith("audio/") ? "music" : "uploads";
+  const { error } = await supabase.storage.from(bucket).upload(name, buffer, { contentType });
   if (error) throw error;
-  const { data } = supabase.storage.from("uploads").getPublicUrl(name);
+  const { data } = supabase.storage.from(bucket).getPublicUrl(name);
   return { url: data.publicUrl, filename: name };
 }
 

@@ -133,6 +133,19 @@ export const useInvitationStore = defineStore('invitation', () => {
     return data.url
   }
 
+  async function uploadMusic(file: File): Promise<string> {
+    const formData = new FormData()
+    // We reuse "photo" as the field name since the backend uses `upload.single("photo")`
+    formData.append('photo', file)
+    const res = await fetch(`${API_BASE}/upload/single`, {
+      method: 'POST',
+      body: formData
+    })
+    if (!res.ok) throw new Error('Failed to upload music')
+    const data = await res.json()
+    return data.url
+  }
+
   async function uploadPhotos(files: File[]): Promise<Array<{ url: string; filename: string }>> {
     const formData = new FormData()
     files.forEach(file => formData.append('photos', file))
@@ -156,6 +169,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     updateInvitation,
     deleteInvitation,
     uploadPhoto,
+    uploadMusic,
     uploadPhotos
   }
 })

@@ -43,6 +43,37 @@
         </p>
 
         <form @submit.prevent="handleSubmit">
+          <!-- Theme Selector -->
+          <div class="form-section">
+            <h3 class="form-section-title">🎨 Tema Undangan</h3>
+            <p class="form-section-subtitle">Tema saat ini: <strong style="text-transform: capitalize;">{{ form.theme }}</strong>. Klik untuk mengganti.</p>
+            <div class="edit-theme-grid">
+              <div class="edit-theme-card" :class="{ active: form.theme === 'elegant' }" @click="form.theme = 'elegant'">
+                <div class="edit-theme-preview" style="background: #2c2417; color: #fff;">
+                  <div style="font-size: 8px; letter-spacing: 3px; color: #c9a96e; text-transform: uppercase;">The Wedding Of</div>
+                  <div style="font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;">Romeo & Juliet</div>
+                </div>
+                <div class="edit-theme-label">Elegant Gold</div>
+                <div v-if="form.theme === 'elegant'" class="edit-theme-active-badge">✓ Aktif</div>
+              </div>
+              <div class="edit-theme-card" :class="{ active: form.theme === 'minimalist' }" @click="form.theme = 'minimalist'">
+                <div class="edit-theme-preview" style="background: #ffffff; color: #111; border: 1px solid #eee;">
+                  <div style="font-size: 8px; font-weight: 600; letter-spacing: 2px; color: #666;">THE WEDDING OF</div>
+                  <div style="font-weight: 800; font-size: 18px; letter-spacing: -1px; margin-top: 4px;">ROMEO & JULIET</div>
+                </div>
+                <div class="edit-theme-label">Modern Minimalist</div>
+                <div v-if="form.theme === 'minimalist'" class="edit-theme-active-badge">✓ Aktif</div>
+              </div>
+              <div class="edit-theme-card" :class="{ active: form.theme === 'floral' }" @click="form.theme = 'floral'">
+                <div class="edit-theme-preview" style="background: #fdfbf7; color: #4a5d4e;">
+                  <div style="font-size: 8px; font-style: italic; color: #8a9a5b;">The Wedding Of</div>
+                  <div style="font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; margin-top: 4px;">Romeo & Juliet</div>
+                </div>
+                <div class="edit-theme-label">Romantic Floral</div>
+                <div v-if="form.theme === 'floral'" class="edit-theme-active-badge">✓ Aktif</div>
+              </div>
+            </div>
+          </div>
           <!-- Slug -->
           <div class="form-section">
             <h3 class="form-section-title">🔗 URL Undangan</h3>
@@ -468,6 +499,32 @@
               </div>
             </div>
           </div>
+          <!-- Background Music -->
+          <div class="form-section">
+            <h3 class="form-section-title">🎵 Musik Latar</h3>
+            <p class="form-section-subtitle">Pilih lagu yang akan berputar otomatis saat undangan dibuka</p>
+            <div class="form-group">
+              <div class="single-photo-upload" style="aspect-ratio: auto; height: auto; padding: 24px;" @click="musicFileInput?.click()">
+                <div v-if="form.music_url" style="width: 100%; text-align: center;">
+                  <div style="font-size: 32px; margin-bottom: 8px;">🎧</div>
+                  <div style="font-weight: 500; font-size: 14px; margin-bottom: 12px; word-break: break-all; color: var(--admin-primary)">Lagu Terpilih</div>
+                  <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 36px; margin-bottom: 12px;"></audio>
+                  <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic">Hapus Lagu</button>
+                </div>
+                <div v-else class="upload-placeholder">
+                  <span class="icon">🎵</span>
+                  Upload File Audio (.mp3, .m4a, .wav)
+                </div>
+              </div>
+              <input
+                ref="musicFileInput"
+                type="file"
+                accept="audio/mpeg, audio/aac, audio/mp4, audio/wav, audio/ogg, audio/x-m4a"
+                hidden
+                @change="handleMusicUpload"
+              />
+            </div>
+          </div>
 
           <!-- Submit -->
           <div
@@ -520,6 +577,7 @@ const apiBase = import.meta.env.VITE_API_URL || "";
 const loading = ref(true);
 const submitting = ref(false);
 const toast = ref<{ type: string; message: string } | null>(null);
+const musicFileInput = ref<HTMLInputElement>();
 
 const form = reactive({
   slug: "",
@@ -550,6 +608,7 @@ const form = reactive({
   bank_name: "",
   bank_account: "",
   bank_holder: "",
+  music_url: "",
   photos: [] as Photo[],
 });
 
@@ -608,6 +667,25 @@ async function handleGalleryUpload(event: Event) {
   input.value = "";
 }
 
+async function handleMusicUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+
+  try {
+    const url = await store.uploadMusic(file);
+    form.music_url = url;
+    showToast("success", "Musik berhasil diupload");
+  } catch {
+    showToast("error", "Gagal upload musik");
+  }
+  input.value = "";
+}
+
+function removeMusic() {
+  form.music_url = "";
+}
+
 function showToast(type: string, message: string) {
   toast.value = { type, message };
   setTimeout(() => {
@@ -646,3 +724,66 @@ onMounted(async () => {
   loading.value = false;
 });
 </script>
+
+<style scoped>
+.edit-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.edit-theme-card {
+  position: relative;
+  background: var(--admin-surface);
+  border: 2px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-theme-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.edit-theme-card.active {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px var(--admin-primary-glow);
+}
+
+.edit-theme-preview {
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.edit-theme-label {
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+.edit-theme-active-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--admin-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+@media (max-width: 600px) {
+  .edit-theme-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

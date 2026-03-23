@@ -178,6 +178,7 @@ router.post("/", async (req: Request, res: Response) => {
       bank_name,
       bank_account,
       bank_holder,
+      music_url,
       photos,
     } = req.body;
 
@@ -226,6 +227,7 @@ router.post("/", async (req: Request, res: Response) => {
       bank_name: bank_name || "",
       bank_account: bank_account || "",
       bank_holder: bank_holder || "",
+      music_url: music_url || "",
     };
 
     const { data: created, error: createError } = await supabase
@@ -326,6 +328,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       "bank_name",
       "bank_account",
       "bank_holder",
+      "music_url",
     ];
 
     for (const field of updatableFields) {
@@ -375,6 +378,48 @@ router.put("/:id", async (req: Request, res: Response) => {
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
+    // 1. Fetch invitation to get file URLs
+    const { data: inv } = await supabase.from("invitations").select("*").eq("id", id).single();
+    const { data: photos } = await supabase.from("photos").select("url").eq("invitation_id", id);
+
+    // 2. Collect storage file names to delete
+    const uploadsToDelete: string[] = [];
+    const musicToDelete: string[] = [];
+
+    const extractFileName = (url: string) => {
+      if (!url) return null;
+      const parts = url.split("/");
+      return parts[parts.length - 1];
+    };
+
+    if (inv) {
+      for (const field of ["cover_photo", "groom_photo", "bride_photo"]) {
+        const name = extractFileName((inv as any)[field]);
+        if (name) uploadsToDelete.push(name);
+      }
+      const musicName = extractFileName(inv.music_url);
+      if (musicName) musicToDelete.push(musicName);
+    }
+
+    if (photos) {
+      for (const p of photos) {
+        const name = extractFileName(p.url);
+        if (name) uploadsToDelete.push(name);
+      }
+    }
+
+    // 3. Delete files from Storage (best-effort)
+    if (uploadsToDelete.length > 0) {
+      await supabase.storage.from("uploads").remove(uploadsToDelete).catch(() => {});
+    }
+    if (musicToDelete.length > 0) {
+      await supabase.storage.from("music").remove(musicToDelete).catch(() => {});
+    }
+
+    // 4. Delete DB records
+    await supabase.from("photos").delete().eq("invitation_id", id);
+    await supabase.from("rsvps").delete().eq("invitation_id", id);
     const { error } = await supabase.from("invitations").delete().eq("id", id);
 
     if (error) throw error;

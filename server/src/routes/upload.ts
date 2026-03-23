@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import multer from "multer";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+import sharp from "sharp";
 import supabase from "../database";
 
 const router = Router();
@@ -9,31 +10,63 @@ const router = Router();
 // Configure multer
 const storage = multer.memoryStorage();
 
-const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const allowedTypes = [
+  "image/jpeg", "image/png", "image/webp", "image/gif",
+  "audio/mpeg", "audio/aac", "audio/mp4", "audio/wav", "audio/ogg", "audio/x-m4a"
+];
 
 function isAllowedMime(mimeType: string) {
   return allowedTypes.includes(mimeType);
 }
 
+function isAudioMime(mimeType: string) {
+  return mimeType.startsWith("audio/");
+}
+
+async function compressImage(buffer: Buffer): Promise<Buffer> {
+  return sharp(buffer)
+    .resize({ width: 1920, withoutEnlargement: true })
+    .webp({ quality: 85 })
+    .toBuffer();
+}
+
 async function uploadBufferToStorage(file: Express.Multer.File) {
-  const ext = path.extname(file.originalname) || ".jpg";
+  const isAudio = isAudioMime(file.mimetype);
+  const isImage = file.mimetype.startsWith("image/");
+
+  let buffer = file.buffer;
+  let ext = path.extname(file.originalname) || ".jpg";
+  let contentType = file.mimetype;
+
+  // Compress images to WebP
+  if (isImage) {
+    buffer = await compressImage(buffer);
+    ext = ".webp";
+    contentType = "image/webp";
+  }
+
   const cleanExt = ext.replace(/[^a-zA-Z0-9.]/g, "") || ".jpg";
   const name = `${uuidv4()}${cleanExt}`;
 
+  const bucket = isAudioMime(file.mimetype) ? "music" : "uploads";
+
   const { error } = await supabase.storage
-    .from("uploads")
-    .upload(name, file.buffer, { contentType: file.mimetype });
+    .from(bucket)
+    .upload(name, buffer, { contentType });
 
-  if (error) throw error;
+  if (error) {
+    console.error("Supabase storage upload error:", error);
+    throw error;
+  }
 
-  const { data } = supabase.storage.from("uploads").getPublicUrl(name);
+  const { data } = supabase.storage.from(bucket).getPublicUrl(name);
   return { url: data.publicUrl, filename: name };
 }
 
 const upload = multer({
   storage,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max
+    fileSize: 20 * 1024 * 1024, // 20MB max (audio can be large)
   },
   fileFilter: (_req, file, cb) => {
     if (isAllowedMime(file.mimetype)) {
@@ -58,8 +91,9 @@ router.post(
       try {
         const uploaded = await uploadBufferToStorage(req.file);
         res.json(uploaded);
-      } catch {
-        res.status(500).json({ error: "Failed to upload file" });
+      } catch (err: any) {
+        console.error("Upload single error:", err);
+        res.status(500).json({ error: err.message || "Failed to upload file" });
       }
     })();
   },

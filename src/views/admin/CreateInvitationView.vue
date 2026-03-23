@@ -524,6 +524,35 @@
           </div>
         </div>
 
+        <!-- Background Music -->
+        <div class="form-section">
+          <h3 class="form-section-title">🎵 Musik Latar</h3>
+          <p class="form-section-subtitle">
+            Pilih lagu yang akan berputar otomatis saat undangan dibuka
+          </p>
+          <div class="form-group">
+            <div class="single-photo-upload" style="aspect-ratio: auto; height: auto; padding: 24px;" @click="musicFileInput?.click()">
+              <div v-if="form.music_url" style="width: 100%; text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 8px;">🎧</div>
+                <div style="font-weight: 500; font-size: 14px; margin-bottom: 12px; word-break: break-all; color: var(--admin-primary)">Lagu Terpilih</div>
+                <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 36px; margin-bottom: 12px;"></audio>
+                <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic">Hapus Lagu</button>
+              </div>
+              <div v-else class="upload-placeholder">
+                <span class="icon">🎵</span>
+                Upload File Audio (.mp3, .m4a, .wav)
+              </div>
+            </div>
+            <input
+              ref="musicFileInput"
+              type="file"
+              accept="audio/mpeg, audio/aac, audio/mp4, audio/wav, audio/ogg, audio/x-m4a"
+              hidden
+              @change="handleMusicUpload"
+            />
+          </div>
+        </div>
+
         <!-- Submit -->
         <div
           style="
@@ -577,6 +606,7 @@ const toast = ref<{ type: string; message: string } | null>(null);
 const groomPhotoInput = ref<HTMLInputElement>();
 const bridePhotoInput = ref<HTMLInputElement>();
 const coverPhotoInput = ref<HTMLInputElement>();
+const musicFileInput = ref<HTMLInputElement>();
 
 const form = reactive({
   slug: "",
@@ -608,6 +638,7 @@ const form = reactive({
   bank_name: "",
   bank_account: "",
   bank_holder: "",
+  music_url: "",
   photos: [] as Photo[],
 });
 
@@ -639,6 +670,25 @@ async function handleSingleUpload(
     showToast("error", "Gagal upload foto");
   }
   input.value = "";
+}
+
+async function handleMusicUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+
+  try {
+    const url = await store.uploadMusic(file);
+    form.music_url = url;
+    showToast("success", "Musik berhasil diupload");
+  } catch {
+    showToast("error", "Gagal upload musik");
+  }
+  input.value = "";
+}
+
+function removeMusic() {
+  form.music_url = "";
 }
 
 async function handleCoverDrop(event: DragEvent) {

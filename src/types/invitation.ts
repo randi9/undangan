@@ -52,6 +52,7 @@ export interface Invitation {
   bank_name: string;
   bank_account: string;
   bank_holder: string;
+  music_url?: string;
   photos?: Photo[];
   rsvps?: Rsvp[];
   photo_count?: number;
@@ -89,5 +90,6 @@ export interface CreateInvitationPayload {
   bank_name?: string;
   bank_account?: string;
   bank_holder?: string;
+  music_url?: string;
   photos?: Photo[];
 }
