@@ -145,7 +145,7 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const validation = validateInvitationPayload(req.body);
     if (!validation.ok) {
-      return res.status(400).json({ error: validation.error });
+      return res.status(400).json({ error: (validation as any).error });
     }
 
     const id = uuidv4();
@@ -262,7 +262,7 @@ router.put("/:id", async (req: Request, res: Response) => {
   try {
     const validation = validateInvitationPayload(req.body, true);
     if (!validation.ok) {
-      return res.status(400).json({ error: validation.error });
+      return res.status(400).json({ error: (validation as any).error });
     }
 
     const { id } = req.params;
