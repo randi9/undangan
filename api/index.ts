@@ -9,8 +9,51 @@ import { v4 as uuidv4 } from "uuid";
 
 const app = express();
 
-// CORS — allow semua origin di production (same-domain anyway via rewrite)
-app.use(cors({ origin: true, credentials: true }));
+// CORS — support exact origins + wildcard subdomains (saya.*, slug.*)
+const configuredOrigins = (process.env.CORS_ORIGINS || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const defaultOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
+const allowedOrigins = new Set([...defaultOrigins, ...configuredOrigins]);
+
+// Extract base domains for subdomain matching
+const baseDomains: string[] = [];
+for (const o of configuredOrigins) {
+  try {
+    const url = new URL(o);
+    baseDomains.push(url.hostname);
+  } catch {
+    // skip invalid
+  }
+}
+
+function isAllowedOrigin(origin: string): boolean {
+  if (allowedOrigins.has(origin)) return true;
+  try {
+    const url = new URL(origin);
+    for (const base of baseDomains) {
+      if (url.hostname.endsWith(`.${base}`)) return true;
+    }
+  } catch {
+    // invalid origin
+  }
+  return false;
+}
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || isAllowedOrigin(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json({ limit: "10mb" }));
 
 // --- Supabase Client ---

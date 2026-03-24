@@ -16,11 +16,40 @@ const defaultOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
 
 const allowedOrigins = new Set([...defaultOrigins, ...configuredOrigins]);
 
+// Extract base domains from configured origins for subdomain matching
+// e.g. "https://mengundanganda.fun" -> "mengundanganda.fun"
+const baseDomains: string[] = [];
+for (const o of configuredOrigins) {
+  try {
+    const url = new URL(o);
+    baseDomains.push(url.hostname);
+  } catch {
+    // skip invalid
+  }
+}
+
+function isAllowedOrigin(origin: string): boolean {
+  // Exact match
+  if (allowedOrigins.has(origin)) return true;
+
+  // Subdomain match (e.g. saya.mengundanganda.fun, slug.mengundanganda.fun)
+  try {
+    const url = new URL(origin);
+    for (const base of baseDomains) {
+      if (url.hostname.endsWith(`.${base}`)) return true;
+    }
+  } catch {
+    // invalid origin
+  }
+
+  return false;
+}
+
 // Middleware
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.has(origin)) {
+      if (!origin || isAllowedOrigin(origin)) {
         callback(null, true);
         return;
       }

@@ -3,65 +3,102 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 const host = window.location.hostname
 const parts = host.split('.')
 let subdomain: string | null = null
+let isLandingPage = false
 
 if (host === 'localhost' || host === '127.0.0.1') {
   // Allow test.localhost if someone set it up
   if (parts.length >= 2 && parts[0] !== 'localhost' && parts[0] !== '127') {
-    subdomain = parts[0] || null
+    if (parts[0] === 'saya') {
+      isLandingPage = true
+    } else {
+      subdomain = parts[0] || null
+    }
   }
 } else if (host.endsWith('.vercel.app')) {
   // Untuk domain bawaan Vercel: project-name.vercel.app (3 bagian)
   // Jika ada subdomain beneran: romi-juli.project-name.vercel.app (4 bagian)
   if (parts.length >= 4) {
-    subdomain = parts[0] || null
+    if (parts[0] === 'saya') {
+      isLandingPage = true
+    } else {
+      subdomain = parts[0] || null
+    }
   }
 } else {
   // Domain biasa misal: mydomain.com (2 bagian) -> romi-juli.mydomain.com (3 bagian)
   if (parts.length >= 3 && parts[0] !== 'www' && parts[0] !== 'admin') {
-    subdomain = parts[0] || null
+    if (parts[0] === 'saya') {
+      isLandingPage = true
+    } else {
+      subdomain = parts[0] || null
+    }
   }
 }
 
-const routes: RouteRecordRaw[] = subdomain ? [
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'invitation-subdomain',
-    component: () => import('@/views/invitation/InvitationView.vue'),
-    meta: { title: 'Undangan Pernikahan', subdomain }
-  }
-] : [
-  {
-    path: '/',
-    name: 'dashboard',
-    component: () => import('@/views/admin/DashboardView.vue'),
-    meta: { title: 'Dashboard - Undangan Generator' }
-  },
-  {
-    path: '/select-template',
-    name: 'select-template',
-    component: () => import('../views/admin/SelectTemplateView.vue'),
-    meta: { title: 'Pilih Tema - Admin UndanganGen' }
-  },
-  {
-    path: '/create',
-    name: 'create',
-    component: () => import('@/views/admin/CreateInvitationView.vue'),
-    meta: { title: 'Buat Undangan - Undangan Generator' }
-  },
-  {
-    path: '/edit/:id',
-    name: 'edit',
-    component: () => import('@/views/admin/EditInvitationView.vue'),
-    meta: { title: 'Edit Undangan - Undangan Generator' }
-  },
-  {
-    // Fallback for localhost testing without subdomain
-    path: '/invitation/:slug',
-    name: 'invitation',
-    component: () => import('@/views/invitation/InvitationView.vue'),
-    meta: { title: 'Undangan Pernikahan' }
-  }
-]
+let routes: RouteRecordRaw[]
+
+if (isLandingPage) {
+  // Landing page untuk subdomain saya.*
+  routes = [
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'landing',
+      component: () => import('@/views/LandingView.vue'),
+      meta: { title: 'MengundangAnda — Undangan Digital Pernikahan Premium' }
+    }
+  ]
+} else if (subdomain) {
+  // Undangan untuk subdomain slug.*
+  routes = [
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'invitation-subdomain',
+      component: () => import('@/views/invitation/InvitationView.vue'),
+      meta: { title: 'Undangan Pernikahan', subdomain }
+    }
+  ]
+} else {
+  // Admin panel (root domain)
+  routes = [
+    {
+      path: '/',
+      name: 'dashboard',
+      component: () => import('@/views/admin/DashboardView.vue'),
+      meta: { title: 'Dashboard - Undangan Generator' }
+    },
+    {
+      path: '/select-template',
+      name: 'select-template',
+      component: () => import('../views/admin/SelectTemplateView.vue'),
+      meta: { title: 'Pilih Tema - Admin UndanganGen' }
+    },
+    {
+      path: '/create',
+      name: 'create',
+      component: () => import('@/views/admin/CreateInvitationView.vue'),
+      meta: { title: 'Buat Undangan - Undangan Generator' }
+    },
+    {
+      path: '/edit/:id',
+      name: 'edit',
+      component: () => import('@/views/admin/EditInvitationView.vue'),
+      meta: { title: 'Edit Undangan - Undangan Generator' }
+    },
+    {
+      path: '/landing',
+      name: 'landing-preview',
+      component: () => import('@/views/LandingView.vue'),
+      meta: { title: 'MengundangAnda — Undangan Digital Pernikahan Premium' }
+    },
+    {
+      // Fallback for localhost testing without subdomain
+      path: '/invitation/:slug',
+      name: 'invitation',
+      component: () => import('@/views/invitation/InvitationView.vue'),
+      meta: { title: 'Undangan Pernikahan' }
+    }
+  ]
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
