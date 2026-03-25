@@ -67,7 +67,22 @@ const supabaseKey =
   process.env.SUPABASE_VITE_SUPABASE_ANON_KEY ||
   "";
 
+if (!supabaseUrl || !supabaseKey) {
+  console.error("⚠️  SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set!");
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Guard: reject all /api/* requests early if Supabase is not configured
+app.use("/api", (req, res, next) => {
+  if (req.path === "/health") return next(); // allow health-check through
+  if (!supabaseUrl || !supabaseKey) {
+    return res.status(503).json({
+      error: "Server belum dikonfigurasi. Hubungi admin (Supabase env vars missing).",
+    });
+  }
+  next();
+});
 
 // =============================================================
 //  INVITATIONS
