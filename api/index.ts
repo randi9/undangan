@@ -1,4 +1,4 @@
-// Vercel Serverless Function — self-contained, mirrors server/src logic exactly
+// Vercel Serverless Function — self-contained, no import from server/
 import express from "express";
 import cors from "cors";
 import multer from "multer";
@@ -9,10 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const app = express();
 
-// =============================================================
-//  CORS — support exact origins + wildcard subdomains
-// =============================================================
-
+// CORS — support exact origins + wildcard subdomains (saya.*, slug.*)
 const configuredOrigins = (process.env.CORS_ORIGINS || "")
   .split(",")
   .map((o) => o.trim())
@@ -21,6 +18,7 @@ const configuredOrigins = (process.env.CORS_ORIGINS || "")
 const defaultOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
 const allowedOrigins = new Set([...defaultOrigins, ...configuredOrigins]);
 
+// Extract base domains for subdomain matching
 const baseDomains: string[] = [];
 for (const o of configuredOrigins) {
   try {
@@ -58,10 +56,7 @@ app.use(
 );
 app.use(express.json({ limit: "10mb" }));
 
-// =============================================================
-//  Supabase Client
-// =============================================================
-
+// --- Supabase Client ---
 const supabaseUrl =
   process.env.SUPABASE_URL ||
   process.env.SUPABASE_VITE_SUPABASE_URL ||
@@ -75,7 +70,7 @@ const supabaseKey =
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // =============================================================
-//  Shared helpers (mirrored from server/src/routes)
+//  INVITATIONS
 // =============================================================
 
 function parseLoveStory(value: unknown) {
@@ -86,63 +81,11 @@ function parseLoveStory(value: unknown) {
       const parsed = JSON.parse(value);
       return Array.isArray(parsed) ? parsed : [];
     } catch {
-      throw new Error("love_story must be valid JSON array");
+      return [];
     }
   }
-  throw new Error("love_story must be an array");
+  return [];
 }
-
-type ValidationResult = { ok: true } | { ok: false; error: string };
-
-function validateInvitationPayload(
-  body: any,
-  isUpdate = false,
-): ValidationResult {
-  if (!isUpdate) {
-    if (!body.slug || typeof body.slug !== "string")
-      return { ok: false, error: "slug is required" };
-    if (!body.groom_name || typeof body.groom_name !== "string")
-      return { ok: false, error: "groom_name is required" };
-    if (!body.bride_name || typeof body.bride_name !== "string")
-      return { ok: false, error: "bride_name is required" };
-  }
-
-  if (body.slug !== undefined) {
-    if (typeof body.slug !== "string" || !/^[a-z0-9-]+$/.test(body.slug)) {
-      return { ok: false, error: "slug format is invalid" };
-    }
-  }
-
-  if (
-    body.theme !== undefined &&
-    !["elegant", "minimalist", "floral"].includes(body.theme)
-  ) {
-    return { ok: false, error: "theme must be elegant, minimalist, or floral" };
-  }
-
-  if (body.photos !== undefined && !Array.isArray(body.photos)) {
-    return { ok: false, error: "photos must be an array" };
-  }
-
-  if (Array.isArray(body.photos) && body.photos.length > 100) {
-    return { ok: false, error: "photos exceeds maximum allowed items" };
-  }
-
-  return { ok: true };
-}
-
-const validAttendance = new Set(["hadir", "tidak_hadir"]);
-
-function normalizeGuestCount(value: unknown): number {
-  const num = Number(value);
-  if (!Number.isFinite(num)) return 1;
-  const rounded = Math.floor(num);
-  return Math.min(10, Math.max(1, rounded));
-}
-
-// =============================================================
-//  INVITATIONS
-// =============================================================
 
 // GET all
 app.get("/api/invitations", async (_req, res) => {
@@ -215,61 +158,47 @@ app.get("/api/invitations/:id", async (req, res) => {
 // CREATE
 app.post("/api/invitations", async (req, res) => {
   try {
-    const validation = validateInvitationPayload(req.body);
-    if (!validation.ok) {
-      return res.status(400).json({ error: (validation as any).error });
-    }
+    const { slug, groom_name, bride_name } = req.body;
+    if (!slug) return res.status(400).json({ error: "slug is required" });
+    if (!groom_name) return res.status(400).json({ error: "groom_name is required" });
+    if (!bride_name) return res.status(400).json({ error: "bride_name is required" });
 
     const id = uuidv4();
-    const {
-      slug, theme,
-      groom_name, bride_name,
-      groom_full_name, bride_full_name,
-      groom_father, groom_mother,
-      bride_father, bride_mother,
-      groom_photo, bride_photo, cover_photo,
-      akad_date, akad_time, akad_venue, akad_address, akad_map_url,
-      resepsi_date, resepsi_time, resepsi_venue, resepsi_address, resepsi_map_url,
-      love_story, quote,
-      bank_name, bank_account, bank_holder,
-      music_url, photos,
-    } = req.body;
+    const body = req.body;
 
     // Check slug uniqueness
     const { data: existing } = await supabase.from("invitations").select("id").eq("slug", slug).single();
     if (existing) return res.status(400).json({ error: "Slug sudah digunakan. Pilih slug lain." });
 
-    const parsedLoveStory = parseLoveStory(love_story) || [];
-
     const newInvitation = {
       id, slug,
-      theme: theme || "elegant",
+      theme: body.theme || "elegant",
       groom_name, bride_name,
-      groom_full_name: groom_full_name || "",
-      bride_full_name: bride_full_name || "",
-      groom_father: groom_father || "",
-      groom_mother: groom_mother || "",
-      bride_father: bride_father || "",
-      bride_mother: bride_mother || "",
-      groom_photo: groom_photo || "",
-      bride_photo: bride_photo || "",
-      cover_photo: cover_photo || "",
-      akad_date: akad_date || "",
-      akad_time: akad_time || "",
-      akad_venue: akad_venue || "",
-      akad_address: akad_address || "",
-      akad_map_url: akad_map_url || "",
-      resepsi_date: resepsi_date || "",
-      resepsi_time: resepsi_time || "",
-      resepsi_venue: resepsi_venue || "",
-      resepsi_address: resepsi_address || "",
-      resepsi_map_url: resepsi_map_url || "",
-      love_story: parsedLoveStory,
-      quote: quote || "",
-      bank_name: bank_name || "",
-      bank_account: bank_account || "",
-      bank_holder: bank_holder || "",
-      music_url: music_url || "",
+      groom_full_name: body.groom_full_name || "",
+      bride_full_name: body.bride_full_name || "",
+      groom_father: body.groom_father || "",
+      groom_mother: body.groom_mother || "",
+      bride_father: body.bride_father || "",
+      bride_mother: body.bride_mother || "",
+      groom_photo: body.groom_photo || "",
+      bride_photo: body.bride_photo || "",
+      cover_photo: body.cover_photo || "",
+      akad_date: body.akad_date || "",
+      akad_time: body.akad_time || "",
+      akad_venue: body.akad_venue || "",
+      akad_address: body.akad_address || "",
+      akad_map_url: body.akad_map_url || "",
+      resepsi_date: body.resepsi_date || "",
+      resepsi_time: body.resepsi_time || "",
+      resepsi_venue: body.resepsi_venue || "",
+      resepsi_address: body.resepsi_address || "",
+      resepsi_map_url: body.resepsi_map_url || "",
+      love_story: parseLoveStory(body.love_story) || [],
+      quote: body.quote || "",
+      bank_name: body.bank_name || "",
+      bank_account: body.bank_account || "",
+      bank_holder: body.bank_holder || "",
+      music_url: body.music_url || "",
     };
 
     const { data: created, error: createError } = await supabase
@@ -279,8 +208,8 @@ app.post("/api/invitations", async (req, res) => {
       .single();
     if (createError) throw createError;
 
-    if (photos && Array.isArray(photos) && photos.length > 0) {
-      const dbPhotos = photos.map((p: any, index: number) => ({
+    if (body.photos && Array.isArray(body.photos) && body.photos.length > 0) {
+      const dbPhotos = body.photos.map((p: any, index: number) => ({
         id: uuidv4(), invitation_id: id, url: p.url,
         caption: p.caption || "", sort_order: index,
       }));
@@ -297,29 +226,20 @@ app.post("/api/invitations", async (req, res) => {
 // UPDATE
 app.put("/api/invitations/:id", async (req, res) => {
   try {
-    const validation = validateInvitationPayload(req.body, true);
-    if (!validation.ok) {
-      return res.status(400).json({ error: (validation as any).error });
-    }
-
     const { id } = req.params;
-
     const { data: existing } = await supabase.from("invitations").select("*").eq("id", id).single();
     if (!existing) return res.status(404).json({ error: "Invitation not found" });
 
-    const body = req.body as Record<string, any>;
-    const slug = body.slug as string | undefined;
-    const photos = body.photos as Array<any> | undefined;
+    const body = req.body;
 
-    if (slug && slug !== existing.slug) {
+    if (body.slug && body.slug !== existing.slug) {
       const { data: slugExists } = await supabase
-        .from("invitations").select("id").eq("slug", slug).neq("id", id).single();
+        .from("invitations").select("id").eq("slug", body.slug).neq("id", id).single();
       if (slugExists) return res.status(400).json({ error: "Slug sudah digunakan." });
     }
 
     const updateData: Record<string, any> = { updated_at: new Date().toISOString() };
-
-    const updatableFields = [
+    const fields = [
       "slug", "theme", "groom_name", "bride_name", "groom_full_name", "bride_full_name",
       "groom_father", "groom_mother", "bride_father", "bride_mother",
       "groom_photo", "bride_photo", "cover_photo",
@@ -327,13 +247,9 @@ app.put("/api/invitations/:id", async (req, res) => {
       "resepsi_date", "resepsi_time", "resepsi_venue", "resepsi_address", "resepsi_map_url",
       "quote", "bank_name", "bank_account", "bank_holder", "music_url",
     ];
-
-    for (const field of updatableFields) {
-      if (body[field] !== undefined) {
-        updateData[field] = body[field];
-      }
+    for (const f of fields) {
+      if (body[f] !== undefined) updateData[f] = body[f];
     }
-
     if (body.love_story !== undefined) {
       updateData.love_story = parseLoveStory(body.love_story) ?? [];
     }
@@ -342,10 +258,10 @@ app.put("/api/invitations/:id", async (req, res) => {
       .from("invitations").update(updateData).eq("id", id).select().single();
     if (updateError) throw updateError;
 
-    if (photos && Array.isArray(photos)) {
+    if (body.photos && Array.isArray(body.photos)) {
       await supabase.from("photos").delete().eq("invitation_id", id);
-      if (photos.length > 0) {
-        const dbPhotos = photos.map((p: any, index: number) => ({
+      if (body.photos.length > 0) {
+        const dbPhotos = body.photos.map((p: any, index: number) => ({
           id: p.id || uuidv4(), invitation_id: id, url: p.url,
           caption: p.caption || "", sort_order: index,
         }));
@@ -363,7 +279,7 @@ app.put("/api/invitations/:id", async (req, res) => {
 // DELETE
 app.delete("/api/invitations/:id", async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id;
 
     // 1. Fetch invitation to get file URLs
     const { data: inv } = await supabase.from("invitations").select("*").eq("id", id).single();
@@ -376,7 +292,7 @@ app.delete("/api/invitations/:id", async (req, res) => {
     const extractFileName = (url: string) => {
       if (!url) return null;
       const parts = url.split("/");
-      return parts[parts.length - 1];
+      return parts[parts.length - 1]; // last segment is the filename
     };
 
     if (inv) {
@@ -395,7 +311,7 @@ app.delete("/api/invitations/:id", async (req, res) => {
       }
     }
 
-    // 3. Delete files from Storage (best-effort)
+    // 3. Delete files from Storage (best-effort, don't block on errors)
     if (uploadsToDelete.length > 0) {
       await supabase.storage.from("uploads").remove(uploadsToDelete).catch(() => {});
     }
@@ -435,37 +351,16 @@ app.get("/api/rsvp/:invitationId", async (req, res) => {
 app.post("/api/rsvp", async (req, res) => {
   try {
     const { invitation_id, guest_name, attendance, guest_count, message } = req.body;
-
     if (!invitation_id || !guest_name || !attendance) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-
-    if (
-      typeof guest_name !== "string" ||
-      guest_name.trim().length < 2 ||
-      guest_name.trim().length > 120
-    ) {
-      return res.status(400).json({ error: "guest_name is invalid" });
-    }
-
-    if (typeof attendance !== "string" || !validAttendance.has(attendance)) {
-      return res.status(400).json({ error: "attendance must be hadir or tidak_hadir" });
-    }
-
-    if (
-      message !== undefined &&
-      (typeof message !== "string" || message.length > 1000)
-    ) {
-      return res.status(400).json({ error: "message is invalid" });
-    }
-
     const { data, error } = await supabase
       .from("rsvps")
       .insert([{
         id: uuidv4(), invitation_id,
-        guest_name: guest_name.trim(),
+        guest_name: String(guest_name).trim(),
         attendance,
-        guest_count: normalizeGuestCount(guest_count),
+        guest_count: Math.min(10, Math.max(1, Number(guest_count) || 1)),
         message: typeof message === "string" ? message.trim() : "",
       }])
       .select().single();
@@ -480,18 +375,18 @@ app.post("/api/rsvp", async (req, res) => {
 //  UPLOAD — via Multer memory storage → Supabase Storage
 // =============================================================
 
-const allowedTypes = [
-  "image/jpeg", "image/png", "image/webp", "image/gif",
-  "audio/mpeg", "audio/aac", "audio/mp4", "audio/wav", "audio/ogg", "audio/x-m4a",
-];
-
-function isAllowedMime(mimeType: string) {
-  return allowedTypes.includes(mimeType);
-}
-
-function isAudioMime(mimeType: string) {
-  return mimeType.startsWith("audio/");
-}
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  limits: { fileSize: 20 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (["image/jpeg", "image/png", "image/webp", "image/gif", "audio/mpeg", "audio/aac", "audio/mp4", "audio/wav", "audio/ogg", "audio/x-m4a"].includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only JPEG, PNG, WebP, GIF, and standard Audio formats are allowed"));
+    }
+  },
+});
 
 async function compressImage(buffer: Buffer): Promise<Buffer> {
   return sharp(buffer)
@@ -500,64 +395,35 @@ async function compressImage(buffer: Buffer): Promise<Buffer> {
     .toBuffer();
 }
 
-async function uploadBufferToStorage(file: Express.Multer.File) {
+async function uploadToSupabaseStorage(file: Express.Multer.File) {
   const isImage = file.mimetype.startsWith("image/");
 
   let buffer = file.buffer;
-  let ext = path.extname(file.originalname) || ".jpg";
+  let ext = path.extname(file.originalname).replace(/[^a-zA-Z0-9.]/g, "") || ".jpg";
   let contentType = file.mimetype;
 
-  // Compress images to WebP
   if (isImage) {
     buffer = await compressImage(buffer);
     ext = ".webp";
     contentType = "image/webp";
   }
 
-  const cleanExt = ext.replace(/[^a-zA-Z0-9.]/g, "") || ".jpg";
-  const name = `${uuidv4()}${cleanExt}`;
-
-  const bucket = isAudioMime(file.mimetype) ? "music" : "uploads";
-
-  const { error } = await supabase.storage
-    .from(bucket)
-    .upload(name, buffer, { contentType });
-
-  if (error) {
-    console.error("Supabase storage upload error:", error);
-    throw error;
-  }
-
+  const name = `${uuidv4()}${ext}`;
+  const bucket = file.mimetype.startsWith("audio/") ? "music" : "uploads";
+  const { error } = await supabase.storage.from(bucket).upload(name, buffer, { contentType });
+  if (error) throw error;
   const { data } = supabase.storage.from(bucket).getPublicUrl(name);
   return { url: data.publicUrl, filename: name };
 }
 
-const storage = multer.memoryStorage();
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 20 * 1024 * 1024, // 20MB max
-  },
-  fileFilter: (_req, file, cb) => {
-    if (isAllowedMime(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only JPEG, PNG, WebP, GIF, and standard Audio formats are allowed"));
-    }
-  },
-});
-
 app.post("/api/upload/single", upload.single("photo"), (req: express.Request, res: express.Response) => {
   void (async () => {
-    if (!req.file) {
-      res.status(400).json({ error: "No file uploaded" });
-      return;
-    }
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
     try {
-      const uploaded = await uploadBufferToStorage(req.file);
-      res.json(uploaded);
+      const result = await uploadToSupabaseStorage(req.file);
+      res.json(result);
     } catch (err: any) {
-      console.error("Upload single error:", err);
+      console.error("Upload error:", err);
       res.status(500).json({ error: err.message || "Failed to upload file" });
     }
   })();
@@ -566,15 +432,13 @@ app.post("/api/upload/single", upload.single("photo"), (req: express.Request, re
 app.post("/api/upload/multiple", upload.array("photos", 20), (req: express.Request, res: express.Response) => {
   void (async () => {
     const files = req.files as Express.Multer.File[];
-    if (!files || files.length === 0) {
-      res.status(400).json({ error: "No files uploaded" });
-      return;
-    }
+    if (!files || files.length === 0) return res.status(400).json({ error: "No files uploaded" });
     try {
-      const uploaded = await Promise.all(files.map(uploadBufferToStorage));
-      res.json(uploaded);
-    } catch {
-      res.status(500).json({ error: "Failed to upload files" });
+      const results = await Promise.all(files.map(uploadToSupabaseStorage));
+      res.json(results);
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      res.status(500).json({ error: err.message || "Failed to upload files" });
     }
   })();
 });
