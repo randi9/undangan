@@ -5,7 +5,11 @@ import multer from "multer";
 import path from "path";
 import sharp from "sharp";
 import { createClient } from "@supabase/supabase-js";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
+
+// Use Node.js built-in randomUUID instead of `uuid` package
+// uuid v13 is ESM-only and crashes in Vercel's CJS serverless runtime
+const uuidv4 = () => randomUUID();
 
 const app = express();
 
@@ -15,11 +19,17 @@ const configuredOrigins = (process.env.CORS_ORIGINS || "")
   .map((o) => o.trim())
   .filter(Boolean);
 
-const defaultOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
+const defaultOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  // Production domains — always allowed
+  "https://mengundanganda.fun",
+  "https://www.mengundanganda.fun",
+];
 const allowedOrigins = new Set([...defaultOrigins, ...configuredOrigins]);
 
 // Extract base domains for subdomain matching
-const baseDomains: string[] = [];
+const baseDomains = ["mengundanganda.fun"];   // always allow *.mengundanganda.fun
 for (const o of configuredOrigins) {
   try {
     const url = new URL(o);
@@ -34,7 +44,7 @@ function isAllowedOrigin(origin: string): boolean {
   try {
     const url = new URL(origin);
     for (const base of baseDomains) {
-      if (url.hostname.endsWith(`.${base}`)) return true;
+      if (url.hostname === base || url.hostname.endsWith(`.${base}`)) return true;
     }
   } catch {
     // invalid origin
@@ -49,7 +59,8 @@ app.use(
         callback(null, true);
         return;
       }
-      callback(new Error("Not allowed by CORS"));
+      // Don't throw — just reject. Throwing causes Express to return 500 HTML.
+      callback(null, false);
     },
     credentials: true,
   }),
@@ -468,6 +479,33 @@ app.get("/api/health", (_req, res) => {
     timestamp: new Date().toISOString(),
     supabase_connected: !!(supabaseUrl && supabaseKey),
     supabase_url: supabaseUrl ? "✅" : "❌",
+    node_version: process.version,
+  });
+});
+
+// Diagnostic endpoint to test POST pipeline on Vercel
+app.post("/api/debug", async (req, res) => {
+  const checks: Record<string, string> = {};
+  try {
+    checks.body_parsed = req.body ? "ok" : "MISSING";
+    checks.body_keys = req.body ? Object.keys(req.body).join(",") : "none";
+    checks.uuid = uuidv4();
+    // Quick DB connectivity test
+    const { error } = await supabase.from("invitations").select("id").limit(1);
+    checks.supabase_query = error ? `ERROR: ${error.message}` : "ok";
+    res.json({ status: "ok", checks });
+  } catch (err: any) {
+    res.status(500).json({ status: "error", checks, error: err.message, stack: err.stack });
+  }
+});
+
+// =============================================================
+//  GLOBAL ERROR HANDLER — always return JSON, never HTML
+// =============================================================
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("Unhandled error:", err);
+  res.status(err.status || 500).json({
+    error: err.message || "Internal Server Error",
   });
 });
 
