@@ -3,6 +3,7 @@ import cors from "cors";
 import invitationRoutes from "./routes/invitations";
 import uploadRoutes from "./routes/upload";
 import rsvpRoutes from "./routes/rsvp";
+import authRoutes from "./routes/auth";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -73,6 +74,7 @@ app.use(
 app.use(express.json());
 
 // API Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/invitations", invitationRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/rsvp", rsvpRoutes);

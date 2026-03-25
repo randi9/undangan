@@ -1,0 +1,416 @@
+<template>
+  <div class="admin-layout">
+    <header class="admin-header">
+      <router-link to="/" class="admin-logo">
+        <div class="logo-icon">💒</div>
+        <span>Undangan<span style="color: var(--admin-primary)">Gen</span></span>
+      </router-link>
+      <nav class="admin-nav">
+        <router-link to="/">Dashboard</router-link>
+        <router-link to="/users">👥 User</router-link>
+        <span class="nav-user-info" v-if="authStore.user">
+          <span class="user-badge" :class="authStore.user.role">{{ authStore.user.role }}</span>
+          {{ authStore.user.username }}
+        </span>
+        <button class="btn-logout" @click="handleLogout" title="Logout">🚪</button>
+      </nav>
+    </header>
+
+    <div class="admin-container">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+        <div>
+          <h1 class="admin-page-title">Kelola User</h1>
+          <p class="admin-page-subtitle" style="margin-bottom: 0;">
+            Tambah, edit, dan hapus user yang dapat mengakses dashboard
+          </p>
+        </div>
+        <button class="btn btn-primary btn-lg" @click="openCreateModal">
+          ➕ Tambah User
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div v-if="loading" style="text-align: center; padding: 60px 0;">
+        <div class="loading-spinner"></div>
+        <p style="margin-top: 12px; color: var(--admin-text-secondary);">Memuat data...</p>
+      </div>
+
+      <!-- Error -->
+      <div v-else-if="error" class="error-banner">
+        {{ error }}
+      </div>
+
+      <!-- Users Table -->
+      <div v-else class="users-table-wrapper">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Max Undangan</th>
+              <th>Jumlah Undangan</th>
+              <th>Dibuat</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in users" :key="user.id">
+              <td><strong>{{ user.username }}</strong></td>
+              <td>
+                <span class="user-badge" :class="user.role">{{ user.role }}</span>
+              </td>
+              <td>{{ user.role === 'admin' ? '♾️' : user.max_invitations }}</td>
+              <td>{{ user.invitation_count ?? 0 }}</td>
+              <td>{{ formatDate(user.created_at) }}</td>
+              <td>
+                <div class="action-btns">
+                  <button class="btn btn-outline btn-sm" @click="openEditModal(user)">✏️ Edit</button>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    @click="confirmDelete(user)"
+                    :disabled="user.id === authStore.user?.id"
+                    :title="user.id === authStore.user?.id ? 'Tidak bisa hapus diri sendiri' : ''"
+                  >
+                    🗑 Hapus
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
+      <div class="modal-content" style="max-width: 480px;">
+        <div class="modal-title">{{ isEditing ? 'Edit User' : 'Tambah User Baru' }}</div>
+        <form @submit.prevent="handleSubmit" class="modal-form">
+          <div v-if="formError" class="login-error" style="margin-bottom: 12px;">{{ formError }}</div>
+
+          <div class="form-group">
+            <label>Username</label>
+            <input v-model="form.username" type="text" required :disabled="formLoading" />
+          </div>
+
+          <div class="form-group">
+            <label>{{ isEditing ? 'Password (kosongkan jika tidak diubah)' : 'Password' }}</label>
+            <input v-model="form.password" type="password" :required="!isEditing" :disabled="formLoading" />
+          </div>
+
+          <div class="form-group">
+            <label>Role</label>
+            <select v-model="form.role" :disabled="formLoading">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="form-group" v-if="form.role !== 'admin'">
+            <label>Max Undangan</label>
+            <input v-model.number="form.max_invitations" type="number" min="1" max="100" :disabled="formLoading" />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-outline" @click="showModal = false">Batal</button>
+            <button type="submit" class="btn btn-primary" :disabled="formLoading">
+              {{ formLoading ? 'Menyimpan...' : (isEditing ? 'Simpan' : 'Buat User') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div v-if="deleteTarget" class="modal-overlay" @click.self="deleteTarget = null">
+      <div class="modal-content">
+        <div class="modal-title">Hapus User?</div>
+        <div class="modal-text">
+          User <strong>{{ deleteTarget.username }}</strong> akan dihapus secara permanen beserta semua undangannya.
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" @click="deleteTarget = null">Batal</button>
+          <button class="btn btn-danger" @click="handleDelete">Ya, Hapus</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
+      {{ toast.message }}
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
+
+interface UserItem {
+  id: string
+  username: string
+  role: 'admin' | 'user'
+  max_invitations: number
+  invitation_count?: number
+  created_at?: string
+}
+
+const router = useRouter()
+const authStore = useAuthStore()
+const users = ref<UserItem[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
+const toast = ref<{ type: string; message: string } | null>(null)
+
+// Modal state
+const showModal = ref(false)
+const isEditing = ref(false)
+const editingId = ref<string | null>(null)
+const formLoading = ref(false)
+const formError = ref<string | null>(null)
+const form = ref({
+  username: '',
+  password: '',
+  role: 'user' as 'admin' | 'user',
+  max_invitations: 3
+})
+
+const deleteTarget = ref<UserItem | null>(null)
+
+function handleLogout() {
+  authStore.logout()
+  router.push('/login')
+}
+
+async function fetchUsers() {
+  loading.value = true
+  error.value = null
+  try {
+    const res = await fetch(`${API_BASE}/auth/users`, {
+      headers: authStore.getAuthHeaders()
+    })
+    if (!res.ok) throw new Error('Gagal memuat user')
+    users.value = await res.json()
+  } catch (e: any) {
+    error.value = e.message
+  } finally {
+    loading.value = false
+  }
+}
+
+function openCreateModal() {
+  isEditing.value = false
+  editingId.value = null
+  formError.value = null
+  form.value = { username: '', password: '', role: 'user', max_invitations: 3 }
+  showModal.value = true
+}
+
+function openEditModal(user: UserItem) {
+  isEditing.value = true
+  editingId.value = user.id
+  formError.value = null
+  form.value = {
+    username: user.username,
+    password: '',
+    role: user.role,
+    max_invitations: user.max_invitations
+  }
+  showModal.value = true
+}
+
+async function handleSubmit() {
+  formLoading.value = true
+  formError.value = null
+  try {
+    const url = isEditing.value
+      ? `${API_BASE}/auth/users/${editingId.value}`
+      : `${API_BASE}/auth/users`
+    const method = isEditing.value ? 'PUT' : 'POST'
+
+    const body: any = {
+      username: form.value.username,
+      role: form.value.role,
+      max_invitations: form.value.role === 'admin' ? 999 : form.value.max_invitations
+    }
+    if (form.value.password) body.password = form.value.password
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json', ...authStore.getAuthHeaders() },
+      body: JSON.stringify(body)
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Gagal menyimpan')
+
+    showModal.value = false
+    showToast('success', isEditing.value ? 'User berhasil diupdate' : 'User berhasil dibuat')
+    await fetchUsers()
+  } catch (e: any) {
+    formError.value = e.message
+  } finally {
+    formLoading.value = false
+  }
+}
+
+function confirmDelete(user: UserItem) {
+  deleteTarget.value = user
+}
+
+async function handleDelete() {
+  if (!deleteTarget.value) return
+  try {
+    const res = await fetch(`${API_BASE}/auth/users/${deleteTarget.value.id}`, {
+      method: 'DELETE',
+      headers: authStore.getAuthHeaders()
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.error || 'Gagal menghapus user')
+    }
+    showToast('success', 'User berhasil dihapus')
+    await fetchUsers()
+  } catch (e: any) {
+    showToast('error', e.message)
+  }
+  deleteTarget.value = null
+}
+
+function formatDate(dateStr?: string) {
+  if (!dateStr) return '-'
+  return new Date(dateStr).toLocaleDateString('id-ID', {
+    day: 'numeric', month: 'short', year: 'numeric'
+  })
+}
+
+function showToast(type: string, message: string) {
+  toast.value = { type, message }
+  setTimeout(() => { toast.value = null }, 3000)
+}
+
+onMounted(() => {
+  fetchUsers()
+})
+</script>
+
+<style scoped>
+.users-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+}
+
+.users-table th {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.users-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.user-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-badge.admin {
+  background: rgba(201, 169, 110, 0.2);
+  color: #c9a96e;
+}
+
+.user-badge.user {
+  background: rgba(99, 179, 237, 0.15);
+  color: #63b3ed;
+}
+
+.action-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 16px 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-form label {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.modal-form input,
+.modal-form select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+.modal-form input:focus,
+.modal-form select:focus {
+  border-color: #c9a96e;
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.15);
+}
+
+.modal-form select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.login-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: center;
+}
+</style>
