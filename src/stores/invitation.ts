@@ -4,6 +4,22 @@ import type { Invitation, CreateInvitationPayload } from '@/types/invitation'
 
 const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
 
+/**
+ * Safely parse a JSON response. If the response is HTML (e.g. when the
+ * backend server is down and the proxy/SPA returns HTML), throw a clear
+ * error instead of crashing on SyntaxError.
+ */
+async function safeJson(res: Response): Promise<any> {
+  const contentType = res.headers.get('content-type') || ''
+  if (!contentType.includes('application/json')) {
+    // Server returned HTML or plain text — backend is likely down
+    throw new Error(
+      'Server tidak bisa dihubungi. Pastikan backend server sudah berjalan (npm run dev di folder server).'
+    )
+  }
+  return res.json()
+}
+
 export const useInvitationStore = defineStore('invitation', () => {
   const invitations = ref<Invitation[]>([])
   const currentInvitation = ref<Invitation | null>(null)
@@ -15,7 +31,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     error.value = null
     try {
       const res = await fetch(`${API_BASE}/invitations`)
-      invitations.value = await res.json()
+      invitations.value = await safeJson(res)
     } catch (e: any) {
       error.value = e.message
     } finally {
@@ -28,8 +44,11 @@ export const useInvitationStore = defineStore('invitation', () => {
     error.value = null
     try {
       const res = await fetch(`${API_BASE}/invitations/${id}`)
-      if (!res.ok) throw new Error('Invitation not found')
-      currentInvitation.value = await res.json()
+      if (!res.ok) {
+        const data = await safeJson(res)
+        throw new Error(data.error || 'Invitation not found')
+      }
+      currentInvitation.value = await safeJson(res)
       return currentInvitation.value
     } catch (e: any) {
       error.value = e.message
@@ -44,8 +63,11 @@ export const useInvitationStore = defineStore('invitation', () => {
     error.value = null
     try {
       const res = await fetch(`${API_BASE}/invitations/slug/${slug}`)
-      if (!res.ok) throw new Error('Invitation not found')
-      currentInvitation.value = await res.json()
+      if (!res.ok) {
+        const data = await safeJson(res)
+        throw new Error(data.error || 'Invitation not found')
+      }
+      currentInvitation.value = await safeJson(res)
       return currentInvitation.value
     } catch (e: any) {
       error.value = e.message
@@ -65,10 +87,10 @@ export const useInvitationStore = defineStore('invitation', () => {
         body: JSON.stringify(payload)
       })
       if (!res.ok) {
-        const data = await res.json()
+        const data = await safeJson(res)
         throw new Error(data.error || 'Failed to create invitation')
       }
-      const newInvitation = await res.json()
+      const newInvitation = await safeJson(res)
       invitations.value.unshift(newInvitation)
       return newInvitation
     } catch (e: any) {
@@ -89,10 +111,10 @@ export const useInvitationStore = defineStore('invitation', () => {
         body: JSON.stringify(payload)
       })
       if (!res.ok) {
-        const data = await res.json()
+        const data = await safeJson(res)
         throw new Error(data.error || 'Failed to update invitation')
       }
-      const updated = await res.json()
+      const updated = await safeJson(res)
       const idx = invitations.value.findIndex(i => i.id === id)
       if (idx >= 0) invitations.value[idx] = updated
       return updated
@@ -111,7 +133,10 @@ export const useInvitationStore = defineStore('invitation', () => {
       const res = await fetch(`${API_BASE}/invitations/${id}`, {
         method: 'DELETE'
       })
-      if (!res.ok) throw new Error('Failed to delete invitation')
+      if (!res.ok) {
+        await safeJson(res) // will throw clear error if HTML
+        throw new Error('Failed to delete invitation')
+      }
       invitations.value = invitations.value.filter(i => i.id !== id)
     } catch (e: any) {
       error.value = e.message
@@ -128,8 +153,11 @@ export const useInvitationStore = defineStore('invitation', () => {
       method: 'POST',
       body: formData
     })
-    if (!res.ok) throw new Error('Failed to upload photo')
-    const data = await res.json()
+    if (!res.ok) {
+      const data = await safeJson(res)
+      throw new Error(data.error || 'Failed to upload photo')
+    }
+    const data = await safeJson(res)
     return data.url
   }
 
@@ -141,8 +169,11 @@ export const useInvitationStore = defineStore('invitation', () => {
       method: 'POST',
       body: formData
     })
-    if (!res.ok) throw new Error('Failed to upload music')
-    const data = await res.json()
+    if (!res.ok) {
+      const data = await safeJson(res)
+      throw new Error(data.error || 'Failed to upload music')
+    }
+    const data = await safeJson(res)
     return data.url
   }
 
@@ -153,8 +184,11 @@ export const useInvitationStore = defineStore('invitation', () => {
       method: 'POST',
       body: formData
     })
-    if (!res.ok) throw new Error('Failed to upload photos')
-    return await res.json()
+    if (!res.ok) {
+      const data = await safeJson(res)
+      throw new Error(data.error || 'Failed to upload photos')
+    }
+    return await safeJson(res)
   }
 
   return {

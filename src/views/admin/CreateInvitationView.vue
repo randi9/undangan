@@ -46,7 +46,7 @@
               class="form-input"
               placeholder="contoh: andi-sarah"
               required
-              pattern="[a-z0-9-]+"
+              pattern="[a-z0-9]+(-[a-z0-9]+)*"
               title="Hanya huruf kecil, angka, dan tanda hubung"
               @input="sanitizeSlug"
             />
@@ -646,7 +646,8 @@ function sanitizeSlug() {
   form.slug = form.slug
     .toLowerCase()
     .replace(/[^a-z0-9-]/g, "-")
-    .replace(/-+/g, "-");
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function triggerUpload(type: string) {
