@@ -6,6 +6,12 @@ import path from "path";
 import sharp from "sharp";
 import { createClient } from "@supabase/supabase-js";
 import { randomUUID } from "node:crypto";
+import {
+  requireAuth, requireAdmin,
+  loginHandler, meHandler, seedAdminHandler,
+  listUsersHandler, createUserHandler, updateUserHandler,
+  deleteUserHandler, getUserInvitationsHandler,
+} from "./auth.js";
 
 // Use Node.js built-in randomUUID instead of `uuid` package
 // uuid v13 is ESM-only and crashes in Vercel's CJS serverless runtime
@@ -96,6 +102,24 @@ app.use("/api", (req, res, next) => {
 });
 
 // =============================================================
+//  AUTH ROUTES
+// =============================================================
+
+app.post("/api/auth/login", loginHandler);
+app.get("/api/auth/me", requireAuth, meHandler);
+app.post("/api/auth/seed-admin", seedAdminHandler);
+
+// =============================================================
+//  USER MANAGEMENT (Admin only) — under /api/auth/users to match frontend
+// =============================================================
+
+app.get("/api/auth/users", requireAuth, requireAdmin, listUsersHandler);
+app.post("/api/auth/users", requireAuth, requireAdmin, createUserHandler);
+app.put("/api/auth/users/:id", requireAuth, requireAdmin, updateUserHandler);
+app.delete("/api/auth/users/:id", requireAuth, requireAdmin, deleteUserHandler);
+app.get("/api/auth/users/:id/invitations", requireAuth, requireAdmin, getUserInvitationsHandler);
+
+// =============================================================
 //  INVITATIONS
 // =============================================================
 
@@ -113,13 +137,20 @@ function parseLoveStory(value: unknown) {
   return [];
 }
 
-// GET all
-app.get("/api/invitations", async (_req, res) => {
+// GET all (protected — user sees own, admin sees all)
+app.get("/api/invitations", requireAuth, async (req, res) => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from("invitations")
       .select("*, photos(id), rsvps(id)")
       .order("created_at", { ascending: false });
+
+    // Non-admin users only see their own invitations
+    if (req.user!.role !== "admin") {
+      query = query.eq("owner_id", req.user!.id);
+    }
+
+    const { data, error } = await query;
     if (error) throw error;
     const invitations = (data || []).map((i: any) => ({
       ...i,
@@ -159,8 +190,8 @@ app.get("/api/invitations/slug/:slug", async (req, res) => {
   }
 });
 
-// GET by ID
-app.get("/api/invitations/:id", async (req, res) => {
+// GET by ID (protected)
+app.get("/api/invitations/:id", requireAuth, async (req, res) => {
   try {
     const { data: invitation, error } = await supabase
       .from("invitations")
@@ -168,6 +199,11 @@ app.get("/api/invitations/:id", async (req, res) => {
       .eq("id", req.params.id)
       .single();
     if (error || !invitation) return res.status(404).json({ error: "Invitation not found" });
+
+    // Non-admin can only access own invitations
+    if (req.user!.role !== "admin" && invitation.owner_id !== req.user!.id) {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
 
     const { data: photos } = await supabase
       .from("photos")
@@ -181,13 +217,26 @@ app.get("/api/invitations/:id", async (req, res) => {
   }
 });
 
-// CREATE
-app.post("/api/invitations", async (req, res) => {
+// CREATE (protected + limit check)
+app.post("/api/invitations", requireAuth, async (req, res) => {
   try {
     const { slug, groom_name, bride_name } = req.body;
     if (!slug) return res.status(400).json({ error: "slug is required" });
     if (!groom_name) return res.status(400).json({ error: "groom_name is required" });
     if (!bride_name) return res.status(400).json({ error: "bride_name is required" });
+
+    // Enforce invitation limit for non-admin
+    if (req.user!.role !== "admin") {
+      const { count } = await supabase
+        .from("invitations")
+        .select("id", { count: "exact", head: true })
+        .eq("owner_id", req.user!.id);
+      if ((count || 0) >= req.user!.max_invitations) {
+        return res.status(403).json({
+          error: `Limit tercapai. Anda hanya bisa membuat ${req.user!.max_invitations} undangan.`,
+        });
+      }
+    }
 
     const id = uuidv4();
     const body = req.body;
@@ -198,6 +247,7 @@ app.post("/api/invitations", async (req, res) => {
 
     const newInvitation = {
       id, slug,
+      owner_id: req.user!.id,
       theme: body.theme || "elegant",
       groom_name, bride_name,
       groom_full_name: body.groom_full_name || "",
@@ -249,12 +299,17 @@ app.post("/api/invitations", async (req, res) => {
   }
 });
 
-// UPDATE
-app.put("/api/invitations/:id", async (req, res) => {
+// UPDATE (protected)
+app.put("/api/invitations/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const { data: existing } = await supabase.from("invitations").select("*").eq("id", id).single();
     if (!existing) return res.status(404).json({ error: "Invitation not found" });
+
+    // Non-admin can only edit own invitations
+    if (req.user!.role !== "admin" && existing.owner_id !== req.user!.id) {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
 
     const body = req.body;
 
@@ -303,12 +358,18 @@ app.put("/api/invitations/:id", async (req, res) => {
 });
 
 // DELETE
-app.delete("/api/invitations/:id", async (req, res) => {
+app.delete("/api/invitations/:id", requireAuth, async (req, res) => {
   try {
     const id = req.params.id;
 
     // 1. Fetch invitation to get file URLs
     const { data: inv } = await supabase.from("invitations").select("*").eq("id", id).single();
+
+    // Non-admin can only delete own invitations
+    if (inv && req.user!.role !== "admin" && inv.owner_id !== req.user!.id) {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+
     const { data: photos } = await supabase.from("photos").select("url").eq("invitation_id", id);
 
     // 2. Collect storage file names to delete
@@ -442,7 +503,7 @@ async function uploadToSupabaseStorage(file: Express.Multer.File) {
   return { url: data.publicUrl, filename: name };
 }
 
-app.post("/api/upload/single", upload.single("photo"), (req: express.Request, res: express.Response) => {
+app.post("/api/upload/single", requireAuth, upload.single("photo"), (req: express.Request, res: express.Response) => {
   void (async () => {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
     try {
@@ -455,7 +516,7 @@ app.post("/api/upload/single", upload.single("photo"), (req: express.Request, re
   })();
 });
 
-app.post("/api/upload/multiple", upload.array("photos", 20), (req: express.Request, res: express.Response) => {
+app.post("/api/upload/multiple", requireAuth, upload.array("photos", 20), (req: express.Request, res: express.Response) => {
   void (async () => {
     const files = req.files as Express.Multer.File[];
     if (!files || files.length === 0) return res.status(400).json({ error: "No files uploaded" });

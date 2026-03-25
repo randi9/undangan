@@ -9,7 +9,13 @@
       </router-link>
       <nav class="admin-nav">
         <router-link to="/">Dashboard</router-link>
-        <router-link to="/select-template">+ Buat Undangan</router-link>
+        <router-link v-if="!hasReachedLimit" to="/select-template">+ Buat Undangan</router-link>
+        <router-link v-if="authStore.isAdmin" to="/users">👥 User</router-link>
+        <span class="nav-user-info" v-if="authStore.user">
+          <span class="user-badge" :class="authStore.user.role">{{ authStore.user.role }}</span>
+          {{ authStore.user.username }}
+        </span>
+        <button class="btn-logout" @click="handleLogout" title="Logout">🚪</button>
       </nav>
     </header>
 
@@ -45,9 +51,20 @@
             Kelola semua undangan pernikahan yang telah dibuat
           </p>
         </div>
-        <router-link to="/select-template" class="btn btn-primary btn-lg">
+        <router-link v-if="!hasReachedLimit" to="/select-template" class="btn btn-primary btn-lg">
           ✨ Buat Undangan Baru
         </router-link>
+        <div v-else-if="hasReachedLimit" class="limit-reached-block">
+          <button class="btn btn-primary btn-lg btn-disabled" disabled>
+            🚫 Buat Undangan Baru
+          </button>
+          <div class="limit-warning">
+            ⚠️ Limit tercapai! Anda sudah membuat {{ invitations.length }}/{{ authStore.user?.max_invitations }} undangan.
+          </div>
+        </div>
+        <div v-if="authStore.user && !authStore.isAdmin && !hasReachedLimit" class="invitation-limit-info">
+          📊 {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
+        </div>
       </div>
 
       <div class="search-bar">
@@ -78,9 +95,12 @@
           Mulai buat undangan pernikahan pertama Anda dengan klik tombol di
           bawah
         </div>
-        <router-link to="/select-template" class="btn btn-primary btn-lg">
+        <router-link v-if="!hasReachedLimit" to="/select-template" class="btn btn-primary btn-lg">
           ✨ Buat Undangan Pertama
         </router-link>
+        <div v-else class="limit-warning" style="margin-top: 12px">
+          ⚠️ Limit tercapai! Hubungi admin untuk menambah kuota.
+        </div>
       </div>
 
       <!-- Search Empty -->
@@ -198,17 +218,32 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
+import { useAuthStore } from "@/stores/auth";
 import type { Invitation } from "@/types/invitation";
 import { resolveAssetUrl } from "@/utils/url";
 
+const router = useRouter();
 const store = useInvitationStore();
+const authStore = useAuthStore();
 const searchQuery = ref("");
 const deleteTarget = ref<Invitation | null>(null);
 const toast = ref<{ type: string; message: string } | null>(null);
 const apiBase = import.meta.env.VITE_API_URL || "";
 
+function handleLogout() {
+  authStore.logout();
+  router.push('/login');
+}
+
 const invitations = computed(() => store.invitations);
+
+const hasReachedLimit = computed(() => {
+  if (!authStore.user) return false;
+  if (authStore.user.role === 'admin') return false;
+  return invitations.value.length >= authStore.user.max_invitations;
+});
 
 const filteredInvitations = computed(() => {
   if (!searchQuery.value) return invitations.value;

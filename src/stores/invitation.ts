@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { Invitation, CreateInvitationPayload } from '@/types/invitation'
+import { useAuthStore } from '@/stores/auth'
 
 const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
 
@@ -25,11 +26,23 @@ export const useInvitationStore = defineStore('invitation', () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
+  function authHeaders(): Record<string, string> {
+    const auth = useAuthStore()
+    return auth.getAuthHeaders()
+  }
+
   async function fetchInvitations() {
     loading.value = true
     error.value = null
     try {
-      const res = await fetch(`${API_BASE}/invitations`)
+      const res = await fetch(`${API_BASE}/invitations`, {
+        headers: authHeaders()
+      })
+      if (res.status === 401) {
+        const auth = useAuthStore()
+        auth.logout()
+        throw new Error('Sesi berakhir. Silakan login kembali.')
+      }
       invitations.value = await safeJson(res)
     } catch (e: any) {
       error.value = e.message
@@ -42,7 +55,9 @@ export const useInvitationStore = defineStore('invitation', () => {
     loading.value = true
     error.value = null
     try {
-      const res = await fetch(`${API_BASE}/invitations/${id}`)
+      const res = await fetch(`${API_BASE}/invitations/${id}`, {
+        headers: authHeaders()
+      })
       if (!res.ok) {
         const data = await safeJson(res).catch(() => ({}))
         throw new Error(data.error || 'Invitation not found')
@@ -82,7 +97,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     try {
       const res = await fetch(`${API_BASE}/invitations`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify(payload)
       })
       const data = await safeJson(res)
@@ -105,7 +120,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     try {
       const res = await fetch(`${API_BASE}/invitations/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify(payload)
       })
       const data = await safeJson(res)
@@ -128,7 +143,8 @@ export const useInvitationStore = defineStore('invitation', () => {
     error.value = null
     try {
       const res = await fetch(`${API_BASE}/invitations/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: authHeaders()
       })
       if (!res.ok) {
         const data = await safeJson(res).catch(() => ({}))
@@ -148,6 +164,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     formData.append('photo', file)
     const res = await fetch(`${API_BASE}/upload/single`, {
       method: 'POST',
+      headers: authHeaders(),
       body: formData
     })
     if (!res.ok) {
@@ -163,6 +180,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     formData.append('photo', file)
     const res = await fetch(`${API_BASE}/upload/single`, {
       method: 'POST',
+      headers: authHeaders(),
       body: formData
     })
     if (!res.ok) {
@@ -178,6 +196,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     files.forEach(file => formData.append('photos', file))
     const res = await fetch(`${API_BASE}/upload/multiple`, {
       method: 'POST',
+      headers: authHeaders(),
       body: formData
     })
     if (!res.ok) {

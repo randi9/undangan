@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import supabase from "../database";
+import { requireAuth } from "./auth";
 
 const router = Router();
 
@@ -57,13 +58,20 @@ function validateInvitationPayload(
   return { ok: true };
 }
 
-// Get all invitations
-router.get("/", async (_req: Request, res: Response) => {
+// Get all invitations (protected — user sees own, admin sees all)
+router.get("/", requireAuth, async (req: Request, res: Response) => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from("invitations")
       .select("*, photos(id), rsvps(id)")
       .order("created_at", { ascending: false });
+
+    // Non-admin users only see their own invitations
+    if (req.user!.role !== "admin") {
+      query = query.eq("owner_id", req.user!.id);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
 
@@ -113,8 +121,8 @@ router.get("/slug/:slug", async (req: Request, res: Response) => {
   }
 });
 
-// Get invitation by ID
-router.get("/:id", async (req: Request, res: Response) => {
+// Get invitation by ID (protected)
+router.get("/:id", requireAuth, async (req: Request, res: Response) => {
   try {
     const { data: invitation, error } = await supabase
       .from("invitations")
@@ -124,6 +132,11 @@ router.get("/:id", async (req: Request, res: Response) => {
 
     if (error || !invitation) {
       return res.status(404).json({ error: "Invitation not found" });
+    }
+
+    // Non-admin can only access own invitations
+    if (req.user!.role !== "admin" && invitation.owner_id !== req.user!.id) {
+      return res.status(403).json({ error: "Akses ditolak." });
     }
 
     const { data: photos } = await supabase
@@ -140,12 +153,25 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Create invitation
-router.post("/", async (req: Request, res: Response) => {
+// Create invitation (protected + limit check)
+router.post("/", requireAuth, async (req: Request, res: Response) => {
   try {
     const validation = validateInvitationPayload(req.body);
     if (!validation.ok) {
       return res.status(400).json({ error: (validation as any).error });
+    }
+
+    // Enforce invitation limit for non-admin
+    if (req.user!.role !== "admin") {
+      const { count } = await supabase
+        .from("invitations")
+        .select("id", { count: "exact", head: true })
+        .eq("owner_id", req.user!.id);
+      if ((count || 0) >= req.user!.max_invitations) {
+        return res.status(403).json({
+          error: `Limit tercapai. Anda hanya bisa membuat ${req.user!.max_invitations} undangan.`,
+        });
+      }
     }
 
     const id = uuidv4();
@@ -200,6 +226,7 @@ router.post("/", async (req: Request, res: Response) => {
     const newInvitation = {
       id,
       slug,
+      owner_id: req.user!.id,
       theme: theme || "elegant",
       groom_name,
       bride_name,
@@ -259,8 +286,8 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-// Update invitation
-router.put("/:id", async (req: Request, res: Response) => {
+// Update invitation (protected)
+router.put("/:id", requireAuth, async (req: Request, res: Response) => {
   try {
     const validation = validateInvitationPayload(req.body, true);
     if (!validation.ok) {
@@ -277,6 +304,11 @@ router.put("/:id", async (req: Request, res: Response) => {
 
     if (!existing) {
       return res.status(404).json({ error: "Invitation not found" });
+    }
+
+    // Non-admin can only edit own invitations
+    if (req.user!.role !== "admin" && existing.owner_id !== req.user!.id) {
+      return res.status(403).json({ error: "Akses ditolak." });
     }
 
     const body = req.body as Record<string, any>;
@@ -374,13 +406,19 @@ router.put("/:id", async (req: Request, res: Response) => {
   }
 });
 
-// Delete invitation
-router.delete("/:id", async (req: Request, res: Response) => {
+// Delete invitation (protected)
+router.delete("/:id", requireAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
     // 1. Fetch invitation to get file URLs
     const { data: inv } = await supabase.from("invitations").select("*").eq("id", id).single();
+
+    // Non-admin can only delete own invitations
+    if (inv && req.user!.role !== "admin" && inv.owner_id !== req.user!.id) {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+
     const { data: photos } = await supabase.from("photos").select("url").eq("invitation_id", id);
 
     // 2. Collect storage file names to delete

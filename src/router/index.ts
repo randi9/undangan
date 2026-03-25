@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const host = window.location.hostname
 const parts = host.split('.')
@@ -61,28 +62,40 @@ if (isLandingPage) {
   // Admin panel (root domain)
   routes = [
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/auth/LoginView.vue'),
+      meta: { title: 'Login - UndanganGen', guest: true }
+    },
+    {
       path: '/',
       name: 'dashboard',
       component: () => import('@/views/admin/DashboardView.vue'),
-      meta: { title: 'Dashboard - Undangan Generator' }
+      meta: { title: 'Dashboard - Undangan Generator', requiresAuth: true }
     },
     {
       path: '/select-template',
       name: 'select-template',
       component: () => import('../views/admin/SelectTemplateView.vue'),
-      meta: { title: 'Pilih Tema - Admin UndanganGen' }
+      meta: { title: 'Pilih Tema - Admin UndanganGen', requiresAuth: true }
     },
     {
       path: '/create',
       name: 'create',
       component: () => import('@/views/admin/CreateInvitationView.vue'),
-      meta: { title: 'Buat Undangan - Undangan Generator' }
+      meta: { title: 'Buat Undangan - Undangan Generator', requiresAuth: true }
     },
     {
       path: '/edit/:id',
       name: 'edit',
       component: () => import('@/views/admin/EditInvitationView.vue'),
-      meta: { title: 'Edit Undangan - Undangan Generator' }
+      meta: { title: 'Edit Undangan - Undangan Generator', requiresAuth: true }
+    },
+    {
+      path: '/users',
+      name: 'users',
+      component: () => import('@/views/admin/UserManagementView.vue'),
+      meta: { title: 'Kelola User - UndanganGen', requiresAuth: true, requiresAdmin: true }
     },
     {
       path: '/landing',
@@ -105,8 +118,41 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, _from, next) => {
+let authInitialized = false
+
+router.beforeEach(async (to, _from, next) => {
   document.title = (to.meta.title as string) || 'Undangan Generator'
+
+  // Skip auth checks for non-admin routes (invitation view, landing page)
+  if (!to.meta.requiresAuth && !to.meta.guest) {
+    return next()
+  }
+
+  const auth = useAuthStore()
+
+  // Initialize auth state on first navigation
+  if (!authInitialized && auth.token) {
+    await auth.fetchMe()
+    authInitialized = true
+  }
+
+  // Guest-only routes (login page) — redirect to dashboard if already logged in
+  if (to.meta.guest && auth.isAuthenticated && auth.user) {
+    return next({ name: 'dashboard' })
+  }
+
+  // Protected routes — redirect to login if not authenticated
+  if (to.meta.requiresAuth) {
+    if (!auth.isAuthenticated || !auth.user) {
+      return next({ name: 'login', query: { redirect: to.fullPath } })
+    }
+
+    // Admin-only routes
+    if (to.meta.requiresAdmin && !auth.isAdmin) {
+      return next({ name: 'dashboard' })
+    }
+  }
+
   next()
 })
 

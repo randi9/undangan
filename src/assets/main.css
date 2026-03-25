@@ -142,6 +142,84 @@ input, textarea, select {
   background: var(--admin-surface);
 }
 
+.nav-user-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  color: var(--admin-text-secondary);
+  font-size: 13px;
+}
+
+.user-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-badge.admin {
+  background: rgba(201, 169, 110, 0.2);
+  color: #c9a96e;
+}
+
+.user-badge.user {
+  background: rgba(99, 179, 237, 0.15);
+  color: #63b3ed;
+}
+
+.btn-logout {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: var(--transition);
+  color: var(--admin-text-secondary);
+}
+
+.btn-logout:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.invitation-limit-info {
+  font-size: 13px;
+  color: var(--admin-text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.limit-reached-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  pointer-events: none;
+  filter: grayscale(0.4);
+}
+
+.limit-warning {
+  font-size: 13px;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  font-weight: 500;
+}
+
 .admin-container {
   max-width: 1200px;
   margin: 0 auto;
