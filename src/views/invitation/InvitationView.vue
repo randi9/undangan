@@ -1,3 +1,240 @@
+<script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount, reactive } from "vue";
+import { useRoute } from "vue-router";
+import { useInvitationStore } from "@/stores/invitation";
+import type { Invitation, LoveStoryItem, Rsvp } from "@/types/invitation";
+import { resolveAssetUrl } from "@/utils/url";
+import CoverOverlay from "@/components/invitation/CoverOverlay.vue";
+
+// --- THEME DATA SYSTEM ---
+interface ThemeConfig {
+  name: string;
+  bg: string;
+  surface: string;
+  primary: string;
+  secondary: string;
+  text: string;
+  textLight: string;
+  fontHeading: string;
+  fontBody: string;
+  overlayGradient: string;
+}
+
+const themes: Record<string, ThemeConfig> = {
+  elegant: {
+    name: 'elegant',
+    bg: '#faf8f4',
+    surface: '#f5efe6',
+    primary: '#8b6f4e',
+    secondary: '#c9a96e',
+    text: '#3d3425',
+    textLight: '#7a6e5d',
+    fontHeading: "'Playfair Display', serif",
+    fontBody: "'Inter', sans-serif",
+    overlayGradient: 'linear-gradient(180deg, rgba(44,36,23,0.6) 0%, rgba(44,36,23,0.8) 100%)',
+  },
+  floral: {
+    name: 'floral',
+    bg: '#fdfbf7',
+    surface: '#f4f6e9',
+    primary: '#4a5d4e',
+    secondary: '#8a9a5b',
+    text: '#3d4a40',
+    textLight: '#6b7a6e',
+    fontHeading: "'Great Vibes', cursive",
+    fontBody: "'Inter', sans-serif",
+    overlayGradient: 'linear-gradient(180deg, rgba(74,93,78,0.5) 0%, rgba(74,93,78,0.8) 100%)',
+  },
+  minimalist: {
+    name: 'minimalist',
+    bg: '#ffffff',
+    surface: '#f9f9f9',
+    primary: '#111111',
+    secondary: '#666666',
+    text: '#222222',
+    textLight: '#555555',
+    fontHeading: "'Inter', sans-serif",
+    fontBody: "'Inter', sans-serif",
+    overlayGradient: 'linear-gradient(180deg, rgba(17,17,17,0.3) 0%, rgba(17,17,17,0.7) 100%)',
+  }
+};
+
+const route = useRoute();
+const store = useInvitationStore();
+const apiBase = import.meta.env.VITE_API_URL || "";
+
+const loading = ref(true);
+const invitation = ref<Invitation | null>(null);
+const lightboxOpen = ref(false);
+const lightboxIndex = ref(0);
+const copied = ref(false);
+const rsvpSubmitting = ref(false);
+const rsvpMessages = ref<Rsvp[]>([]);
+
+const guestName = ref(route.query.to ? String(route.query.to) : '');
+const isOpened = ref(false);
+const isClosingOverlay = ref(false);
+const isPlaying = ref(false);
+const musicPlayer = ref<HTMLAudioElement>();
+
+// Reactive Theme Selector
+const activeTheme = computed((): ThemeConfig => {
+  const themeKey = invitation.value?.theme || 'elegant';
+  return themes[themeKey] ?? themes['elegant']!;
+});
+
+// Map Theme to CSS Variables for Tailwind to Use
+const themeStyles = computed(() => ({
+  '--theme-bg': activeTheme.value.bg,
+  '--theme-surface': activeTheme.value.surface,
+  '--theme-primary': activeTheme.value.primary,
+  '--theme-secondary': activeTheme.value.secondary,
+  '--theme-text': activeTheme.value.text,
+  '--theme-text-light': activeTheme.value.textLight,
+  '--theme-overlay': activeTheme.value.overlayGradient,
+  '--font-heading': activeTheme.value.fontHeading,
+  '--font-body': activeTheme.value.fontBody,
+}));
+
+function openInvitation() {
+  isClosingOverlay.value = true;
+  setTimeout(() => {
+    isOpened.value = true;
+    if (invitation.value?.music_url && musicPlayer.value) {
+      musicPlayer.value.play().then(() => {
+        isPlaying.value = true;
+      }).catch(e => console.error("Audio blocked by browser:", e));
+    }
+  }, 1000);
+}
+
+function toggleMusic() {
+  if (!musicPlayer.value) return;
+  if (isPlaying.value) {
+    musicPlayer.value.pause();
+    isPlaying.value = false;
+  } else {
+    musicPlayer.value.play();
+    isPlaying.value = true;
+  }
+}
+
+const rsvpForm = reactive({
+  guest_name: "",
+  attendance: "hadir" as "hadir" | "tidak_hadir",
+  guest_count: 1,
+  message: "",
+});
+
+const countdown = reactive({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+let countdownTimer: ReturnType<typeof setInterval>;
+
+const loveStory = computed<LoveStoryItem[]>(() => {
+  if (!invitation.value?.love_story) return [];
+  try {
+    const parsed = typeof invitation.value.love_story === "string" 
+      ? JSON.parse(invitation.value.love_story) 
+      : invitation.value.love_story;
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+});
+
+const formattedDate = computed(() => {
+  const dateStr = invitation.value?.akad_date || invitation.value?.resepsi_date;
+  if (!dateStr) return "";
+  return formatDateLong(dateStr);
+});
+
+function formatDateLong(dateStr: string) {
+  if (!dateStr) return "";
+  return new Date(dateStr).toLocaleDateString("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function openLightbox(index: number) {
+  lightboxIndex.value = index;
+  lightboxOpen.value = true;
+}
+
+function copyAccount() {
+  if (!invitation.value?.bank_account) return;
+  navigator.clipboard.writeText(invitation.value.bank_account);
+  copied.value = true;
+  setTimeout(() => {
+    copied.value = false;
+  }, 2000);
+}
+
+const currentPhotoUrl = computed(() => {
+  if (!invitation.value?.photos || invitation.value.photos.length === 0) return "";
+  const photo = invitation.value.photos[lightboxIndex.value];
+  return photo ? resolveAssetUrl(photo.url, apiBase) : "";
+});
+
+function updateCountdown() {
+  const dateStr = invitation.value?.akad_date || invitation.value?.resepsi_date;
+  if (!dateStr) return;
+
+  const target = new Date(dateStr).getTime();
+  const now = Date.now();
+  const diff = Math.max(0, target - now);
+
+  countdown.days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  countdown.hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  countdown.minutes = Math.floor((diff / (1000 * 60)) % 60);
+  countdown.seconds = Math.floor((diff / 1000) % 60);
+}
+
+async function submitRsvp() {
+  if (!rsvpForm.guest_name || !rsvpForm.attendance) return;
+  rsvpSubmitting.value = true;
+
+  try {
+    const res = await fetch(`${apiBase}/api/rsvp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        invitation_id: invitation.value?.id,
+        ...rsvpForm,
+      }),
+    });
+    if (res.ok) {
+      const newRsvp = await res.json();
+      rsvpMessages.value.unshift(newRsvp);
+      rsvpForm.guest_name = "";
+      rsvpForm.message = "";
+      rsvpForm.guest_count = 1;
+    }
+  } catch {
+  } finally {
+    rsvpSubmitting.value = false;
+  }
+}
+
+onMounted(async () => {
+  const slug = (route.meta.subdomain as string) || (route.params.slug as string);
+  const data = await store.fetchInvitationBySlug(slug);
+  invitation.value = data;
+  loading.value = false;
+
+  if (data) {
+    rsvpMessages.value = data.rsvps || [];
+    updateCountdown();
+    countdownTimer = setInterval(updateCountdown, 1000);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (countdownTimer) clearInterval(countdownTimer);
+});
+</script>
+
 <template>
   <div v-if="loading" class="min-h-screen flex items-center justify-center bg-gray-50">
     <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-amber-700"></div>
@@ -352,240 +589,3 @@
     </button>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, reactive } from "vue";
-import { useRoute } from "vue-router";
-import { useInvitationStore } from "@/stores/invitation";
-import type { Invitation, LoveStoryItem, Rsvp } from "@/types/invitation";
-import { resolveAssetUrl } from "@/utils/url";
-import CoverOverlay from "@/components/invitation/CoverOverlay.vue";
-
-// --- THEME DATA SYSTEM ---
-interface ThemeConfig {
-  name: string;
-  bg: string;
-  surface: string;
-  primary: string;
-  secondary: string;
-  text: string;
-  textLight: string;
-  fontHeading: string;
-  fontBody: string;
-  overlayGradient: string;
-}
-
-const themes: Record<string, ThemeConfig> = {
-  elegant: {
-    name: 'elegant',
-    bg: '#faf8f4',
-    surface: '#f5efe6',
-    primary: '#8b6f4e',
-    secondary: '#c9a96e',
-    text: '#3d3425',
-    textLight: '#7a6e5d',
-    fontHeading: "'Playfair Display', serif",
-    fontBody: "'Inter', sans-serif",
-    overlayGradient: 'linear-gradient(180deg, rgba(44,36,23,0.6) 0%, rgba(44,36,23,0.8) 100%)',
-  },
-  floral: {
-    name: 'floral',
-    bg: '#fdfbf7',
-    surface: '#f4f6e9',
-    primary: '#4a5d4e',
-    secondary: '#8a9a5b',
-    text: '#3d4a40',
-    textLight: '#6b7a6e',
-    fontHeading: "'Great Vibes', cursive",
-    fontBody: "'Inter', sans-serif",
-    overlayGradient: 'linear-gradient(180deg, rgba(74,93,78,0.5) 0%, rgba(74,93,78,0.8) 100%)',
-  },
-  minimalist: {
-    name: 'minimalist',
-    bg: '#ffffff',
-    surface: '#f9f9f9',
-    primary: '#111111',
-    secondary: '#666666',
-    text: '#222222',
-    textLight: '#555555',
-    fontHeading: "'Inter', sans-serif",
-    fontBody: "'Inter', sans-serif",
-    overlayGradient: 'linear-gradient(180deg, rgba(17,17,17,0.3) 0%, rgba(17,17,17,0.7) 100%)',
-  }
-};
-
-const route = useRoute();
-const store = useInvitationStore();
-const apiBase = import.meta.env.VITE_API_URL || "";
-
-const loading = ref(true);
-const invitation = ref<Invitation | null>(null);
-const lightboxOpen = ref(false);
-const lightboxIndex = ref(0);
-const copied = ref(false);
-const rsvpSubmitting = ref(false);
-const rsvpMessages = ref<Rsvp[]>([]);
-
-const guestName = ref(route.query.to ? String(route.query.to) : '');
-const isOpened = ref(false);
-const isClosingOverlay = ref(false);
-const isPlaying = ref(false);
-const musicPlayer = ref<HTMLAudioElement>();
-
-// Reactive Theme Selector
-const activeTheme = computed(() => {
-  const themeKey = invitation.value?.theme || 'elegant';
-  return themes[themeKey] || themes['elegant'];
-});
-
-// Map Theme to CSS Variables for Tailwind to Use
-const themeStyles = computed(() => ({
-  '--theme-bg': activeTheme.value.bg,
-  '--theme-surface': activeTheme.value.surface,
-  '--theme-primary': activeTheme.value.primary,
-  '--theme-secondary': activeTheme.value.secondary,
-  '--theme-text': activeTheme.value.text,
-  '--theme-text-light': activeTheme.value.textLight,
-  '--theme-overlay': activeTheme.value.overlayGradient,
-  '--font-heading': activeTheme.value.fontHeading,
-  '--font-body': activeTheme.value.fontBody,
-}));
-
-function openInvitation() {
-  isClosingOverlay.value = true;
-  setTimeout(() => {
-    isOpened.value = true;
-    if (invitation.value?.music_url && musicPlayer.value) {
-      musicPlayer.value.play().then(() => {
-        isPlaying.value = true;
-      }).catch(e => console.error("Audio blocked by browser:", e));
-    }
-  }, 1000);
-}
-
-function toggleMusic() {
-  if (!musicPlayer.value) return;
-  if (isPlaying.value) {
-    musicPlayer.value.pause();
-    isPlaying.value = false;
-  } else {
-    musicPlayer.value.play();
-    isPlaying.value = true;
-  }
-}
-
-const rsvpForm = reactive({
-  guest_name: "",
-  attendance: "hadir" as "hadir" | "tidak_hadir",
-  guest_count: 1,
-  message: "",
-});
-
-const countdown = reactive({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-let countdownTimer: ReturnType<typeof setInterval>;
-
-const loveStory = computed<LoveStoryItem[]>(() => {
-  if (!invitation.value?.love_story) return [];
-  try {
-    const parsed = typeof invitation.value.love_story === "string" 
-      ? JSON.parse(invitation.value.love_story) 
-      : invitation.value.love_story;
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-});
-
-const formattedDate = computed(() => {
-  const dateStr = invitation.value?.akad_date || invitation.value?.resepsi_date;
-  if (!dateStr) return "";
-  return formatDateLong(dateStr);
-});
-
-function formatDateLong(dateStr: string) {
-  if (!dateStr) return "";
-  return new Date(dateStr).toLocaleDateString("id-ID", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-function openLightbox(index: number) {
-  lightboxIndex.value = index;
-  lightboxOpen.value = true;
-}
-
-function copyAccount() {
-  if (!invitation.value?.bank_account) return;
-  navigator.clipboard.writeText(invitation.value.bank_account);
-  copied.value = true;
-  setTimeout(() => {
-    copied.value = false;
-  }, 2000);
-}
-
-const currentPhotoUrl = computed(() => {
-  if (!invitation.value?.photos || invitation.value.photos.length === 0) return "";
-  const photo = invitation.value.photos[lightboxIndex.value];
-  return photo ? resolveAssetUrl(photo.url, apiBase) : "";
-});
-
-function updateCountdown() {
-  const dateStr = invitation.value?.akad_date || invitation.value?.resepsi_date;
-  if (!dateStr) return;
-
-  const target = new Date(dateStr).getTime();
-  const now = Date.now();
-  const diff = Math.max(0, target - now);
-
-  countdown.days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  countdown.hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  countdown.minutes = Math.floor((diff / (1000 * 60)) % 60);
-  countdown.seconds = Math.floor((diff / 1000) % 60);
-}
-
-async function submitRsvp() {
-  if (!rsvpForm.guest_name || !rsvpForm.attendance) return;
-  rsvpSubmitting.value = true;
-
-  try {
-    const res = await fetch(`${apiBase}/api/rsvp`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        invitation_id: invitation.value?.id,
-        ...rsvpForm,
-      }),
-    });
-    if (res.ok) {
-      const newRsvp = await res.json();
-      rsvpMessages.value.unshift(newRsvp);
-      rsvpForm.guest_name = "";
-      rsvpForm.message = "";
-      rsvpForm.guest_count = 1;
-    }
-  } catch {
-  } finally {
-    rsvpSubmitting.value = false;
-  }
-}
-
-onMounted(async () => {
-  const slug = (route.meta.subdomain as string) || (route.params.slug as string);
-  const data = await store.fetchInvitationBySlug(slug);
-  invitation.value = data;
-  loading.value = false;
-
-  if (data) {
-    rsvpMessages.value = data.rsvps || [];
-    updateCountdown();
-    countdownTimer = setInterval(updateCountdown, 1000);
-  }
-});
-
-onBeforeUnmount(() => {
-  if (countdownTimer) clearInterval(countdownTimer);
-});
-</script>
