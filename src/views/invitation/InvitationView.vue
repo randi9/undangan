@@ -236,6 +236,29 @@ async function submitRsvp() {
 
 onMounted(async () => {
   const slug = (route.meta.subdomain as string) || (route.params.slug as string);
+  
+  // -- LIVE PREVIEW INTERCEPT --
+  if (slug === 'preview') {
+    loading.value = true;
+    window.addEventListener('message', (event) => {
+      if (event.data?.type === 'LIVE_PREVIEW') {
+        invitation.value = event.data.data;
+        if (invitation.value) {
+          rsvpMessages.value = invitation.value.rsvps || [];
+          updateCountdown();
+          if (countdownTimer) clearInterval(countdownTimer);
+          countdownTimer = setInterval(updateCountdown, 1000);
+        }
+        loading.value = false;
+      }
+    });
+    // Let parent know iframe is ready to receive data
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'PREVIEW_READY' }, '*');
+    }
+    return;
+  }
+
   const data = await store.fetchInvitationBySlug(slug);
   invitation.value = data;
   loading.value = false;
