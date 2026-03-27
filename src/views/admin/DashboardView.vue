@@ -22,6 +22,12 @@
           <span class="material-symbols-rounded">group</span>
           Kelola User
         </router-link>
+        
+        <!-- Mobile Only Logout -->
+        <button class="sidebar-link mobile-only" @click="handleLogout" style="background:none; border:none; cursor:pointer; color:inherit; font:inherit;">
+          <span class="material-symbols-rounded">logout</span>
+          Logout
+        </button>
       </nav>
 
       <div class="sidebar-footer" v-if="authStore.user">

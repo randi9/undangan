@@ -1123,6 +1123,21 @@ textarea.form-input {
   .search-bar {
     max-width: 100%;
   }
+
+  /* Visibility Utilities */
+  .mobile-only {
+    display: flex !important;
+  }
+  
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
 }
 
 /* Base utility for forms */
