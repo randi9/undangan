@@ -15,32 +15,61 @@
       </nav>
     </header>
 
-    <div class="simple-container">
-      <h1 class="admin-page-title">
-        ✨ Buat Undangan Baru
-        <span
-          class="badge"
-          style="
-            background: var(--admin-primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            vertical-align: middle;
-            margin-left: 12px;
-            text-transform: capitalize;
-          "
-          >Tema: {{ form.theme }}</span
-        >
-      </h1>
-      <p class="admin-page-subtitle">
-        Isi informasi di bawah untuk membuat undangan pernikahan
-      </p>
+    <div class="editor-container">
+      <div class="editor-layout">
+        <!-- Area Kiri: Form Isian -->
+        <div class="editor-form-area">
+          <h1 class="admin-page-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:sparkles" style="color: var(--admin-primary);" /> Buat Undangan Baru</span>
+            <button 
+              class="btn btn-outline btn-sm mobile-only" 
+              @click="showMobilePreview = true"
+              style="border-radius: 20px; font-weight: 600;"
+            >
+              👀 Preview
+            </button>
+          </h1>
+          <p class="admin-page-subtitle">
+            Isi informasi di bawah untuk membuat undangan pernikahan
+          </p>
 
-      <form @submit.prevent="handleSubmit">
-        <!-- Slug -->
-        <div class="form-section">
-          <h3 class="form-section-title">🔗 URL Undangan</h3>
-          <p class="form-section-subtitle">Slug unik untuk alamat undangan</p>
+          <form @submit.prevent="handleSubmit">
+            <!-- Theme Selector -->
+            <div class="form-section">
+              <h3 class="form-section-title"><Icon icon="lucide:palette" style="color: var(--admin-primary);" /> Tema Undangan</h3>
+              <p class="form-section-subtitle">Tema saat ini: <strong style="text-transform: capitalize;">{{ form.theme }}</strong>. Klik untuk mengganti.</p>
+              <div class="edit-theme-grid">
+                <div class="edit-theme-card" :class="{ active: form.theme === 'elegant' }" @click="form.theme = 'elegant'">
+                  <div class="edit-theme-preview" style="background: #2c2417; color: #fff;">
+                    <div style="font-size: 8px; letter-spacing: 3px; color: #c9a96e; text-transform: uppercase;">The Wedding Of</div>
+                    <div style="font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;">Romeo & Juliet</div>
+                  </div>
+                  <div class="edit-theme-label">Elegant Gold</div>
+                  <div v-if="form.theme === 'elegant'" class="edit-theme-active-badge">✓ Aktif</div>
+                </div>
+                <div class="edit-theme-card" :class="{ active: form.theme === 'floral' }" @click="form.theme = 'floral'">
+                  <div class="edit-theme-preview" style="background: #4a5d4e; color: #fff;">
+                    <div style="font-size: 8px; letter-spacing: 3px; color: #e6e0d4; text-transform: uppercase;">The Wedding</div>
+                    <div style="font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; margin-top: 4px;">Romeo & Juliet</div>
+                  </div>
+                  <div class="edit-theme-label">Botanical Floral</div>
+                  <div v-if="form.theme === 'floral'" class="edit-theme-active-badge">✓ Aktif</div>
+                </div>
+                <div class="edit-theme-card" :class="{ active: form.theme === 'minimalist' }" @click="form.theme = 'minimalist'">
+                  <div class="edit-theme-preview" style="background: #f9f9f9; color: #111; border: 1px solid #eee;">
+                    <div style="font-size: 8px; letter-spacing: 5px; color: #666; text-transform: uppercase;">Wedding</div>
+                    <div style="font-family: 'Inter', sans-serif; font-weight: 300; font-size: 22px; margin-top: 4px; letter-spacing: -1px;">R & J</div>
+                  </div>
+                  <div class="edit-theme-label">Clean Minimalist</div>
+                  <div v-if="form.theme === 'minimalist'" class="edit-theme-active-badge">✓ Aktif</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slug -->
+            <div class="form-section">
+              <h3 class="form-section-title"><Icon icon="lucide:link" style="color: var(--admin-primary);" /> URL Undangan</h3>
+              <p class="form-section-subtitle">Slug unik untuk alamat undangan</p>
           <div class="form-group">
             <label class="form-label">Slug (URL)</label>
             <input
@@ -62,7 +91,7 @@
 
         <!-- Couple Info -->
         <div class="form-section">
-          <h3 class="form-section-title">💑 Informasi Pasangan</h3>
+          <h3 class="form-section-title"><Icon icon="lucide:users" style="color: var(--admin-primary);" /> Informasi Pasangan</h3>
           <p class="form-section-subtitle">Data mempelai pria dan wanita</p>
 
           <div class="split-grid">
@@ -85,7 +114,7 @@
                   alt="Foto mempelai pria"
                 />
                 <div v-else class="upload-placeholder">
-                  <span class="icon">👤</span>
+                  <Icon icon="lucide:user" style="font-size: 32px; color: var(--admin-text-secondary); margin-bottom: 8px;" />
                   Upload Foto
                 </div>
               </div>
@@ -159,7 +188,7 @@
                   alt="Foto mempelai wanita"
                 />
                 <div v-else class="upload-placeholder">
-                  <span class="icon">👤</span>
+                  <Icon icon="lucide:user" style="font-size: 32px; color: var(--admin-text-secondary); margin-bottom: 8px;" />
                   Upload Foto
                 </div>
               </div>
@@ -218,7 +247,7 @@
 
         <!-- Cover Photo -->
         <div class="form-section">
-          <h3 class="form-section-title">🖼️ Foto Sampul</h3>
+          <h3 class="form-section-title"><Icon icon="lucide:image" style="color: var(--admin-primary);" /> Foto Sampul</h3>
           <p class="form-section-subtitle">
             Foto utama yang ditampilkan di halaman depan undangan
           </p>
@@ -247,7 +276,7 @@
               </p>
             </div>
             <div v-else>
-              <div class="upload-icon">📷</div>
+              <Icon icon="lucide:camera" class="upload-icon" style="color: var(--admin-text-secondary);" />
               <div class="upload-text">Klik atau drag foto ke sini</div>
               <div class="upload-hint">JPG, PNG, WebP • Max 10MB</div>
             </div>
@@ -263,7 +292,7 @@
 
         <!-- Event Details -->
         <div class="form-section">
-          <h3 class="form-section-title">📅 Detail Acara</h3>
+          <h3 class="form-section-title"><Icon icon="lucide:calendar-days" style="color: var(--admin-primary);" /> Detail Acara</h3>
           <p class="form-section-subtitle">Informasi waktu dan tempat acara</p>
 
           <div class="split-grid">
@@ -279,7 +308,7 @@
               <h4
                 style="font-size: 15px; font-weight: 600; margin-bottom: 16px"
               >
-                💍 Akad Nikah
+                <Icon icon="lucide:heart-handshake" style="vertical-align: -4px; margin-right: 6px; color: var(--admin-primary);" /> Akad Nikah
               </h4>
               <div style="display: flex; flex-direction: column; gap: 12px">
                 <div class="form-group">
@@ -338,7 +367,7 @@
               <h4
                 style="font-size: 15px; font-weight: 600; margin-bottom: 16px"
               >
-                🎉 Resepsi
+                <Icon icon="lucide:party-popper" style="vertical-align: -4px; margin-right: 6px; color: var(--admin-primary);" /> Resepsi
               </h4>
               <div style="display: flex; flex-direction: column; gap: 12px">
                 <div class="form-group">
@@ -389,7 +418,7 @@
 
         <!-- Love Story -->
         <div class="form-section">
-          <h3 class="form-section-title">💕 Love Story</h3>
+          <h3 class="form-section-title"><Icon icon="lucide:heart" style="color: var(--admin-primary);" /> Love Story</h3>
           <p class="form-section-subtitle">
             Ceritakan perjalanan cinta kalian (opsional)
           </p>
@@ -436,7 +465,7 @@
 
         <!-- Gallery -->
         <div class="form-section">
-          <h3 class="form-section-title">📸 Galeri Foto</h3>
+          <h3 class="form-section-title"><Icon icon="lucide:images" style="color: var(--admin-primary);" /> Galeri Foto</h3>
           <p class="form-section-subtitle">
             Upload foto-foto prewedding atau momen spesial
           </p>
@@ -449,7 +478,7 @@
             @dragleave="galleryDragover = false"
             @drop.prevent="handleGalleryDrop"
           >
-            <div class="upload-icon">🖼️</div>
+            <Icon icon="lucide:image-plus" class="upload-icon" style="color: var(--admin-text-secondary);" />
             <div class="upload-text">Klik atau drag foto ke sini</div>
             <div class="upload-hint">
               Bisa upload banyak foto sekaligus • JPG, PNG, WebP • Max 10MB per
@@ -485,7 +514,7 @@
 
         <!-- Quote & Extras -->
         <div class="form-section">
-          <h3 class="form-section-title">✍️ Quote & Tambahan</h3>
+          <h3 class="form-section-title"><Icon icon="lucide:quote" style="color: var(--admin-primary);" /> Quote & Tambahan</h3>
           <p class="form-section-subtitle">
             Kutipan dan informasi tambahan (opsional)
           </p>
@@ -528,20 +557,20 @@
 
         <!-- Background Music -->
         <div class="form-section">
-          <h3 class="form-section-title">🎵 Musik Latar</h3>
+          <h3 class="form-section-title"><Icon icon="lucide:music" style="color: var(--admin-primary);" /> Musik Latar</h3>
           <p class="form-section-subtitle">
             Pilih lagu yang akan berputar otomatis saat undangan dibuka
           </p>
           <div class="form-group">
             <div class="single-photo-upload" style="aspect-ratio: auto; height: auto; padding: 24px;" @click="musicFileInput?.click()">
               <div v-if="form.music_url" style="width: 100%; text-align: center;">
-                <div style="font-size: 32px; margin-bottom: 8px;">🎧</div>
+                <Icon icon="lucide:headphones" style="font-size: 32px; margin-bottom: 8px; color: var(--admin-primary);" />
                 <div style="font-weight: 500; font-size: 14px; margin-bottom: 12px; word-break: break-all; color: var(--admin-primary)">Lagu Terpilih</div>
                 <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 36px; margin-bottom: 12px;"></audio>
                 <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic">Hapus Lagu</button>
               </div>
               <div v-else class="upload-placeholder">
-                <span class="icon">🎵</span>
+                <Icon icon="lucide:music-4" style="font-size: 32px; color: var(--admin-text-secondary); margin-bottom: 8px;" />
                 Upload File Audio (.mp3, .m4a, .wav)
               </div>
             </div>
@@ -575,10 +604,49 @@
               class="loading-spinner"
               style="margin-right: 8px"
             ></span>
-            {{ submitting ? "Menyimpan..." : "✨ Buat Undangan" }}
+            <span v-if="!submitting" style="margin-right: 8px; vertical-align: -3px;"><Icon icon="lucide:sparkles" /></span>
+            {{ submitting ? "Menyimpan..." : "Buat Undangan" }}
           </button>
         </div>
-      </form>
+          </form>
+        </div>
+
+        <!-- Area Kanan: Live Preview (Desktop) -->
+        <div class="editor-preview-area">
+          <iframe 
+            ref="previewIframe" 
+            class="editor-preview-iframe"
+            :src="`/invitation/preview`"
+            title="Live Preview"
+          ></iframe>
+        </div>
+      </div>
+
+      <!-- Tombol FAB Mobile Preview -->
+      <button class="mobile-preview-fab btn btn-primary" @click="showMobilePreview = true">
+        <span style="font-size: 20px;">👀</span> Lihat Preview
+      </button>
+
+      <!-- Modal Fullscreen Mobile Preview -->
+      <div v-if="showMobilePreview" class="mobile-preview-modal block">
+        <div class="mobile-preview-header">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <span class="material-symbols-rounded" style="color: var(--admin-primary); font-size: 20px;">visibility</span>
+            Live Preview
+          </span>
+          <button class="btn btn-outline btn-sm" @click="showMobilePreview = false" style="border: none; padding: 4px;">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+        <div style="flex: 1; height: calc(100vh - 60px);">
+          <iframe 
+            ref="mobilePreviewIframe" 
+            class="editor-preview-iframe"
+            :src="`/invitation/preview`"
+            title="Live Preview Mobile"
+          ></iframe>
+        </div>
+      </div>
     </div>
 
     <!-- Toast -->
@@ -589,6 +657,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { ref, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
@@ -609,6 +678,11 @@ const groomPhotoInput = ref<HTMLInputElement>();
 const bridePhotoInput = ref<HTMLInputElement>();
 const coverPhotoInput = ref<HTMLInputElement>();
 const musicFileInput = ref<HTMLInputElement>();
+
+// Preview Refs & State
+const previewIframe = ref<HTMLIFrameElement>();
+const mobilePreviewIframe = ref<HTMLIFrameElement>();
+const showMobilePreview = ref(false);
 
 const form = reactive({
   slug: "",
@@ -755,6 +829,51 @@ function showToast(type: string, message: string) {
     toast.value = null;
   }, 3000);
 }
+
+// Watch form changes to sync with Preview Iframe
+import { watch, onMounted } from "vue";
+watch(
+  form,
+  (newVal) => {
+    const payload = {
+      type: "LIVE_PREVIEW",
+      data: {
+        ...newVal,
+        love_story: newVal.love_story.filter((s) => s.title || s.date),
+      }
+    };
+    const cleanPayload = JSON.parse(JSON.stringify(payload));
+    if (previewIframe.value?.contentWindow) {
+      previewIframe.value.contentWindow.postMessage(cleanPayload, "*");
+    }
+    if (mobilePreviewIframe.value?.contentWindow) {
+      mobilePreviewIframe.value.contentWindow.postMessage(cleanPayload, "*");
+    }
+  },
+  { deep: true }
+);
+
+// Listener for PREVIEW_READY from iframe
+onMounted(() => {
+  window.addEventListener("message", (event) => {
+    if (event.data?.type === "PREVIEW_READY") {
+      const payload = {
+        type: "LIVE_PREVIEW",
+        data: {
+          ...form,
+          love_story: form.love_story.filter((s) => s.title || s.date),
+        }
+      };
+      const cleanPayload = JSON.parse(JSON.stringify(payload));
+      if (previewIframe.value?.contentWindow) {
+        previewIframe.value.contentWindow.postMessage(cleanPayload, "*");
+      }
+      if (mobilePreviewIframe.value?.contentWindow) {
+        mobilePreviewIframe.value.contentWindow.postMessage(cleanPayload, "*");
+      }
+    }
+  });
+});
 
 async function handleSubmit() {
   if (!form.slug || !form.groom_name || !form.bride_name) {
