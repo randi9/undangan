@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, reactive } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, reactive, type Component } from "vue";
 import { useRoute } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import type { Invitation, LoveStoryItem, Rsvp } from "@/types/invitation";
 import { resolveAssetUrl } from "@/utils/url";
 import CoverOverlay from "@/components/invitation/CoverOverlay.vue";
+import HeroElegant from "@/components/invitation/heroes/HeroElegant.vue";
+import HeroFloral from "@/components/invitation/heroes/HeroFloral.vue";
+import HeroMinimalist from "@/components/invitation/heroes/HeroMinimalist.vue";
+
+const heroComponents: Record<string, Component> = {
+  elegant: HeroElegant,
+  floral: HeroFloral,
+  minimalist: HeroMinimalist,
+};
 
 // --- THEME DATA SYSTEM ---
 interface ThemeConfig {
@@ -18,6 +27,7 @@ interface ThemeConfig {
   fontHeading: string;
   fontBody: string;
   overlayGradient: string;
+  coverImage: string;
 }
 
 const themes: Record<string, ThemeConfig> = {
@@ -32,6 +42,7 @@ const themes: Record<string, ThemeConfig> = {
     fontHeading: "'Playfair Display', serif",
     fontBody: "'Inter', sans-serif",
     overlayGradient: 'linear-gradient(180deg, rgba(44,36,23,0.6) 0%, rgba(44,36,23,0.8) 100%)',
+    coverImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80',
   },
   floral: {
     name: 'floral',
@@ -44,6 +55,7 @@ const themes: Record<string, ThemeConfig> = {
     fontHeading: "'Great Vibes', cursive",
     fontBody: "'Inter', sans-serif",
     overlayGradient: 'linear-gradient(180deg, rgba(74,93,78,0.5) 0%, rgba(74,93,78,0.8) 100%)',
+    coverImage: 'https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=1080&q=80',
   },
   minimalist: {
     name: 'minimalist',
@@ -56,6 +68,7 @@ const themes: Record<string, ThemeConfig> = {
     fontHeading: "'Inter', sans-serif",
     fontBody: "'Inter', sans-serif",
     overlayGradient: 'linear-gradient(180deg, rgba(17,17,17,0.3) 0%, rgba(17,17,17,0.7) 100%)',
+    coverImage: 'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=1080&q=80',
   }
 };
 
@@ -82,6 +95,8 @@ const activeTheme = computed((): ThemeConfig => {
   const themeKey = invitation.value?.theme || 'elegant';
   return themes[themeKey] ?? themes['elegant']!;
 });
+
+const activeHero = computed(() => heroComponents[activeTheme.value.name] || HeroElegant);
 
 // Map Theme to CSS Variables for Tailwind to Use
 const themeStyles = computed(() => ({
@@ -259,33 +274,23 @@ onBeforeUnmount(() => {
       :is-closing="isClosingOverlay"
       :font-heading="activeTheme.fontHeading"
       :font-body="activeTheme.fontBody"
+      :cover-image="invitation.cover_photo ? resolveAssetUrl(invitation.cover_photo, apiBase) : activeTheme.coverImage"
       @open="openInvitation"
     />
 
     <!-- MAIN INVITATION CONTENT -->
-    <div v-show="isOpened">
+    <div v-if="isOpened">
       
-      <!-- HERO COVER INSIDE -->
-      <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-        <div class="absolute inset-0 z-0">
-          <img v-if="invitation.cover_photo" :src="resolveAssetUrl(invitation.cover_photo, apiBase)" alt="Cover Background" class="w-full h-full object-cover" />
-          <div v-else class="w-full h-full bg-gray-200"></div>
-          <div class="absolute inset-0" :style="{ background: activeTheme.overlayGradient }"></div>
-        </div>
-        <div class="relative z-10 text-white w-full max-w-2xl mx-auto py-20 fade-in delay-500">
-          <p class="uppercase tracking-[0.4em] text-sm mb-6 text-[var(--theme-secondary)] drop-shadow-md">The Wedding of</p>
-          <h1 class="text-5xl md:text-7xl mb-4" :style="{ fontFamily: activeTheme.fontHeading }">
-            {{ invitation.groom_name }}
-            <span class="block text-3xl text-[var(--theme-secondary)] my-2">&amp;</span>
-            {{ invitation.bride_name }}
-          </h1>
-          <p v-if="formattedDate" class="mt-4 text-sm md:text-base tracking-[0.2em] font-light">{{ formattedDate }}</p>
-          <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/70 animate-bounce">
-            <span class="text-xs uppercase tracking-widest">Scroll</span>
-            <span>↓</span>
-          </div>
-        </div>
-      </section>
+      <!-- HERO COVER INSIDE (Dynamic per theme) -->
+      <component :is="activeHero" :overlay-gradient="activeTheme.overlayGradient">
+        <p class="uppercase tracking-[0.4em] text-sm mb-6 text-[var(--theme-secondary)] drop-shadow-md">The Wedding of</p>
+        <h1 class="text-5xl md:text-7xl mb-4" :style="{ fontFamily: activeTheme.fontHeading }">
+          {{ invitation.groom_name }}
+          <span class="block text-3xl text-[var(--theme-secondary)] my-2">&amp;</span>
+          {{ invitation.bride_name }}
+        </h1>
+        <p v-if="formattedDate" class="mt-4 text-sm md:text-base tracking-[0.2em] font-light">{{ formattedDate }}</p>
+      </component>
 
       <!-- QUOTE -->
       <section v-if="invitation.quote" class="py-20 px-6 text-center bg-[var(--theme-surface)]">
