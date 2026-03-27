@@ -2,6 +2,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0');
 @import "tailwindcss";
 
+/* Invitation transition animations */
+@keyframes invFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@utility animate-fade-in {
+  animation: invFadeIn 1s ease-out both;
+}
+
 /* ===== CSS RESET & VARIABLES ===== */
 :root {
   /* Admin Theme — Stitch Light */
