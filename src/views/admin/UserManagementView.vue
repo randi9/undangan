@@ -16,7 +16,7 @@
     </header>
 
     <div class="simple-container">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+      <div class="section-header" style="margin-bottom: 24px;">
         <div>
           <h1 class="admin-page-title">Kelola User</h1>
           <p class="admin-page-subtitle" style="margin-bottom: 0;">
@@ -406,5 +406,33 @@ onMounted(() => {
   border-radius: 8px;
   font-size: 13px;
   text-align: center;
+}
+
+@media (max-width: 768px) {
+  .users-table th,
+  .users-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  .users-table th {
+    font-size: 11px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .modal-actions .btn {
+    width: 100%;
+  }
+
+  /* Make sure inputs and selects are easier to tap on mobile */
+  .modal-form input,
+  .modal-form select {
+    padding: 12px 14px;
+    font-size: 16px; /* Prevents iOS auto-zoom */
+  }
 }
 </style>
