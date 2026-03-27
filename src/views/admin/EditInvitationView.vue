@@ -46,32 +46,16 @@
           <!-- Theme Selector -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:palette" style="color: var(--admin-primary);" /> Tema Undangan</h3>
-            <p class="form-section-subtitle">Tema saat ini: <strong style="text-transform: capitalize;">{{ form.theme }}</strong>. Klik untuk mengganti.</p>
-            <div class="edit-theme-grid">
-              <div class="edit-theme-card" :class="{ active: form.theme === 'elegant' }" @click="form.theme = 'elegant'">
-                <div class="edit-theme-preview" style="background: #2c2417; color: #fff;">
-                  <div style="font-size: 8px; letter-spacing: 3px; color: #c9a96e; text-transform: uppercase;">The Wedding Of</div>
-                  <div style="font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;">Romeo & Juliet</div>
-                </div>
-                <div class="edit-theme-label">Elegant Gold</div>
-                <div v-if="form.theme === 'elegant'" class="edit-theme-active-badge">✓ Aktif</div>
+            
+            <div class="active-theme-container" style="display: flex; justify-content: space-between; align-items: center; background: var(--admin-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--admin-border);">
+              <div>
+                <div style="font-size: 13px; color: var(--admin-text-secondary); margin-bottom: 4px;">Tema saat ini</div>
+                <strong style="text-transform: capitalize; font-size: 16px;">{{ form.theme }}</strong>
               </div>
-              <div class="edit-theme-card" :class="{ active: form.theme === 'minimalist' }" @click="form.theme = 'minimalist'">
-                <div class="edit-theme-preview" style="background: #ffffff; color: #111; border: 1px solid #eee;">
-                  <div style="font-size: 8px; font-weight: 600; letter-spacing: 2px; color: #666;">THE WEDDING OF</div>
-                  <div style="font-weight: 800; font-size: 18px; letter-spacing: -1px; margin-top: 4px;">ROMEO & JULIET</div>
-                </div>
-                <div class="edit-theme-label">Modern Minimalist</div>
-                <div v-if="form.theme === 'minimalist'" class="edit-theme-active-badge">✓ Aktif</div>
-              </div>
-              <div class="edit-theme-card" :class="{ active: form.theme === 'floral' }" @click="form.theme = 'floral'">
-                <div class="edit-theme-preview" style="background: #fdfbf7; color: #4a5d4e;">
-                  <div style="font-size: 8px; font-style: italic; color: #8a9a5b;">The Wedding Of</div>
-                  <div style="font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; margin-top: 4px;">Romeo & Juliet</div>
-                </div>
-                <div class="edit-theme-label">Romantic Floral</div>
-                <div v-if="form.theme === 'floral'" class="edit-theme-active-badge">✓ Aktif</div>
-              </div>
+              <button type="button" class="btn btn-outline" @click="showThemeModal = true">
+                <Icon icon="lucide:arrow-left-right" style="font-size: 16px;" />
+                Ubah Tema
+              </button>
             </div>
           </div>
           <!-- Slug -->
@@ -589,7 +573,46 @@
             ></iframe>
           </div>
         </div>
-      </template>
+        <!-- Modal Pilih Tema -->
+    <div v-if="showThemeModal" class="modal-overlay" @click.self="showThemeModal = false">
+      <div class="modal-content" style="max-width: 800px; width: 90%;">
+        <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:palette" style="color: var(--admin-primary)" /> Pilih Tema Undangan</span>
+          <button type="button" class="btn btn-outline btn-sm" @click="showThemeModal = false" style="border: none; padding: 4px;">
+            <Icon icon="lucide:x" style="font-size: 20px;" />
+          </button>
+        </div>
+        
+        <div class="edit-theme-grid">
+          <div class="edit-theme-card" :class="{ active: form.theme === 'elegant' }" @click="selectTheme('elegant')">
+            <div class="edit-theme-preview" style="background: #2c2417; color: #fff;">
+              <div style="font-size: 8px; letter-spacing: 3px; color: #c9a96e; text-transform: uppercase;">The Wedding Of</div>
+              <div style="font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;">Romeo & Juliet</div>
+            </div>
+            <div class="edit-theme-label">Elegant Gold</div>
+            <div v-if="form.theme === 'elegant'" class="edit-theme-active-badge">Aktif</div>
+          </div>
+          <div class="edit-theme-card" :class="{ active: form.theme === 'floral' }" @click="selectTheme('floral')">
+            <div class="edit-theme-preview" style="background: #4a5d4e; color: #fff;">
+              <div style="font-size: 8px; letter-spacing: 3px; color: #e6e0d4; text-transform: uppercase;">The Wedding</div>
+              <div style="font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; margin-top: 4px;">Romeo & Juliet</div>
+            </div>
+            <div class="edit-theme-label">Botanical Floral</div>
+            <div v-if="form.theme === 'floral'" class="edit-theme-active-badge">Aktif</div>
+          </div>
+          <div class="edit-theme-card" :class="{ active: form.theme === 'minimalist' }" @click="selectTheme('minimalist')">
+            <div class="edit-theme-preview" style="background: #f9f9f9; color: #111; border: 1px solid #eee;">
+              <div style="font-size: 8px; letter-spacing: 5px; color: #666; text-transform: uppercase;">Wedding</div>
+              <div style="font-family: 'Inter', sans-serif; font-weight: 300; font-size: 22px; margin-top: 4px; letter-spacing: -1px;">R & J</div>
+            </div>
+            <div class="edit-theme-label">Clean Minimalist</div>
+            <div v-if="form.theme === 'minimalist'" class="edit-theme-active-badge">Aktif</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </template>
     </div>
 
     <!-- Toast -->
@@ -611,6 +634,13 @@ const route = useRoute();
 const router = useRouter();
 const store = useInvitationStore();
 const apiBase = import.meta.env.VITE_API_URL || "";
+
+const showThemeModal = ref(false);
+
+function selectTheme(themeId: "elegant" | "minimalist" | "floral") {
+  if (form) form.theme = themeId;
+  showThemeModal.value = false;
+}
 
 const loading = ref(true);
 const submitting = ref(false);

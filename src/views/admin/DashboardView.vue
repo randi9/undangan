@@ -14,7 +14,7 @@
           <span class="material-symbols-rounded">dashboard</span>
           Dashboard
         </router-link>
-        <router-link v-if="!hasReachedLimit" to="/select-template" class="sidebar-link">
+        <router-link v-if="!hasReachedLimit" to="/create" class="sidebar-link">
           <span class="material-symbols-rounded">add_circle</span>
           Buat Undangan
         </router-link>
@@ -60,7 +60,7 @@
             <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
             {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
           </div>
-          <router-link v-if="!hasReachedLimit" to="/select-template" class="btn btn-primary">
+          <router-link v-if="!hasReachedLimit" to="/create" class="btn btn-primary">
             <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
             Buat Undangan Baru
           </router-link>
@@ -128,7 +128,7 @@
           <div class="empty-text">
             Mulai buat undangan pernikahan pertama Anda dengan klik tombol di bawah
           </div>
-          <router-link v-if="!hasReachedLimit" to="/select-template" class="btn btn-primary btn-lg">
+          <router-link v-if="!hasReachedLimit" to="/create" class="btn btn-primary btn-lg">
             <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
             Buat Undangan Pertama
           </router-link>
