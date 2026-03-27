@@ -1030,19 +1030,20 @@ textarea.form-input {
     height: 100%;
     padding: 0;
     width: 100%;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
-    gap: 0;
+    gap: 4px;
   }
   
   .sidebar-link {
     flex-direction: column;
-    padding: 6px;
+    padding: 6px 2px;
     font-size: 11px;
     gap: 4px;
-    flex: 1;
+    flex: 1 1 0px;
     justify-content: center;
     text-align: center;
+    min-width: 0;
   }
   
   .sidebar-link .material-symbols-rounded {

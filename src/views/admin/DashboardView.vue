@@ -24,7 +24,7 @@
         </router-link>
         
         <!-- Mobile Only Logout -->
-        <button class="sidebar-link mobile-only" @click="handleLogout" style="background:none; border:none; cursor:pointer; color:inherit; font:inherit;">
+        <button class="sidebar-link mobile-only" @click="handleLogout" style="background: transparent; border: none; cursor: pointer;">
           <span class="material-symbols-rounded">logout</span>
           Logout
         </button>
