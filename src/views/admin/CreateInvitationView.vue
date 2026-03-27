@@ -1,19 +1,21 @@
 <template>
-  <div class="admin-layout">
-    <header class="admin-header">
-      <router-link to="/" class="admin-logo">
-        <div class="logo-icon">💒</div>
-        <span
-          >Undangan<span style="color: var(--admin-primary)">Gen</span></span
-        >
+  <div class="admin-page-simple">
+    <header class="simple-topbar">
+      <router-link to="/" class="simple-topbar-brand">
+        <div class="sidebar-brand-icon" style="width:32px;height:32px;border-radius:10px">
+          <span class="material-symbols-rounded" style="font-size:18px">church</span>
+        </div>
+        <span class="sidebar-brand-text" style="font-size:17px">Undangan<span>Gen</span></span>
       </router-link>
-      <nav class="admin-nav">
-        <router-link to="/">Dashboard</router-link>
-        <router-link to="/create">+ Buat Undangan</router-link>
+      <nav class="simple-topbar-nav">
+        <router-link to="/" class="btn btn-outline btn-sm">
+          <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">arrow_back</span>
+          Kembali ke Dashboard
+        </router-link>
       </nav>
     </header>
 
-    <div class="admin-container">
+    <div class="simple-container">
       <h1 class="admin-page-title">
         ✨ Buat Undangan Baru
         <span
@@ -63,7 +65,7 @@
           <h3 class="form-section-title">💑 Informasi Pasangan</h3>
           <p class="form-section-subtitle">Data mempelai pria dan wanita</p>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px">
+          <div class="split-grid">
             <!-- Groom -->
             <div>
               <h4
@@ -264,7 +266,7 @@
           <h3 class="form-section-title">📅 Detail Acara</h3>
           <p class="form-section-subtitle">Informasi waktu dan tempat acara</p>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px">
+          <div class="split-grid">
             <!-- Akad -->
             <div
               style="

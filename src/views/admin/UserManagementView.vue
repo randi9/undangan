@@ -1,22 +1,21 @@
 <template>
-  <div class="admin-layout">
-    <header class="admin-header">
-      <router-link to="/" class="admin-logo">
-        <div class="logo-icon">💒</div>
-        <span>Undangan<span style="color: var(--admin-primary)">Gen</span></span>
+  <div class="admin-page-simple">
+    <header class="simple-topbar">
+      <router-link to="/" class="simple-topbar-brand">
+        <div class="sidebar-brand-icon" style="width:32px;height:32px;border-radius:10px">
+          <span class="material-symbols-rounded" style="font-size:18px">church</span>
+        </div>
+        <span class="sidebar-brand-text" style="font-size:17px">Undangan<span>Gen</span></span>
       </router-link>
-      <nav class="admin-nav">
-        <router-link to="/">Dashboard</router-link>
-        <router-link to="/users">👥 User</router-link>
-        <span class="nav-user-info" v-if="authStore.user">
-          <span class="user-badge" :class="authStore.user.role">{{ authStore.user.role }}</span>
-          {{ authStore.user.username }}
-        </span>
-        <button class="btn-logout" @click="handleLogout" title="Logout">🚪</button>
+      <nav class="simple-topbar-nav">
+        <router-link to="/" class="btn btn-outline btn-sm">
+          <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">arrow_back</span>
+          Kembali ke Dashboard
+        </router-link>
       </nav>
     </header>
 
-    <div class="admin-container">
+    <div class="simple-container">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
         <div>
           <h1 class="admin-page-title">Kelola User</h1>
@@ -300,8 +299,8 @@ onMounted(() => {
 .users-table-wrapper {
   overflow-x: auto;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-solid);
 }
 
 .users-table {
@@ -313,7 +312,7 @@ onMounted(() => {
 .users-table td {
   padding: 14px 18px;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--admin-border);
   white-space: nowrap;
 }
 
@@ -322,12 +321,12 @@ onMounted(() => {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.02);
+  color: var(--admin-text-secondary);
+  background: var(--admin-bg);
 }
 
 .users-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--admin-surface-hover);
 }
 
 .user-badge {
@@ -341,13 +340,13 @@ onMounted(() => {
 }
 
 .user-badge.admin {
-  background: rgba(201, 169, 110, 0.2);
-  color: #c9a96e;
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
 }
 
 .user-badge.user {
-  background: rgba(99, 179, 237, 0.15);
-  color: #63b3ed;
+  background: var(--admin-primary-light);
+  color: var(--admin-primary);
 }
 
 .action-btns {
@@ -356,9 +355,9 @@ onMounted(() => {
 }
 
 .error-banner {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #dc2626;
   padding: 16px 20px;
   border-radius: 10px;
   text-align: center;
@@ -379,35 +378,30 @@ onMounted(() => {
 .modal-form label {
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--admin-text-secondary);
 }
 
 .modal-form input,
 .modal-form select {
   padding: 10px 14px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-bg);
+  color: var(--admin-text);
   font-size: 14px;
   outline: none;
 }
 
 .modal-form input:focus,
 .modal-form select:focus {
-  border-color: #c9a96e;
-  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.15);
-}
-
-.modal-form select option {
-  background: #1a1a2e;
-  color: #fff;
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px var(--admin-primary-glow);
 }
 
 .login-error {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #dc2626;
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 13px;

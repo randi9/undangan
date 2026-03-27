@@ -1,181 +1,207 @@
 <template>
   <div class="admin-layout">
-    <header class="admin-header">
-      <router-link to="/" class="admin-logo">
-        <div class="logo-icon">💒</div>
-        <span
-          >Undangan<span style="color: var(--admin-primary)">Gen</span></span
-        >
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <router-link to="/" class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+          <span class="material-symbols-rounded">church</span>
+        </div>
+        <div class="sidebar-brand-text">Undangan<span>Gen</span></div>
       </router-link>
-      <nav class="admin-nav">
-        <router-link to="/">Dashboard</router-link>
-        <router-link v-if="!hasReachedLimit" to="/select-template">+ Buat Undangan</router-link>
-        <router-link v-if="authStore.isAdmin" to="/users">👥 User</router-link>
-        <span class="nav-user-info" v-if="authStore.user">
-          <span class="user-badge" :class="authStore.user.role">{{ authStore.user.role }}</span>
-          {{ authStore.user.username }}
-        </span>
-        <button class="btn-logout" @click="handleLogout" title="Logout">🚪</button>
+
+      <nav class="sidebar-nav">
+        <router-link to="/" class="sidebar-link" exact>
+          <span class="material-symbols-rounded">dashboard</span>
+          Dashboard
+        </router-link>
+        <router-link v-if="!hasReachedLimit" to="/select-template" class="sidebar-link">
+          <span class="material-symbols-rounded">add_circle</span>
+          Buat Undangan
+        </router-link>
+        <router-link v-if="authStore.isAdmin" to="/users" class="sidebar-link">
+          <span class="material-symbols-rounded">group</span>
+          Kelola User
+        </router-link>
       </nav>
-    </header>
 
-    <div class="admin-container">
-      <!-- Stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value">{{ invitations.length }}</div>
-          <div class="stat-label">Total Undangan</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">{{ totalPhotos }}</div>
-          <div class="stat-label">Total Foto</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">{{ totalRsvps }}</div>
-          <div class="stat-label">Total RSVP</div>
-        </div>
-      </div>
-
-      <!-- Header & Search -->
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 24px;
-        "
-      >
-        <div>
-          <h1 class="admin-page-title">Daftar Undangan</h1>
-          <p class="admin-page-subtitle" style="margin-bottom: 0">
-            Kelola semua undangan pernikahan yang telah dibuat
-          </p>
-        </div>
-        <router-link v-if="!hasReachedLimit" to="/select-template" class="btn btn-primary btn-lg">
-          ✨ Buat Undangan Baru
-        </router-link>
-        <div v-else-if="hasReachedLimit" class="limit-reached-block">
-          <button class="btn btn-primary btn-lg btn-disabled" disabled>
-            🚫 Buat Undangan Baru
+      <div class="sidebar-footer" v-if="authStore.user">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar">{{ authStore.user.username?.charAt(0).toUpperCase() }}</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">{{ authStore.user.username }}</div>
+            <div class="sidebar-user-role">{{ authStore.user.role }}</div>
+          </div>
+          <button class="sidebar-logout" @click="handleLogout" title="Logout">
+            <span class="material-symbols-rounded" style="font-size:20px">logout</span>
           </button>
-          <div class="limit-warning">
-            ⚠️ Limit tercapai! Anda sudah membuat {{ invitations.length }}/{{ authStore.user?.max_invitations }} undangan.
-          </div>
-        </div>
-        <div v-if="authStore.user && !authStore.isAdmin && !hasReachedLimit" class="invitation-limit-info">
-          📊 {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
         </div>
       </div>
+    </aside>
 
-      <div class="search-bar">
-        <span>🔍</span>
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Cari undangan berdasarkan nama..."
-        />
-      </div>
-
-      <!-- Loading -->
-      <div v-if="store.loading" style="text-align: center; padding: 60px 0">
-        <div class="loading-spinner"></div>
-        <p style="margin-top: 12px; color: var(--admin-text-secondary)">
-          Memuat data...
-        </p>
-      </div>
-
-      <!-- Empty State -->
-      <div
-        v-else-if="filteredInvitations.length === 0 && !searchQuery"
-        class="empty-state"
-      >
-        <div class="empty-icon">💌</div>
-        <div class="empty-title">Belum Ada Undangan</div>
-        <div class="empty-text">
-          Mulai buat undangan pernikahan pertama Anda dengan klik tombol di
-          bawah
-        </div>
-        <router-link v-if="!hasReachedLimit" to="/select-template" class="btn btn-primary btn-lg">
-          ✨ Buat Undangan Pertama
-        </router-link>
-        <div v-else class="limit-warning" style="margin-top: 12px">
-          ⚠️ Limit tercapai! Hubungi admin untuk menambah kuota.
-        </div>
-      </div>
-
-      <!-- Search Empty -->
-      <div
-        v-else-if="filteredInvitations.length === 0 && searchQuery"
-        class="empty-state"
-      >
-        <div class="empty-icon">🔍</div>
-        <div class="empty-title">Tidak Ditemukan</div>
-        <div class="empty-text">
-          Tidak ada undangan yang cocok dengan pencarian "{{ searchQuery }}"
-        </div>
-      </div>
-
-      <!-- Invitation Grid -->
-      <div v-else class="invitation-grid">
-        <div
-          v-for="invitation in filteredInvitations"
-          :key="invitation.id"
-          class="invitation-card"
-        >
-          <img
-            v-if="invitation.cover_photo"
-            :src="resolveAssetUrl(invitation.cover_photo, apiBase)"
-            :alt="invitation.groom_name + ' & ' + invitation.bride_name"
-            class="invitation-card-cover"
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="search-bar">
+          <span class="material-symbols-rounded" style="font-size:20px">search</span>
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Cari undangan berdasarkan nama..."
           />
-          <div
-            v-else
-            class="invitation-card-cover"
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 48px;
-              background: linear-gradient(135deg, #1a1a24, #2a2a3a);
-            "
-          >
-            💒
+        </div>
+        <div class="topbar-actions">
+          <div v-if="authStore.user && !authStore.isAdmin && !hasReachedLimit" class="invitation-limit-info">
+            <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
+            {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
           </div>
+          <router-link v-if="!hasReachedLimit" to="/select-template" class="btn btn-primary">
+            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
+            Buat Undangan Baru
+          </router-link>
+          <div v-else-if="hasReachedLimit" class="limit-reached-block">
+            <button class="btn btn-primary btn-disabled" disabled>
+              <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">block</span>
+              Buat Undangan Baru
+            </button>
+          </div>
+        </div>
+      </header>
 
-          <div class="invitation-card-body">
-            <div class="invitation-card-names">
-              {{ invitation.groom_name }}
-              <span class="heart">❤</span>
-              {{ invitation.bride_name }}
+      <div class="admin-container">
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-body">
+              <div class="stat-label">Total Undangan</div>
+              <div class="stat-value">{{ invitations.length }}</div>
             </div>
-            <div class="invitation-card-slug">
-              🔗 {{ getInvitationDisplayUrl(invitation.slug) }}
+            <div class="stat-icon blue">
+              <span class="material-symbols-rounded">mail</span>
             </div>
-            <div class="invitation-card-meta">
-              <span>📸 {{ invitation.photo_count || 0 }} foto</span>
-              <span>💌 {{ invitation.rsvp_count || 0 }} RSVP</span>
-              <span>📅 {{ formatDate(invitation.created_at) }}</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-body">
+              <div class="stat-label">Total Foto</div>
+              <div class="stat-value">{{ totalPhotos }}</div>
             </div>
-            <div class="invitation-card-actions">
-              <a
-                :href="getInvitationUrl(invitation.slug)"
-                target="_blank"
-                class="btn btn-outline btn-sm"
+            <div class="stat-icon pink">
+              <span class="material-symbols-rounded">photo_library</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-body">
+              <div class="stat-label">Total RSVP</div>
+              <div class="stat-value">{{ totalRsvps }}</div>
+            </div>
+            <div class="stat-icon emerald">
+              <span class="material-symbols-rounded">how_to_reg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Title -->
+        <div class="section-header">
+          <div>
+            <h1 class="admin-page-title">Daftar Undangan</h1>
+            <p class="admin-page-subtitle">Kelola semua undangan pernikahan yang telah dibuat</p>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div v-if="store.loading" style="text-align:center;padding:60px 0">
+          <div class="loading-spinner"></div>
+          <p style="margin-top:12px;color:var(--admin-text-secondary)">Memuat data...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div v-else-if="filteredInvitations.length === 0 && !searchQuery" class="empty-state">
+          <div class="empty-icon">
+            <span class="material-symbols-rounded" style="font-size:64px;color:var(--admin-primary)">mail</span>
+          </div>
+          <div class="empty-title">Belum Ada Undangan</div>
+          <div class="empty-text">
+            Mulai buat undangan pernikahan pertama Anda dengan klik tombol di bawah
+          </div>
+          <router-link v-if="!hasReachedLimit" to="/select-template" class="btn btn-primary btn-lg">
+            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
+            Buat Undangan Pertama
+          </router-link>
+          <div v-else class="limit-warning" style="margin-top:12px">
+            <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">warning</span>
+            Limit tercapai! Hubungi admin untuk menambah kuota.
+          </div>
+        </div>
+
+        <!-- Search Empty -->
+        <div v-else-if="filteredInvitations.length === 0 && searchQuery" class="empty-state">
+          <div class="empty-icon">
+            <span class="material-symbols-rounded" style="font-size:64px;color:var(--admin-text-secondary)">search_off</span>
+          </div>
+          <div class="empty-title">Tidak Ditemukan</div>
+          <div class="empty-text">
+            Tidak ada undangan yang cocok dengan pencarian "{{ searchQuery }}"
+          </div>
+        </div>
+
+        <!-- Invitation Grid -->
+        <div v-else class="invitation-grid">
+          <div
+            v-for="invitation in filteredInvitations"
+            :key="invitation.id"
+            class="invitation-card"
+          >
+            <div class="invitation-card-cover-wrapper">
+              <img
+                v-if="invitation.cover_photo"
+                :src="resolveAssetUrl(invitation.cover_photo, apiBase)"
+                :alt="invitation.groom_name + ' & ' + invitation.bride_name"
+                class="invitation-card-cover"
+              />
+              <div
+                v-else
+                class="invitation-card-cover"
+                style="display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#e8ecf4,#d1d5e0)"
               >
-                👁 Preview
-              </a>
-              <router-link
-                :to="`/edit/${invitation.id}`"
-                class="btn btn-outline btn-sm"
-              >
-                ✏️ Edit
-              </router-link>
-              <button
-                class="btn btn-danger btn-sm"
-                @click="confirmDelete(invitation)"
-              >
-                🗑 Hapus
-              </button>
+                <span class="material-symbols-rounded" style="font-size:48px;color:#94a3b8">church</span>
+              </div>
+            </div>
+
+            <div class="invitation-card-body">
+              <div class="invitation-card-names">
+                {{ invitation.groom_name }}
+                <span class="heart">❤</span>
+                {{ invitation.bride_name }}
+              </div>
+              <div class="invitation-card-slug" @click="copyLink(invitation.slug)" style="cursor:pointer" title="Klik untuk salin link">
+                <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">link</span>
+                {{ getInvitationDisplayUrl(invitation.slug) }}
+              </div>
+              <div class="invitation-card-meta">
+                <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">photo_camera</span> {{ invitation.photo_count || 0 }} foto</span>
+                <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">mail</span> {{ invitation.rsvp_count || 0 }} RSVP</span>
+                <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">calendar_today</span> {{ formatDate(invitation.created_at) }}</span>
+              </div>
+              <div class="invitation-card-actions">
+                <a
+                  :href="getInvitationUrl(invitation.slug)"
+                  target="_blank"
+                  class="btn btn-outline btn-sm"
+                >
+                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span> Preview
+                </a>
+                <router-link
+                  :to="`/edit/${invitation.id}`"
+                  class="btn btn-outline btn-sm"
+                >
+                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
+                </router-link>
+                <button
+                  class="btn btn-danger btn-sm"
+                  @click="confirmDelete(invitation)"
+                >
+                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">delete</span> Hapus
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -189,22 +215,18 @@
       @click.self="deleteTarget = null"
     >
       <div class="modal-content">
-        <div class="modal-title">Hapus Undangan?</div>
+        <div class="modal-title">
+          <span class="material-symbols-rounded" style="font-size:24px;color:var(--admin-danger);vertical-align:-4px">warning</span>
+          Hapus Undangan?
+        </div>
         <div class="modal-text">
           Undangan
-          <strong
-            >{{ deleteTarget.groom_name }} &
-            {{ deleteTarget.bride_name }}</strong
-          >
+          <strong>{{ deleteTarget.groom_name }} & {{ deleteTarget.bride_name }}</strong>
           akan dihapus secara permanen.
         </div>
         <div class="modal-actions">
-          <button class="btn btn-outline" @click="deleteTarget = null">
-            Batal
-          </button>
-          <button class="btn btn-danger" @click="handleDelete">
-            Ya, Hapus
-          </button>
+          <button class="btn btn-outline" @click="deleteTarget = null">Batal</button>
+          <button class="btn btn-danger" @click="handleDelete">Ya, Hapus</button>
         </div>
       </div>
     </div>
@@ -300,6 +322,16 @@ function getInvitationDisplayUrl(slug: string) {
   }
   const mainDomain = host.replace("www.", "").replace("admin.", "");
   return `${slug}.${mainDomain}`;
+}
+
+async function copyLink(slug: string) {
+  const url = getInvitationUrl(slug);
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('success', '✅ Link berhasil disalin!');
+  } catch {
+    showToast('error', 'Gagal menyalin link');
+  }
 }
 
 function confirmDelete(invitation: Invitation) {
