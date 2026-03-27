@@ -88,7 +88,12 @@
           <div v-if="formError" class="login-error" style="margin-bottom: 12px;">{{ formError }}</div>
 
           <div class="form-group">
-            <label>Username</label>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label>Username</label>
+              <button v-if="!isEditing" type="button" @click="generateRandomAccount" class="btn btn-sm btn-outline" style="padding: 2px 8px; font-size: 11px;">
+                ✨ Generate Otomatis
+              </button>
+            </div>
             <input v-model="form.username" type="text" required :disabled="formLoading" />
           </div>
 
@@ -111,6 +116,18 @@
           </div>
 
           <div class="modal-actions">
+            <!-- Copy Credentials Button for new users -->
+            <button 
+              v-if="!isEditing" 
+              type="button" 
+              class="btn btn-outline" 
+              @click="copyCredentials"
+              title="Salin Info Akses"
+              style="margin-right: auto;"
+            >
+              📋 Salin Akses
+            </button>
+
             <button type="button" class="btn btn-outline" @click="showModal = false">Batal</button>
             <button type="submit" class="btn btn-primary" :disabled="formLoading">
               {{ formLoading ? 'Menyimpan...' : (isEditing ? 'Simpan' : 'Buat User') }}
@@ -182,6 +199,35 @@ const deleteTarget = ref<UserItem | null>(null)
 function handleLogout() {
   authStore.logout()
   router.push('/login')
+}
+
+// Auto Generate Random Account
+function generateRandomAccount() {
+  const randomNum = Math.floor(1000 + Math.random() * 9000);
+  form.value.username = `user_${randomNum}`;
+  
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let pass = '';
+  for (let i = 0; i < 8; i++) {
+    pass += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  form.value.password = pass;
+}
+
+// Copy Credentials
+async function copyCredentials() {
+  if (!form.value.username || !form.value.password) {
+    showToast('error', 'Username dan Password harus diisi untuk disalin!');
+    return;
+  }
+  const loginUrl = window.location.origin + '/login';
+  const text = `Akses Kelola Undangan:\nHalaman Login: ${loginUrl}\nUsername: ${form.value.username}\nPassword: ${form.value.password}`;
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('success', 'Info akses berhasil disalin ke clipboard!');
+  } catch (err) {
+    showToast('error', 'Gagal menyalin teks. Silakan salin manual.');
+  }
 }
 
 async function fetchUsers() {
