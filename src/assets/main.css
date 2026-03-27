@@ -388,6 +388,12 @@ input, textarea, select {
   padding: 32px;
 }
 
+.editor-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
 .user-badge {
   display: inline-block;
   padding: 2px 8px;
@@ -900,6 +906,113 @@ textarea.form-input {
 }
 
 /* Toast / Notification */
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #ef4444;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+/* ===== EDITOR LAYOUT (Create/Edit Invitation) ===== */
+.editor-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .editor-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    align-items: start;
+  }
+}
+
+.editor-form-area {
+  min-width: 0;
+}
+
+.editor-preview-area {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .editor-preview-area {
+    display: block;
+    position: sticky;
+    top: 24px;
+    height: calc(100vh - 48px);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border: 6px solid var(--admin-bg);
+    background: #fff;
+    z-index: 10;
+  }
+}
+
+.editor-preview-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+/* Mobile Preview Components */
+.mobile-preview-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 90;
+  border-radius: 50px;
+  padding: 14px 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+.mobile-preview-fab:active {
+  transform: scale(0.95);
+}
+
+.mobile-preview-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--admin-bg);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease-out;
+}
+
+.mobile-preview-header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--admin-border);
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@media (min-width: 1024px) {
+  .mobile-preview-fab { display: none !important; }
+  .mobile-preview-modal { display: none !important; }
+}
+
+/* ================================== */
 .toast {
   position: fixed;
   bottom: 24px;
@@ -1512,6 +1625,71 @@ textarea.form-input {
 .inv-overlay.theme-floral .guest-name {
   color: var(--inv-text);
   text-shadow: 0 1px 5px rgba(255,255,255,0.9);
+}
+
+/* =========================================================================
+   Theme Selector Grid (Admin Panel - Editor)
+   Shared by CreateInvitationView & EditInvitationView
+========================================================================== */
+.edit-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.edit-theme-card {
+  position: relative;
+  background: var(--admin-surface);
+  border: 2px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-theme-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.edit-theme-card.active {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px var(--admin-primary-glow);
+}
+
+.edit-theme-preview {
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.edit-theme-label {
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+.edit-theme-active-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--admin-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+@media (max-width: 600px) {
+  .edit-theme-grid {
+    grid-template-columns: 1fr;
+  }
 }
 .inv-overlay.theme-floral .btn-open {
   background: var(--inv-secondary);
