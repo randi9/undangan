@@ -1,8 +1,8 @@
 <template>
   <div
     :class="[
-      'fixed inset-0 z-50 flex flex-col transition-all duration-1000 overflow-hidden w-full h-[100dvh]',
-      isClosing ? '-translate-y-full opacity-0 pointer-events-none' : '',
+      'fixed inset-0 z-50 flex flex-col overflow-hidden w-full h-[100dvh] transition-all duration-[1200ms] ease-in-out',
+      isClosing ? '-translate-y-full opacity-0 pointer-events-none' : 'opacity-100',
     ]"
   >
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">

@@ -113,14 +113,16 @@ const themeStyles = computed(() => ({
 
 function openInvitation() {
   isClosingOverlay.value = true;
+  isOpened.value = true;
+  if (invitation.value?.music_url && musicPlayer.value) {
+    musicPlayer.value.play().then(() => {
+      isPlaying.value = true;
+    }).catch(e => console.error("Audio blocked by browser:", e));
+  }
+  // Remove cover from view after fade-out completes (1.2s CSS transition + buffer)
   setTimeout(() => {
-    isOpened.value = true;
-    if (invitation.value?.music_url && musicPlayer.value) {
-      musicPlayer.value.play().then(() => {
-        isPlaying.value = true;
-      }).catch(e => console.error("Audio blocked by browser:", e));
-    }
-  }, 1000);
+    isClosingOverlay.value = false;
+  }, 1400);
 }
 
 function toggleMusic() {
@@ -267,7 +269,7 @@ onBeforeUnmount(() => {
 
     <!-- COVER OVERLAY (Buka Undangan) -->
     <CoverOverlay
-      v-if="!isOpened"
+      v-show="!isOpened || isClosingOverlay"
       :groom-name="invitation.groom_name"
       :bride-name="invitation.bride_name"
       :guest-name="guestName"
@@ -279,7 +281,7 @@ onBeforeUnmount(() => {
     />
 
     <!-- MAIN INVITATION CONTENT -->
-    <div v-if="isOpened">
+    <div v-if="isOpened" class="animate-fade-in">
       
       <!-- HERO COVER INSIDE (Dynamic per theme) -->
       <component :is="activeHero" :overlay-gradient="activeTheme.overlayGradient">

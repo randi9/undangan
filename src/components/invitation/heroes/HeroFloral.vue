@@ -1,6 +1,6 @@
 <template>
-  <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-x-clip">
-    <!-- Background -->
+  <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+    <!-- Background — full cover -->
     <div class="absolute inset-0 z-0">
       <img
         src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/893a8f56-6a87-4c3b-978e-a0977e36477c.webp"
@@ -9,6 +9,40 @@
       />
       <div class="absolute inset-0" :style="{ background: overlayGradient }"></div>
     </div>
+
+    <!-- Tree 1 (curtain): Left — mirrored -->
+    <img
+      ref="tree1Left"
+      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/c5c7b939-7890-4552-97b0-f101efefa870.webp"
+      alt=""
+      class="absolute top-0 left-0 h-full w-auto z-[18] pointer-events-none will-change-transform opacity-0"
+      style="transform-origin: center center;"
+    />
+    <!-- Tree 1 (curtain): Right -->
+    <img
+      ref="tree1Right"
+      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/c5c7b939-7890-4552-97b0-f101efefa870.webp"
+      alt=""
+      class="absolute top-0 right-0 h-full w-auto z-[18] pointer-events-none will-change-transform opacity-0"
+      style="transform-origin: center center;"
+    />
+
+    <!-- Tree 2 (rise from bottom): Left — mirrored -->
+    <img
+      ref="tree2Left"
+      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/29c33031-394d-45ca-bee2-1e405f32ef6c.webp"
+      alt=""
+      class="absolute top-0 -left-28 w-60 md:w-64 z-[19] pointer-events-none will-change-transform opacity-0"
+      style="transform-origin: center bottom;"
+    />
+    <!-- Tree 2 (rise from bottom): Right -->
+    <img
+      ref="tree2Right"
+      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/29c33031-394d-45ca-bee2-1e405f32ef6c.webp"
+      alt=""
+      class="absolute top-0 -right-28 w-60 md:w-64 z-[19] pointer-events-none will-change-transform opacity-0"
+      style="transform-origin: center bottom;"
+    />
 
     <!-- Flower 1: Bottom corners -->
     <img
@@ -24,7 +58,7 @@
       class="absolute -bottom-10 -right-4 w-44 md:w-60 z-20 pointer-events-none will-change-transform opacity-0"
     />
 
-    <!-- Flower 2: Slightly higher, more inward -->
+    <!-- Flower 2: Slightly higher -->
     <img
       ref="flower2Left"
       src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
@@ -36,20 +70,6 @@
       src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
       alt=""
       class="absolute bottom-12 right-4 w-36 md:w-48 z-[19] pointer-events-none will-change-transform opacity-0"
-    />
-
-    <!-- Trees -->
-    <img
-      ref="treeLeft"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/04a8f905-a972-4906-889c-46433ca72659.webp"
-      alt=""
-      class="absolute top-0 -left-10 w-44 z-[18] pointer-events-none will-change-transform opacity-0"
-    />
-    <img
-      ref="treeRight"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/04a8f905-a972-4906-889c-46433ca72659.webp"
-      alt=""
-      class="absolute top-0 -right-10 w-44 z-[18] pointer-events-none will-change-transform opacity-0"
     />
 
     <!-- Content Slot (names, date — from parent) -->
@@ -67,12 +87,19 @@ defineProps<{
   overlayGradient: string;
 }>();
 
+// Tree 1 (curtain effect — start center, slide off-screen)
+const tree1Left = ref<HTMLImageElement | null>(null);
+const tree1Right = ref<HTMLImageElement | null>(null);
+
+// Tree 2 (rise from bottom, sway like wind)
+const tree2Left = ref<HTMLImageElement | null>(null);
+const tree2Right = ref<HTMLImageElement | null>(null);
+
+// Flowers
 const flower1Left = ref<HTMLImageElement | null>(null);
 const flower1Right = ref<HTMLImageElement | null>(null);
 const flower2Left = ref<HTMLImageElement | null>(null);
 const flower2Right = ref<HTMLImageElement | null>(null);
-const treeLeft = ref<HTMLImageElement | null>(null);
-const treeRight = ref<HTMLImageElement | null>(null);
 
 let timelines: gsap.core.Timeline[] = [];
 
@@ -111,7 +138,7 @@ function startWindSway(el: HTMLElement, config: SwayConfig) {
 }
 
 // ============================================
-// CONFIG GOYANG — atur di sini!
+// SWAY CONFIGS
 // ============================================
 const flower1Sway: SwayConfig = {
   rotation: 4, xRange: 8, yRange: 5, speed: 0.7, delay: 0,
@@ -119,78 +146,83 @@ const flower1Sway: SwayConfig = {
 const flower2Sway: SwayConfig = {
   rotation: 2.5, xRange: 5, yRange: 3, speed: 1.1, delay: 0.6,
 };
-const treeSway: SwayConfig = {
-  rotation: 1.5, xRange: 3, yRange: 2, speed: 0.5, delay: 0.3,
+const tree2Sway: SwayConfig = {
+  rotation: 3, xRange: 4, yRange: 3, speed: 1, delay: 0,
 };
 
 onMounted(() => {
-  const leftFlowers = [flower1Left.value, flower2Left.value];
-  const rightFlowers = [flower1Right.value, flower2Right.value];
-
-  if ([...leftFlowers, ...rightFlowers].some(el => !el)) return;
-
   // =============================================
-  // INITIAL STATE — semua tersembunyi
+  // INITIAL STATES
   // =============================================
 
-  // Bunga: tersembunyi di bawah
-  gsap.set(leftFlowers, { y: 250, opacity: 0, transformOrigin: 'center bottom' });
-  gsap.set(rightFlowers, { y: 250, opacity: 0, scaleX: -1, transformOrigin: 'center bottom' });
-
-  // Pohon: zoom besar di tengah layar (kayak menutupi layar), lalu nanti buka ke samping
-  if (treeLeft.value) {
-    gsap.set(treeLeft.value, {
-      opacity: 0,
-      scale: 3,            // zoom gede banget
-      x: '50vw',           // ditaruh di tengah layar
-      scaleX: -3,          // flip + zoom
-      transformOrigin: 'center center',
-    });
-  }
-  if (treeRight.value) {
-    gsap.set(treeRight.value, {
-      opacity: 0,
-      scale: 3,            // zoom gede banget
-      x: '-50vw',          // ditaruh di tengah layar
-      transformOrigin: 'center center',
-    });
-  }
-
-  // =============================================
-  // TAHAP 1: Pohon muncul dulu (efek gorden)
-  // Delay 1.5 detik setelah overlay kebuka
-  // =============================================
-  const masterTl = gsap.timeline({ delay: 0.5 });
-
-  // Pohon fade-in di tengah (zoom besar)
-  masterTl
-    .to([treeLeft.value, treeRight.value], {
+  // Tree 1 (curtain): Start zoomed in at center, covering the screen
+  if (tree1Left.value) {
+    gsap.set(tree1Left.value, {
       opacity: 1,
-      duration: 0.6,
-      ease: 'power2.out',
-    })
-    // Lalu buka ke samping kayak gorden + zoom out ke ukuran normal
-    .to(treeLeft.value, {
-      scale: 1,
-      scaleX: -1,          // tetap flip, tapi ukuran normal
-      x: 0,                // balik ke posisi CSS asli (left)
-      duration: 1.8,
-      ease: 'power3.inOut',
-    }, '-=0.1')
-    .to(treeRight.value, {
-      scale: 1,
-      x: 0,                // balik ke posisi CSS asli (right)
-      duration: 1.8,
-      ease: 'power3.inOut',
-    }, '<')               // '<' = bareng dengan treeLeft
+      x: '30vw',           // pushed toward center
+      scaleX: -3,           // mirrored + zoomed so leaves cover screen
+      scaleY: 3,
+      transformOrigin: 'center center',
+    });
+  }
+  if (tree1Right.value) {
+    gsap.set(tree1Right.value, {
+      opacity: 1,
+      x: '-30vw',           // pushed toward center
+      scale: 3,             // zoomed so leaves cover screen
+      transformOrigin: 'center center',
+    });
+  }
+
+  // Tree 2 (rise): Hidden below
+  if (tree2Left.value) {
+    gsap.set(tree2Left.value, { y: 300, opacity: 0, scaleX: -1, transformOrigin: 'center bottom' });
+  }
+  if (tree2Right.value) {
+    gsap.set(tree2Right.value, { y: 300, opacity: 0, transformOrigin: 'center bottom' });
+  }
+
+  // Flowers: Hidden below
+  gsap.set([flower1Left.value, flower2Left.value], { y: 250, opacity: 0, transformOrigin: 'center bottom' });
+  gsap.set([flower1Right.value, flower2Right.value], { y: 250, opacity: 0, scaleX: -1, transformOrigin: 'center bottom' });
 
   // =============================================
-  // TAHAP 2: Bunga naik dari bawah
-  // Dimulai saat gorden pohon sedang membuka
+  // ANIMATION TIMELINE
   // =============================================
+  const masterTl = gsap.timeline({ delay: 0.3 });
+
+  // STAGE 1a: Hold the curtain visible for a moment (leaves covering screen)
+  masterTl.to({}, { duration: 0.5 })
+
+  // STAGE 1b: Curtain opens — trees slide to sides + shrink + fade out
+    .to(tree1Left.value, {
+      x: '-120%',           // slide off-screen left
+      scaleX: -1,           // back to normal mirror size
+      scaleY: 1,
+      opacity: 0,
+      duration: 2.0,
+      ease: 'power3.inOut',
+    })
+    .to(tree1Right.value, {
+      x: '120%',            // slide off-screen right
+      scale: 1,             // back to normal size
+      opacity: 0,
+      duration: 2.0,
+      ease: 'power3.inOut',
+    }, '<')                  // simultaneous
+
+  // STAGE 2: Tree 2 rises from bottom (during curtain opening)
+    .to(tree2Left.value, {
+      y: 0, opacity: 1, duration: 1.4, ease: 'power3.out',
+    }, '-=1.0')
+    .to(tree2Right.value, {
+      y: 0, opacity: 1, duration: 1.4, ease: 'power3.out',
+    }, '-=1.2')
+
+  // STAGE 3: Flowers rise from bottom
     .to(flower1Left.value, {
       y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
-    }, '-=1.0')           // mulai 1 detik sebelum gorden selesai
+    }, '-=0.8')
     .to(flower1Right.value, {
       y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
     }, '-=0.9')
@@ -201,16 +233,16 @@ onMounted(() => {
       y: 0, opacity: 1, duration: 1, ease: 'power3.out',
     }, '-=0.7');
 
-  // =============================================
-  // TAHAP 3: Setelah semua masuk → mulai goyang angin
-  // =============================================
+  // STAGE 4: Start wind sway on everything
   masterTl.call(() => {
+    // Tree 2 sway
+    if (tree2Left.value) startWindSway(tree2Left.value, tree2Sway);
+    if (tree2Right.value) startWindSway(tree2Right.value, tree2Sway);
+    // Flowers sway
     startWindSway(flower1Left.value!, flower1Sway);
     startWindSway(flower1Right.value!, flower1Sway);
     startWindSway(flower2Left.value!, flower2Sway);
     startWindSway(flower2Right.value!, flower2Sway);
-    if (treeLeft.value) startWindSway(treeLeft.value, treeSway);
-    if (treeRight.value) startWindSway(treeRight.value, treeSway);
   });
 
   timelines.push(masterTl);
