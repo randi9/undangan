@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, reactive, watch, nextTick, type Component } from "vue";
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 import { useRoute } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import type { Invitation, LoveStoryItem, Rsvp } from "@/types/invitation";
@@ -94,6 +97,10 @@ const isPlaying = ref(false);
 const heroOval = ref<HTMLElement | null>(null);
 const heroTextItems = ref<HTMLElement[]>([]);
 
+// Quote animation refs
+const quoteSection = ref<HTMLElement | null>(null);
+const quoteCard = ref<HTMLElement | null>(null);
+
 function setHeroTextRef(el: any) {
   if (el) heroTextItems.value.push(el);
 }
@@ -124,10 +131,36 @@ function animateHeroOval() {
   }, '-=0.01');
 }
 
+function animateQuoteSection() {
+  if (!quoteSection.value || !quoteCard.value) return;
+  
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: quoteSection.value,
+      start: "top top",
+      end: "+=80%",
+      scrub: 0.6,
+    }
+  });
+
+  tl.to(quoteCard.value, {
+    rotation: -5,
+    transformOrigin: "bottom left",
+    duration: 0.3,
+  })
+  .to(quoteCard.value, {
+    y: "-60vh",
+    duration: 0.7,
+  });
+}
+
 watch(isOpened, (val) => {
   if (val) {
     heroTextItems.value = [];
-    nextTick(() => animateHeroOval());
+    nextTick(() => {
+      animateHeroOval();
+      animateQuoteSection();
+    });
   }
 });
 const musicPlayer = ref<HTMLAudioElement>();
@@ -291,6 +324,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   if (countdownTimer) clearInterval(countdownTimer);
+  ScrollTrigger.getAll().forEach(t => t.kill());
 });
 </script>
 
@@ -340,10 +374,12 @@ onBeforeUnmount(() => {
       </component>
 
       <!-- QUOTE -->
-      <section v-if="invitation.quote" class="py-20 px-6 text-center bg-[var(--theme-surface)]">
-        <blockquote class="max-w-2xl mx-auto text-lg md:text-xl italic font-light text-[var(--theme-text-light)] leading-relaxed" :style="{ fontFamily: activeTheme.fontHeading }">
-          "{{ invitation.quote }}"
-        </blockquote>
+      <section v-if="invitation.quote" ref="quoteSection" class="h-screen flex items-center justify-center py-20 px-6 text-center overflow-hidden">
+        <div ref="quoteCard" class="rounded-lg bg-[var(--theme-secondary)] aspect-square w-[calc(100%-2rem)] max-w-[400px] mx-auto flex items-center justify-center relative overflow-hidden shadow-2xl origin-bottom-left will-change-transform">
+          <blockquote class="w-10/12 md:w-3/4 lg:w-2/3 mx-auto text-sm md:text-base italic font-light text-[var(--theme-surface)] leading-relaxed tracking-[0.2em] break-words">
+             "{{ invitation.quote }}"
+          </blockquote>
+        </div>
       </section>
 
       <!-- COUPLE PROFILES -->
