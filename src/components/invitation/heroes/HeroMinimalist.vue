@@ -1,13 +1,12 @@
 <template>
   <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
     <!-- Background -->
-    <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
       <img
         src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=1080&q=80"
         alt="Cover Background"
-        class="w-full h-full object-cover"
+        class="min-w-full min-h-full w-full h-full object-cover object-center scale-105"
       />
-      <div class="absolute inset-0" :style="{ background: overlayGradient }"></div>
     </div>
 
     <!-- Minimal line accents -->
@@ -15,7 +14,7 @@
     <div ref="lineBottom" class="absolute bottom-12 left-1/2 -translate-x-1/2 w-0 h-px bg-white/50 z-20 pointer-events-none"></div>
 
     <!-- Content Slot -->
-    <div class="relative z-10 text-white w-full max-w-2xl mx-auto py-20">
+    <div class="relative z-10 w-full max-w-2xl mx-auto py-20 flex justify-center text-white">
       <slot />
     </div>
   </section>

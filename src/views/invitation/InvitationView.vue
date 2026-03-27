@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, reactive, type Component } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, reactive, watch, nextTick, type Component } from "vue";
+import { gsap } from 'gsap';
 import { useRoute } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import type { Invitation, LoveStoryItem, Rsvp } from "@/types/invitation";
@@ -88,6 +89,47 @@ const guestName = ref(route.query.to ? String(route.query.to) : '');
 const isOpened = ref(false);
 const isClosingOverlay = ref(false);
 const isPlaying = ref(false);
+
+// Hero oval animation refs
+const heroOval = ref<HTMLElement | null>(null);
+const heroTextItems = ref<HTMLElement[]>([]);
+
+function setHeroTextRef(el: any) {
+  if (el) heroTextItems.value.push(el);
+}
+
+function animateHeroOval() {
+  if (!heroOval.value) return;
+  
+  // Set initial states
+  gsap.set(heroOval.value, { scale: 0.6, opacity: 0 });
+  gsap.set(heroTextItems.value, { y: 30, opacity: 0 });
+
+  const tl = gsap.timeline({ delay: 4 });
+
+  // Stage 1: Container scale-up + fade-in
+  tl.to(heroOval.value, {
+    scale: 1,
+    opacity: 1,
+    duration: 1,
+    ease: 'back.out(1.4)',
+  })
+  // Stage 2: Text elements slide-up one by one
+  .to(heroTextItems.value, {
+    y: 0,
+    opacity: 1,
+    duration: 0.9,
+    ease: 'power3.out',
+    stagger: 0.15,
+  }, '-=0.01');
+}
+
+watch(isOpened, (val) => {
+  if (val) {
+    heroTextItems.value = [];
+    nextTick(() => animateHeroOval());
+  }
+});
 const musicPlayer = ref<HTMLAudioElement>();
 
 // Reactive Theme Selector
@@ -308,13 +350,16 @@ onBeforeUnmount(() => {
       
       <!-- HERO COVER INSIDE (Dynamic per theme) -->
       <component :is="activeHero" :overlay-gradient="activeTheme.overlayGradient">
-        <p class="uppercase tracking-[0.4em] text-sm mb-6 text-[var(--theme-secondary)] drop-shadow-md">The Wedding of</p>
-        <h1 class="text-5xl md:text-7xl mb-4" :style="{ fontFamily: activeTheme.fontHeading }">
-          {{ invitation.groom_name }}
-          <span class="block text-3xl text-[var(--theme-secondary)] my-2">&amp;</span>
-          {{ invitation.bride_name }}
-        </h1>
-        <p v-if="formattedDate" class="mt-4 text-sm md:text-base tracking-[0.2em] font-light">{{ formattedDate }}</p>
+        <div ref="heroOval" class="flex flex-col  gap-4 items-center justify-center w-[260px] h-[400px] mx-auto rounded-full bg-white backdrop-blur-sm border border-white/20 shadow-[0_8px_20px_rgba(0,0,0,0.1)] opacity-0">
+          <p :ref="setHeroTextRef" class="uppercase tracking-[0.4em] text-sm mb-6 text-[var(--theme-secondary)] drop-shadow-md opacity-0">The Wedding of</p>
+          <h1 :ref="setHeroTextRef" class="text-5xl md:text-7xl mb-1 opacity-0 text-[var(--theme-secondary)]" :style="{ fontFamily: activeTheme.fontHeading }">
+            {{ invitation.groom_name }}
+            <span class="block text-3xl text-[var(--theme-secondary)] my-2">&amp;</span>
+            {{ invitation.bride_name }}
+          </h1>
+          <p v-if="formattedDate" :ref="setHeroTextRef" class="text-[var(--theme-secondary)] mt-4 text-sm md:text-base tracking-[0.2em] font-light opacity-0">{{ formattedDate }}</p>
+        </div>
+        
       </component>
 
       <!-- QUOTE -->

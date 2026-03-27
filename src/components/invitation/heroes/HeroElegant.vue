@@ -1,13 +1,12 @@
 <template>
   <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
     <!-- Background -->
-    <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
       <img
         src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80"
         alt="Cover Background"
-        class="w-full h-full object-cover"
+        class="min-w-full min-h-full w-full h-full object-cover object-center scale-105"
       />
-      <div class="absolute inset-0" :style="{ background: overlayGradient }"></div>
     </div>
 
     <!-- Gold corner ornaments -->
@@ -17,7 +16,7 @@
     <div ref="ornamentBR" class="absolute bottom-6 right-6 w-20 h-20 border-b-2 border-r-2 border-[var(--theme-secondary)] opacity-0 z-20 pointer-events-none"></div>
 
     <!-- Content Slot -->
-    <div class="relative z-10 text-white w-full max-w-2xl mx-auto py-20">
+    <div class="relative z-10 w-full max-w-2xl mx-auto py-20 flex justify-center text-white">
       <slot />
     </div>
   </section>

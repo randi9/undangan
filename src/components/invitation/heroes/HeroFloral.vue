@@ -1,13 +1,12 @@
 <template>
   <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
     <!-- Background — full cover -->
-    <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
       <img
         src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/893a8f56-6a87-4c3b-978e-a0977e36477c.webp"
         alt="Cover Background"
-        class="w-full h-full object-cover"
+        class="min-w-full min-h-full w-full h-full object-cover object-center scale-105"
       />
-      <div class="absolute inset-0" :style="{ background: overlayGradient }"></div>
     </div>
 
     <!-- Tree 1 (curtain): Left — mirrored -->
@@ -73,7 +72,7 @@
     />
 
     <!-- Content Slot (names, date — from parent) -->
-    <div class="relative z-10 text-white w-full max-w-2xl mx-auto py-20">
+    <div class="relative z-10 w-full max-w-2xl mx-auto py-20 flex justify-center text-white">
       <slot />
     </div>
   </section>
@@ -144,7 +143,7 @@ const flower1Sway: SwayConfig = {
   rotation: 4, xRange: 8, yRange: 5, speed: 0.7, delay: 0,
 };
 const flower2Sway: SwayConfig = {
-  rotation: 2.5, xRange: 5, yRange: 3, speed: 1.1, delay: 0.6,
+  rotation: 2.5, xRange: 5, yRange: 3, speed: 1.1, delay: 0,
 };
 const tree2Sway: SwayConfig = {
   rotation: 3, xRange: 4, yRange: 3, speed: 1, delay: 0,
@@ -217,7 +216,7 @@ onMounted(() => {
     }, '-=1.0')
     .to(tree2Right.value, {
       y: 0, opacity: 1, duration: 1.4, ease: 'power3.out',
-    }, '-=1.2')
+    }, '<')
 
   // STAGE 3: Flowers rise from bottom
     .to(flower1Left.value, {
@@ -225,13 +224,13 @@ onMounted(() => {
     }, '-=0.8')
     .to(flower1Right.value, {
       y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
-    }, '-=0.9')
+    }, '<')
     .to(flower2Left.value, {
       y: 0, opacity: 1, duration: 1, ease: 'power3.out',
     }, '-=0.7')
     .to(flower2Right.value, {
       y: 0, opacity: 1, duration: 1, ease: 'power3.out',
-    }, '-=0.7');
+    }, '<');
 
   // STAGE 4: Start wind sway on everything
   masterTl.call(() => {
