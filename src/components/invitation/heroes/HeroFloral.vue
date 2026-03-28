@@ -3,7 +3,7 @@
     <!-- Background — full cover -->
     <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
       <img
-        src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/893a8f56-6a87-4c3b-978e-a0977e36477c.webp"
+        src="https://media.mengundanganda.fun/893a8f56-6a87-4c3b-978e-a0977e36477c.webp"
         alt="Cover Background"
         class="min-w-full min-h-full w-full h-full object-cover object-center scale-105"
       />
@@ -12,7 +12,7 @@
     <!-- Tree 1 (curtain): Left — mirrored -->
     <img
       ref="tree1Left"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/c5c7b939-7890-4552-97b0-f101efefa870.webp"
+      src="https://media.mengundanganda.fun/c5c7b939-7890-4552-97b0-f101efefa870.webp"
       alt=""
       class="absolute top-0 left-0 h-full w-auto z-[18] pointer-events-none will-change-transform opacity-0"
       style="transform-origin: center center;"
@@ -20,7 +20,7 @@
     <!-- Tree 1 (curtain): Right -->
     <img
       ref="tree1Right"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/c5c7b939-7890-4552-97b0-f101efefa870.webp"
+      src="https://media.mengundanganda.fun/c5c7b939-7890-4552-97b0-f101efefa870.webp"
       alt=""
       class="absolute top-0 right-0 h-full w-auto z-[18] pointer-events-none will-change-transform opacity-0"
       style="transform-origin: center center;"
@@ -29,7 +29,7 @@
     <!-- Tree 2 (rise from bottom): Left — mirrored -->
     <img
       ref="tree2Left"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/29c33031-394d-45ca-bee2-1e405f32ef6c.webp"
+      src="https://media.mengundanganda.fun/29c33031-394d-45ca-bee2-1e405f32ef6c.webp"
       alt=""
       class="absolute top-0 -left-28 w-60 md:w-64 z-[19] pointer-events-none will-change-transform opacity-0"
       style="transform-origin: center bottom;"
@@ -37,7 +37,7 @@
     <!-- Tree 2 (rise from bottom): Right -->
     <img
       ref="tree2Right"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/29c33031-394d-45ca-bee2-1e405f32ef6c.webp"
+      src="https://media.mengundanganda.fun/29c33031-394d-45ca-bee2-1e405f32ef6c.webp"
       alt=""
       class="absolute top-0 -right-28 w-60 md:w-64 z-[19] pointer-events-none will-change-transform opacity-0"
       style="transform-origin: center bottom;"
@@ -46,13 +46,13 @@
     <!-- Flower 1: Bottom corners -->
     <img
       ref="flower1Left"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
+      src="https://media.mengundanganda.fun/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
       alt=""
       class="absolute -bottom-10 -left-4 w-44 md:w-60 z-20 pointer-events-none will-change-transform opacity-0"
     />
     <img
       ref="flower1Right"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
+      src="https://media.mengundanganda.fun/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
       alt=""
       class="absolute -bottom-10 -right-4 w-44 md:w-60 z-20 pointer-events-none will-change-transform opacity-0"
     />
@@ -60,13 +60,13 @@
     <!-- Flower 2: Slightly higher -->
     <img
       ref="flower2Left"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
+      src="https://media.mengundanganda.fun/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
       alt=""
       class="absolute bottom-12 left-4 w-36 md:w-48 z-[19] pointer-events-none will-change-transform opacity-0"
     />
     <img
       ref="flower2Right"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
+      src="https://media.mengundanganda.fun/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
       alt=""
       class="absolute bottom-12 right-4 w-36 md:w-48 z-[19] pointer-events-none will-change-transform opacity-0"
     />
