@@ -1,78 +1,46 @@
 <template>
   <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-    <!-- Background — full cover -->
-    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <img
-        src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/893a8f56-6a87-4c3b-978e-a0977e36477c.webp"
-        alt="Cover Background"
-        class="min-w-full min-h-full w-full h-full object-cover object-center scale-105"
-      />
+    <!-- SCENE WRAPPER FOR ZOOM -->
+    <div ref="sceneWrapper" class="absolute inset-0 z-0 origin-bottom pointer-events-none will-change-transform">
+      <!-- Background — full cover -->
+      <div class="absolute inset-0 overflow-hidden">
+        <img
+          src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/1e91f2c1-348b-4ca8-80c2-7357afa31695.webp"
+          alt="Cover Background"
+          class="min-w-full min-h-full w-full h-full object-cover object-bottom"
+        />
+      </div>
+
+      <!-- RIGHT FLOWERS LAYER -->
+      <img v-for="(f, i) in flowersList" :key="'r'+i"
+           :src="f.url" :class="['absolute pointer-events-none will-change-transform', f.w, f.posR]"
+           :style="{ transformOrigin: f.originR, zIndex: f.z }"
+           :ref="el => { if (el) rightFlowers[i] = el as HTMLImageElement }" alt="" />
+
+      <!-- LEFT FLOWERS LAYER (MIRRORED) -->
+      <img v-for="(f, i) in flowersList" :key="'l'+i"
+           :src="f.url" :class="['absolute pointer-events-none will-change-transform', f.w, f.posL]"
+           :style="{ transformOrigin: f.originL, zIndex: f.z }"
+           :ref="el => { if (el) leftFlowers[i] = el as HTMLImageElement }" alt="" />
     </div>
 
-    <!-- Tree 1 (curtain): Left — mirrored -->
-    <img
-      ref="tree1Left"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/c5c7b939-7890-4552-97b0-f101efefa870.webp"
-      alt=""
-      class="absolute top-0 left-0 h-full w-auto z-[18] pointer-events-none will-change-transform opacity-0"
-      style="transform-origin: center center;"
-    />
-    <!-- Tree 1 (curtain): Right -->
-    <img
-      ref="tree1Right"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/c5c7b939-7890-4552-97b0-f101efefa870.webp"
-      alt=""
-      class="absolute top-0 right-0 h-full w-auto z-[18] pointer-events-none will-change-transform opacity-0"
-      style="transform-origin: center center;"
-    />
+    <!-- Intro Text (Inside Arch) -->
+    <div ref="archText" class="absolute inset-0 z-[5] flex items-center justify-center px-6 pointer-events-none pb-[20vh]">
+      <h2 class="text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold text-[#3d4a40] text-center uppercase">
+        <div class="block">
+          <span v-for="(char, i) in 'STEP INTO OUR'.split('')" :key="'l1'+i" class="char-anim inline-block whitespace-pre">{{ char }}</span>
+        </div>
+        <div class="block mt-2">
+          <span v-for="(char, i) in 'BEAUTIFUL BEGINNING...'.split('')" :key="'l2'+i" class="char-anim inline-block whitespace-pre">{{ char }}</span>
+        </div>
+      </h2>
+    </div>
 
-    <!-- Tree 2 (rise from bottom): Left — mirrored -->
-    <img
-      ref="tree2Left"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/29c33031-394d-45ca-bee2-1e405f32ef6c.webp"
-      alt=""
-      class="absolute top-0 -left-28 w-60 md:w-64 z-[19] pointer-events-none will-change-transform opacity-0"
-      style="transform-origin: center bottom;"
-    />
-    <!-- Tree 2 (rise from bottom): Right -->
-    <img
-      ref="tree2Right"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/29c33031-394d-45ca-bee2-1e405f32ef6c.webp"
-      alt=""
-      class="absolute top-0 -right-28 w-60 md:w-64 z-[19] pointer-events-none will-change-transform opacity-0"
-      style="transform-origin: center bottom;"
-    />
-
-    <!-- Flower 1: Bottom corners -->
-    <img
-      ref="flower1Left"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
-      alt=""
-      class="absolute -bottom-10 -left-4 w-44 md:w-60 z-20 pointer-events-none will-change-transform opacity-0"
-    />
-    <img
-      ref="flower1Right"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
-      alt=""
-      class="absolute -bottom-10 -right-4 w-44 md:w-60 z-20 pointer-events-none will-change-transform opacity-0"
-    />
-
-    <!-- Flower 2: Slightly higher -->
-    <img
-      ref="flower2Left"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
-      alt=""
-      class="absolute bottom-12 left-4 w-36 md:w-48 z-[19] pointer-events-none will-change-transform opacity-0"
-    />
-    <img
-      ref="flower2Right"
-      src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/b278bf07-9eb0-45ea-b5d3-4a2e887bc800.webp"
-      alt=""
-      class="absolute bottom-12 right-4 w-36 md:w-48 z-[19] pointer-events-none will-change-transform opacity-0"
-    />
+    <!-- Falling Petals Container -->
+    <div ref="petalsContainer" class="absolute inset-0 z-[25] pointer-events-none overflow-hidden"></div>
 
     <!-- Content Slot (names, date — from parent) -->
-    <div class="relative z-10 w-full max-w-2xl mx-auto py-20 flex justify-center text-white">
+    <div ref="heroContent" class="relative z-10 w-full max-w-2xl mx-auto py-20 flex justify-center text-white opacity-0 translate-y-8">
       <slot />
     </div>
   </section>
@@ -86,168 +54,219 @@ defineProps<{
   overlayGradient: string;
 }>();
 
-// Tree 1 (curtain effect — start center, slide off-screen)
-const tree1Left = ref<HTMLImageElement | null>(null);
-const tree1Right = ref<HTMLImageElement | null>(null);
+const sceneWrapper = ref<HTMLDivElement | null>(null);
+const archText = ref<HTMLDivElement | null>(null);
+const heroContent = ref<HTMLDivElement | null>(null);
+const petalsContainer = ref<HTMLDivElement | null>(null);
 
-// Tree 2 (rise from bottom, sway like wind)
-const tree2Left = ref<HTMLImageElement | null>(null);
-const tree2Right = ref<HTMLImageElement | null>(null);
+// Flower bottom assets layer by layer (from back to front)
+const flowersList = [
+  // 1. Grass (Far Back)
+  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/2ea7bb0b-e6ef-4fc6-868e-bfc558b2001a.webp', z: 9, w: 'w-[50vw] md:w-[35vw]', 
+    posR: '-right-4 md:-right-8 -bottom-4', posL: '-left-4 md:-left-8 -bottom-4', 
+    originR: 'bottom center', originL: 'bottom center', sway: 5, dur: 4.2 },
+  // 2. Lily Bud
+  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/af02784e-d04d-48e0-b8ad-d0d77da8fa0a.webp', z: 10, w: 'w-[33vw] md:w-[15vw]', 
+    posR: '-right-[3%] md:right-[8%] bottom-4', posL: '-left-[3%] md:left-[8%] bottom-4', 
+    originR: 'bottom center', originL: 'bottom center', sway: 8, dur: 6 },
+  // 3. Calla Lily
+  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/3de806bf-fb2d-43e6-a31d-56c75fbed389.webp', z: 12, w: 'w-[30vw] md:w-[24vw]', 
+    posR: 'right-[5%] md:right-[18%] -bottom-2', posL: 'left-[15%] md:left-[18%] -bottom-2', 
+    originR: 'bottom center', originL: 'bottom center', sway: 7, dur: 4.4 },
+  // 4. Back Clusters
+  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/fe3bc052-458a-4310-ac3e-3d3b3a80398a.webp', z: 11, w: 'w-[35vw] md:w-[26vw]', 
+    posR: 'right-[10%] md:right-[15%] -bottom-5', posL: 'left-[10%] md:left-[15%] -bottom-5', 
+    originR: 'bottom center', originL: 'bottom center', sway: 5, dur: 4.8 },
+  // 5. White Flowers (Edge)
+  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/a6df4217-c3b8-4a03-bcce-4f71c0e5b43f.webp', z: 13, w: 'w-[30vw] md:w-[40vw]', 
+    posR: '-right-6 md:-right-10 -bottom-6', posL: '-left-6 md:-left-10 -bottom-6', 
+    originR: 'bottom center', originL: 'bottom center', sway: 8, dur: 5.5 },
+  // 6. Main Rose
+  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/9e5debfa-43f1-4b57-9c88-b48034b6f6ff.webp', z: 14, w: 'w-[35vw] md:w-[30vw]', 
+    posR: 'right-[10%] md:right-[18%] -bottom-16', posL: 'left-[10%] md:left-[18%] -bottom-16', 
+    originR: 'bottom center', originL: 'bottom center', sway: 6, dur: 4.6 },
+  // 7. Pink Tulip (Front)
+  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/7ff2204c-4947-49db-b752-4f07fce5068d.webp', z: 15, w: 'w-[35vw] md:w-[35vw]', 
+    posR: 'right-[23%] md:right-[32%] -bottom-15', posL: 'left-[23%] md:left-[32%] -bottom-15', 
+    originR: 'bottom center', originL: 'bottom center', sway: 2, dur: 5 },
+];
 
-// Flowers
-const flower1Left = ref<HTMLImageElement | null>(null);
-const flower1Right = ref<HTMLImageElement | null>(null);
-const flower2Left = ref<HTMLImageElement | null>(null);
-const flower2Right = ref<HTMLImageElement | null>(null);
+const rightFlowers = ref<HTMLImageElement[]>([]);
+const leftFlowers = ref<HTMLImageElement[]>([]);
 
-let timelines: gsap.core.Timeline[] = [];
+const petalImages = [
+  'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/301d75ca-fc72-43ea-9f0f-35d4dc35dd58.webp' // User's requested petal
+];
 
-interface SwayConfig {
-  rotation: number;
-  xRange: number;
-  yRange: number;
-  speed: number;
-  delay: number;
+let activeAnimations: gsap.core.Tween[] = [];
+let spawnTimer: gsap.core.Tween | null = null;
+let initialTimers: gsap.core.Tween[] = [];
+let flowerSwayTimers: gsap.core.Tween[] = [];
+let entranceTimeline: gsap.core.Timeline | null = null;
+
+function randomRange(min: number, max: number) {
+  return Math.random() * (max - min) + min;
 }
 
-function startWindSway(el: HTMLElement, config: SwayConfig) {
-  const tl = gsap.timeline({ repeat: -1, yoyo: true, delay: config.delay });
-  tl.to(el, {
-    rotation: config.rotation,
-    x: config.xRange,
-    y: -config.yRange,
-    duration: 2.8 / config.speed,
-    ease: 'sine.inOut',
-  })
-  .to(el, {
-    rotation: -config.rotation * 0.6,
-    x: -config.xRange * 0.7,
-    y: config.yRange * 0.5,
-    duration: 3.2 / config.speed,
-    ease: 'sine.inOut',
-  })
-  .to(el, {
-    rotation: config.rotation * 0.4,
-    x: config.xRange * 0.5,
-    y: -config.yRange * 0.3,
-    duration: 2.5 / config.speed,
-    ease: 'sine.inOut',
+function spawnPetal() {
+  const container = petalsContainer.value;
+  if (!container) return;
+
+  const img = document.createElement('img');
+  img.src = petalImages[0];
+  img.alt = '';
+  img.style.position = 'absolute';
+  img.style.pointerEvents = 'none';
+  img.style.willChange = 'transform, opacity';
+
+  // Random size for variety
+  const size = randomRange(10, 20);
+  img.style.width = `${size}px`;
+  img.style.height = 'auto';
+
+  // Start well above the viewport with a random X position
+  const startX = randomRange(-10, 100); 
+  img.style.left = `${startX}%`;
+  img.style.top = `-50px`;
+
+  // Random initial rotation & random static opacity
+  img.style.transform = `rotate(${randomRange(0, 180)}deg)`;
+  img.style.opacity = String(randomRange(1, 1)); // Opacity stays constant so it doesn't fade weirdly
+
+  container.appendChild(img);
+
+  const containerHeight = container.offsetHeight || window.innerHeight;
+  const fallDuration = randomRange(10, 18); // very slow and peaceful fall
+
+  // 1. Independent Main Fall (Y-Axis)
+  const masterTween = gsap.to(img, {
+    y: containerHeight + 100, 
+    duration: fallDuration,
+    ease: 'none',
+    onComplete: () => {
+      // Kill all tweens associated with this element to prevent memory leaks
+      gsap.killTweensOf(img);
+      img.remove();
+      const idx = activeAnimations.indexOf(masterTween);
+      if (idx > -1) activeAnimations.splice(idx, 1);
+    },
   });
-  timelines.push(tl);
+
+  // 2. Organic Horizontal Drift (Sway X)
+  const driftX = randomRange(50, 150) * (Math.random() > 0.5 ? 1 : -1);
+  gsap.to(img, {
+    x: `+=${driftX}`,
+    duration: randomRange(2.5, 4.5), // Independent duration from fall
+    ease: 'sine.inOut',
+    yoyo: true,
+    repeat: -1
+  });
+
+  // 3. Gentle 2D Rocking (Rotation)
+  gsap.to(img, {
+    rotation: `+=${randomRange(15, 35) * (Math.random() > 0.5 ? 1 : -1)}`, // Just rock back and forth 15-35 degrees
+    duration: randomRange(2, 4),
+    ease: 'sine.inOut',
+    yoyo: true,
+    repeat: -1
+  });
+
+  activeAnimations.push(masterTween);
 }
 
-// ============================================
-// SWAY CONFIGS
-// ============================================
-const flower1Sway: SwayConfig = {
-  rotation: 4, xRange: 8, yRange: 5, speed: 0.7, delay: 0,
-};
-const flower2Sway: SwayConfig = {
-  rotation: 2.5, xRange: 5, yRange: 3, speed: 1.1, delay: 0,
-};
-const tree2Sway: SwayConfig = {
-  rotation: 3, xRange: 4, yRange: 3, speed: 1, delay: 0,
-};
+function startSpawningLoop() {
+  spawnPetal();
+  // Schedule next petal -> GSAP's delayedCall automatically pauses when the tab is inactive!
+  spawnTimer = gsap.delayedCall(randomRange(0.6, 1.2), startSpawningLoop);
+}
 
 onMounted(() => {
-  // =============================================
-  // INITIAL STATES
-  // =============================================
+// === START BOTTOM FLOWERS ANIMATION ===
+  flowersList.forEach((f, i) => {
+    // Buat satu angka acak unik untuk jenis bunga ini, 
+    // biar bunga kiri dan kanan jenis ini mulainya persis berbarengan!
+    const randomStart = Math.random(); 
 
-  // Tree 1 (curtain): Start zoomed in at center, covering the screen
-  if (tree1Left.value) {
-    gsap.set(tree1Left.value, {
-      opacity: 1,
-      x: '30vw',           // pushed toward center
-      scaleX: -3,           // mirrored + zoomed so leaves cover screen
-      scaleY: 3,
-      transformOrigin: 'center center',
-    });
-  }
-  if (tree1Right.value) {
-    gsap.set(tree1Right.value, {
-      opacity: 1,
-      x: '-30vw',           // pushed toward center
-      scale: 3,             // zoomed so leaves cover screen
-      transformOrigin: 'center center',
-    });
-  }
+    // Animate Right Side
+    const rEl = rightFlowers.value[i];
+    if (rEl) {
+      // Swing fully from -sway to +sway for wider left/right swaying
+      const tl = gsap.fromTo(rEl, 
+        { rotation: -f.sway },
+        {
+          rotation: f.sway,
+          duration: f.dur,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+        }
+      );
+      // Offset start time randomly so they don't move exactly together
+      tl.progress(randomStart); 
+      flowerSwayTimers.push(tl);
+    }
 
-  // Tree 2 (rise): Hidden below
-  if (tree2Left.value) {
-    gsap.set(tree2Left.value, { y: 300, opacity: 0, scaleX: -1, transformOrigin: 'center bottom' });
-  }
-  if (tree2Right.value) {
-    gsap.set(tree2Right.value, { y: 300, opacity: 0, transformOrigin: 'center bottom' });
-  }
-
-  // Flowers: Hidden below
-  gsap.set([flower1Left.value, flower2Left.value], { y: 250, opacity: 0, transformOrigin: 'center bottom' });
-  gsap.set([flower1Right.value, flower2Right.value], { y: 250, opacity: 0, scaleX: -1, transformOrigin: 'center bottom' });
-
-  // =============================================
-  // ANIMATION TIMELINE
-  // =============================================
-  const masterTl = gsap.timeline({ delay: 0.3 });
-
-  // STAGE 1a: Hold the curtain visible for a moment (leaves covering screen)
-  masterTl.to({}, { duration: 0.5 })
-
-  // STAGE 1b: Curtain opens — trees slide to sides + shrink + fade out
-    .to(tree1Left.value, {
-      x: '-120%',           // slide off-screen left
-      scaleX: -1,           // back to normal mirror size
-      scaleY: 1,
-      opacity: 0,
-      duration: 2.0,
-      ease: 'power3.inOut',
-    })
-    .to(tree1Right.value, {
-      x: '120%',            // slide off-screen right
-      scale: 1,             // back to normal size
-      opacity: 0,
-      duration: 2.0,
-      ease: 'power3.inOut',
-    }, '<')                  // simultaneous
-
-  // STAGE 2: Tree 2 rises from bottom (during curtain opening)
-    .to(tree2Left.value, {
-      y: 0, opacity: 1, duration: 1.4, ease: 'power3.out',
-    }, '-=1.0')
-    .to(tree2Right.value, {
-      y: 0, opacity: 1, duration: 1.4, ease: 'power3.out',
-    }, '<')
-
-  // STAGE 3: Flowers rise from bottom
-    .to(flower1Left.value, {
-      y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
-    }, '-=0.8')
-    .to(flower1Right.value, {
-      y: 0, opacity: 1, duration: 1.2, ease: 'power3.out',
-    }, '<')
-    .to(flower2Left.value, {
-      y: 0, opacity: 1, duration: 1, ease: 'power3.out',
-    }, '-=0.7')
-    .to(flower2Right.value, {
-      y: 0, opacity: 1, duration: 1, ease: 'power3.out',
-    }, '<');
-
-  // STAGE 4: Start wind sway on everything
-  masterTl.call(() => {
-    // Tree 2 sway
-    if (tree2Left.value) startWindSway(tree2Left.value, tree2Sway);
-    if (tree2Right.value) startWindSway(tree2Right.value, tree2Sway);
-    // Flowers sway
-    startWindSway(flower1Left.value!, flower1Sway);
-    startWindSway(flower1Right.value!, flower1Sway);
-    startWindSway(flower2Left.value!, flower2Sway);
-    startWindSway(flower2Right.value!, flower2Sway);
+    // Animate Left Side (Mirrored)
+    const lEl = leftFlowers.value[i];
+    if (lEl) {
+      // Force GSAP to apply the flip correctly so it doesn't conflict with rotation
+      gsap.set(lEl, { scaleX: -1 }); 
+      
+      // Kunci untuk bikin gerakannya "wiper" (semua ke kiri bareng ditiup angin):
+      // Karena dia di-flip (-1), kita balik rotasinya (+ ke - bukan - ke +)
+      const tl2 = gsap.fromTo(lEl, 
+        { rotation: f.sway },
+        {
+          rotation: -f.sway,
+          duration: f.dur,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+        }
+      );
+      tl2.progress(randomStart); 
+      flowerSwayTimers.push(tl2);
+    }
   });
 
-  timelines.push(masterTl);
+  // === START ENTRANCE TIMELINE ===
+  const tl = gsap.timeline();
+  entranceTimeline = tl;
+
+  // Set Initial States (Zoomed in on the bottom center)
+  gsap.set(sceneWrapper.value, { scale: 1.85, transformOrigin: 'center bottom' }); 
+  gsap.set(petalsContainer.value, { opacity: 0 }); // Hidden until zoom out
+
+  // Character initial states (invisible, NO shifting down so it looks like typing)
+  gsap.set('.char-anim', { opacity: 0 });
+
+  // Play Sequence
+  tl.to('.char-anim', { opacity: 1, duration: 0.01, stagger: 0.06, ease: 'none', delay: 1.5 })
+    .to(archText.value, { opacity: 1, duration: 1.5 }) // Hold text
+    .to(archText.value, { opacity: 0, duration: 1.0 }) // Fade out text
+    .to(sceneWrapper.value, { scale: 1.0, duration: 2.5, ease: 'power2.inOut' }) // Zoom out Scene (Background + Flowers)
+    .addLabel("zoomEnd")
+    .to(petalsContainer.value, { 
+      opacity: 1, 
+      duration: 1, 
+      onStart: () => {
+        // Start petal spawning right after zoom out completes
+        for (let i = 0; i < 8; i++) {
+          initialTimers.push(gsap.delayedCall(i * 0.4, spawnPetal));
+        }
+        spawnTimer = gsap.delayedCall(3.2, startSpawningLoop);
+      }
+    }, "zoomEnd-=0.5")
+    // Wait ~1.5 seconds after zoom out, then reveal hero content (names/glassmorphism oval)
+    .to(heroContent.value, { opacity: 1, y: 0, duration: 1.8, ease: 'power3.out' }, "zoomEnd+=1.5");
 });
 
 onBeforeUnmount(() => {
-  timelines.forEach(tl => tl.kill());
+  if (spawnTimer) spawnTimer.kill();
+  initialTimers.forEach(t => t.kill());
+  flowerSwayTimers.forEach(t => t.kill());
+  if (entranceTimeline) entranceTimeline.kill();
+  activeAnimations.forEach(tween => tween.kill());
+  activeAnimations = [];
 });
 </script>
