@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import sharp from "sharp";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import supabase from "../database";
 
 const router = Router();
@@ -48,19 +49,38 @@ async function uploadBufferToStorage(file: Express.Multer.File) {
   const cleanExt = ext.replace(/[^a-zA-Z0-9.]/g, "") || ".jpg";
   const name = `${uuidv4()}${cleanExt}`;
 
-  const bucket = isAudioMime(file.mimetype) ? "music" : "uploads";
+  const isMusic = isAudioMime(file.mimetype);
+  const bucket = isMusic ? "music" : "uploads";
+  const publicUrlBase = isMusic 
+    ? process.env.R2_PUBLIC_URL_MUSIC || "https://music.mengundanganda.fun"
+    : process.env.R2_PUBLIC_URL_UPLOADS || "https://media.mengundanganda.fun";
 
-  const { error } = await supabase.storage
-    .from(bucket)
-    .upload(name, buffer, { contentType });
+  // Konfigurasi S3 Client untuk R2
+  const s3Client = new S3Client({
+    region: "auto",
+    endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    credentials: {
+      accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+    },
+  });
 
-  if (error) {
-    console.error("Supabase storage upload error:", error);
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: name,
+    Body: buffer,
+    ContentType: contentType,
+  });
+
+  try {
+    await s3Client.send(command);
+  } catch (error) {
+    console.error("R2 storage upload error:", error);
     throw error;
   }
 
-  const { data } = supabase.storage.from(bucket).getPublicUrl(name);
-  return { url: data.publicUrl, filename: name };
+  const publicUrl = `${publicUrlBase}/${name}`;
+  return { url: publicUrl, filename: name };
 }
 
 const upload = multer({

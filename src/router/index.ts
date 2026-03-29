@@ -73,12 +73,7 @@ if (isLandingPage) {
       component: () => import('@/views/admin/DashboardView.vue'),
       meta: { title: 'Dashboard - Undangan Generator', requiresAuth: true }
     },
-    {
-      path: '/select-template',
-      name: 'select-template',
-      component: () => import('../views/admin/SelectTemplateView.vue'),
-      meta: { title: 'Pilih Tema - Admin UndanganGen', requiresAuth: true }
-    },
+
     {
       path: '/create',
       name: 'create',

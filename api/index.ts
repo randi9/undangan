@@ -5,6 +5,7 @@ import multer from "multer";
 import path from "path";
 import sharp from "sharp";
 import { createClient } from "@supabase/supabase-js";
+import { S3Client, PutObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "node:crypto";
 import {
   requireAuth, requireAdmin,
@@ -89,6 +90,20 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// --- S3/R2 Client ---
+const r2AccountId = process.env.R2_ACCOUNT_ID || "";
+const r2AccessKeyId = process.env.R2_ACCESS_KEY_ID || "";
+const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY || "";
+
+const s3Client = new S3Client({
+  region: "auto",
+  endpoint: `https://${r2AccountId}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: r2AccessKeyId,
+    secretAccessKey: r2SecretAccessKey,
+  },
+});
 
 // Guard: reject all /api/* requests early if Supabase is not configured
 app.use("/api", (req, res, next) => {
@@ -400,10 +415,24 @@ app.delete("/api/invitations/:id", requireAuth, async (req, res) => {
 
     // 3. Delete files from Storage (best-effort, don't block on errors)
     if (uploadsToDelete.length > 0) {
-      await supabase.storage.from("uploads").remove(uploadsToDelete).catch(() => {});
+      try {
+        await s3Client.send(new DeleteObjectsCommand({
+          Bucket: "uploads",
+          Delete: { Objects: uploadsToDelete.map(Key => ({ Key })) }
+        }));
+      } catch (e) {
+        console.error("R2 Delete Error:", e);
+      }
     }
     if (musicToDelete.length > 0) {
-      await supabase.storage.from("music").remove(musicToDelete).catch(() => {});
+      try {
+        await s3Client.send(new DeleteObjectsCommand({
+          Bucket: "music",
+          Delete: { Objects: musicToDelete.map(Key => ({ Key })) }
+        }));
+      } catch (e) {
+        console.error("R2 Delete Error:", e);
+      }
     }
 
     // 4. Delete DB records
@@ -496,11 +525,24 @@ async function uploadToSupabaseStorage(file: Express.Multer.File) {
   }
 
   const name = `${uuidv4()}${ext}`;
-  const bucket = file.mimetype.startsWith("audio/") ? "music" : "uploads";
-  const { error } = await supabase.storage.from(bucket).upload(name, buffer, { contentType });
-  if (error) throw error;
-  const { data } = supabase.storage.from(bucket).getPublicUrl(name);
-  return { url: data.publicUrl, filename: name };
+  const isMusic = file.mimetype.startsWith("audio/");
+  const bucket = isMusic ? "music" : "uploads";
+  
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: name,
+    Body: buffer,
+    ContentType: contentType,
+  });
+
+  await s3Client.send(command);
+
+  const publicUrlBase = isMusic 
+    ? process.env.R2_PUBLIC_URL_MUSIC || "https://music.mengundanganda.fun"
+    : process.env.R2_PUBLIC_URL_UPLOADS || "https://media.mengundanganda.fun";
+  
+  const publicUrl = `${publicUrlBase}/${name}`;
+  return { url: publicUrl, filename: name };
 }
 
 app.post("/api/upload/single", requireAuth, upload.single("photo"), (req: express.Request, res: express.Response) => {

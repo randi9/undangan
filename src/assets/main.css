@@ -631,7 +631,8 @@ input, textarea, select {
 
 .invitation-card-meta {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 12px 16px;
   margin-bottom: 16px;
 }
 
