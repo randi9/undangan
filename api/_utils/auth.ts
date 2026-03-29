@@ -28,7 +28,7 @@ declare global {
 // ============ Clerk Keys (pass explicitly for Vercel serverless) ============
 
 const clerkKeys = {
-  publishableKey: process.env.CLERK_PUBLISHABLE_KEY || "",
+  publishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.VITE_CLERK_PUBLISHABLE_KEY || "",
   secretKey: process.env.CLERK_SECRET_KEY || "",
 };
 
