@@ -6,7 +6,13 @@ import { clerkMiddleware, requireAuth as clerkRequireAuth, getAuth } from "@cler
 
 // Re-use supabase client from env
 const supabaseUrl = process.env.SUPABASE_URL || process.env.SUPABASE_VITE_SUPABASE_URL || "";
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_VITE_SUPABASE_ANON_KEY || "";
+const supabaseKey = 
+  process.env.SUPABASE_SERVICE_ROLE_KEY || 
+  process.env.SUPABASE_SECRET_KEY || 
+  process.env.SUPABASE_ANON_KEY || 
+  process.env.SUPABASE_PUBLISHABLE_KEY || 
+  process.env.SUPABASE_VITE_SUPABASE_ANON_KEY || 
+  "";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export interface AuthUser {
