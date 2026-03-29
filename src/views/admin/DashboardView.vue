@@ -22,24 +22,12 @@
           <span class="material-symbols-rounded">group</span>
           Kelola User
         </router-link>
-        
-        <!-- Mobile Only Logout -->
-        <button class="sidebar-link mobile-only" @click="handleLogout" style="background: transparent; border: none; cursor: pointer;">
-          <span class="material-symbols-rounded">logout</span>
-          Logout
-        </button>
+        <!-- Mobile logout is handled natively by UserButton popover -->
       </nav>
 
-      <div class="sidebar-footer" v-if="authStore.user">
-        <div class="sidebar-user">
-          <div class="sidebar-avatar">{{ authStore.user.username?.charAt(0).toUpperCase() }}</div>
-          <div class="sidebar-user-info">
-            <div class="sidebar-user-name">{{ authStore.user.username }}</div>
-            <div class="sidebar-user-role">{{ authStore.user.role }}</div>
-          </div>
-          <button class="sidebar-logout" @click="handleLogout" title="Logout">
-            <span class="material-symbols-rounded" style="font-size:20px">logout</span>
-          </button>
+      <div class="sidebar-footer" style="padding: 1rem 0; border-top: 1px solid #e1e8f0; margin-top: auto;">
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+          <UserButton showName />
         </div>
       </div>
     </aside>
@@ -251,6 +239,7 @@ import { useRouter } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
 import type { Invitation } from "@/types/invitation";
+import { UserButton } from "@clerk/vue";
 import { resolveAssetUrl } from "@/utils/url";
 
 const router = useRouter();
@@ -260,11 +249,6 @@ const searchQuery = ref("");
 const deleteTarget = ref<Invitation | null>(null);
 const toast = ref<{ type: string; message: string } | null>(null);
 const apiBase = import.meta.env.VITE_API_URL || "";
-
-function handleLogout() {
-  authStore.logout();
-  router.push('/login');
-}
 
 const invitations = computed(() => store.invitations);
 

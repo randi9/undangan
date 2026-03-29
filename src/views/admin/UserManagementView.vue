@@ -235,7 +235,7 @@ async function fetchUsers() {
   error.value = null
   try {
     const res = await fetch(`${API_BASE}/auth/users`, {
-      headers: authStore.getAuthHeaders()
+      headers: await authStore.getAuthHeaders()
     })
     if (!res.ok) throw new Error('Gagal memuat user')
     users.value = await res.json()
@@ -285,7 +285,7 @@ async function handleSubmit() {
 
     const res = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json', ...authStore.getAuthHeaders() },
+      headers: { 'Content-Type': 'application/json', ...(await authStore.getAuthHeaders()) },
       body: JSON.stringify(body)
     })
     const data = await res.json()
@@ -310,7 +310,7 @@ async function handleDelete() {
   try {
     const res = await fetch(`${API_BASE}/auth/users/${deleteTarget.value.id}`, {
       method: 'DELETE',
-      headers: authStore.getAuthHeaders()
+      headers: await authStore.getAuthHeaders()
     })
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))

@@ -1,5 +1,7 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import { clerkMiddleware } from "@clerk/express";
 import invitationRoutes from "./routes/invitations";
 import uploadRoutes from "./routes/upload";
 import rsvpRoutes from "./routes/rsvp";
@@ -72,6 +74,7 @@ app.use(
   }),
 );
 app.use(express.json());
+app.use(clerkMiddleware());
 
 // API Routes
 app.use("/api/auth", authRoutes);

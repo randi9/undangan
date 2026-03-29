@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
-const TOKEN_KEY = 'undangan_token'
 
 export interface AuthUser {
   id: string
@@ -13,12 +12,16 @@ export interface AuthUser {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const token = ref<string | null>(localStorage.getItem(TOKEN_KEY))
+  const token = ref<string | null>(null)
   const user = ref<AuthUser | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  const isAuthenticated = computed(() => !!token.value)
+  // Token getter: a simple function that returns the Clerk session token.
+  // Set by App.vue using the Clerk session object.
+  let _getToken: (() => Promise<string | null>) | null = null
+
+  const isAuthenticated = computed(() => !!user.value)
   const isAdmin = computed(() => user.value?.role === 'admin')
   const canCreateInvitation = computed(() => {
     if (!user.value) return false
@@ -26,60 +29,54 @@ export const useAuthStore = defineStore('auth', () => {
     return (user.value.invitation_count ?? 0) < user.value.max_invitations
   })
 
-  function setToken(newToken: string | null) {
-    token.value = newToken
-    if (newToken) {
-      localStorage.setItem(TOKEN_KEY, newToken)
-    } else {
-      localStorage.removeItem(TOKEN_KEY)
-    }
+  function setTokenGetter(getter: () => Promise<string | null>) {
+    _getToken = getter
   }
 
-  function getAuthHeaders(): Record<string, string> {
-    if (!token.value) return {}
-    return { Authorization: `Bearer ${token.value}` }
-  }
-
-  async function login(username: string, password: string) {
-    loading.value = true
-    error.value = null
+  async function getAuthHeaders(): Promise<Record<string, string>> {
     try {
-      const res = await fetch(`${API_BASE}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        throw new Error(data.error || 'Login gagal')
+      let tokenValue: string | null = null
+
+      if (_getToken) {
+        tokenValue = await _getToken()
       }
-      setToken(data.token)
-      user.value = data.user
-      return true
-    } catch (e: any) {
-      error.value = e.message
-      return false
-    } finally {
-      loading.value = false
+
+      if (!tokenValue) {
+        console.warn('[Auth] No token available from getter')
+        return {}
+      }
+
+      token.value = tokenValue
+      return { Authorization: `Bearer ${tokenValue}` }
+    } catch (err) {
+      console.error('[Auth] Error getting token:', err)
+      return {}
     }
+  }
+
+  async function login() {
+    return fetchMe()
   }
 
   async function fetchMe() {
-    if (!token.value) return false
     loading.value = true
     try {
-      const res = await fetch(`${API_BASE}/auth/me`, {
-        headers: getAuthHeaders(),
-      })
+      const headers = await getAuthHeaders()
+      if (!headers.Authorization) {
+        console.warn('[Auth] fetchMe aborted: no Authorization header')
+        return false
+      }
+
+      const res = await fetch(`${API_BASE}/auth/me`, { headers })
       if (!res.ok) {
-        setToken(null)
+        console.error('[Auth] fetchMe failed:', res.status, await res.text())
         user.value = null
         return false
       }
       user.value = await res.json()
       return true
-    } catch {
-      setToken(null)
+    } catch (err) {
+      console.error('[Auth] fetchMe error:', err)
       user.value = null
       return false
     } finally {
@@ -88,8 +85,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function logout() {
-    setToken(null)
     user.value = null
+    token.value = null
   }
 
   return {
@@ -100,6 +97,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     isAdmin,
     canCreateInvitation,
+    setTokenGetter,
     getAuthHeaders,
     login,
     fetchMe,

@@ -1,0 +1,22 @@
+﻿ M .gitignore
+ M README.md
+ M api/index.ts
+ M deployment_guide.md
+D  server/.env
+ M server/package.json
+ M server/src/database.ts
+ M server/src/index.ts
+ M server/src/routes/invitations.ts
+ M server/src/routes/rsvp.ts
+ M server/src/routes/upload.ts
+ M src/types/invitation.ts
+ M src/views/admin/CreateInvitationView.vue
+ M src/views/admin/DashboardView.vue
+ M src/views/admin/EditInvitationView.vue
+ M src/views/invitation/InvitationView.vue
+ M vite.config.ts
+?? .github/
+?? git_changes.txt
+?? gitstatus.txt
+?? server/.env.example
+?? src/utils/

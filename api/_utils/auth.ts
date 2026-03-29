@@ -1,11 +1,19 @@
-import { Router } from "express";
+// Auth middleware & helpers — Clerk Auth for Vercel Serverless
+import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
-import supabase from "../database";
-import { requireAuth as clerkRequireAuth, getAuth } from '@clerk/express';
+import { createClient } from "@supabase/supabase-js";
+import { clerkMiddleware, requireAuth as clerkRequireAuth, getAuth } from "@clerk/express";
 
-const router = Router();
-
-// ============ Types ============
+// Re-use supabase client from env
+const supabaseUrl = process.env.SUPABASE_URL || process.env.SUPABASE_VITE_SUPABASE_URL || "";
+const supabaseKey = 
+  process.env.SUPABASE_SERVICE_ROLE_KEY || 
+  process.env.SUPABASE_SECRET_KEY || 
+  process.env.SUPABASE_ANON_KEY || 
+  process.env.SUPABASE_PUBLISHABLE_KEY || 
+  process.env.SUPABASE_VITE_SUPABASE_ANON_KEY || 
+  "";
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export interface AuthUser {
   id: string;
@@ -23,20 +31,27 @@ declare global {
   }
 }
 
-// ============ Helpers ============
+// ============ Clerk Keys (pass explicitly for Vercel serverless) ============
+
+const clerkKeys = {
+  publishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.VITE_CLERK_PUBLISHABLE_KEY || "",
+  secretKey: process.env.CLERK_SECRET_KEY || "",
+};
+
+export const clerkMw = clerkMiddleware(clerkKeys);
 
 // ============ Middleware ============
 
+// requireAuth: Clerk verifies the token, then we sync the user to Supabase
 export const requireAuth = [
-  clerkRequireAuth(),
+  clerkRequireAuth(clerkKeys),
   async (req: any, res: any, next: any) => {
     try {
-      // Use getAuth() from @clerk/express v2 to access auth data
       const auth = getAuth(req);
       const clerkId = auth.userId;
-      
+
       console.log('[Auth Debug] getAuth result:', { userId: clerkId, sessionId: auth.sessionId });
-      
+
       if (!clerkId) {
         return res.status(401).json({ error: "Tidak terautentikasi oleh Clerk." });
       }
@@ -49,7 +64,6 @@ export const requireAuth = [
 
       if (!user) {
         // Auto-create local user mapped to Clerk ID
-        // First user across the db? Let's check.
         const { count } = await supabase.from('users').select('id', { count: 'exact', head: true });
         const isFirstUser = count === 0;
 
@@ -78,7 +92,7 @@ export const requireAuth = [
   }
 ];
 
-export function requireAdmin(req: any, res: any, next: any): void {
+export function requireAdmin(req: Request, res: Response, next: NextFunction): void {
   if (!req.user || req.user.role !== "admin") {
     res.status(403).json({ error: "Akses ditolak. Hanya admin yang diizinkan." });
     return;
@@ -86,17 +100,30 @@ export function requireAdmin(req: any, res: any, next: any): void {
   next();
 }
 
-// ============ Routes ============
+// ============ Helpers ============
 
-// POST /api/auth/login
-// Dihapus karena login sepenuhnya dihandle oleh Clerk UI di frontend.
+export async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, 10);
+}
+
+function generateRandomString(length: number): string {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+// ============ Auth Route Handlers ============
+
+// POST /api/auth/login — Removed, Clerk handles login via frontend UI
 
 // GET /api/auth/me
-router.get("/me", requireAuth, async (req, res) => {
+export async function meHandler(req: Request, res: Response) {
   try {
     if (!req.user) {
-      res.status(401).json({ error: "Tidak terautentikasi." });
-      return;
+      return res.status(401).json({ error: "Tidak terautentikasi." });
     }
 
     const user = req.user;
@@ -111,14 +138,11 @@ router.get("/me", requireAuth, async (req, res) => {
     console.error("Me error:", err);
     res.status(500).json({ error: "Gagal mengambil data user." });
   }
-});
+}
 
-// POST /api/auth/seed-admin (Dihapus, Clerk handles identity)
+// ============ User Management (Admin) ============
 
-// ============ User Management (Admin-only) ============
-
-// GET /api/auth/users
-router.get("/users", requireAuth, requireAdmin, async (_req, res) => {
+export async function listUsersHandler(_req: Request, res: Response) {
   try {
     const { data: users, error } = await supabase
       .from("users")
@@ -140,10 +164,9 @@ router.get("/users", requireAuth, requireAdmin, async (_req, res) => {
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Gagal mengambil data user." });
   }
-});
+}
 
-// POST /api/auth/users
-router.post("/users", requireAuth, requireAdmin, async (req, res) => {
+export async function createUserHandler(req: Request, res: Response) {
   try {
     let { username, password, role, max_invitations } = req.body;
 
@@ -154,15 +177,9 @@ router.post("/users", requireAuth, requireAdmin, async (req, res) => {
     role = role === "admin" ? "admin" : "user";
     max_invitations = Math.max(1, Number(max_invitations) || 3);
 
-    const { data: existing } = await supabase
-      .from("users")
-      .select("id")
-      .eq("username", username)
-      .single();
-
+    const { data: existing } = await supabase.from("users").select("id").eq("username", username).single();
     if (existing) {
-      res.status(400).json({ error: "Username sudah digunakan." });
-      return;
+      return res.status(400).json({ error: "Username sudah digunakan." });
     }
 
     const passwordHash = await hashPassword(password);
@@ -173,16 +190,14 @@ router.post("/users", requireAuth, requireAdmin, async (req, res) => {
       .single();
 
     if (error) throw error;
-
     res.status(201).json({ ...user, plain_password: password, invitation_count: 0 });
   } catch (err: any) {
     console.error("Create user error:", err);
     res.status(500).json({ error: err.message || "Gagal membuat user." });
   }
-});
+}
 
-// PUT /api/auth/users/:id
-router.put("/users/:id", requireAuth, requireAdmin, async (req, res) => {
+export async function updateUserHandler(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const { role, max_invitations, password, username } = req.body;
@@ -191,10 +206,7 @@ router.put("/users/:id", requireAuth, requireAdmin, async (req, res) => {
     if (username) updateData.username = username.trim().toLowerCase();
     if (role !== undefined) updateData.role = role === "admin" ? "admin" : "user";
     if (max_invitations !== undefined) updateData.max_invitations = Math.max(1, Number(max_invitations));
-    if (password) {
-      const bcrypt = require('bcryptjs');
-      updateData.password_hash = await bcrypt.hash(password, 10);
-    }
+    if (password) updateData.password_hash = await hashPassword(password);
 
     const { data: updated, error } = await supabase
       .from("users")
@@ -204,24 +216,19 @@ router.put("/users/:id", requireAuth, requireAdmin, async (req, res) => {
       .single();
 
     if (error) throw error;
-    if (!updated) {
-      res.status(404).json({ error: "User tidak ditemukan." });
-      return;
-    }
+    if (!updated) return res.status(404).json({ error: "User tidak ditemukan." });
 
     res.json(updated);
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Gagal update user." });
   }
-});
+}
 
-// DELETE /api/auth/users/:id
-router.delete("/users/:id", requireAuth, requireAdmin, async (req, res) => {
+export async function deleteUserHandler(req: Request, res: Response) {
   try {
     const { id } = req.params;
     if (req.user?.id === id) {
-      res.status(400).json({ error: "Tidak bisa menghapus akun sendiri." });
-      return;
+      return res.status(400).json({ error: "Tidak bisa menghapus akun sendiri." });
     }
 
     await supabase.from("invitations").update({ owner_id: null }).eq("owner_id", id);
@@ -232,10 +239,9 @@ router.delete("/users/:id", requireAuth, requireAdmin, async (req, res) => {
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Gagal menghapus user." });
   }
-});
+}
 
-// GET /api/auth/users/:id/invitations
-router.get("/users/:id/invitations", requireAuth, requireAdmin, async (req, res) => {
+export async function getUserInvitationsHandler(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const { data, error } = await supabase
@@ -249,6 +255,4 @@ router.get("/users/:id/invitations", requireAuth, requireAdmin, async (req, res)
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Gagal mengambil undangan user." });
   }
-});
-
-export default router;
+}
