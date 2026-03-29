@@ -47,7 +47,10 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       token.value = tokenValue
-      return { Authorization: `Bearer ${tokenValue}` }
+      return { 
+        'Authorization': `Bearer ${tokenValue}`,
+        'Accept': 'application/json'
+      }
     } catch (err) {
       console.error('[Auth] Error getting token:', err)
       return {}
