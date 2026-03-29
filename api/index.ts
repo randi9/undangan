@@ -8,8 +8,8 @@ import { createClient } from "@supabase/supabase-js";
 import { S3Client, PutObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "node:crypto";
 import {
-  requireAuth, requireAdmin,
-  loginHandler, meHandler, seedAdminHandler,
+  clerkMw, requireAuth, requireAdmin,
+  meHandler,
   listUsersHandler, createUserHandler, updateUserHandler,
   deleteUserHandler, getUserInvitationsHandler,
 } from "./auth.js";
@@ -73,6 +73,7 @@ app.use(
   }),
 );
 app.use(express.json({ limit: "10mb" }));
+app.use(clerkMw);
 
 // --- Supabase Client ---
 const supabaseUrl =
@@ -117,12 +118,10 @@ app.use("/api", (req, res, next) => {
 });
 
 // =============================================================
-//  AUTH ROUTES
+//  AUTH ROUTES (Clerk handles login via frontend UI)
 // =============================================================
 
-app.post("/api/auth/login", loginHandler);
 app.get("/api/auth/me", requireAuth, meHandler);
-app.post("/api/auth/seed-admin", seedAdminHandler);
 
 // =============================================================
 //  USER MANAGEMENT (Admin only) — under /api/auth/users to match frontend

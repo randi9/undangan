@@ -1,12 +1,9 @@
 import { Router } from "express";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import supabase from "../database";
+import { requireAuth as clerkRequireAuth, getAuth } from '@clerk/express';
 
 const router = Router();
-
-const JWT_SECRET = process.env.JWT_SECRET || "undangan-secret-key-change-in-production";
-const JWT_EXPIRES_IN = "7d";
 
 // ============ Types ============
 
@@ -28,49 +25,58 @@ declare global {
 
 // ============ Helpers ============
 
-function generateToken(user: AuthUser): string {
-  return jwt.sign(
-    { id: user.id, username: user.username, role: user.role, max_invitations: user.max_invitations },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
-  );
-}
-
-async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, 10);
-}
-
-async function comparePassword(password: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(password, hash);
-}
-
-function generateRandomString(length: number): string {
-  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
-
 // ============ Middleware ============
 
-export function requireAuth(req: any, res: any, next: any): void {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ error: "Token tidak ditemukan. Silakan login." });
-    return;
-  }
+export const requireAuth = [
+  clerkRequireAuth(),
+  async (req: any, res: any, next: any) => {
+    try {
+      // Use getAuth() from @clerk/express v2 to access auth data
+      const auth = getAuth(req);
+      const clerkId = auth.userId;
+      
+      console.log('[Auth Debug] getAuth result:', { userId: clerkId, sessionId: auth.sessionId });
+      
+      if (!clerkId) {
+        return res.status(401).json({ error: "Tidak terautentikasi oleh Clerk." });
+      }
 
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET) as AuthUser;
-    req.user = decoded;
-    next();
-  } catch {
-    res.status(401).json({ error: "Token tidak valid atau sudah expired." });
+      let { data: user } = await supabase
+        .from("users")
+        .select("*")
+        .eq("username", clerkId)
+        .single();
+
+      if (!user) {
+        // Auto-create local user mapped to Clerk ID
+        // First user across the db? Let's check.
+        const { count } = await supabase.from('users').select('id', { count: 'exact', head: true });
+        const isFirstUser = count === 0;
+
+        const { data: newUser, error } = await supabase
+          .from("users")
+          .insert([{
+            username: clerkId,
+            password_hash: "clerk_managed",
+            role: isFirstUser ? "admin" : "user",
+            max_invitations: isFirstUser ? 999 : 3,
+          }])
+          .select("*")
+          .single();
+
+        if (error) throw error;
+        user = newUser;
+        console.log('[Auth] Created new user:', { clerkId, role: user.role, isFirstUser });
+      }
+
+      req.user = user;
+      next();
+    } catch (err) {
+      console.error("Auth sync error:", err);
+      res.status(500).json({ error: "Gagal sinkronisasi user Clerk." });
+    }
   }
-}
+];
 
 export function requireAdmin(req: any, res: any, next: any): void {
   if (!req.user || req.user.role !== "admin") {
@@ -83,45 +89,7 @@ export function requireAdmin(req: any, res: any, next: any): void {
 // ============ Routes ============
 
 // POST /api/auth/login
-router.post("/login", async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    if (!username || !password) {
-      res.status(400).json({ error: "Username dan password wajib diisi." });
-      return;
-    }
-
-    const { data: user, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("username", username.trim().toLowerCase())
-      .single();
-
-    if (error || !user) {
-      res.status(401).json({ error: "Username atau password salah." });
-      return;
-    }
-
-    const validPassword = await comparePassword(password, user.password_hash);
-    if (!validPassword) {
-      res.status(401).json({ error: "Username atau password salah." });
-      return;
-    }
-
-    const authUser: AuthUser = {
-      id: user.id,
-      username: user.username,
-      role: user.role,
-      max_invitations: user.max_invitations,
-    };
-
-    const token = generateToken(authUser);
-    res.json({ token, user: authUser });
-  } catch (err: any) {
-    console.error("Login error:", err);
-    res.status(500).json({ error: "Gagal login. Coba lagi." });
-  }
-});
+// Dihapus karena login sepenuhnya dihandle oleh Clerk UI di frontend.
 
 // GET /api/auth/me
 router.get("/me", requireAuth, async (req, res) => {
@@ -131,16 +99,7 @@ router.get("/me", requireAuth, async (req, res) => {
       return;
     }
 
-    const { data: user, error } = await supabase
-      .from("users")
-      .select("id, username, role, max_invitations")
-      .eq("id", req.user.id)
-      .single();
-
-    if (error || !user) {
-      res.status(401).json({ error: "User tidak ditemukan." });
-      return;
-    }
+    const user = req.user;
 
     const { count } = await supabase
       .from("invitations")
@@ -154,39 +113,7 @@ router.get("/me", requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/auth/seed-admin
-router.post("/seed-admin", async (_req, res) => {
-  try {
-    const { data: existing } = await supabase
-      .from("users")
-      .select("id")
-      .eq("username", "admin")
-      .single();
-
-    if (existing) {
-      res.json({ message: "Admin sudah ada.", id: existing.id });
-      return;
-    }
-
-    const passwordHash = await hashPassword("admin123");
-    const { data: admin, error } = await supabase
-      .from("users")
-      .insert([{
-        username: "admin",
-        password_hash: passwordHash,
-        role: "admin",
-        max_invitations: 999,
-      }])
-      .select("id, username, role, max_invitations")
-      .single();
-
-    if (error) throw error;
-    res.status(201).json({ message: "Admin berhasil dibuat.", user: admin, default_password: "admin123" });
-  } catch (err: any) {
-    console.error("Seed admin error:", err);
-    res.status(500).json({ error: err.message || "Gagal membuat admin." });
-  }
-});
+// POST /api/auth/seed-admin (Dihapus, Clerk handles identity)
 
 // ============ User Management (Admin-only) ============
 
@@ -264,7 +191,10 @@ router.put("/users/:id", requireAuth, requireAdmin, async (req, res) => {
     if (username) updateData.username = username.trim().toLowerCase();
     if (role !== undefined) updateData.role = role === "admin" ? "admin" : "user";
     if (max_invitations !== undefined) updateData.max_invitations = Math.max(1, Number(max_invitations));
-    if (password) updateData.password_hash = await hashPassword(password);
+    if (password) {
+      const bcrypt = require('bcryptjs');
+      updateData.password_hash = await bcrypt.hash(password, 10);
+    }
 
     const { data: updated, error } = await supabase
       .from("users")

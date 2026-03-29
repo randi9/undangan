@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
 
 const host = window.location.hostname
 const parts = host.split('.')
@@ -113,41 +112,8 @@ const router = createRouter({
   routes
 })
 
-let authInitialized = false
-
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach((to, _from, next) => {
   document.title = (to.meta.title as string) || 'Undangan Generator'
-
-  // Skip auth checks for non-admin routes (invitation view, landing page)
-  if (!to.meta.requiresAuth && !to.meta.guest) {
-    return next()
-  }
-
-  const auth = useAuthStore()
-
-  // Initialize auth state on first navigation
-  if (!authInitialized && auth.token) {
-    await auth.fetchMe()
-    authInitialized = true
-  }
-
-  // Guest-only routes (login page) — redirect to dashboard if already logged in
-  if (to.meta.guest && auth.isAuthenticated && auth.user) {
-    return next({ name: 'dashboard' })
-  }
-
-  // Protected routes — redirect to login if not authenticated
-  if (to.meta.requiresAuth) {
-    if (!auth.isAuthenticated || !auth.user) {
-      return next({ name: 'login', query: { redirect: to.fullPath } })
-    }
-
-    // Admin-only routes
-    if (to.meta.requiresAdmin && !auth.isAdmin) {
-      return next({ name: 'dashboard' })
-    }
-  }
-
   next()
 })
 
