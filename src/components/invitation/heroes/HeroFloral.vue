@@ -5,7 +5,7 @@
       <!-- Background — full cover -->
       <div class="absolute inset-0 overflow-hidden">
         <img
-          src="https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/1e91f2c1-348b-4ca8-80c2-7357afa31695.webp"
+          src="https://media.mengundanganda.fun/tema%20floral/6fbdb9f8-603e-4e50-a194-5027e82ba992.webp"
           alt="Cover Background"
           class="min-w-full min-h-full w-full h-full object-cover object-bottom"
         />
@@ -62,31 +62,31 @@ const petalsContainer = ref<HTMLDivElement | null>(null);
 // Flower bottom assets layer by layer (from back to front)
 const flowersList = [
   // 1. Grass (Far Back)
-  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/2ea7bb0b-e6ef-4fc6-868e-bfc558b2001a.webp', z: 9, w: 'w-[50vw] md:w-[35vw]', 
+  { url: 'https://media.mengundanganda.fun/tema%20floral/4862353c-2015-49cd-83e1-3567b88caa21.webp', z: 9, w: 'w-[50vw] md:w-[35vw]', 
     posR: '-right-4 md:-right-8 -bottom-4', posL: '-left-4 md:-left-8 -bottom-4', 
     originR: 'bottom center', originL: 'bottom center', sway: 5, dur: 4.2 },
   // 2. Lily Bud
-  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/af02784e-d04d-48e0-b8ad-d0d77da8fa0a.webp', z: 10, w: 'w-[33vw] md:w-[15vw]', 
+  { url: 'https://media.mengundanganda.fun/tema%20floral/9f3dbc82-c549-4f19-9eb0-bef851f6c4c8.webp', z: 10, w: 'w-[33vw] md:w-[15vw]', 
     posR: '-right-[3%] md:right-[8%] bottom-4', posL: '-left-[3%] md:left-[8%] bottom-4', 
     originR: 'bottom center', originL: 'bottom center', sway: 8, dur: 6 },
   // 3. Calla Lily
-  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/3de806bf-fb2d-43e6-a31d-56c75fbed389.webp', z: 12, w: 'w-[30vw] md:w-[24vw]', 
+  { url: 'https://media.mengundanganda.fun/tema%20floral/8d5b9f60-bb1b-4ef3-a986-1626a0581f5e.webp', z: 12, w: 'w-[30vw] md:w-[24vw]', 
     posR: 'right-[5%] md:right-[18%] -bottom-2', posL: 'left-[15%] md:left-[18%] -bottom-2', 
     originR: 'bottom center', originL: 'bottom center', sway: 7, dur: 4.4 },
   // 4. Back Clusters
-  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/fe3bc052-458a-4310-ac3e-3d3b3a80398a.webp', z: 11, w: 'w-[35vw] md:w-[26vw]', 
+  { url: 'https://media.mengundanganda.fun/tema%20floral/07fcad59-d8b0-4e51-b48f-47fdb4242c0b.webp', z: 11, w: 'w-[35vw] md:w-[26vw]', 
     posR: 'right-[10%] md:right-[15%] -bottom-5', posL: 'left-[10%] md:left-[15%] -bottom-5', 
     originR: 'bottom center', originL: 'bottom center', sway: 5, dur: 4.8 },
   // 5. White Flowers (Edge)
-  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/a6df4217-c3b8-4a03-bcce-4f71c0e5b43f.webp', z: 13, w: 'w-[30vw] md:w-[40vw]', 
+  { url: 'https://media.mengundanganda.fun/tema%20floral/4d2f8810-a681-4267-b35a-155e887dd790.webp', z: 13, w: 'w-[30vw] md:w-[40vw]', 
     posR: '-right-6 md:-right-10 -bottom-6', posL: '-left-6 md:-left-10 -bottom-6', 
     originR: 'bottom center', originL: 'bottom center', sway: 8, dur: 5.5 },
   // 6. Main Rose
-  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/9e5debfa-43f1-4b57-9c88-b48034b6f6ff.webp', z: 14, w: 'w-[35vw] md:w-[30vw]', 
+  { url: 'https://media.mengundanganda.fun/tema%20floral/85b4ed96-bfa7-4952-9b27-139f446a94b3.webp', z: 14, w: 'w-[35vw] md:w-[30vw]', 
     posR: 'right-[10%] md:right-[18%] -bottom-16', posL: 'left-[10%] md:left-[18%] -bottom-16', 
     originR: 'bottom center', originL: 'bottom center', sway: 6, dur: 4.6 },
   // 7. Pink Tulip (Front)
-  { url: 'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/7ff2204c-4947-49db-b752-4f07fce5068d.webp', z: 15, w: 'w-[35vw] md:w-[35vw]', 
+  { url: 'https://media.mengundanganda.fun/tema%20floral/1d810e5c-94dc-4a24-8faf-20af72ba2417.webp', z: 15, w: 'w-[35vw] md:w-[35vw]', 
     posR: 'right-[23%] md:right-[32%] -bottom-15', posL: 'left-[23%] md:left-[32%] -bottom-15', 
     originR: 'bottom center', originL: 'bottom center', sway: 2, dur: 5 },
 ];
@@ -95,7 +95,7 @@ const rightFlowers = ref<HTMLImageElement[]>([]);
 const leftFlowers = ref<HTMLImageElement[]>([]);
 
 const petalImages = [
-  'https://uuugoccvjzgjxvatrjgr.supabase.co/storage/v1/object/public/uploads/301d75ca-fc72-43ea-9f0f-35d4dc35dd58.webp' // User's requested petal
+  'https://media.mengundanganda.fun/tema%20floral/c3afb699-1d69-47f7-821c-a42030035cab.webp'
 ];
 
 let activeAnimations: gsap.core.Tween[] = [];
@@ -113,7 +113,7 @@ function spawnPetal() {
   if (!container) return;
 
   const img = document.createElement('img');
-  img.src = petalImages[0];
+  img.src = petalImages[0] || '';
   img.alt = '';
   img.style.position = 'absolute';
   img.style.pointerEvents = 'none';
