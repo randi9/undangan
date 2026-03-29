@@ -25,15 +25,20 @@ declare global {
   }
 }
 
-// ============ Clerk Middleware (global) ============
+// ============ Clerk Keys (pass explicitly for Vercel serverless) ============
 
-export const clerkMw = clerkMiddleware();
+const clerkKeys = {
+  publishableKey: process.env.CLERK_PUBLISHABLE_KEY || "",
+  secretKey: process.env.CLERK_SECRET_KEY || "",
+};
+
+export const clerkMw = clerkMiddleware(clerkKeys);
 
 // ============ Middleware ============
 
 // requireAuth: Clerk verifies the token, then we sync the user to Supabase
 export const requireAuth = [
-  clerkRequireAuth(),
+  clerkRequireAuth(clerkKeys),
   async (req: any, res: any, next: any) => {
     try {
       const auth = getAuth(req);
