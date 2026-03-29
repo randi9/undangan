@@ -12,7 +12,7 @@ import {
   meHandler,
   listUsersHandler, createUserHandler, updateUserHandler,
   deleteUserHandler, getUserInvitationsHandler,
-} from "./auth.js";
+} from "./_utils/auth.js";
 
 // Use Node.js built-in randomUUID instead of `uuid` package
 // uuid v13 is ESM-only and crashes in Vercel's CJS serverless runtime
