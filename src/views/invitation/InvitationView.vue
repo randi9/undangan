@@ -150,7 +150,7 @@ const themes: Record<string, ThemeConfig> = {
     fontHeading: "'Great Vibes', cursive",
     fontBody: "'Inter', sans-serif",
     overlayGradient: 'linear-gradient(180deg, rgba(74,93,78,0.5) 0%, rgba(74,93,78,0.8) 100%)',
-    coverImage: 'https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=1080&q=80',
+    coverImage: 'https://media.mengundanganda.fun/tema%20floral/8a5a275c-909d-448b-8d1d-adaa5a7a39f3.webp',
   },
   minimalist: {
     name: 'minimalist',
@@ -431,23 +431,16 @@ onBeforeUnmount(() => {
       
       <!-- HERO (Dynamic per theme) -->
       <component :is="activeHero" :overlay-gradient="activeTheme.overlayGradient">
-        <div ref="heroOval" class="flex flex-col  gap-4 items-center justify-center w-[260px] h-[400px] mx-auto rounded-full bg-white backdrop-blur-sm border border-white/20 shadow-[0_8px_20px_rgba(0,0,0,0.1)] opacity-0">
-          <p :ref="setHeroTextRef" class="uppercase tracking-[0.4em] text-sm mb-6 text-[var(--theme-secondary)] drop-shadow-md opacity-0">The Wedding of</p>
-          <h1 :ref="setHeroTextRef" class="text-5xl md:text-7xl mb-1 opacity-0 text-[var(--theme-secondary)]" :style="{ fontFamily: activeTheme.fontHeading }">
+        <div ref="heroOval" class="flex flex-col gap-4 items-center justify-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] mx-auto rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)] opacity-0 p-6 md:p-10 text-center">
+          <p :ref="setHeroTextRef" class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium opacity-0">The Wedding of</p>
+          <h1 :ref="setHeroTextRef" class="text-5xl md:text-7xl lg:text-8xl mb-1 opacity-0 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]" :style="{ fontFamily: activeTheme.fontHeading }">
             {{ invitation.groom_name }}
-            <span class="block text-3xl text-[var(--theme-secondary)] my-2">&amp;</span>
+            <span class="block text-3xl md:text-5xl lg:text-6xl text-[#3d4a40] my-2 drop-shadow-sm">&amp;</span>
             {{ invitation.bride_name }}
           </h1>
-          <p v-if="formattedDate" :ref="setHeroTextRef" class="text-[var(--theme-secondary)] mt-4 text-sm md:text-base tracking-[0.2em] font-light opacity-0">{{ formattedDate }}</p>
+          <p v-if="formattedDate" :ref="setHeroTextRef" class="text-[#3d4a40] mt-4 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold opacity-0 drop-shadow-sm">{{ formattedDate }}</p>
         </div>
       </component>
-
-      <!-- QUOTE (Dynamic per theme) -->
-      <component :is="activeQuote"
-        v-if="invitation.quote"
-        :quote="invitation.quote"
-        :theme-config="activeTheme"
-      />
 
       <!-- COUPLE PROFILES (Dynamic per theme) -->
       <component :is="activeCouple"
@@ -495,6 +488,13 @@ onBeforeUnmount(() => {
       <!-- GIFT (Dynamic per theme) -->
       <component :is="activeGift"
         :invitation="invitation"
+        :theme-config="activeTheme"
+      />
+
+      <!-- QUOTE (Dynamic per theme) -->
+      <component :is="activeQuote"
+        v-if="invitation.quote"
+        :quote="invitation.quote"
         :theme-config="activeTheme"
       />
 

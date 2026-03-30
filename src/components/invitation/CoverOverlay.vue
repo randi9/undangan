@@ -23,31 +23,31 @@
         "
       >
         <h1
-          class="text-[80px] leading-[1.1] drop-shadow-md"
+          class="text-[80px] md:text-[110px] lg:text-[130px] leading-[1.1] drop-shadow-md"
           :style="{ fontFamily: fontHeading }"
         >
           {{ groomName }}
-          <span class="block text-[50px] text-white/70 my-1.5">&amp;</span>
+          <span class="block text-[50px] md:text-[70px] lg:text-[80px] text-white/70 my-1.5 md:my-3">&amp;</span>
           {{ brideName }}
         </h1>
 
-        <div class="w-12 h-px bg-white/30 my-6"></div>
+        <div class="w-12 md:w-16 h-px bg-white/30 my-6 md:my-10"></div>
 
-        <div class="w-full max-w-[240px] h-fit flex flex-col items-center gap-2">
-          <div class="flex items-center justify-center gap-3 mb-3">
-            <div class="h-px w-8 bg-white/40"></div>
-            <MailOpen class="w-4 h-4 text-white/70" />
-            <div class="h-px w-8 bg-white/40"></div>
+        <div class="w-full max-w-[240px] md:max-w-[360px] lg:max-w-[420px] h-fit flex flex-col items-center gap-2 md:gap-4">
+          <div class="flex items-center justify-center gap-3 mb-3 md:mb-5">
+            <div class="h-px w-8 md:w-12 bg-white/40"></div>
+            <MailOpen class="w-4 md:w-5 h-4 md:h-5 text-white/70" />
+            <div class="h-px w-8 md:w-12 bg-white/40"></div>
           </div>
 
-          <p class="text-[15px] uppercase tracking-[0.2em] text-white/70 font-medium ">Kepada Yth.</p>
-          <h3 class="text-base font-semibold tracking-wide text-white break-words mb-10 mt-4">{{ guestName || 'Tamu Undangan' }}</h3>
+          <p class="text-[15px] md:text-[18px] uppercase tracking-[0.2em] text-white/70 font-medium ">Kepada Yth.</p>
+          <h3 class="text-base md:text-xl lg:text-2xl font-semibold tracking-wide text-white break-words mb-10 md:mb-14 mt-4 md:mt-6">{{ guestName || 'Tamu Undangan' }}</h3>
 
           <button
             ref="stampRef"
             @click="bukaAmplop"
             class="
-              w-16 h-16 rounded-full flex-shrink-0
+              w-16 md:w-20 h-16 md:h-20 rounded-full flex-shrink-0
               flex flex-col items-center justify-center gap-1
               bg-white/20 backdrop-blur-xl border border-white/40
               text-white hover:bg-white/30
@@ -55,8 +55,8 @@
               shadow-[0_4px_20px_rgba(0,0,0,0.2)]
             "
           >
-            <Mail class="w-6 h-6" />
-            <span class="text-[8px] tracking-widest uppercase font-semibold">Buka</span>
+            <Mail class="w-6 md:w-8 h-6 md:h-8" />
+            <span class="text-[8px] md:text-[10px] tracking-widest uppercase font-semibold">Buka</span>
           </button>
         </div>
       </div>

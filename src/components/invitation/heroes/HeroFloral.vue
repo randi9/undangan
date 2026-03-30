@@ -25,14 +25,10 @@
     </div>
 
     <!-- Intro Text (Inside Arch) -->
-    <div ref="archText" class="absolute inset-0 z-[5] flex items-center justify-center px-6 pointer-events-none pb-[20vh]">
+    <div ref="archText" class="absolute inset-0 z-[5] flex items-center justify-center px-6 pointer-events-none pb-[20vh] opacity-0">
       <h2 class="text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold text-[#3d4a40] text-center uppercase">
-        <div class="block">
-          <span v-for="(char, i) in 'STEP INTO OUR'.split('')" :key="'l1'+i" class="char-anim inline-block whitespace-pre">{{ char }}</span>
-        </div>
-        <div class="block mt-2">
-          <span v-for="(char, i) in 'BEAUTIFUL BEGINNING...'.split('')" :key="'l2'+i" class="char-anim inline-block whitespace-pre">{{ char }}</span>
-        </div>
+        <div class="block">STEP INTO OUR</div>
+        <div class="block mt-2">BEAUTIFUL BEGINNING...</div>
       </h2>
     </div>
 
@@ -237,13 +233,13 @@ onMounted(() => {
   gsap.set(sceneWrapper.value, { scale: 1.85, transformOrigin: 'center bottom' }); 
   gsap.set(petalsContainer.value, { opacity: 0 }); // Hidden until zoom out
 
-  // Character initial states (invisible, NO shifting down so it looks like typing)
-  gsap.set('.char-anim', { opacity: 0 });
+  // Set text initially invisible
+  gsap.set(archText.value, { opacity: 0 });
 
   // Play Sequence
-  tl.to('.char-anim', { opacity: 1, duration: 0.01, stagger: 0.06, ease: 'none', delay: 1.5 })
-    .to(archText.value, { opacity: 1, duration: 1.5 }) // Hold text
-    .to(archText.value, { opacity: 0, duration: 1.0 }) // Fade out text
+  tl.to(archText.value, { opacity: 1, duration: 2.0, delay: 1.0 }) // Fade in smoothly
+    .to(archText.value, { opacity: 1, duration: 1.5 }) // Hold text (delay before fading out)
+    .to(archText.value, { opacity: 0, duration: 1.5 }) // Fade out smoothly
     .to(sceneWrapper.value, { scale: 1.0, duration: 2.5, ease: 'power2.inOut' }) // Zoom out Scene (Background + Flowers)
     .addLabel("zoomEnd")
     .to(petalsContainer.value, { 
