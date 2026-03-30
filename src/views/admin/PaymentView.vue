@@ -48,7 +48,7 @@
 
         <!-- No invitation -->
         <div v-else-if="!invitationId" class="payment-empty">
-          <div class="payment-empty-icon">💳</div>
+          <Icon icon="ph:credit-card-duotone" class="payment-empty-icon" />
           <h2>Pilih Undangan</h2>
           <p>Silakan pilih undangan yang ingin di-upgrade dari dashboard.</p>
           <router-link to="/" class="btn btn-primary btn-lg">
@@ -61,7 +61,7 @@
         <div v-else class="payment-wrapper">
           <!-- Status: Already Paid -->
           <div v-if="paymentData?.payment_status === 'paid'" class="payment-card payment-success-card">
-            <div class="payment-success-icon">✅</div>
+            <Icon icon="ph:check-circle-duotone" class="payment-success-icon" />
             <h2>Undangan Sudah Premium!</h2>
             <p>Undangan Anda sudah dalam status <strong>PAID</strong>. Semua fitur sudah aktif tanpa watermark dan tanpa batas akses.</p>
             <div class="payment-actions">
@@ -75,7 +75,9 @@
           <!-- Status: Trial/Needs Payment -->
           <div v-else class="payment-card">
             <div class="payment-header">
-              <div class="payment-icon">💎</div>
+              <div class="payment-icon-wrapper">
+                <Icon icon="ph:sketch-logo-duotone" class="payment-icon" />
+              </div>
               <h1>Upgrade ke Premium</h1>
               <p class="payment-subtitle">Hapus watermark & dapatkan akses penuh untuk undangan Anda</p>
             </div>
@@ -84,15 +86,20 @@
             <div v-if="paymentData" class="trial-status-box">
               <div class="trial-status-row">
                 <div class="trial-stat">
-                  <span class="trial-stat-icon">📊</span>
-                  <div>
+                  <div class="trial-stat-icon-wrapper primary">
+                    <Icon icon="ph:chart-bar-duotone" class="trial-stat-icon" />
+                  </div>
+                  <div class="trial-stat-info">
                     <div class="trial-stat-label">Sisa Akses</div>
                     <div class="trial-stat-value">{{ paymentData.views_remaining ?? '—' }} / {{ paymentData.max_views || 20 }}</div>
                   </div>
                 </div>
+                <div class="trial-stat-divider"></div>
                 <div class="trial-stat">
-                  <span class="trial-stat-icon">⏰</span>
-                  <div>
+                  <div class="trial-stat-icon-wrapper warning">
+                    <Icon icon="ph:clock-duotone" class="trial-stat-icon" />
+                  </div>
+                  <div class="trial-stat-info">
                     <div class="trial-stat-label">Sisa Waktu Trial</div>
                     <div class="trial-stat-value">
                       <template v-if="paymentData.trial_time_remaining">
@@ -116,43 +123,49 @@
             <!-- Features Comparison -->
             <div class="features-comparison">
               <div class="feature-col feature-trial">
-                <h3>🆓 Trial</h3>
+                <h3>
+                  <Icon icon="ph:gift-duotone" class="feature-title-icon" />
+                  Trial
+                </h3>
                 <ul>
                   <li class="feature-item feature-limited">
-                    <span class="material-symbols-rounded">timer</span>
+                    <Icon icon="ph:hourglass-duotone" class="feature-list-icon" />
                     2 Hari durasi
                   </li>
                   <li class="feature-item feature-limited">
-                    <span class="material-symbols-rounded">visibility</span>
+                    <Icon icon="ph:eye-duotone" class="feature-list-icon" />
                     Maks. 20x akses link
                   </li>
                   <li class="feature-item feature-limited">
-                    <span class="material-symbols-rounded">branding_watermark</span>
+                    <Icon icon="ph:image-square-duotone" class="feature-list-icon" />
                     Ada watermark
                   </li>
                   <li class="feature-item feature-included">
-                    <span class="material-symbols-rounded">edit</span>
+                    <Icon icon="ph:pencil-simple-duotone" class="feature-list-icon" />
                     Edit undangan
                   </li>
                 </ul>
               </div>
               <div class="feature-col feature-premium">
-                <h3>💎 Premium</h3>
+                <h3>
+                  <Icon icon="ph:crown-duotone" class="feature-title-icon premium-icon" />
+                  Premium
+                </h3>
                 <ul>
                   <li class="feature-item feature-included">
-                    <span class="material-symbols-rounded">all_inclusive</span>
+                    <Icon icon="ph:infinity-duotone" class="feature-list-icon" style="color: #3b82f6;" />
                     Akses selamanya
                   </li>
                   <li class="feature-item feature-included">
-                    <span class="material-symbols-rounded">visibility</span>
+                    <Icon icon="ph:eye-duotone" class="feature-list-icon" style="color: #3b82f6;" />
                     Unlimited akses link
                   </li>
                   <li class="feature-item feature-included">
-                    <span class="material-symbols-rounded">hide_image</span>
+                    <Icon icon="ph:image-square-bold" class="feature-list-icon" style="color: #3b82f6;" />
                     Tanpa watermark
                   </li>
                   <li class="feature-item feature-included">
-                    <span class="material-symbols-rounded">edit</span>
+                    <Icon icon="ph:pencil-simple-duotone" class="feature-list-icon" style="color: #3b82f6;" />
                     Edit undangan
                   </li>
                 </ul>
@@ -239,6 +252,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { UserButton } from "@clerk/vue";
+import { Icon } from "@iconify/vue";
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -366,92 +380,159 @@ onMounted(() => {
 
 .payment-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
+}
+.payment-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.12);
+  transform: rotate(-5deg);
 }
 .payment-icon {
-  font-size: 56px;
-  margin-bottom: 12px;
+  font-size: 38px;
+  color: #4f46e5;
+  transform: rotate(5deg);
 }
 .payment-header h1 {
-  font-size: 1.75rem;
+  font-size: 1.85rem;
   font-weight: 800;
-  color: #1e293b;
-  margin-bottom: 8px;
+  color: #0f172a;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
 }
 .payment-subtitle {
   color: #64748b;
-  font-size: 1rem;
+  font-size: 1.05rem;
+  max-width: 80%;
+  margin: 0 auto;
 }
 
 /* Trial Status Box */
 .trial-status-box {
-  background: #f8fafc;
+  background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 28px;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
 }
 .trial-status-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .trial-stat {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  flex: 1;
+}
+.trial-stat:last-child {
+  padding-left: 24px;
+}
+.trial-stat-divider {
+  width: 1px;
+  height: 48px;
+  background: #e2e8f0;
+  margin: 0 16px;
+}
+.trial-stat-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+.trial-stat-icon-wrapper.primary {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+.trial-stat-icon-wrapper.warning {
+  background: #fffbeb;
+  color: #d97706;
 }
 .trial-stat-icon {
-  font-size: 28px;
+  font-size: 26px;
+}
+.trial-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .trial-stat-label {
-  font-size: 0.8rem;
-  color: #94a3b8;
+  font-size: 0.75rem;
+  color: #64748b;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-weight: 700;
 }
 .trial-stat-value {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0f172a;
 }
 .trial-warning {
-  margin-top: 16px;
-  padding: 10px 14px;
+  margin-top: 20px;
+  padding: 12px 16px;
   background: #fef2f2;
   border: 1px solid #fecaca;
-  border-radius: 10px;
-  color: #dc2626;
-  font-size: 0.85rem;
+  border-radius: 12px;
+  color: #b91c1c;
+  font-size: 0.9rem;
   font-weight: 600;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 /* Features Comparison */
 .features-comparison {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: 20px;
+  margin-bottom: 36px;
 }
 .feature-col {
-  padding: 20px;
-  border-radius: 14px;
+  padding: 24px;
+  border-radius: 16px;
   border: 1px solid #e2e8f0;
 }
 .feature-col h3 {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.feature-title-icon {
+  font-size: 24px;
+  color: #64748b;
+}
+.feature-title-icon.premium-icon {
+  color: #3b82f6;
 }
 .feature-trial {
   background: #f8fafc;
 }
 .feature-premium {
-  background: linear-gradient(135deg, #eff6ff, #f0fdf4);
-  border-color: #93c5fd;
+  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+  border-color: #86efac;
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.08);
+}
+.feature-premium h3 {
+  color: #166534;
 }
 .feature-col ul {
   list-style: none;
@@ -459,28 +540,28 @@ onMounted(() => {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 .feature-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
+  gap: 10px;
+  font-size: 0.9rem;
   font-weight: 500;
 }
-.feature-item .material-symbols-rounded {
-  font-size: 18px;
+.feature-list-icon {
+  font-size: 20px;
 }
 .feature-limited {
-  color: #94a3b8;
+  color: #64748b;
 }
-.feature-limited .material-symbols-rounded {
+.feature-limited .feature-list-icon {
   color: #cbd5e1;
 }
 .feature-included {
-  color: #1e293b;
+  color: #0f172a;
 }
-.feature-included .material-symbols-rounded {
+.feature-included .feature-list-icon {
   color: #10b981;
 }
 
@@ -583,7 +664,9 @@ onMounted(() => {
 @media (max-width: 640px) {
   .payment-card { padding: 28px 20px; }
   .features-comparison { grid-template-columns: 1fr; }
-  .trial-status-row { grid-template-columns: 1fr; }
+  .trial-status-row { flex-direction: column; gap: 20px; align-items: flex-start; }
+  .trial-stat:last-child { padding-left: 0; }
+  .trial-stat-divider { display: none; }
   .price-amount { font-size: 2.2rem; }
   .voucher-input-row { flex-direction: column; }
 }
@@ -593,7 +676,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin: 28px 0 24px;
+  margin: 36px 0 24px;
 }
 .voucher-divider-line {
   flex: 1;

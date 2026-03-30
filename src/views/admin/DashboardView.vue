@@ -18,6 +18,10 @@
           <span class="material-symbols-rounded">add_circle</span>
           Buat Undangan
         </router-link>
+        <router-link v-if="hasTrialInvitation" :to="`/payment?invitation_id=${firstTrialInvitationId}`" class="sidebar-link">
+          <span class="material-symbols-rounded">payments</span>
+          Pembayaran
+        </router-link>
         <router-link v-if="authStore.isAdmin" to="/users" class="sidebar-link">
           <span class="material-symbols-rounded">group</span>
           Kelola User
@@ -68,31 +72,46 @@
       <div class="admin-container">
         <!-- Stats -->
         <div class="stats-grid">
-          <div class="stat-card">
+          <div class="stat-card blue">
+            <div class="stat-header">
+              <div class="stat-icon-glow">
+                <Icon icon="ph:envelope-open-duotone" />
+              </div>
+            </div>
             <div class="stat-body">
-              <div class="stat-label">Total Undangan</div>
               <div class="stat-value">{{ invitations.length }}</div>
+              <div class="stat-label">Total Undangan</div>
             </div>
-            <div class="stat-icon blue">
-              <span class="material-symbols-rounded">mail</span>
+            <div class="stat-deco">
+              <Icon icon="ph:envelope-open-duotone" />
             </div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card pink">
+            <div class="stat-header">
+              <div class="stat-icon-glow">
+                <Icon icon="ph:image-square-duotone" />
+              </div>
+            </div>
             <div class="stat-body">
-              <div class="stat-label">Total Foto</div>
               <div class="stat-value">{{ totalPhotos }}</div>
+              <div class="stat-label">Total Foto</div>
             </div>
-            <div class="stat-icon pink">
-              <span class="material-symbols-rounded">photo_library</span>
+            <div class="stat-deco">
+              <Icon icon="ph:image-square-duotone" />
             </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-body">
-              <div class="stat-label">Total RSVP</div>
-              <div class="stat-value">{{ totalRsvps }}</div>
+          <div class="stat-card emerald">
+            <div class="stat-header">
+              <div class="stat-icon-glow">
+                <Icon icon="ph:users-duotone" />
+              </div>
             </div>
-            <div class="stat-icon emerald">
-              <span class="material-symbols-rounded">how_to_reg</span>
+            <div class="stat-body">
+              <div class="stat-value">{{ totalRsvps }}</div>
+              <div class="stat-label">Total RSVP</div>
+            </div>
+            <div class="stat-deco">
+              <Icon icon="ph:users-duotone" />
             </div>
           </div>
         </div>
@@ -199,25 +218,27 @@
                 >
                   <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bolt</span> Upgrade
                 </router-link>
-                <a
-                  :href="getInvitationUrl(invitation.slug)"
-                  target="_blank"
-                  class="btn btn-outline btn-sm"
-                >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span> Preview
-                </a>
-                <router-link
-                  :to="`/edit/${invitation.id}`"
-                  class="btn btn-outline btn-sm"
-                >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
-                </router-link>
-                <button
-                  class="btn btn-danger btn-sm"
-                  @click="confirmDelete(invitation)"
-                >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">delete</span> Hapus
-                </button>
+                <div class="invitation-card-actions-row">
+                  <a
+                    :href="getInvitationUrl(invitation.slug)"
+                    target="_blank"
+                    class="btn btn-outline btn-sm"
+                  >
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span> Preview
+                  </a>
+                  <router-link
+                    :to="`/edit/${invitation.id}`"
+                    class="btn btn-outline btn-sm"
+                  >
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
+                  </router-link>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    @click="confirmDelete(invitation)"
+                  >
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">delete</span> Hapus
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -262,6 +283,7 @@ import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
 import type { Invitation } from "@/types/invitation";
 import { UserButton } from "@clerk/vue";
+import { Icon } from "@iconify/vue";
 import { resolveAssetUrl } from "@/utils/url";
 
 const router = useRouter();
@@ -278,6 +300,15 @@ const hasReachedLimit = computed(() => {
   if (!authStore.user) return false;
   if (authStore.user.role === 'admin') return false;
   return invitations.value.length >= authStore.user.max_invitations;
+});
+
+const hasTrialInvitation = computed(() => {
+  return invitations.value.some(i => i.payment_status === 'trial');
+});
+
+const firstTrialInvitationId = computed(() => {
+  const trialInv = invitations.value.find(i => i.payment_status === 'trial');
+  return trialInv ? trialInv.id : null;
 });
 
 const filteredInvitations = computed(() => {

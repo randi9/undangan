@@ -493,71 +493,116 @@ input, textarea, select {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 24px;
   margin-bottom: 36px;
 }
 
 .stat-card {
+  position: relative;
   background: var(--admin-surface-solid);
   border: 1px solid var(--admin-border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  transition: var(--transition);
+  border-radius: 16px;
+  padding: 16px 20px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--admin-card-shadow);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+  border-color: rgba(59, 130, 246, 0.2);
 }
 
-.stat-icon {
+.stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon-glow {
   width: 48px;
   height: 48px;
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  flex-shrink: 0;
-}
-
-.stat-icon.blue {
-  background: rgba(59, 130, 246, 0.10);
-  color: #3b82f6;
-}
-
-.stat-icon.pink {
-  background: rgba(236, 72, 153, 0.10);
-  color: #ec4899;
-}
-
-.stat-icon.emerald {
-  background: rgba(16, 185, 129, 0.10);
-  color: #10b981;
+  position: relative;
+  z-index: 2;
 }
 
 .stat-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.stat-label {
-  font-size: 13px;
-  color: var(--admin-text-secondary);
-  margin-bottom: 4px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .stat-value {
   font-family: var(--font-heading);
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--admin-text);
-  line-height: 1.1;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
+
+.stat-label {
+  font-size: 12px;
+  color: var(--admin-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-deco {
+  position: absolute;
+  right: -15px;
+  bottom: -15px;
+  font-size: 100px;
+  opacity: 0.04;
+  z-index: 1;
+  transform: rotate(-10deg);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover .stat-deco {
+  transform: rotate(0deg) scale(1.1);
+  opacity: 0.06;
+}
+
+/* Specific Colors */
+.stat-card.blue { background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); }
+.stat-card.blue .stat-icon-glow {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  color: #3b82f6;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.15);
+}
+.stat-card.blue:hover { border-color: #bfdbfe; }
+.stat-card.blue .stat-deco { color: #3b82f6; }
+
+.stat-card.pink { background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%); }
+.stat-card.pink .stat-icon-glow {
+  background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+  color: #ec4899;
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.15);
+}
+.stat-card.pink:hover { border-color: #fbcfe8; }
+.stat-card.pink .stat-deco { color: #ec4899; }
+
+.stat-card.emerald { background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%); }
+.stat-card.emerald .stat-icon-glow {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  color: #10b981;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
+}
+.stat-card.emerald:hover { border-color: #a7f3d0; }
+.stat-card.emerald .stat-deco { color: #10b981; }
 
 /* Invitation List */
 .invitation-grid {
@@ -646,10 +691,22 @@ input, textarea, select {
 
 .invitation-card-actions {
   display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-/* Buttons */
+.invitation-card-actions-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.invitation-card-actions-row .btn {
+  flex: 1;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -1168,8 +1225,23 @@ textarea.form-input {
     z-index: 200;
   }
   
-  .sidebar-brand,
+  .sidebar-brand {
+    display: none !important;
+  }
+  
   .sidebar-footer {
+    display: flex;
+    border: none !important;
+    padding: 0 16px !important;
+    margin: 0 !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  /* Sembunyikan nama user dari Clerk di mode mobile */
+  .sidebar-footer :deep(.cl-userButtonOuterIdentifier),
+  .sidebar-footer .cl-userButtonOuterIdentifier {
     display: none !important;
   }
   
@@ -1177,7 +1249,7 @@ textarea.form-input {
     flex-direction: row;
     height: 100%;
     padding: 0;
-    width: 100%;
+    flex: 1;
     justify-content: space-evenly;
     align-items: center;
     gap: 4px;
@@ -1236,7 +1308,9 @@ textarea.form-input {
   
   /* Grids */
   .stats-grid {
+    display: grid;
     grid-template-columns: 1fr;
+    gap: 12px;
     margin-bottom: 24px;
   }
   
