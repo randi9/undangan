@@ -413,6 +413,25 @@ onBeforeUnmount(() => {
   <!-- Main UI Wrapper -->
   <div v-else :style="themeStyles" class="relative bg-[var(--theme-bg)] text-[var(--theme-text)] font-[var(--font-body)] overflow-x-hidden min-h-screen selection:bg-[var(--theme-primary)] selection:text-white pb-32">
 
+    <!-- WATERMARK OVERLAY (Trial mode) -->
+    <div v-if="invitation.show_watermark" class="watermark-overlay" aria-hidden="true">
+      <div class="watermark-grid">
+        <div v-for="i in 12" :key="i" class="watermark-text">TRIAL — MengundangAnda.fun</div>
+      </div>
+    </div>
+
+    <!-- TRIAL INFO BANNER -->
+    <div v-if="invitation.is_trial && isOpened" class="trial-banner">
+      <div class="trial-banner-content">
+        <span class="trial-badge">⏱️ TRIAL</span>
+        <span v-if="invitation.views_remaining !== null && invitation.views_remaining !== undefined">
+          Sisa {{ invitation.views_remaining }} akses
+        </span>
+        <span class="trial-separator">•</span>
+        <span>Upgrade untuk hapus watermark & akses penuh</span>
+      </div>
+    </div>
+
     <!-- COVER OVERLAY -->
     <CoverOverlay
       v-show="!isOpened || isClosingOverlay"
@@ -520,3 +539,66 @@ onBeforeUnmount(() => {
     </button>
   </div>
 </template>
+
+<style scoped>
+/* WATERMARK OVERLAY */
+.watermark-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  overflow: hidden;
+}
+.watermark-grid {
+  position: absolute;
+  inset: -50%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+  transform: rotate(-35deg);
+}
+.watermark-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.06);
+  white-space: nowrap;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* TRIAL BANNER */
+.trial-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 95;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  color: white;
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+}
+.trial-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.trial-badge {
+  background: rgba(255,255,255,0.2);
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.trial-separator {
+  opacity: 0.6;
+}
+</style>

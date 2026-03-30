@@ -9,6 +9,7 @@ export interface AuthUser {
   role: 'admin' | 'user'
   max_invitations: number
   invitation_count?: number
+  user_source?: 'admin_created' | 'self_signup'
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -23,6 +24,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!user.value)
   const isAdmin = computed(() => user.value?.role === 'admin')
+  const isSelfSignup = computed(() => user.value?.user_source === 'self_signup')
+  const isAdminCreated = computed(() => user.value?.user_source === 'admin_created' || user.value?.role === 'admin')
   const canCreateInvitation = computed(() => {
     if (!user.value) return false
     if (user.value.role === 'admin') return true
@@ -92,6 +95,38 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null
   }
 
+  // Payment helpers
+  async function createPaymentInvoice(invitationId: string): Promise<{ payment_url: string; invoice_id: string } | null> {
+    try {
+      const headers = await getAuthHeaders()
+      const res = await fetch(`${API_BASE}/payment/create-invoice`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({ invitation_id: invitationId }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Gagal membuat invoice')
+      }
+      return await res.json()
+    } catch (err: any) {
+      console.error('[Payment] Create invoice error:', err)
+      error.value = err.message
+      return null
+    }
+  }
+
+  async function checkPaymentStatus(invitationId: string) {
+    try {
+      const headers = await getAuthHeaders()
+      const res = await fetch(`${API_BASE}/payment/status/${invitationId}`, { headers })
+      if (!res.ok) return null
+      return await res.json()
+    } catch {
+      return null
+    }
+  }
+
   return {
     token,
     user,
@@ -99,11 +134,15 @@ export const useAuthStore = defineStore('auth', () => {
     error,
     isAuthenticated,
     isAdmin,
+    isSelfSignup,
+    isAdminCreated,
     canCreateInvitation,
     setTokenGetter,
     getAuthHeaders,
     login,
     fetchMe,
     logout,
+    createPaymentInvoice,
+    checkPaymentStatus,
   }
 })

@@ -178,7 +178,7 @@ app.get("/api/invitations", requireAuth, async (req, res) => {
   }
 });
 
-// GET by slug
+// GET by slug (public — with view tracking & trial enforcement)
 app.get("/api/invitations/slug/:slug", async (req, res) => {
   try {
     const { data: invitation, error } = await supabase
@@ -187,6 +187,55 @@ app.get("/api/invitations/slug/:slug", async (req, res) => {
       .eq("slug", req.params.slug)
       .single();
     if (error || !invitation) return res.status(404).json({ error: "Invitation not found" });
+
+    // --- Trial / Payment enforcement ---
+    const paymentStatus = invitation.payment_status || "paid";
+    const isTrial = paymentStatus === "trial";
+    let showWatermark = false;
+    let trialExpired = false;
+    let viewsExhausted = false;
+
+    if (isTrial) {
+      // Check trial expiration
+      if (invitation.trial_expires_at && new Date(invitation.trial_expires_at) < new Date()) {
+        trialExpired = true;
+      }
+
+      // Check view count limit
+      const maxViews = invitation.max_views || 20;
+      if ((invitation.view_count || 0) >= maxViews) {
+        viewsExhausted = true;
+      }
+
+      // Block access if trial expired OR views exhausted
+      if (trialExpired || viewsExhausted) {
+        return res.status(403).json({
+          error: trialExpired
+            ? "Masa trial undangan ini telah berakhir. Silakan upgrade ke paket premium."
+            : "Batas akses trial (20x) telah tercapai. Silakan upgrade ke paket premium.",
+          trial_expired: trialExpired,
+          views_exhausted: viewsExhausted,
+          payment_required: true,
+        });
+      }
+
+      showWatermark = true;
+
+      // Track view — only for non-preview requests
+      const isPreview = req.query.preview === "true";
+      if (!isPreview) {
+        const viewerIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
+        await supabase.from("invitation_views").insert([{
+          invitation_id: invitation.id,
+          viewer_ip: viewerIp,
+        }]);
+        // Increment view_count on the invitation
+        await supabase
+          .from("invitations")
+          .update({ view_count: (invitation.view_count || 0) + 1 })
+          .eq("id", invitation.id);
+      }
+    }
 
     const { data: photos } = await supabase
       .from("photos")
@@ -199,7 +248,17 @@ app.get("/api/invitations/slug/:slug", async (req, res) => {
       .eq("invitation_id", invitation.id)
       .order("created_at", { ascending: false });
 
-    res.json({ ...invitation, photos: photos || [], rsvps: rsvps || [] });
+    res.json({
+      ...invitation,
+      photos: photos || [],
+      rsvps: rsvps || [],
+      // Trial metadata for frontend
+      is_trial: isTrial,
+      show_watermark: showWatermark,
+      trial_expired: trialExpired,
+      views_exhausted: viewsExhausted,
+      views_remaining: isTrial ? Math.max(0, (invitation.max_views || 20) - (invitation.view_count || 0) - 1) : null,
+    });
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Failed to fetch invitation" });
   }
@@ -260,6 +319,11 @@ app.post("/api/invitations", requireAuth, async (req, res) => {
     const { data: existing } = await supabase.from("invitations").select("id").eq("slug", slug).single();
     if (existing) return res.status(400).json({ error: "Slug sudah digunakan. Pilih slug lain." });
 
+    // Determine payment status based on user source
+    const isAdminCreated = req.user!.user_source === "admin_created" || req.user!.role === "admin";
+    const paymentStatus = isAdminCreated ? "paid" : "trial";
+    const trialExpiresAt = isAdminCreated ? null : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
+
     const newInvitation = {
       id, slug,
       owner_id: req.user!.id,
@@ -290,6 +354,11 @@ app.post("/api/invitations", requireAuth, async (req, res) => {
       bank_account: body.bank_account || "",
       bank_holder: body.bank_holder || "",
       music_url: body.music_url || "",
+      // Payment / Trial fields
+      payment_status: paymentStatus,
+      trial_expires_at: trialExpiresAt,
+      view_count: 0,
+      max_views: 20,
     };
 
     const { data: created, error: createError } = await supabase
@@ -570,6 +639,386 @@ app.post("/api/upload/multiple", requireAuth, upload.array("photos", 20), (req: 
       res.status(500).json({ error: err.message || "Failed to upload files" });
     }
   })();
+});
+
+// =============================================================
+//  PAYMENT — Mayar.id Integration
+// =============================================================
+
+const MAYAR_API_BASE = process.env.MAYAR_API_BASE || "https://api.mayar.club/hl/v1";
+const MAYAR_API_KEY = process.env.MAYAR_API_KEY || "";
+const PAYMENT_AMOUNT = 50000; // Rp 50.000
+
+// POST /api/payment/create-invoice — Create Mayar invoice for an invitation
+app.post("/api/payment/create-invoice", requireAuth, async (req, res) => {
+  try {
+    const { invitation_id } = req.body;
+    if (!invitation_id) return res.status(400).json({ error: "invitation_id wajib diisi." });
+
+    // Verify invitation belongs to user
+    const { data: invitation } = await supabase
+      .from("invitations").select("*").eq("id", invitation_id).single();
+    if (!invitation) return res.status(404).json({ error: "Undangan tidak ditemukan." });
+    if (invitation.owner_id !== req.user!.id && req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+    if (invitation.payment_status === "paid") {
+      return res.status(400).json({ error: "Undangan ini sudah dalam status PAID." });
+    }
+
+    // Check if there's already a pending invoice
+    if (invitation.mayar_invoice_id) {
+      // Try to get existing invoice status from Mayar
+      try {
+        const existingRes = await fetch(`${MAYAR_API_BASE}/invoices/${invitation.mayar_invoice_id}`, {
+          headers: { "Authorization": `Bearer ${MAYAR_API_KEY}` },
+        });
+        if (existingRes.ok) {
+          const existingData = await existingRes.json();
+          if (existingData.data?.status !== "expired" && existingData.data?.paymentUrl) {
+            return res.json({
+              payment_url: existingData.data.paymentUrl,
+              invoice_id: invitation.mayar_invoice_id,
+              status: "existing",
+            });
+          }
+        }
+      } catch { /* ignore, create new */ }
+    }
+
+    // Build redirect URL
+    const baseUrl = process.env.APP_BASE_URL || "https://mengundanganda.fun";
+    const redirectURL = `${baseUrl}/payment/success?invitation_id=${invitation_id}`;
+
+    // Create Mayar invoice
+    const mayarRes = await fetch(`${MAYAR_API_BASE}/invoice`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${MAYAR_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: `${invitation.groom_name} & ${invitation.bride_name}`,
+        email: "customer@mengundanganda.fun",
+        mobile: "628000000000",
+        redirectURL,
+        description: `Pembayaran undangan digital premium - ${invitation.groom_name} & ${invitation.bride_name}`,
+        items: [
+          {
+            quantity: 1,
+            rate: PAYMENT_AMOUNT,
+            description: `Undangan Digital Premium (${invitation.slug})`,
+          }
+        ],
+      }),
+    });
+
+    if (!mayarRes.ok) {
+      const errText = await mayarRes.text();
+      console.error("Mayar API error:", mayarRes.status, errText);
+      return res.status(502).json({ error: "Gagal membuat invoice pembayaran. Coba lagi nanti." });
+    }
+
+    const mayarData = await mayarRes.json();
+    const invoiceId = mayarData.data?.id || mayarData.id;
+    const paymentUrl = mayarData.data?.link || mayarData.data?.paymentUrl || mayarData.link;
+
+    // Save invoice ID to invitation & payment_logs
+    await supabase.from("invitations").update({ mayar_invoice_id: invoiceId }).eq("id", invitation_id);
+    await supabase.from("payment_logs").insert([{
+      invitation_id,
+      user_id: req.user!.id,
+      mayar_invoice_id: invoiceId,
+      amount: PAYMENT_AMOUNT,
+      status: "pending",
+      mayar_payment_url: paymentUrl,
+    }]);
+
+    res.json({
+      payment_url: paymentUrl,
+      invoice_id: invoiceId,
+      amount: PAYMENT_AMOUNT,
+      status: "created",
+    });
+  } catch (err: any) {
+    console.error("Create invoice error:", err);
+    res.status(500).json({ error: err.message || "Gagal membuat invoice." });
+  }
+});
+
+// POST /api/payment/webhook — Mayar webhook callback (public, no auth)
+app.post("/api/payment/webhook", async (req, res) => {
+  try {
+    console.log("[Mayar Webhook] Received:", JSON.stringify(req.body));
+    const { event, data } = req.body;
+
+    if (event === "payment.received" && data) {
+      const invoiceId = data.id || data.invoiceId;
+      if (!invoiceId) {
+        console.warn("[Mayar Webhook] No invoice ID in payload");
+        return res.json({ status: "ignored", reason: "no_invoice_id" });
+      }
+
+      // Find the invitation with this mayar_invoice_id
+      const { data: invitation } = await supabase
+        .from("invitations")
+        .select("id, owner_id, payment_status")
+        .eq("mayar_invoice_id", invoiceId)
+        .single();
+
+      if (!invitation) {
+        // Also check payment_logs
+        const { data: log } = await supabase
+          .from("payment_logs")
+          .select("invitation_id")
+          .eq("mayar_invoice_id", invoiceId)
+          .single();
+
+        if (log?.invitation_id) {
+          await supabase.from("invitations").update({
+            payment_status: "paid",
+            paid_at: new Date().toISOString(),
+          }).eq("id", log.invitation_id);
+
+          await supabase.from("payment_logs").update({
+            status: "paid",
+            paid_at: new Date().toISOString(),
+            webhook_payload: req.body,
+          }).eq("mayar_invoice_id", invoiceId);
+
+          console.log(`[Mayar Webhook] Payment confirmed via logs for invitation: ${log.invitation_id}`);
+          return res.json({ status: "ok", updated: true });
+        }
+
+        console.warn(`[Mayar Webhook] No invitation found for invoice: ${invoiceId}`);
+        return res.json({ status: "ignored", reason: "no_matching_invitation" });
+      }
+
+      if (invitation.payment_status === "paid") {
+        return res.json({ status: "ok", already_paid: true });
+      }
+
+      // Update invitation to paid
+      await supabase.from("invitations").update({
+        payment_status: "paid",
+        paid_at: new Date().toISOString(),
+      }).eq("id", invitation.id);
+
+      // Update payment log
+      await supabase.from("payment_logs").update({
+        status: "paid",
+        paid_at: new Date().toISOString(),
+        webhook_payload: req.body,
+      }).eq("mayar_invoice_id", invoiceId);
+
+      console.log(`[Mayar Webhook] ✅ Payment confirmed for invitation: ${invitation.id}`);
+      return res.json({ status: "ok", updated: true });
+    }
+
+    // Handle payment.reminder (optional logging)
+    if (event === "payment.reminder") {
+      console.log("[Mayar Webhook] Payment reminder received");
+      return res.json({ status: "ok", event: "reminder" });
+    }
+
+    res.json({ status: "ok", event: event || "unknown" });
+  } catch (err: any) {
+    console.error("Webhook error:", err);
+    res.status(500).json({ error: "Webhook processing failed" });
+  }
+});
+
+// GET /api/payment/status/:invitationId — Check payment status
+app.get("/api/payment/status/:invitationId", requireAuth, async (req, res) => {
+  try {
+    const { data: invitation } = await supabase
+      .from("invitations")
+      .select("id, payment_status, trial_expires_at, view_count, max_views, mayar_invoice_id, paid_at, owner_id")
+      .eq("id", req.params.invitationId)
+      .single();
+
+    if (!invitation) return res.status(404).json({ error: "Undangan tidak ditemukan." });
+    if (invitation.owner_id !== req.user!.id && req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+
+    const isTrial = invitation.payment_status === "trial";
+    const trialExpired = isTrial && invitation.trial_expires_at && new Date(invitation.trial_expires_at) < new Date();
+    const viewsExhausted = isTrial && (invitation.view_count || 0) >= (invitation.max_views || 20);
+
+    // Compute trial time remaining
+    let trialTimeRemaining = null;
+    if (isTrial && invitation.trial_expires_at && !trialExpired) {
+      const remaining = new Date(invitation.trial_expires_at).getTime() - Date.now();
+      trialTimeRemaining = {
+        hours: Math.floor(remaining / (1000 * 60 * 60)),
+        minutes: Math.floor((remaining / (1000 * 60)) % 60),
+      };
+    }
+
+    res.json({
+      ...invitation,
+      is_trial: isTrial,
+      trial_expired: !!trialExpired,
+      views_exhausted: !!viewsExhausted,
+      views_remaining: isTrial ? Math.max(0, (invitation.max_views || 20) - (invitation.view_count || 0)) : null,
+      trial_time_remaining: trialTimeRemaining,
+      amount: PAYMENT_AMOUNT,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal cek status pembayaran." });
+  }
+});
+
+// =============================================================
+//  VOUCHER — Shopee Voucher System
+// =============================================================
+
+function generateVoucherCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no I,O,0,1 to avoid confusion
+  let code = "MA-";
+  for (let i = 0; i < 8; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+// POST /api/vouchers/generate — Admin generates voucher(s)
+app.post("/api/vouchers/generate", requireAuth, async (req, res) => {
+  try {
+    if (req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Hanya admin yang bisa generate voucher." });
+    }
+
+    const count = Math.min(Math.max(1, Number(req.body.count) || 1), 50); // max 50 per batch
+    const note = req.body.note || "";
+
+    const vouchers = [];
+    for (let i = 0; i < count; i++) {
+      vouchers.push({
+        code: generateVoucherCode(),
+        status: "active",
+        note,
+      });
+    }
+
+    const { data, error } = await supabase
+      .from("vouchers")
+      .insert(vouchers)
+      .select("id, code, status, note, created_at");
+
+    if (error) throw error;
+
+    res.status(201).json({
+      message: `${count} voucher berhasil dibuat.`,
+      vouchers: data,
+    });
+  } catch (err: any) {
+    console.error("Generate voucher error:", err);
+    res.status(500).json({ error: err.message || "Gagal membuat voucher." });
+  }
+});
+
+// POST /api/vouchers/redeem — User redeems voucher for an invitation
+app.post("/api/vouchers/redeem", requireAuth, async (req, res) => {
+  try {
+    const { code, invitation_id } = req.body;
+    if (!code || !invitation_id) {
+      return res.status(400).json({ error: "Kode voucher dan invitation_id wajib diisi." });
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+
+    // Find voucher
+    const { data: voucher } = await supabase
+      .from("vouchers")
+      .select("*")
+      .eq("code", cleanCode)
+      .single();
+
+    if (!voucher) {
+      return res.status(404).json({ error: "Kode voucher tidak ditemukan." });
+    }
+    if (voucher.status === "redeemed") {
+      return res.status(400).json({ error: "Voucher sudah pernah digunakan." });
+    }
+    if (voucher.status === "expired") {
+      return res.status(400).json({ error: "Voucher sudah kadaluarsa." });
+    }
+
+    // Verify invitation belongs to user
+    const { data: invitation } = await supabase
+      .from("invitations")
+      .select("id, owner_id, payment_status")
+      .eq("id", invitation_id)
+      .single();
+
+    if (!invitation) {
+      return res.status(404).json({ error: "Undangan tidak ditemukan." });
+    }
+    if (invitation.owner_id !== req.user!.id && req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+    if (invitation.payment_status === "paid") {
+      return res.status(400).json({ error: "Undangan ini sudah berstatus PAID." });
+    }
+
+    // Redeem: update voucher + update invitation
+    const now = new Date().toISOString();
+
+    await supabase.from("vouchers").update({
+      status: "redeemed",
+      redeemed_by: req.user!.id,
+      redeemed_invitation_id: invitation_id,
+      redeemed_at: now,
+    }).eq("id", voucher.id);
+
+    await supabase.from("invitations").update({
+      payment_status: "paid",
+      paid_at: now,
+    }).eq("id", invitation_id);
+
+    // Also log in payment_logs
+    await supabase.from("payment_logs").insert([{
+      invitation_id,
+      user_id: req.user!.id,
+      amount: PAYMENT_AMOUNT,
+      status: "paid",
+      paid_at: now,
+      mayar_invoice_id: `voucher:${cleanCode}`,
+    }]);
+
+    console.log(`[Voucher] ✅ Redeemed "${cleanCode}" for invitation ${invitation_id} by user ${req.user!.id}`);
+
+    res.json({
+      message: "Voucher berhasil digunakan! Undangan Anda sekarang Premium.",
+      voucher_code: cleanCode,
+      invitation_id,
+      payment_status: "paid",
+    });
+  } catch (err: any) {
+    console.error("Redeem voucher error:", err);
+    res.status(500).json({ error: err.message || "Gagal redeem voucher." });
+  }
+});
+
+// GET /api/vouchers — Admin list all vouchers
+app.get("/api/vouchers", requireAuth, async (req, res) => {
+  try {
+    if (req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+
+    const { data, error } = await supabase
+      .from("vouchers")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    res.json(data || []);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal memuat voucher." });
+  }
 });
 
 // =============================================================

@@ -98,6 +98,24 @@ if (isLandingPage) {
       meta: { title: 'Kelola User - UndanganGen', requiresAuth: true, requiresAdmin: true }
     },
     {
+      path: '/vouchers',
+      name: 'vouchers',
+      component: () => import('@/views/admin/VoucherManageView.vue'),
+      meta: { title: 'Kelola Voucher - UndanganGen', requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: () => import('@/views/admin/PaymentView.vue'),
+      meta: { title: 'Pembayaran - UndanganGen', requiresAuth: true }
+    },
+    {
+      path: '/payment/success',
+      name: 'payment-success',
+      component: () => import('@/views/admin/PaymentSuccessView.vue'),
+      meta: { title: 'Pembayaran Berhasil - UndanganGen', requiresAuth: true }
+    },
+    {
       path: '/landing',
       name: 'landing-preview',
       component: () => import('@/views/LandingView.vue'),

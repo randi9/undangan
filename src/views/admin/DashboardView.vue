@@ -22,6 +22,10 @@
           <span class="material-symbols-rounded">group</span>
           Kelola User
         </router-link>
+        <router-link v-if="authStore.isAdmin" to="/vouchers" class="sidebar-link">
+          <span class="material-symbols-rounded">confirmation_number</span>
+          Voucher
+        </router-link>
         <!-- Mobile logout is handled natively by UserButton popover -->
       </nav>
 
@@ -161,6 +165,16 @@
             </div>
 
             <div class="invitation-card-body">
+              <!-- Trial/Paid Badge -->
+              <div v-if="invitation.payment_status === 'trial'" class="payment-status-badge trial-badge-indicator">
+                <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">hourglass_top</span>
+                TRIAL
+              </div>
+              <div v-else-if="invitation.payment_status === 'paid'" class="payment-status-badge paid-badge-indicator">
+                <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">verified</span>
+                PREMIUM
+              </div>
+
               <div class="invitation-card-names">
                 {{ invitation.groom_name }}
                 <span class="heart">❤</span>
@@ -177,6 +191,14 @@
                 <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">calendar_today</span> {{ formatDate(invitation.created_at) }}</span>
               </div>
               <div class="invitation-card-actions">
+                <!-- Upgrade Button for Trial -->
+                <router-link
+                  v-if="invitation.payment_status === 'trial'"
+                  :to="`/payment?invitation_id=${invitation.id}`"
+                  class="btn btn-upgrade btn-sm"
+                >
+                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bolt</span> Upgrade
+                </router-link>
                 <a
                   :href="getInvitationUrl(invitation.slug)"
                   target="_blank"
