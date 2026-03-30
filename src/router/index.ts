@@ -61,13 +61,13 @@ if (isLandingPage) {
   // Admin panel (root domain)
   routes = [
     {
-      path: '/login',
+      path: '/login/:pathMatch(.*)*',
       name: 'login',
       component: () => import('@/views/auth/LoginView.vue'),
       meta: { title: 'Login - UndanganGen', guest: true }
     },
     {
-      path: '/sign-up',
+      path: '/sign-up/:pathMatch(.*)*',
       name: 'sign-up',
       component: () => import('@/views/auth/SignupView.vue'),
       meta: { title: 'Sign Up - UndanganGen', guest: true }
@@ -118,9 +118,9 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to) => {
   document.title = (to.meta.title as string) || 'Undangan Generator'
-  next()
+  return true
 })
 
 export default router
