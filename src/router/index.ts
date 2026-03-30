@@ -67,6 +67,12 @@ if (isLandingPage) {
       meta: { title: 'Login - UndanganGen', guest: true }
     },
     {
+      path: '/sign-up',
+      name: 'sign-up',
+      component: () => import('@/views/auth/SignupView.vue'),
+      meta: { title: 'Sign Up - UndanganGen', guest: true }
+    },
+    {
       path: '/',
       name: 'dashboard',
       component: () => import('@/views/admin/DashboardView.vue'),

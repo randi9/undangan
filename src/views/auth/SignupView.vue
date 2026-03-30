@@ -10,13 +10,13 @@
     </header>
 
     <main class="login-main">
-      <SignIn routing="path" path="/login" signUpUrl="/sign-up" fallbackRedirectUrl="/" />
+      <SignUp routing="path" path="/sign-up" signInUrl="/login" fallbackRedirectUrl="/" />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { SignIn } from '@clerk/vue'
+import { SignUp } from '@clerk/vue'
 </script>
 
 <style scoped>

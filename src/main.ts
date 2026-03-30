@@ -19,6 +19,10 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
-app.use(clerkPlugin, { publishableKey: PUBLISHABLE_KEY })
+app.use(clerkPlugin, { 
+  publishableKey: PUBLISHABLE_KEY,
+  signInUrl: '/login',
+  signUpUrl: '/sign-up'
+})
 
 app.mount('#app')
