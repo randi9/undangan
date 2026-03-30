@@ -1,9 +1,10 @@
-import { Router } from "express";
-import bcrypt from "bcryptjs";
+import { Router, Request, Response } from "express";
 import supabase from "../database";
-import { requireAuth as clerkRequireAuth, getAuth } from '@clerk/express';
+import { requireAuth as clerkRequireAuth, getAuth, createClerkClient } from '@clerk/express';
 
 const router = Router();
+const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+
 
 // ============ Types ============
 
@@ -92,7 +93,7 @@ export function requireAdmin(req: any, res: any, next: any): void {
 // Dihapus karena login sepenuhnya dihandle oleh Clerk UI di frontend.
 
 // GET /api/auth/me
-router.get("/me", requireAuth, async (req, res) => {
+router.get("/me", requireAuth, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       res.status(401).json({ error: "Tidak terautentikasi." });
@@ -118,7 +119,7 @@ router.get("/me", requireAuth, async (req, res) => {
 // ============ User Management (Admin-only) ============
 
 // GET /api/auth/users
-router.get("/users", requireAuth, requireAdmin, async (_req, res) => {
+router.get("/users", requireAuth, requireAdmin, async (_req: Request, res: Response) => {
   try {
     const { data: users, error } = await supabase
       .from("users")
@@ -135,7 +136,24 @@ router.get("/users", requireAuth, requireAdmin, async (_req, res) => {
       }
     }
 
-    const result = (users || []).map((u: any) => ({ ...u, invitation_count: counts[u.id] || 0 }));
+    // Try to get real usernames from Clerk
+    let clerkUserMap = new Map<string, string>();
+    try {
+      const clerkUsersResponse = await clerkClient.users.getUserList({ limit: 500 });
+      clerkUsersResponse.data.forEach(u => {
+        const display = u.username || u.emailAddresses[0]?.emailAddress || u.id;
+        clerkUserMap.set(u.id, display);
+      });
+    } catch (clerkErr) {
+      console.warn("Failed fetching users from Clerk:", clerkErr);
+    }
+
+    const result = (users || []).map((u: any) => ({ 
+      ...u, 
+      clerk_id: u.username, // keep track of the original clerk ID
+      username: clerkUserMap.get(u.username) || u.username,
+      invitation_count: counts[u.id] || 0 
+    }));
     res.json(result);
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Gagal mengambil data user." });
@@ -143,38 +161,71 @@ router.get("/users", requireAuth, requireAdmin, async (_req, res) => {
 });
 
 // POST /api/auth/users
-router.post("/users", requireAuth, requireAdmin, async (req, res) => {
+router.post("/users", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     let { username, password, role, max_invitations } = req.body;
 
-    if (!username) username = "user" + generateRandomString(6);
-    if (!password) password = generateRandomString(10);
+    if (!username) username = "user" + Math.floor(1000 + Math.random() * 9000);
+    // password must be strong for Clerk by default, let's make sure it's minimally random
+    if (!password) {
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
+      password = '';
+      for (let i = 0; i < 12; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+    }
 
     username = username.trim().toLowerCase();
     role = role === "admin" ? "admin" : "user";
     max_invitations = Math.max(1, Number(max_invitations) || 3);
 
-    const { data: existing } = await supabase
-      .from("users")
-      .select("id")
-      .eq("username", username)
-      .single();
+    // Create user in Clerk first
+    let clerkUser;
+    try {
+      const createParams: any = {
+        password: password,
+        skipPasswordRequirement: true
+      };
 
-    if (existing) {
-      res.status(400).json({ error: "Username sudah digunakan." });
-      return;
+      if (username.includes('@')) {
+        createParams.emailAddress = [username];
+      } else {
+        createParams.username = username;
+        // Generate a dummy email to satisfy Clerk if email is required
+        createParams.emailAddress = [`${username}@mengundanganda.fun`];
+      }
+
+      clerkUser = await clerkClient.users.createUser(createParams);
+    } catch (clerkErr: any) {
+      console.error("Clerk API Create User Error:", clerkErr.errors || clerkErr);
+      return res.status(400).json({ error: clerkErr.errors?.[0]?.message || "Gagal membuat user di Clerk." });
     }
 
-    const passwordHash = await hashPassword(password);
     const { data: user, error } = await supabase
       .from("users")
-      .insert([{ username, password_hash: passwordHash, role, max_invitations }])
+      .insert([{ 
+        username: clerkUser.id, 
+        password_hash: "clerk_managed", 
+        role, 
+        max_invitations 
+      }])
       .select("id, username, role, max_invitations, created_at")
       .single();
 
-    if (error) throw error;
+    if (error) {
+      // rollback if needed
+      await clerkClient.users.deleteUser(clerkUser.id).catch(console.error);
+      throw error;
+    }
 
-    res.status(201).json({ ...user, plain_password: password, invitation_count: 0 });
+    // Return the user details using original intent
+    res.status(201).json({ 
+      ...user, 
+      clerk_id: clerkUser.id,
+      username: clerkUser.username || username,
+      plain_password: password, 
+      invitation_count: 0 
+    });
   } catch (err: any) {
     console.error("Create user error:", err);
     res.status(500).json({ error: err.message || "Gagal membuat user." });
@@ -182,18 +233,48 @@ router.post("/users", requireAuth, requireAdmin, async (req, res) => {
 });
 
 // PUT /api/auth/users/:id
-router.put("/users/:id", requireAuth, requireAdmin, async (req, res) => {
+router.put("/users/:id", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { role, max_invitations, password, username } = req.body;
 
+    // Get current user mapping from Supabase to find their Clerk ID
+    const { data: currentUser, error: getErr } = await supabase
+      .from("users")
+      .select("username")
+      .eq("id", id)
+      .single();
+
+    if (getErr || !currentUser) {
+      return res.status(404).json({ error: "User tidak ditemukan." });
+    }
+
+    const clerkId = currentUser.username;
+
     const updateData: Record<string, any> = {};
-    if (username) updateData.username = username.trim().toLowerCase();
     if (role !== undefined) updateData.role = role === "admin" ? "admin" : "user";
     if (max_invitations !== undefined) updateData.max_invitations = Math.max(1, Number(max_invitations));
+    
+    // Update user in Clerk
+    const clerkUpdates: any = {};
     if (password) {
-      const bcrypt = require('bcryptjs');
-      updateData.password_hash = await bcrypt.hash(password, 10);
+      clerkUpdates.password = password;
+      clerkUpdates.skipPasswordRequirement = true;
+    }
+    if (username) {
+      const parsedUsername = username.trim().toLowerCase();
+      if (!parsedUsername.includes('@')) {
+        clerkUpdates.username = parsedUsername;
+      }
+    }
+    
+    if (Object.keys(clerkUpdates).length > 0 && clerkId.startsWith("user_")) {
+      try {
+        await clerkClient.users.updateUser(clerkId, clerkUpdates);
+      } catch (clerkErr: any) {
+        console.error("Clerk API Update User Error:", clerkErr.errors || clerkErr);
+        return res.status(400).json({ error: clerkErr.errors?.[0]?.message || "Gagal mengupdate user di Clerk." });
+      }
     }
 
     const { data: updated, error } = await supabase
@@ -204,11 +285,6 @@ router.put("/users/:id", requireAuth, requireAdmin, async (req, res) => {
       .single();
 
     if (error) throw error;
-    if (!updated) {
-      res.status(404).json({ error: "User tidak ditemukan." });
-      return;
-    }
-
     res.json(updated);
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Gagal update user." });
@@ -216,7 +292,7 @@ router.put("/users/:id", requireAuth, requireAdmin, async (req, res) => {
 });
 
 // DELETE /api/auth/users/:id
-router.delete("/users/:id", requireAuth, requireAdmin, async (req, res) => {
+router.delete("/users/:id", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (req.user?.id === id) {
@@ -224,9 +300,20 @@ router.delete("/users/:id", requireAuth, requireAdmin, async (req, res) => {
       return;
     }
 
+    const { data: userToDelete } = await supabase.from("users").select("username").eq("id", id).single();
+
     await supabase.from("invitations").update({ owner_id: null }).eq("owner_id", id);
     const { error } = await supabase.from("users").delete().eq("id", id);
     if (error) throw error;
+
+    // Remove from Clerk as well if it's a clerk user
+    if (userToDelete && userToDelete.username.startsWith("user_")) {
+      try {
+        await clerkClient.users.deleteUser(userToDelete.username);
+      } catch (clerkErr) {
+        console.warn("Failed deleting from Clerk:", clerkErr);
+      }
+    }
 
     res.json({ message: "User berhasil dihapus." });
   } catch (err: any) {
@@ -235,7 +322,7 @@ router.delete("/users/:id", requireAuth, requireAdmin, async (req, res) => {
 });
 
 // GET /api/auth/users/:id/invitations
-router.get("/users/:id/invitations", requireAuth, requireAdmin, async (req, res) => {
+router.get("/users/:id/invitations", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { data, error } = await supabase
