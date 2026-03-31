@@ -716,31 +716,33 @@ app.post("/api/payment/create-invoice", requireAuth, async (req: any, res: any) 
 app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) => {
   try {
     // Get either licenseCode (Membership) or transaction_id / id (Payment Link)
-    const { licenseCode, transaction_id, id, productId, email } = req.body;
-    const paymentIdentifier = licenseCode || transaction_id || id;
+    const { licenseCode, transaction_id, id, invitation_id: fallbackInvId, productId, email } = req.body;
+    const paymentIdentifier = licenseCode || transaction_id || id || fallbackInvId;
     
     if (!paymentIdentifier) {
-      return res.status(400).json({ error: "Parameter identitas pembayaran (licenseCode/transaction_id) tidak ditemukan." });
+      return res.status(400).json({ error: "Parameter identitas pembayaran (licenseCode/transaction_id/invitation_id) tidak ditemukan." });
     }
 
     console.log(`[Payment] Verifying payment token: ${paymentIdentifier}, product: ${productId || 'unknown'}, email: ${email || 'unknown'}`);
 
     // Find the user's invitation that is still in trial/pending
-    // Priority: check payment_logs for pending, then find trial invitations
-    let invitationId: string | null = null;
+    // Priority: check fallbackInvId first, then payment_logs for pending, then find trial invitations
+    let invitationId: string | null = fallbackInvId || null;
 
     // 1. Check payment_logs for this user's pending payment
-    const { data: pendingLog } = await supabase
-      .from("payment_logs")
-      .select("invitation_id")
-      .eq("user_id", req.user!.id)
-      .eq("status", "pending")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
+    if (!invitationId) {
+      const { data: pendingLog } = await supabase
+        .from("payment_logs")
+        .select("invitation_id")
+        .eq("user_id", req.user!.id)
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
 
-    if (pendingLog) {
-      invitationId = pendingLog.invitation_id;
+      if (pendingLog) {
+        invitationId = pendingLog.invitation_id;
+      }
     }
 
     // 2. If no pending log, find user's trial invitation

@@ -403,17 +403,19 @@ function showToast(type: string, message: string) {
 onMounted(async () => {
   await store.fetchInvitations();
 
-  // Auto-verify Mayar payment if redirected back with licenseCode or transaction_id
+  // Auto-verify Mayar payment if redirected back with licenseCode, transaction_id, or at least invitation_id
   const urlParams = new URLSearchParams(window.location.search);
   const licenseCode = urlParams.get("licenseCode");
   const transactionId = urlParams.get("transaction_id") || urlParams.get("id");
-  const paymentIdentifier = licenseCode || transactionId;
+  const fallbackInvitationId = urlParams.get("invitation_id");
+  
+  const paymentIdentifier = licenseCode || transactionId || fallbackInvitationId;
   
   if (paymentIdentifier) {
     const productId = urlParams.get("productId");
     const email = urlParams.get("email");
     
-    console.log("[Payment] Detected payment identifier from Mayar redirect:", paymentIdentifier);
+    console.log("[Payment] Detected payment redirect, attempting verification...");
     
     try {
       const headers = await authStore.getAuthHeaders();
@@ -421,7 +423,13 @@ onMounted(async () => {
       const res = await fetch(`${API_BASE}/payment/verify-license`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...headers },
-        body: JSON.stringify({ licenseCode, transaction_id: transactionId, productId, email }),
+        body: JSON.stringify({ 
+          licenseCode, 
+          transaction_id: transactionId, 
+          invitation_id: fallbackInvitationId,
+          productId, 
+          email 
+        }),
       });
       const data = await res.json();
       
