@@ -700,32 +700,66 @@ app.post("/api/payment/create-invoice", requireAuth, async (req: any, res: any) 
 // POST /api/payment/webhook — Mayar webhook callback (public, no auth)
 app.post("/api/payment/webhook", async (req: any, res: any) => {
   try {
-    console.log("[Mayar Webhook] Received:", JSON.stringify(req.body));
-    const { event, data } = req.body;
+    const body = req.body;
+    console.log("[Mayar Webhook] ===== INCOMING =====");
+    console.log("[Mayar Webhook] Full payload:", JSON.stringify(body));
+    
+    const event = body.event || body.type || "unknown";
+    const data = body.data || body;
+    
+    console.log(`[Mayar Webhook] Event: ${event}`);
 
-    if (event === "payment.received" && data) {
+    // Accept ANY event that could mean a payment was made
+    // Mayar sends different events for different product types:
+    // - "payment.received" for invoices
+    // - "purchase" for product purchases  
+    // - "new.membership" / "membership.created" for memberships
+    // We handle them ALL the same way
+    const isPaymentEvent = [
+      "payment.received", "payment.success", "payment.completed",
+      "purchase", "purchase.completed",
+      "new.membership", "membership.created", "membership.new",
+    ].includes(event) || event.includes("payment") || event.includes("purchase") || event.includes("membership");
+
+    // Also treat any webhook with data as potentially valid
+    // (Mayar might send events we don't know about)
+    if (isPaymentEvent || data) {
       const now = new Date().toISOString();
       
-      // Try to extract invitation_id from various places
+      // Try to extract invitation_id from various places in the payload
       let invitationId: string | null = null;
-      const invoiceId = data.id || data.invoiceId || data.transactionId;
+      const invoiceId = data.id || data.invoiceId || data.transactionId || data.transaction_id;
       
-      // 1. Check if customer metadata has invitation_id
+      // 1. Check if custom fields have invitation_id
       if (data.customFields?.invitation_id) {
         invitationId = data.customFields.invitation_id;
       }
+      if (data.custom_fields?.invitation_id) {
+        invitationId = data.custom_fields.invitation_id;
+      }
+      // Check in metadata too
+      if (data.metadata?.invitation_id) {
+        invitationId = data.metadata.invitation_id;
+      }
       
-      // 2. Check redirectUrl or link for invitation_id param
-      const redirectUrl = data.redirectUrl || data.redirect_url || "";
-      const linkUrl = data.link || data.linkUrl || "";
-      for (const url of [redirectUrl, linkUrl]) {
+      // 2. Check any URL fields for invitation_id param
+      const urlFields = [
+        data.redirectUrl, data.redirect_url, data.redirectURL,
+        data.link, data.linkUrl, data.link_url,
+        data.successUrl, data.success_url,
+      ].filter(Boolean);
+      
+      for (const url of urlFields) {
         if (url && url.includes("invitation_id=")) {
           const match = url.match(/invitation_id=([a-f0-9-]+)/i);
-          if (match) invitationId = match[1];
+          if (match) {
+            invitationId = match[1];
+            break;
+          }
         }
       }
 
-      // 3. Check payment_logs for pending entries
+      // 3. Check payment_logs for the most recent pending entry
       if (!invitationId) {
         const { data: logs } = await supabase
           .from("payment_logs")
@@ -740,7 +774,7 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
         }
       }
 
-      // 4. Try matching by mayar_invoice_id in invitations table
+      // 4. Try matching by mayar_invoice_id
       if (!invitationId && invoiceId) {
         const { data: inv } = await supabase
           .from("invitations")
@@ -750,18 +784,18 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
         if (inv) invitationId = inv.id;
       }
 
+      // Always log the webhook
       if (!invitationId) {
         console.warn("[Mayar Webhook] Could not determine invitation_id from payload");
-        // Log the webhook anyway for manual review
         await supabase.from("payment_logs").insert([{
           invitation_id: null,
           user_id: null,
-          amount: data.amount || PAYMENT_AMOUNT,
+          amount: data.amount || data.total || PAYMENT_AMOUNT,
           status: "unmatched",
-          mayar_invoice_id: invoiceId || "unknown",
-          webhook_payload: req.body,
+          mayar_invoice_id: invoiceId || `unmatched:${Date.now()}`,
+          webhook_payload: body,
         }]);
-        return res.json({ status: "logged", reason: "no_matching_invitation" });
+        return res.json({ status: "logged", reason: "no_matching_invitation", event });
       }
 
       // Update invitation to paid
@@ -774,24 +808,19 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
       // Update or insert payment log
       await supabase.from("payment_logs").upsert([{
         invitation_id: invitationId,
-        amount: data.amount || PAYMENT_AMOUNT,
+        amount: data.amount || data.total || PAYMENT_AMOUNT,
         status: "paid",
         paid_at: now,
         mayar_invoice_id: invoiceId || `webhook:${Date.now()}`,
-        webhook_payload: req.body,
+        webhook_payload: body,
       }], { onConflict: "invitation_id" });
 
-      console.log(`[Mayar Webhook] ✅ Payment confirmed for invitation: ${invitationId}`);
-      return res.json({ status: "ok", updated: true, invitation_id: invitationId });
+      console.log(`[Mayar Webhook] ✅ Payment confirmed for invitation: ${invitationId} (event: ${event})`);
+      return res.json({ status: "ok", updated: true, invitation_id: invitationId, event });
     }
 
-    // Handle other events
-    if (event === "payment.reminder") {
-      console.log("[Mayar Webhook] Payment reminder received");
-      return res.json({ status: "ok", event: "reminder" });
-    }
-
-    res.json({ status: "ok", event: event || "unknown" });
+    console.log(`[Mayar Webhook] Unhandled event: ${event}`);
+    res.json({ status: "ok", event });
   } catch (err: any) {
     console.error("Webhook error:", err);
     res.status(500).json({ error: "Webhook processing failed" });
