@@ -840,6 +840,52 @@ app.get("/api/payment/status/:invitationId", requireAuth, async (req: any, res: 
   }
 });
 
+// POST /api/payment/confirm — Admin manually confirms payment
+app.post("/api/payment/confirm", requireAuth, async (req: any, res: any) => {
+  try {
+    if (req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Hanya admin yang bisa konfirmasi pembayaran." });
+    }
+
+    const { invitation_id } = req.body;
+    if (!invitation_id) return res.status(400).json({ error: "invitation_id wajib diisi." });
+
+    const { data: invitation } = await supabase
+      .from("invitations")
+      .select("id, payment_status")
+      .eq("id", invitation_id)
+      .single();
+
+    if (!invitation) return res.status(404).json({ error: "Undangan tidak ditemukan." });
+    if (invitation.payment_status === "paid") {
+      return res.json({ status: "already_paid", message: "Undangan sudah berstatus PAID." });
+    }
+
+    const now = new Date().toISOString();
+
+    await supabase.from("invitations").update({
+      payment_status: "paid",
+      paid_at: now,
+    }).eq("id", invitation_id);
+
+    // Log the manual confirmation
+    await supabase.from("payment_logs").upsert([{
+      invitation_id,
+      user_id: req.user!.id,
+      amount: PAYMENT_AMOUNT,
+      status: "paid",
+      paid_at: now,
+      mayar_invoice_id: `manual:${Date.now()}`,
+      webhook_payload: { confirmed_by: req.user!.id, method: "admin_manual" },
+    }], { onConflict: "invitation_id" });
+
+    console.log(`[Payment] ✅ Admin manually confirmed payment for: ${invitation_id}`);
+    res.json({ status: "ok", message: "Pembayaran berhasil dikonfirmasi." });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal konfirmasi pembayaran." });
+  }
+});
+
 // =============================================================
 //  VOUCHER — Shopee Voucher System
 // =============================================================
