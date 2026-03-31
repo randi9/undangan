@@ -645,7 +645,7 @@ app.post("/api/upload/multiple", requireAuth, upload.array("photos", 20), (req: 
 //  PAYMENT — Mayar.id Integration
 // =============================================================
 
-const MAYAR_API_BASE = process.env.MAYAR_API_BASE || "https://api.mayar.club/hl/v1";
+const MAYAR_API_BASE = process.env.MAYAR_API_BASE || "https://api.mayar.id/hl/v1";
 const MAYAR_API_KEY = process.env.MAYAR_API_KEY || "";
 const PAYMENT_AMOUNT = 50000; // Rp 50.000
 
@@ -670,7 +670,7 @@ app.post("/api/payment/create-invoice", requireAuth, async (req, res) => {
     if (invitation.mayar_invoice_id) {
       // Try to get existing invoice status from Mayar
       try {
-        const existingRes = await fetch(`${MAYAR_API_BASE}/invoices/${invitation.mayar_invoice_id}`, {
+        const existingRes = await fetch(`${MAYAR_API_BASE}/invoice/${invitation.mayar_invoice_id}`, {
           headers: { "Authorization": `Bearer ${MAYAR_API_KEY}` },
         });
         if (existingRes.ok) {
@@ -691,37 +691,48 @@ app.post("/api/payment/create-invoice", requireAuth, async (req, res) => {
     const redirectURL = `${baseUrl}/payment/success?invitation_id=${invitation_id}`;
 
     // Create Mayar invoice
+    const invoicePayload: Record<string, any> = {
+      name: `${invitation.groom_name} & ${invitation.bride_name}`,
+      redirectURL,
+      description: `Pembayaran undangan digital premium - ${invitation.groom_name} & ${invitation.bride_name}`,
+      items: [
+        {
+          quantity: 1,
+          rate: PAYMENT_AMOUNT,
+          description: `Undangan Digital Premium (${invitation.slug})`,
+        }
+      ],
+    };
+
+    console.log("[Mayar] Creating invoice:", JSON.stringify(invoicePayload));
+    console.log("[Mayar] API URL:", `${MAYAR_API_BASE}/invoice`);
+
     const mayarRes = await fetch(`${MAYAR_API_BASE}/invoice`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${MAYAR_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name: `${invitation.groom_name} & ${invitation.bride_name}`,
-        email: "customer@mengundanganda.fun",
-        mobile: "628000000000",
-        redirectURL,
-        description: `Pembayaran undangan digital premium - ${invitation.groom_name} & ${invitation.bride_name}`,
-        items: [
-          {
-            quantity: 1,
-            rate: PAYMENT_AMOUNT,
-            description: `Undangan Digital Premium (${invitation.slug})`,
-          }
-        ],
-      }),
+      body: JSON.stringify(invoicePayload),
     });
 
+    const mayarResponseText = await mayarRes.text();
+    console.log("[Mayar] Response status:", mayarRes.status, "body:", mayarResponseText);
+
     if (!mayarRes.ok) {
-      const errText = await mayarRes.text();
-      console.error("Mayar API error:", mayarRes.status, errText);
+      console.error("Mayar API error:", mayarRes.status, mayarResponseText);
       return res.status(502).json({ error: "Gagal membuat invoice pembayaran. Coba lagi nanti." });
     }
 
-    const mayarData = await mayarRes.json();
+    const mayarData = JSON.parse(mayarResponseText);
     const invoiceId = mayarData.data?.id || mayarData.id;
-    const paymentUrl = mayarData.data?.link || mayarData.data?.paymentUrl || mayarData.link;
+    // Mayar returns paymentUrl or link depending on the version
+    const paymentUrl = mayarData.data?.paymentUrl || mayarData.data?.link || mayarData.link;
+
+    if (!paymentUrl) {
+      console.error("[Mayar] No payment URL in response:", mayarResponseText);
+      return res.status(502).json({ error: "Invoice dibuat tapi tidak ada link pembayaran." });
+    }
 
     // Save invoice ID to invitation & payment_logs
     await supabase.from("invitations").update({ mayar_invoice_id: invoiceId }).eq("id", invitation_id);
