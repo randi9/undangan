@@ -178,6 +178,31 @@ app.get("/api/invitations", requireAuth, async (req: any, res: any) => {
   }
 });
 
+// GET /api/invitations/check-slug/:slug — Check if a slug is available
+app.get("/api/invitations/check-slug/:slug", async (req: any, res: any) => {
+  try {
+    const slug = req.params.slug;
+    const excludeId = req.query.exclude_id;
+    
+    let query = supabase.from("invitations").select("id").eq("slug", slug);
+    if (excludeId) {
+      query = query.neq("id", excludeId);
+    }
+    
+    const { data } = await query.single();
+    
+    // If data exists, it's taken. If not, it's available.
+    res.json({ available: !data });
+  } catch (err: any) {
+    // If the error is PGRST116 (0 rows returned), it means it's available! 
+    // Supabase .single() throws an error instead of returning null if no rows match.
+    if (err.code === "PGRST116") {
+      return res.json({ available: true });
+    }
+    res.status(500).json({ error: "Gagal mengecek ketersediaan slug." });
+  }
+});
+
 // GET by slug (public — with view tracking & trial enforcement)
 app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
   try {

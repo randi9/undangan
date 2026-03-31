@@ -64,17 +64,36 @@
             <p class="form-section-subtitle">Slug unik untuk alamat undangan</p>
             <div class="form-group">
               <label class="form-label">Slug (URL)</label>
-              <input
-                v-model="form.slug"
-                class="form-input"
-                placeholder="contoh: andi-sarah"
-                required
-                @input="sanitizeSlug"
-              />
-              <small
-                style="color: var(--admin-text-secondary); font-size: 12px"
-              >
-                /invitation/<strong>{{ form.slug || "slug-anda" }}</strong>
+              <div style="position: relative;">
+                <input
+                  v-model="form.slug"
+                  class="form-input"
+                  :class="{ 'input-error': slugStatus === 'taken', 'input-success': slugStatus === 'available' }"
+                  placeholder="contoh: andi-sarah"
+                  required
+                  pattern="[a-z0-9-]+"
+                  title="Hanya huruf kecil, angka, dan tanda hubung"
+                  @input="handleSlugInput"
+                  style="padding-right: 36px;"
+                />
+                <div 
+                  v-if="slugStatus !== 'idle'" 
+                  style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display:flex; align-items:center;"
+                >
+                  <Icon v-if="slugStatus === 'loading'" icon="lucide:loader-2" class="spin-icon" style="color: var(--admin-text-secondary);" />
+                  <Icon v-else-if="slugStatus === 'available'" icon="lucide:check-circle-2" style="color: #10b981;" />
+                  <Icon v-else-if="slugStatus === 'taken'" icon="lucide:x-circle" style="color: #ef4444;" />
+                </div>
+              </div>
+              
+              <small v-if="slugStatus === 'taken'" style="color: #ef4444; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px;">
+                <Icon icon="lucide:alert-circle" /> Link sudah dipakai, coba variasi lain
+              </small>
+              <small v-else-if="slugStatus === 'available'" style="color: #10b981; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px;">
+                <Icon icon="lucide:check" /> Link tersedia!
+              </small>
+              <small v-else style="color: var(--admin-text-secondary); font-size: 12px; margin-top: 4px; display: block;">
+                Undangan akan bisa diakses di: /invitation/<strong>{{ form.slug || "slug-anda" }}</strong>
               </small>
             </div>
           </div>
@@ -521,7 +540,7 @@
             <button
               type="submit"
               class="btn btn-primary btn-lg"
-              :disabled="submitting"
+              :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'"
             >
               <span
                 v-if="submitting"
@@ -622,6 +641,23 @@
   </div>
 </template>
 
+<style scoped>
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.input-error {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
+.input-success {
+  border-color: #10b981 !important;
+}
+</style>
+
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 import { ref, reactive, onMounted } from "vue";
@@ -646,6 +682,9 @@ const loading = ref(true);
 const submitting = ref(false);
 const toast = ref<{ type: string; message: string } | null>(null);
 const musicFileInput = ref<HTMLInputElement>();
+
+const slugStatus = ref<"idle" | "loading" | "available" | "taken">("idle");
+let slugCheckTimeout: ReturnType<typeof setTimeout> | null = null;
 
 // Preview Refs & State
 const previewIframe = ref<HTMLIFrameElement>();
@@ -703,11 +742,36 @@ function normalizeLoveStory(value: unknown): LoveStoryItem[] {
   return [];
 }
 
-function sanitizeSlug() {
+function handleSlugInput() {
   form.slug = form.slug
     .toLowerCase()
     .replace(/[^a-z0-9-]/g, "-")
     .replace(/-+/g, "-");
+
+  if (!form.slug) {
+    slugStatus.value = "idle";
+    return;
+  }
+
+  slugStatus.value = "loading";
+  
+  if (slugCheckTimeout) clearTimeout(slugCheckTimeout);
+  slugCheckTimeout = setTimeout(async () => {
+    try {
+      const excludeId = route.params.id;
+      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+      const res = await fetch(`${API_BASE}/invitations/check-slug/${form.slug}?exclude_id=${excludeId}`);
+      const data = await res.json();
+      
+      if (res.ok) {
+        slugStatus.value = data.available ? "available" : "taken";
+      } else {
+        slugStatus.value = "idle";
+      }
+    } catch {
+      slugStatus.value = "idle";
+    }
+  }, 500); // 500ms debounce
 }
 
 async function handleSingleUpload(
