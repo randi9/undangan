@@ -235,6 +235,20 @@ app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
           .update({ view_count: (invitation.view_count || 0) + 1 })
           .eq("id", invitation.id);
       }
+    } else if (paymentStatus === "paid" && invitation.paid_at) {
+      // Periksa batas 1 tahun dari tanggal pembayaran
+      const paidDate = new Date(invitation.paid_at);
+      const expireDate = new Date(paidDate);
+      expireDate.setFullYear(expireDate.getFullYear() + 1);
+      
+      const now = new Date();
+      if (now > expireDate) {
+        return res.status(403).json({
+          error: "Masa aktif undangan (1 tahun) telah berakhir.",
+          payment_required: true,
+          expired: true,
+        });
+      }
     }
 
     const { data: photos } = await supabase
@@ -650,7 +664,7 @@ const MAYAR_API_KEY = process.env.MAYAR_API_KEY || "";
 const PAYMENT_AMOUNT = 50000; // Rp 50.000
 
 // Mayar product payment link — set via env or use default from dashboard
-const MAYAR_PAYMENT_LINK = process.env.MAYAR_PAYMENT_LINK || "https://mengundanganda.myr.id/m/undangan-premium-29770";
+const MAYAR_PAYMENT_LINK = process.env.MAYAR_PAYMENT_LINK || "https://mengundanganda.myr.id/pl/mengundang-anda-premium-akses";
 
 // POST /api/payment/create-invoice — Redirect user to Mayar payment page
 app.post("/api/payment/create-invoice", requireAuth, async (req: any, res: any) => {
@@ -697,17 +711,19 @@ app.post("/api/payment/create-invoice", requireAuth, async (req: any, res: any) 
   }
 });
 
-// POST /api/payment/verify-license — Verify Mayar licenseCode from redirect
-// When user pays via Mayar, they get redirected back with ?licenseCode=...&productId=...
+// POST /api/payment/verify-license — Verify Mayar redirect (works for both Membership and Payment Link)
+// When user pays via Mayar, they get redirected back with ?licenseCode=... or ?transaction_id=...
 app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) => {
   try {
-    const { licenseCode, productId, email } = req.body;
+    // Get either licenseCode (Membership) or transaction_id / id (Payment Link)
+    const { licenseCode, transaction_id, id, productId, email } = req.body;
+    const paymentIdentifier = licenseCode || transaction_id || id;
     
-    if (!licenseCode) {
-      return res.status(400).json({ error: "licenseCode wajib diisi." });
+    if (!paymentIdentifier) {
+      return res.status(400).json({ error: "Parameter identitas pembayaran (licenseCode/transaction_id) tidak ditemukan." });
     }
 
-    console.log(`[Payment] Verifying license: ${licenseCode}, product: ${productId}, email: ${email}`);
+    console.log(`[Payment] Verifying payment token: ${paymentIdentifier}, product: ${productId || 'unknown'}, email: ${email || 'unknown'}`);
 
     // Find the user's invitation that is still in trial/pending
     // Priority: check payment_logs for pending, then find trial invitations
@@ -764,7 +780,7 @@ app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) 
     await supabase.from("invitations").update({
       payment_status: "paid",
       paid_at: now,
-      mayar_invoice_id: `license:${licenseCode}`,
+      mayar_invoice_id: `license:${paymentIdentifier}`,
     }).eq("id", invitationId);
 
     // Update payment log
@@ -774,11 +790,11 @@ app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) 
       amount: PAYMENT_AMOUNT,
       status: "paid",
       paid_at: now,
-      mayar_invoice_id: `license:${licenseCode}`,
-      webhook_payload: { licenseCode, productId, email, method: "license_verify" },
+      mayar_invoice_id: `license:${paymentIdentifier}`,
+      webhook_payload: { paymentIdentifier, productId, email, method: "license_verify" },
     }], { onConflict: "invitation_id" });
 
-    console.log(`[Payment] ✅ License verified! Invitation ${invitationId} → PAID (license: ${licenseCode})`);
+    console.log(`[Payment] ✅ License verified! Invitation ${invitationId} → PAID (token: ${paymentIdentifier})`);
     
     res.json({ 
       status: "ok", 
