@@ -400,7 +400,43 @@ function showToast(type: string, message: string) {
   }, 3000);
 }
 
-onMounted(() => {
-  store.fetchInvitations();
+onMounted(async () => {
+  await store.fetchInvitations();
+
+  // Auto-verify Mayar payment if redirected back with licenseCode
+  const urlParams = new URLSearchParams(window.location.search);
+  const licenseCode = urlParams.get("licenseCode");
+  
+  if (licenseCode) {
+    const productId = urlParams.get("productId");
+    const email = urlParams.get("email");
+    
+    console.log("[Payment] Detected licenseCode from Mayar redirect:", licenseCode);
+    
+    try {
+      const headers = await authStore.getAuthHeaders();
+      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+      const res = await fetch(`${API_BASE}/payment/verify-license`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...headers },
+        body: JSON.stringify({ licenseCode, productId, email }),
+      });
+      const data = await res.json();
+      
+      if (res.ok && (data.status === "ok" || data.status === "already_paid")) {
+        showToast("success", "🎉 Pembayaran berhasil diverifikasi! Undangan sudah aktif.");
+        // Refresh invitations to show updated status
+        await store.fetchInvitations();
+      } else {
+        console.warn("[Payment] Verify failed:", data);
+        showToast("error", data.error || "Gagal verifikasi pembayaran.");
+      }
+    } catch (err) {
+      console.error("[Payment] Verify error:", err);
+    }
+    
+    // Clean URL params
+    window.history.replaceState({}, "", window.location.pathname);
+  }
 });
 </script>
