@@ -565,7 +565,12 @@ app.delete("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
       }
     }
 
-    // 4. Delete DB records
+    // 4. Preserve payment history — detach payment_logs from this invitation
+    //    so the user's premium status survives invitation deletion
+    await supabase.from("payment_logs").update({ invitation_id: null }).eq("invitation_id", id);
+
+    // 5. Delete related DB records
+    await supabase.from("invitation_views").delete().eq("invitation_id", id);
     await supabase.from("photos").delete().eq("invitation_id", id);
     await supabase.from("rsvps").delete().eq("invitation_id", id);
     const { error } = await supabase.from("invitations").delete().eq("id", id);
@@ -975,9 +980,10 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
         }).eq("id", invitationId);
       }
 
-      // Update or insert payment log
+      // Update or insert payment log — include user_id so premium persists after deletion
       await supabase.from("payment_logs").upsert([{
         invitation_id: invitationId,
+        user_id: invOwner?.owner_id || null,
         amount: data.amount || data.total || PAYMENT_AMOUNT,
         status: "paid",
         paid_at: now,
