@@ -59,6 +59,17 @@ export interface Invitation {
   rsvp_count?: number;
   created_at?: string;
   updated_at?: string;
+  // Payment / Trial fields
+  payment_status?: 'trial' | 'paid' | 'expired';
+  trial_expires_at?: string;
+  view_count?: number;
+  max_views?: number;
+  paid_at?: string;
+  is_trial?: boolean;
+  show_watermark?: boolean;
+  trial_expired?: boolean;
+  views_exhausted?: boolean;
+  views_remaining?: number | null;
 }
 
 export interface CreateInvitationPayload {

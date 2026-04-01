@@ -22,6 +22,7 @@ export interface AuthUser {
   username: string;
   role: "admin" | "user";
   max_invitations: number;
+  user_source: "admin_created" | "self_signup";
 }
 
 // Extend Express Request
@@ -75,14 +76,15 @@ export const requireAuth = [
             username: clerkId,
             password_hash: "clerk_managed",
             role: isFirstUser ? "admin" : "user",
-            max_invitations: isFirstUser ? 999 : 3,
+            max_invitations: isFirstUser ? 999 : 1,
+            user_source: isFirstUser ? "admin_created" : "self_signup",
           }])
           .select("*")
           .single();
 
         if (error) throw error;
         user = newUser;
-        console.log('[Auth] Created new user:', { clerkId, role: user.role, isFirstUser });
+        console.log('[Auth] Created new user:', { clerkId, role: user.role, isFirstUser, source: user.user_source });
       }
 
       req.user = user;
@@ -227,9 +229,10 @@ export async function createUserHandler(req: Request, res: Response) {
         username: clerkUser.id, 
         password_hash: "clerk_managed", 
         role, 
-        max_invitations 
+        max_invitations,
+        user_source: "admin_created",
       }])
-      .select("id, username, role, max_invitations, created_at")
+      .select("id, username, role, max_invitations, user_source, created_at")
       .single();
 
     if (error) {

@@ -18,9 +18,17 @@
           <span class="material-symbols-rounded">add_circle</span>
           Buat Undangan
         </router-link>
+        <router-link v-if="hasTrialInvitation" :to="`/payment?invitation_id=${firstTrialInvitationId}`" class="sidebar-link">
+          <span class="material-symbols-rounded">payments</span>
+          Pembayaran
+        </router-link>
         <router-link v-if="authStore.isAdmin" to="/users" class="sidebar-link">
           <span class="material-symbols-rounded">group</span>
           Kelola User
+        </router-link>
+        <router-link v-if="authStore.isAdmin" to="/vouchers" class="sidebar-link">
+          <span class="material-symbols-rounded">confirmation_number</span>
+          Voucher
         </router-link>
         <!-- Mobile logout is handled natively by UserButton popover -->
       </nav>
@@ -64,31 +72,46 @@
       <div class="admin-container">
         <!-- Stats -->
         <div class="stats-grid">
-          <div class="stat-card">
+          <div class="stat-card blue">
+            <div class="stat-header">
+              <div class="stat-icon-glow">
+                <Icon icon="ph:envelope-open-duotone" />
+              </div>
+            </div>
             <div class="stat-body">
-              <div class="stat-label">Total Undangan</div>
               <div class="stat-value">{{ invitations.length }}</div>
+              <div class="stat-label">Total Undangan</div>
             </div>
-            <div class="stat-icon blue">
-              <span class="material-symbols-rounded">mail</span>
+            <div class="stat-deco">
+              <Icon icon="ph:envelope-open-duotone" />
             </div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card pink">
+            <div class="stat-header">
+              <div class="stat-icon-glow">
+                <Icon icon="ph:image-square-duotone" />
+              </div>
+            </div>
             <div class="stat-body">
-              <div class="stat-label">Total Foto</div>
               <div class="stat-value">{{ totalPhotos }}</div>
+              <div class="stat-label">Total Foto</div>
             </div>
-            <div class="stat-icon pink">
-              <span class="material-symbols-rounded">photo_library</span>
+            <div class="stat-deco">
+              <Icon icon="ph:image-square-duotone" />
             </div>
           </div>
-          <div class="stat-card">
-            <div class="stat-body">
-              <div class="stat-label">Total RSVP</div>
-              <div class="stat-value">{{ totalRsvps }}</div>
+          <div class="stat-card emerald">
+            <div class="stat-header">
+              <div class="stat-icon-glow">
+                <Icon icon="ph:users-duotone" />
+              </div>
             </div>
-            <div class="stat-icon emerald">
-              <span class="material-symbols-rounded">how_to_reg</span>
+            <div class="stat-body">
+              <div class="stat-value">{{ totalRsvps }}</div>
+              <div class="stat-label">Total RSVP</div>
+            </div>
+            <div class="stat-deco">
+              <Icon icon="ph:users-duotone" />
             </div>
           </div>
         </div>
@@ -161,6 +184,16 @@
             </div>
 
             <div class="invitation-card-body">
+              <!-- Trial/Paid Badge -->
+              <div v-if="invitation.payment_status === 'trial'" class="payment-status-badge trial-badge-indicator">
+                <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">hourglass_top</span>
+                TRIAL
+              </div>
+              <div v-else-if="invitation.payment_status === 'paid'" class="payment-status-badge paid-badge-indicator">
+                <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">verified</span>
+                PREMIUM
+              </div>
+
               <div class="invitation-card-names">
                 {{ invitation.groom_name }}
                 <span class="heart">❤</span>
@@ -177,25 +210,35 @@
                 <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">calendar_today</span> {{ formatDate(invitation.created_at) }}</span>
               </div>
               <div class="invitation-card-actions">
-                <a
-                  :href="getInvitationUrl(invitation.slug)"
-                  target="_blank"
-                  class="btn btn-outline btn-sm"
-                >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span> Preview
-                </a>
+                <!-- Upgrade Button for Trial -->
                 <router-link
-                  :to="`/edit/${invitation.id}`"
-                  class="btn btn-outline btn-sm"
+                  v-if="invitation.payment_status === 'trial'"
+                  :to="`/payment?invitation_id=${invitation.id}`"
+                  class="btn btn-upgrade btn-sm"
                 >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
+                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bolt</span> Upgrade
                 </router-link>
-                <button
-                  class="btn btn-danger btn-sm"
-                  @click="confirmDelete(invitation)"
-                >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">delete</span> Hapus
-                </button>
+                <div class="invitation-card-actions-row">
+                  <a
+                    :href="getInvitationUrl(invitation.slug)"
+                    target="_blank"
+                    class="btn btn-outline btn-sm"
+                  >
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span> Preview
+                  </a>
+                  <router-link
+                    :to="`/edit/${invitation.id}`"
+                    class="btn btn-outline btn-sm"
+                  >
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
+                  </router-link>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    @click="confirmDelete(invitation)"
+                  >
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">delete</span> Hapus
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -240,6 +283,7 @@ import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
 import type { Invitation } from "@/types/invitation";
 import { UserButton } from "@clerk/vue";
+import { Icon } from "@iconify/vue";
 import { resolveAssetUrl } from "@/utils/url";
 
 const router = useRouter();
@@ -256,6 +300,15 @@ const hasReachedLimit = computed(() => {
   if (!authStore.user) return false;
   if (authStore.user.role === 'admin') return false;
   return invitations.value.length >= authStore.user.max_invitations;
+});
+
+const hasTrialInvitation = computed(() => {
+  return invitations.value.some(i => i.payment_status === 'trial');
+});
+
+const firstTrialInvitationId = computed(() => {
+  const trialInv = invitations.value.find(i => i.payment_status === 'trial');
+  return trialInv ? trialInv.id : null;
 });
 
 const filteredInvitations = computed(() => {
@@ -347,7 +400,53 @@ function showToast(type: string, message: string) {
   }, 3000);
 }
 
-onMounted(() => {
-  store.fetchInvitations();
+onMounted(async () => {
+  await store.fetchInvitations();
+
+  // Auto-verify Mayar payment if redirected back with licenseCode, transaction_id, or at least invitation_id
+  const urlParams = new URLSearchParams(window.location.search);
+  const licenseCode = urlParams.get("licenseCode");
+  const transactionId = urlParams.get("transaction_id") || urlParams.get("id");
+  const fallbackInvitationId = urlParams.get("invitation_id");
+  
+  const paymentIdentifier = licenseCode || transactionId || fallbackInvitationId;
+  
+  if (paymentIdentifier) {
+    const productId = urlParams.get("productId");
+    const email = urlParams.get("email");
+    
+    console.log("[Payment] Detected payment redirect, attempting verification...");
+    
+    try {
+      const headers = await authStore.getAuthHeaders();
+      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+      const res = await fetch(`${API_BASE}/payment/verify-license`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...headers },
+        body: JSON.stringify({ 
+          licenseCode, 
+          transaction_id: transactionId, 
+          invitation_id: fallbackInvitationId,
+          productId, 
+          email 
+        }),
+      });
+      const data = await res.json();
+      
+      if (res.ok && (data.status === "ok" || data.status === "already_paid")) {
+        showToast("success", "🎉 Pembayaran berhasil diverifikasi! Undangan sudah aktif.");
+        // Refresh invitations to show updated status
+        await store.fetchInvitations();
+      } else {
+        console.warn("[Payment] Verify failed:", data);
+        showToast("error", data.error || "Gagal verifikasi pembayaran.");
+      }
+    } catch (err) {
+      console.error("[Payment] Verify error:", err);
+    }
+    
+    // Clean URL params
+    window.history.replaceState({}, "", window.location.pathname);
+  }
 });
 </script>

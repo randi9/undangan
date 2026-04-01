@@ -153,7 +153,7 @@ function parseLoveStory(value: unknown) {
 }
 
 // GET all (protected — user sees own, admin sees all)
-app.get("/api/invitations", requireAuth, async (req, res) => {
+app.get("/api/invitations", requireAuth, async (req: any, res: any) => {
   try {
     let query = supabase
       .from("invitations")
@@ -178,8 +178,33 @@ app.get("/api/invitations", requireAuth, async (req, res) => {
   }
 });
 
-// GET by slug
-app.get("/api/invitations/slug/:slug", async (req, res) => {
+// GET /api/invitations/check-slug/:slug — Check if a slug is available
+app.get("/api/invitations/check-slug/:slug", async (req: any, res: any) => {
+  try {
+    const slug = req.params.slug;
+    const excludeId = req.query.exclude_id;
+    
+    let query = supabase.from("invitations").select("id").eq("slug", slug);
+    if (excludeId) {
+      query = query.neq("id", excludeId);
+    }
+    
+    const { data } = await query.single();
+    
+    // If data exists, it's taken. If not, it's available.
+    res.json({ available: !data });
+  } catch (err: any) {
+    // If the error is PGRST116 (0 rows returned), it means it's available! 
+    // Supabase .single() throws an error instead of returning null if no rows match.
+    if (err.code === "PGRST116") {
+      return res.json({ available: true });
+    }
+    res.status(500).json({ error: "Gagal mengecek ketersediaan slug." });
+  }
+});
+
+// GET by slug (public — with view tracking & trial enforcement)
+app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
   try {
     const { data: invitation, error } = await supabase
       .from("invitations")
@@ -187,6 +212,69 @@ app.get("/api/invitations/slug/:slug", async (req, res) => {
       .eq("slug", req.params.slug)
       .single();
     if (error || !invitation) return res.status(404).json({ error: "Invitation not found" });
+
+    // --- Trial / Payment enforcement ---
+    const paymentStatus = invitation.payment_status || "paid";
+    const isTrial = paymentStatus === "trial";
+    let showWatermark = false;
+    let trialExpired = false;
+    let viewsExhausted = false;
+
+    if (isTrial) {
+      // Check trial expiration
+      if (invitation.trial_expires_at && new Date(invitation.trial_expires_at) < new Date()) {
+        trialExpired = true;
+      }
+
+      // Check view count limit
+      const maxViews = invitation.max_views || 20;
+      if ((invitation.view_count || 0) >= maxViews) {
+        viewsExhausted = true;
+      }
+
+      // Block access if trial expired OR views exhausted
+      if (trialExpired || viewsExhausted) {
+        return res.status(403).json({
+          error: trialExpired
+            ? "Masa trial undangan ini telah berakhir. Silakan upgrade ke paket premium."
+            : "Batas akses trial (20x) telah tercapai. Silakan upgrade ke paket premium.",
+          trial_expired: trialExpired,
+          views_exhausted: viewsExhausted,
+          payment_required: true,
+        });
+      }
+
+      showWatermark = true;
+
+      // Track view — only for non-preview requests
+      const isPreview = req.query.preview === "true";
+      if (!isPreview) {
+        const viewerIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
+        await supabase.from("invitation_views").insert([{
+          invitation_id: invitation.id,
+          viewer_ip: viewerIp,
+        }]);
+        // Increment view_count on the invitation
+        await supabase
+          .from("invitations")
+          .update({ view_count: (invitation.view_count || 0) + 1 })
+          .eq("id", invitation.id);
+      }
+    } else if (paymentStatus === "paid" && invitation.paid_at) {
+      // Periksa batas 1 tahun dari tanggal pembayaran
+      const paidDate = new Date(invitation.paid_at);
+      const expireDate = new Date(paidDate);
+      expireDate.setFullYear(expireDate.getFullYear() + 1);
+      
+      const now = new Date();
+      if (now > expireDate) {
+        return res.status(403).json({
+          error: "Masa aktif undangan (1 tahun) telah berakhir.",
+          payment_required: true,
+          expired: true,
+        });
+      }
+    }
 
     const { data: photos } = await supabase
       .from("photos")
@@ -199,14 +287,24 @@ app.get("/api/invitations/slug/:slug", async (req, res) => {
       .eq("invitation_id", invitation.id)
       .order("created_at", { ascending: false });
 
-    res.json({ ...invitation, photos: photos || [], rsvps: rsvps || [] });
+    res.json({
+      ...invitation,
+      photos: photos || [],
+      rsvps: rsvps || [],
+      // Trial metadata for frontend
+      is_trial: isTrial,
+      show_watermark: showWatermark,
+      trial_expired: trialExpired,
+      views_exhausted: viewsExhausted,
+      views_remaining: isTrial ? Math.max(0, (invitation.max_views || 20) - (invitation.view_count || 0) - 1) : null,
+    });
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Failed to fetch invitation" });
   }
 });
 
 // GET by ID (protected)
-app.get("/api/invitations/:id", requireAuth, async (req, res) => {
+app.get("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
   try {
     const { data: invitation, error } = await supabase
       .from("invitations")
@@ -233,7 +331,7 @@ app.get("/api/invitations/:id", requireAuth, async (req, res) => {
 });
 
 // CREATE (protected + limit check)
-app.post("/api/invitations", requireAuth, async (req, res) => {
+app.post("/api/invitations", requireAuth, async (req: any, res: any) => {
   try {
     const { slug, groom_name, bride_name } = req.body;
     if (!slug) return res.status(400).json({ error: "slug is required" });
@@ -259,6 +357,11 @@ app.post("/api/invitations", requireAuth, async (req, res) => {
     // Check slug uniqueness
     const { data: existing } = await supabase.from("invitations").select("id").eq("slug", slug).single();
     if (existing) return res.status(400).json({ error: "Slug sudah digunakan. Pilih slug lain." });
+
+    // Determine payment status based on user source
+    const isAdminCreated = req.user!.user_source === "admin_created" || req.user!.role === "admin";
+    const paymentStatus = isAdminCreated ? "paid" : "trial";
+    const trialExpiresAt = isAdminCreated ? null : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
 
     const newInvitation = {
       id, slug,
@@ -290,6 +393,11 @@ app.post("/api/invitations", requireAuth, async (req, res) => {
       bank_account: body.bank_account || "",
       bank_holder: body.bank_holder || "",
       music_url: body.music_url || "",
+      // Payment / Trial fields
+      payment_status: paymentStatus,
+      trial_expires_at: trialExpiresAt,
+      view_count: 0,
+      max_views: 20,
     };
 
     const { data: created, error: createError } = await supabase
@@ -315,7 +423,7 @@ app.post("/api/invitations", requireAuth, async (req, res) => {
 });
 
 // UPDATE (protected)
-app.put("/api/invitations/:id", requireAuth, async (req, res) => {
+app.put("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
   try {
     const { id } = req.params;
     const { data: existing } = await supabase.from("invitations").select("*").eq("id", id).single();
@@ -373,7 +481,7 @@ app.put("/api/invitations/:id", requireAuth, async (req, res) => {
 });
 
 // DELETE
-app.delete("/api/invitations/:id", requireAuth, async (req, res) => {
+app.delete("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
   try {
     const id = req.params.id;
 
@@ -451,7 +559,7 @@ app.delete("/api/invitations/:id", requireAuth, async (req, res) => {
 //  RSVP
 // =============================================================
 
-app.get("/api/rsvp/:invitationId", async (req, res) => {
+app.get("/api/rsvp/:invitationId", async (req: any, res: any) => {
   try {
     const { data, error } = await supabase
       .from("rsvps").select("*")
@@ -464,7 +572,7 @@ app.get("/api/rsvp/:invitationId", async (req, res) => {
   }
 });
 
-app.post("/api/rsvp", async (req, res) => {
+app.post("/api/rsvp", async (req: any, res: any) => {
   try {
     const { invitation_id, guest_name, attendance, guest_count, message } = req.body;
     if (!invitation_id || !guest_name || !attendance) {
@@ -573,6 +681,529 @@ app.post("/api/upload/multiple", requireAuth, upload.array("photos", 20), (req: 
 });
 
 // =============================================================
+//  PAYMENT — Mayar.id Integration
+// =============================================================
+
+const MAYAR_API_BASE = process.env.MAYAR_API_BASE || "https://api.mayar.id/hl/v1";
+const MAYAR_API_KEY = process.env.MAYAR_API_KEY || "";
+const PAYMENT_AMOUNT = 50000; // Rp 50.000
+
+// Mayar product payment link — set via env or use default from dashboard
+const MAYAR_PAYMENT_LINK = process.env.MAYAR_PAYMENT_LINK || "https://mengundanganda.myr.id/pl/mengundang-anda-premium-akses";
+
+// POST /api/payment/create-invoice — Redirect user to Mayar payment page
+app.post("/api/payment/create-invoice", requireAuth, async (req: any, res: any) => {
+  try {
+    const { invitation_id } = req.body;
+    if (!invitation_id) return res.status(400).json({ error: "invitation_id wajib diisi." });
+
+    // Verify invitation belongs to user
+    const { data: invitation } = await supabase
+      .from("invitations").select("*").eq("id", invitation_id).single();
+    if (!invitation) return res.status(404).json({ error: "Undangan tidak ditemukan." });
+    if (invitation.owner_id !== req.user!.id && req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+    if (invitation.payment_status === "paid") {
+      return res.status(400).json({ error: "Undangan ini sudah dalam status PAID." });
+    }
+
+    // Build payment URL with invitation tracking
+    // Append invitation_id as query param so we can track it
+    const paymentUrl = `${MAYAR_PAYMENT_LINK}?invitation_id=${invitation_id}`;
+
+    // Save to payment_logs for tracking
+    await supabase.from("payment_logs").upsert([{
+      invitation_id,
+      user_id: req.user!.id,
+      amount: PAYMENT_AMOUNT,
+      status: "pending",
+      mayar_payment_url: paymentUrl,
+      mayar_invoice_id: `pending:${invitation_id}`,
+    }], { onConflict: "invitation_id" }).select();
+
+    console.log(`[Payment] Redirecting to Mayar: ${paymentUrl}`);
+
+    res.json({
+      payment_url: paymentUrl,
+      invoice_id: `pending:${invitation_id}`,
+      amount: PAYMENT_AMOUNT,
+      status: "created",
+    });
+  } catch (err: any) {
+    console.error("Create invoice error:", err);
+    res.status(500).json({ error: err.message || "Gagal membuat invoice." });
+  }
+});
+
+// POST /api/payment/verify-license — Verify Mayar redirect (works for both Membership and Payment Link)
+// When user pays via Mayar, they get redirected back with ?licenseCode=... or ?transaction_id=...
+app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) => {
+  try {
+    // Get either licenseCode (Membership) or transaction_id / id (Payment Link)
+    const { licenseCode, transaction_id, id, invitation_id: fallbackInvId, productId, email } = req.body;
+    const paymentIdentifier = licenseCode || transaction_id || id || fallbackInvId;
+    
+    if (!paymentIdentifier) {
+      return res.status(400).json({ error: "Parameter identitas pembayaran (licenseCode/transaction_id/invitation_id) tidak ditemukan." });
+    }
+
+    console.log(`[Payment] Verifying payment token: ${paymentIdentifier}, product: ${productId || 'unknown'}, email: ${email || 'unknown'}`);
+
+    // Find the user's invitation that is still in trial/pending
+    // Priority: check fallbackInvId first, then payment_logs for pending, then find trial invitations
+    let invitationId: string | null = fallbackInvId || null;
+
+    // 1. Check payment_logs for this user's pending payment
+    if (!invitationId) {
+      const { data: pendingLog } = await supabase
+        .from("payment_logs")
+        .select("invitation_id")
+        .eq("user_id", req.user!.id)
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (pendingLog) {
+        invitationId = pendingLog.invitation_id;
+      }
+    }
+
+    // 2. If no pending log, find user's trial invitation
+    if (!invitationId) {
+      const { data: trialInvitation } = await supabase
+        .from("invitations")
+        .select("id")
+        .eq("owner_id", req.user!.id)
+        .eq("payment_status", "trial")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (trialInvitation) {
+        invitationId = trialInvitation.id;
+      }
+    }
+
+    if (!invitationId) {
+      return res.status(404).json({ error: "Tidak ada undangan yang menunggu pembayaran." });
+    }
+
+    // Check if already paid (avoid double update)
+    const { data: invitation } = await supabase
+      .from("invitations")
+      .select("id, payment_status")
+      .eq("id", invitationId)
+      .single();
+
+    if (invitation?.payment_status === "paid") {
+      return res.json({ status: "already_paid", message: "Undangan sudah berstatus PAID.", invitation_id: invitationId });
+    }
+
+    const now = new Date().toISOString();
+
+    // Update invitation to paid
+    await supabase.from("invitations").update({
+      payment_status: "paid",
+      paid_at: now,
+      mayar_invoice_id: `license:${paymentIdentifier}`,
+    }).eq("id", invitationId);
+
+    // Update payment log
+    await supabase.from("payment_logs").upsert([{
+      invitation_id: invitationId,
+      user_id: req.user!.id,
+      amount: PAYMENT_AMOUNT,
+      status: "paid",
+      paid_at: now,
+      mayar_invoice_id: `license:${paymentIdentifier}`,
+      webhook_payload: { paymentIdentifier, productId, email, method: "license_verify" },
+    }], { onConflict: "invitation_id" });
+
+    console.log(`[Payment] ✅ License verified! Invitation ${invitationId} → PAID (token: ${paymentIdentifier})`);
+    
+    res.json({ 
+      status: "ok", 
+      message: "Pembayaran berhasil diverifikasi!", 
+      invitation_id: invitationId,
+    });
+  } catch (err: any) {
+    console.error("Verify license error:", err);
+    res.status(500).json({ error: err.message || "Gagal verifikasi pembayaran." });
+  }
+});
+
+// POST /api/payment/webhook — Mayar webhook callback (public, no auth)
+app.post("/api/payment/webhook", async (req: any, res: any) => {
+  try {
+    const body = req.body;
+    console.log("[Mayar Webhook] ===== INCOMING =====");
+    console.log("[Mayar Webhook] Full payload:", JSON.stringify(body));
+    
+    const event = body.event || body.type || "unknown";
+    const data = body.data || body;
+    
+    console.log(`[Mayar Webhook] Event: ${event}`);
+
+    // Accept ANY event that could mean a payment was made
+    // Mayar sends different events for different product types:
+    // - "payment.received" for invoices
+    // - "purchase" for product purchases  
+    // - "new.membership" / "membership.created" for memberships
+    // We handle them ALL the same way
+    const isPaymentEvent = [
+      "payment.received", "payment.success", "payment.completed",
+      "purchase", "purchase.completed",
+      "new.membership", "membership.created", "membership.new",
+    ].includes(event) || event.includes("payment") || event.includes("purchase") || event.includes("membership");
+
+    // Also treat any webhook with data as potentially valid
+    // (Mayar might send events we don't know about)
+    if (isPaymentEvent || data) {
+      const now = new Date().toISOString();
+      
+      // Try to extract invitation_id from various places in the payload
+      let invitationId: string | null = null;
+      const invoiceId = data.id || data.invoiceId || data.transactionId || data.transaction_id;
+      
+      // 1. Check if custom fields have invitation_id
+      if (data.customFields?.invitation_id) {
+        invitationId = data.customFields.invitation_id;
+      }
+      if (data.custom_fields?.invitation_id) {
+        invitationId = data.custom_fields.invitation_id;
+      }
+      // Check in metadata too
+      if (data.metadata?.invitation_id) {
+        invitationId = data.metadata.invitation_id;
+      }
+      
+      // 2. Check any URL fields for invitation_id param
+      const urlFields = [
+        data.redirectUrl, data.redirect_url, data.redirectURL,
+        data.link, data.linkUrl, data.link_url,
+        data.successUrl, data.success_url,
+      ].filter(Boolean);
+      
+      for (const url of urlFields) {
+        if (url && url.includes("invitation_id=")) {
+          const match = url.match(/invitation_id=([a-f0-9-]+)/i);
+          if (match) {
+            invitationId = match[1];
+            break;
+          }
+        }
+      }
+
+      // 3. Check payment_logs for the most recent pending entry
+      if (!invitationId) {
+        const { data: logs } = await supabase
+          .from("payment_logs")
+          .select("invitation_id")
+          .eq("status", "pending")
+          .order("created_at", { ascending: false })
+          .limit(1);
+        
+        if (logs && logs.length > 0) {
+          invitationId = logs[0].invitation_id;
+          console.log(`[Mayar Webhook] Matched to latest pending payment: ${invitationId}`);
+        }
+      }
+
+      // 4. Try matching by mayar_invoice_id
+      if (!invitationId && invoiceId) {
+        const { data: inv } = await supabase
+          .from("invitations")
+          .select("id")
+          .eq("mayar_invoice_id", invoiceId)
+          .single();
+        if (inv) invitationId = inv.id;
+      }
+
+      // Always log the webhook
+      if (!invitationId) {
+        console.warn("[Mayar Webhook] Could not determine invitation_id from payload");
+        await supabase.from("payment_logs").insert([{
+          invitation_id: null,
+          user_id: null,
+          amount: data.amount || data.total || PAYMENT_AMOUNT,
+          status: "unmatched",
+          mayar_invoice_id: invoiceId || `unmatched:${Date.now()}`,
+          webhook_payload: body,
+        }]);
+        return res.json({ status: "logged", reason: "no_matching_invitation", event });
+      }
+
+      // Update invitation to paid
+      await supabase.from("invitations").update({
+        payment_status: "paid",
+        paid_at: now,
+        mayar_invoice_id: invoiceId || null,
+      }).eq("id", invitationId);
+
+      // Update or insert payment log
+      await supabase.from("payment_logs").upsert([{
+        invitation_id: invitationId,
+        amount: data.amount || data.total || PAYMENT_AMOUNT,
+        status: "paid",
+        paid_at: now,
+        mayar_invoice_id: invoiceId || `webhook:${Date.now()}`,
+        webhook_payload: body,
+      }], { onConflict: "invitation_id" });
+
+      console.log(`[Mayar Webhook] ✅ Payment confirmed for invitation: ${invitationId} (event: ${event})`);
+      return res.json({ status: "ok", updated: true, invitation_id: invitationId, event });
+    }
+
+    console.log(`[Mayar Webhook] Unhandled event: ${event}`);
+    res.json({ status: "ok", event });
+  } catch (err: any) {
+    console.error("Webhook error:", err);
+    res.status(500).json({ error: "Webhook processing failed" });
+  }
+});
+
+// GET /api/payment/status/:invitationId — Check payment status
+app.get("/api/payment/status/:invitationId", requireAuth, async (req: any, res: any) => {
+  try {
+    const { data: invitation } = await supabase
+      .from("invitations")
+      .select("id, payment_status, trial_expires_at, view_count, max_views, mayar_invoice_id, paid_at, owner_id")
+      .eq("id", req.params.invitationId)
+      .single();
+
+    if (!invitation) return res.status(404).json({ error: "Undangan tidak ditemukan." });
+    if (invitation.owner_id !== req.user!.id && req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+
+    const isTrial = invitation.payment_status === "trial";
+    const trialExpired = isTrial && invitation.trial_expires_at && new Date(invitation.trial_expires_at) < new Date();
+    const viewsExhausted = isTrial && (invitation.view_count || 0) >= (invitation.max_views || 20);
+
+    // Compute trial time remaining
+    let trialTimeRemaining = null;
+    if (isTrial && invitation.trial_expires_at && !trialExpired) {
+      const remaining = new Date(invitation.trial_expires_at).getTime() - Date.now();
+      trialTimeRemaining = {
+        hours: Math.floor(remaining / (1000 * 60 * 60)),
+        minutes: Math.floor((remaining / (1000 * 60)) % 60),
+      };
+    }
+
+    res.json({
+      ...invitation,
+      is_trial: isTrial,
+      trial_expired: !!trialExpired,
+      views_exhausted: !!viewsExhausted,
+      views_remaining: isTrial ? Math.max(0, (invitation.max_views || 20) - (invitation.view_count || 0)) : null,
+      trial_time_remaining: trialTimeRemaining,
+      amount: PAYMENT_AMOUNT,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal cek status pembayaran." });
+  }
+});
+
+// POST /api/payment/confirm — Admin manually confirms payment
+app.post("/api/payment/confirm", requireAuth, async (req: any, res: any) => {
+  try {
+    if (req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Hanya admin yang bisa konfirmasi pembayaran." });
+    }
+
+    const { invitation_id } = req.body;
+    if (!invitation_id) return res.status(400).json({ error: "invitation_id wajib diisi." });
+
+    const { data: invitation } = await supabase
+      .from("invitations")
+      .select("id, payment_status")
+      .eq("id", invitation_id)
+      .single();
+
+    if (!invitation) return res.status(404).json({ error: "Undangan tidak ditemukan." });
+    if (invitation.payment_status === "paid") {
+      return res.json({ status: "already_paid", message: "Undangan sudah berstatus PAID." });
+    }
+
+    const now = new Date().toISOString();
+
+    await supabase.from("invitations").update({
+      payment_status: "paid",
+      paid_at: now,
+    }).eq("id", invitation_id);
+
+    // Log the manual confirmation
+    await supabase.from("payment_logs").upsert([{
+      invitation_id,
+      user_id: req.user!.id,
+      amount: PAYMENT_AMOUNT,
+      status: "paid",
+      paid_at: now,
+      mayar_invoice_id: `manual:${Date.now()}`,
+      webhook_payload: { confirmed_by: req.user!.id, method: "admin_manual" },
+    }], { onConflict: "invitation_id" });
+
+    console.log(`[Payment] ✅ Admin manually confirmed payment for: ${invitation_id}`);
+    res.json({ status: "ok", message: "Pembayaran berhasil dikonfirmasi." });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal konfirmasi pembayaran." });
+  }
+});
+
+// =============================================================
+//  VOUCHER — Shopee Voucher System
+// =============================================================
+
+function generateVoucherCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no I,O,0,1 to avoid confusion
+  let code = "MA-";
+  for (let i = 0; i < 8; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+// POST /api/vouchers/generate — Admin generates voucher(s)
+app.post("/api/vouchers/generate", requireAuth, async (req: any, res: any) => {
+  try {
+    if (req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Hanya admin yang bisa generate voucher." });
+    }
+
+    const count = Math.min(Math.max(1, Number(req.body.count) || 1), 50); // max 50 per batch
+    const note = req.body.note || "";
+
+    const vouchers = [];
+    for (let i = 0; i < count; i++) {
+      vouchers.push({
+        code: generateVoucherCode(),
+        status: "active",
+        note,
+      });
+    }
+
+    const { data, error } = await supabase
+      .from("vouchers")
+      .insert(vouchers)
+      .select("id, code, status, note, created_at");
+
+    if (error) throw error;
+
+    res.status(201).json({
+      message: `${count} voucher berhasil dibuat.`,
+      vouchers: data,
+    });
+  } catch (err: any) {
+    console.error("Generate voucher error:", err);
+    res.status(500).json({ error: err.message || "Gagal membuat voucher." });
+  }
+});
+
+// POST /api/vouchers/redeem — User redeems voucher for an invitation
+app.post("/api/vouchers/redeem", requireAuth, async (req: any, res: any) => {
+  try {
+    const { code, invitation_id } = req.body;
+    if (!code || !invitation_id) {
+      return res.status(400).json({ error: "Kode voucher dan invitation_id wajib diisi." });
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+
+    // Find voucher
+    const { data: voucher } = await supabase
+      .from("vouchers")
+      .select("*")
+      .eq("code", cleanCode)
+      .single();
+
+    if (!voucher) {
+      return res.status(404).json({ error: "Kode voucher tidak ditemukan." });
+    }
+    if (voucher.status === "redeemed") {
+      return res.status(400).json({ error: "Voucher sudah pernah digunakan." });
+    }
+    if (voucher.status === "expired") {
+      return res.status(400).json({ error: "Voucher sudah kadaluarsa." });
+    }
+
+    // Verify invitation belongs to user
+    const { data: invitation } = await supabase
+      .from("invitations")
+      .select("id, owner_id, payment_status")
+      .eq("id", invitation_id)
+      .single();
+
+    if (!invitation) {
+      return res.status(404).json({ error: "Undangan tidak ditemukan." });
+    }
+    if (invitation.owner_id !== req.user!.id && req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+    if (invitation.payment_status === "paid") {
+      return res.status(400).json({ error: "Undangan ini sudah berstatus PAID." });
+    }
+
+    // Redeem: update voucher + update invitation
+    const now = new Date().toISOString();
+
+    await supabase.from("vouchers").update({
+      status: "redeemed",
+      redeemed_by: req.user!.id,
+      redeemed_invitation_id: invitation_id,
+      redeemed_at: now,
+    }).eq("id", voucher.id);
+
+    await supabase.from("invitations").update({
+      payment_status: "paid",
+      paid_at: now,
+    }).eq("id", invitation_id);
+
+    // Also log in payment_logs
+    await supabase.from("payment_logs").insert([{
+      invitation_id,
+      user_id: req.user!.id,
+      amount: PAYMENT_AMOUNT,
+      status: "paid",
+      paid_at: now,
+      mayar_invoice_id: `voucher:${cleanCode}`,
+    }]);
+
+    console.log(`[Voucher] ✅ Redeemed "${cleanCode}" for invitation ${invitation_id} by user ${req.user!.id}`);
+
+    res.json({
+      message: "Voucher berhasil digunakan! Undangan Anda sekarang Premium.",
+      voucher_code: cleanCode,
+      invitation_id,
+      payment_status: "paid",
+    });
+  } catch (err: any) {
+    console.error("Redeem voucher error:", err);
+    res.status(500).json({ error: err.message || "Gagal redeem voucher." });
+  }
+});
+
+// GET /api/vouchers — Admin list all vouchers
+app.get("/api/vouchers", requireAuth, async (req: any, res: any) => {
+  try {
+    if (req.user!.role !== "admin") {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+
+    const { data, error } = await supabase
+      .from("vouchers")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    res.json(data || []);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal memuat voucher." });
+  }
+});
+
+// =============================================================
 //  HEALTH CHECK
 // =============================================================
 
@@ -587,7 +1218,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 // Diagnostic endpoint to test POST pipeline on Vercel
-app.post("/api/debug", async (req, res) => {
+app.post("/api/debug", async (req: any, res: any) => {
   const checks: Record<string, string> = {};
   try {
     checks.body_parsed = req.body ? "ok" : "MISSING";

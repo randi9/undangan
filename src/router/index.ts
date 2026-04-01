@@ -61,13 +61,13 @@ if (isLandingPage) {
   // Admin panel (root domain)
   routes = [
     {
-      path: '/login',
+      path: '/login/:pathMatch(.*)*',
       name: 'login',
       component: () => import('@/views/auth/LoginView.vue'),
       meta: { title: 'Login - UndanganGen', guest: true }
     },
     {
-      path: '/sign-up',
+      path: '/sign-up/:pathMatch(.*)*',
       name: 'sign-up',
       component: () => import('@/views/auth/SignupView.vue'),
       meta: { title: 'Sign Up - UndanganGen', guest: true }
@@ -98,6 +98,24 @@ if (isLandingPage) {
       meta: { title: 'Kelola User - UndanganGen', requiresAuth: true, requiresAdmin: true }
     },
     {
+      path: '/vouchers',
+      name: 'vouchers',
+      component: () => import('@/views/admin/VoucherManageView.vue'),
+      meta: { title: 'Kelola Voucher - UndanganGen', requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: () => import('@/views/admin/PaymentView.vue'),
+      meta: { title: 'Pembayaran - UndanganGen', requiresAuth: true }
+    },
+    {
+      path: '/payment/success',
+      name: 'payment-success',
+      component: () => import('@/views/admin/PaymentSuccessView.vue'),
+      meta: { title: 'Pembayaran Berhasil - UndanganGen', requiresAuth: true }
+    },
+    {
       path: '/landing',
       name: 'landing-preview',
       component: () => import('@/views/LandingView.vue'),
@@ -118,9 +136,9 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to) => {
   document.title = (to.meta.title as string) || 'Undangan Generator'
-  next()
+  return true
 })
 
 export default router
