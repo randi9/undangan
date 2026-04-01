@@ -237,9 +237,9 @@ onMounted(() => {
   gsap.set(archText.value, { opacity: 0 });
 
   // Play Sequence
-  tl.to(archText.value, { opacity: 1, duration: 2.0, delay: 1.0 }) // Fade in smoothly
-    .to(archText.value, { opacity: 1, duration: 1.5 }) // Hold text (delay before fading out)
-    .to(archText.value, { opacity: 0, duration: 1.5 }) // Fade out smoothly
+  tl.to(archText.value, { opacity: 1, duration: 1.5, delay: 0.5 }) // Fade in smoothly
+    .to(archText.value, { opacity: 1, duration: 1.0 }) // Hold text (delay before fading out)
+    .to(archText.value, { opacity: 0, duration: 1.0 }) // Fade out smoothly
     .to(sceneWrapper.value, { scale: 1.0, duration: 2.5, ease: 'power2.inOut' }) // Zoom out Scene (Background + Flowers)
     .addLabel("zoomEnd")
     .to(petalsContainer.value, { 

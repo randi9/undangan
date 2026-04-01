@@ -1,7 +1,43 @@
 <template>
-  <section ref="sectionRef" v-if="quote" class="relative min-h-screen bg-[#ffdfd4]/20 flex items-center justify-center py-40 md:py-56 px-6 text-center overflow-visible">
+  <section ref="sectionRef" v-if="quote" class="relative overflow-visible z-0 bg-[#ffdfd4]/20">
     
-    <div class="relative w-[250px] md:w-[420px] lg:w-[480px] max-w-[80vw] aspect-[2/3] mx-auto z-10 flex items-center justify-center">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      <img
+        src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/6cd02fb2-7e3f-47a4-b2d6-9f3ea8a653be.webp"
+        alt="Quotes Background"
+        class="min-w-full min-h-full w-full h-full object-cover object-center scale-[1.15]"
+      />
+      <div class="absolute inset-0 bg-[#ffdfd4]/10 mix-blend-multiply"></div>
+    </div>
+    
+
+    
+    <!-- Flex Layout Layer -->
+    <div class="relative w-full min-h-screen flex flex-col items-center justify-center py-12 md:py-24 px-6 text-center">
+      
+      <!-- Margin bottom palsu (250px) agar komposisi di tengah layar sempurna dan tidak akan menyentuh bagian Footer! -->
+      <div class="relative w-[250px] md:w-[420px] lg:w-[480px] max-w-[80vw] aspect-[2/3] mx-auto z-10 flex items-center justify-center mb-[250px] md:mb-[350px]">
+      
+      <!-- Top Corner Flowers (Behind) -->
+      <div class="absolute top-[5%] md:top-[8%] -left-[100px] md:-left-[160px] lg:-left-[200px] z-[5] scale-x-[-1]">
+        <img ref="elTopFlowerL" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/779b40ba-3585-4cd0-b13c-52c7db3ed79f.webp" class="w-[200px] md:w-[260px] lg:w-[320px] origin-bottom object-contain opacity-0" />
+      </div>
+      <div class="absolute top-[5%] md:top-[8%] -right-[100px] md:-right-[160px] lg:-right-[200px] z-[5]">
+        <img ref="elTopFlowerR" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/779b40ba-3585-4cd0-b13c-52c7db3ed79f.webp" class="w-[200px] md:w-[260px] lg:w-[320px] origin-bottom object-contain opacity-0" />
+      </div>
+      
+      <!-- Kupu-Kupu (Hinggap di bunga kiri atas) -->
+      <div ref="butterflyWrap" class="absolute top-[8%] md:top-[10%] -left-[30px] md:-left-[70px] lg:-left-[90px] z-[30] w-12 md:w-16 h-12 md:h-16 pointer-events-none opacity-0 drop-shadow-[0_5px_5px_rgba(0,0,0,0.15)]" style="perspective: 800px;">
+        <!-- Wadah Sayap Kanan (Box utuh) -->
+        <div class="absolute inset-0" style="transform-style: preserve-3d;">
+          <img ref="wingR" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/4ae3ad21-d1a3-4894-9ca3-9168237469ba.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
+        </div>
+        <!-- Wadah Sayap Kiri (Box utuh yang sama 100% hanya di-mirror, anti-menghilang dari awal!) -->
+        <div class="absolute inset-0" style="transform: scaleX(-1); transform-style: preserve-3d;">
+          <img ref="wingL" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/4ae3ad21-d1a3-4894-9ca3-9168237469ba.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
+        </div>
+      </div>
       
       <!-- Top Leaves (Behind) -->
       <div class="absolute top-[40%] md:top-[35%] -left-20 md:-left-32 lg:-left-36 z-0 scale-x-[-1]">
@@ -20,7 +56,7 @@
       </div>
 
       <!-- The Main Oval Container -->
-      <div ref="elContainer" class="absolute inset-0 bg-[var(--theme-surface)] rounded-[125px] md:rounded-[210px] lg:rounded-[240px] shadow-[0_15px_40px_rgba(0,0,0,0.1)] opacity-0 z-10 flex items-center justify-center border border-white/60 p-6 md:p-10">
+      <div ref="elContainer" class="absolute inset-0 bg-white rounded-[125px] md:rounded-[210px] lg:rounded-[240px] shadow-[0_15px_40px_rgba(0,0,0,0.1)] opacity-0 z-10 flex items-center justify-center border border-white/60 p-6 md:p-10">
         <blockquote class="w-[70%] max-w-[200px] md:max-w-[300px] lg:max-w-[340px] mx-auto text-[10px] md:text-sm lg:text-base italic font-light text-center text-[var(--theme-secondary)] leading-loose md:leading-relaxed lg:leading-loose tracking-[0.1em] md:tracking-[0.15em] break-words">
            "{{ quote }}"
         </blockquote>
@@ -54,6 +90,7 @@
       <img ref="elHang4" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/ed906d03-4e79-406f-92cb-8e2ab5295fc0.webp" class="absolute bottom-[-35%] md:bottom-[-35%] lg:bottom-[-35%] -right-[20%] md:-right-[20%] lg:-right-[20%] w-[150px] md:w-[250px] lg:w-[290px] origin-top object-contain opacity-0 z-[15] pointer-events-none drop-shadow-sm" />
 
     </div>
+    </div>
   </section>
 </template>
 
@@ -75,6 +112,11 @@ const sectionRef = ref<HTMLElement | null>(null);
 const elContainer = ref(null);
 const elTopLeafL = ref(null);
 const elTopLeafR = ref(null);
+const elTopFlowerL = ref(null);
+const elTopFlowerR = ref(null);
+const butterflyWrap = ref(null);
+const wingR = ref(null);
+const wingL = ref(null);
 const elLilyL = ref(null);
 const elLilyR = ref(null);
 const elSlantedL = ref(null);
@@ -85,8 +127,9 @@ const elHang2 = ref(null);
 const elHang3 = ref(null);
 const elHang4 = ref(null);
 
+
 let tl: gsap.core.Timeline | null = null;
-let swayAnimation: gsap.core.Tween[] = [];
+let swayAnimation: (gsap.core.Tween | gsap.core.Timeline)[] = [];
 
 onMounted(() => {
   if (!sectionRef.value) return;
@@ -97,11 +140,16 @@ onMounted(() => {
     elSlantedL.value, elSlantedR.value,
     elLilyL.value, elLilyR.value,
     elTopLeafL.value, elTopLeafR.value,
+    elTopFlowerL.value, elTopFlowerR.value,
+    butterflyWrap.value,
     elHang1.value, elHang2.value, elHang3.value, elHang4.value
   ].filter(Boolean);
 
   // Set initial states
   gsap.set(allElements, { opacity: 0, scale: 0.5 });
+  gsap.set(butterflyWrap.value, { rotation: 15 }); // Butterfly sits rotated by 15deg natively
+
+
 
   tl = gsap.timeline({
     scrollTrigger: {
@@ -147,6 +195,20 @@ onMounted(() => {
     duration: 0.8,
     ease: "power2.out"
   }, "-=0.6")
+  // 5.5 Top Flowers
+  .to([elTopFlowerL.value, elTopFlowerR.value], {
+    opacity: 1,
+    scale: 1,
+    duration: 0.8,
+    ease: "power2.out"
+  }, "-=0.6")
+  // 5.7 Butterfly
+  .to(butterflyWrap.value, {
+    opacity: 1,
+    scale: 1,
+    duration: 0.8,
+    ease: "back.out(1.5)"
+  }, "-=0.4")
   // 6. Hanging flowers
   .to([elHang1.value, elHang2.value, elHang3.value, elHang4.value], {
     opacity: 1,
@@ -174,6 +236,9 @@ onMounted(() => {
       gsap.to([elTopLeafL.value, elTopLeafR.value], {
         rotation: 5, duration: 4.5, yoyo: true, repeat: -1, ease: "sine.inOut", stagger: 0.4
       }),
+      gsap.to([elTopFlowerL.value, elTopFlowerR.value], {
+        rotation: 4, duration: 4.8, yoyo: true, repeat: -1, ease: "sine.inOut", stagger: 0.5
+      }),
       // Pengaturan Sway (Ayunan Angin) untuk Hanging Flowers
       // Bunga 1 (Kiri Luar)
       gsap.to(elHang1.value, {
@@ -192,12 +257,64 @@ onMounted(() => {
         rotation: 8, duration: 3.8, yoyo: true, repeat: -1, ease: "sine.inOut"
       })
     ];
+
+    // --- BUTTERFLY FLIGHT LOGIC ---
+    const setFlapSpeed = (speed: number) => {
+      if (!wingR.value || !wingL.value) return;
+      gsap.killTweensOf(wingR.value);
+      gsap.killTweensOf(wingL.value);
+      // rotationY: 10 = sedikit meregang ke bawah, 75 = mengepak menutup ke atas
+      gsap.fromTo(wingR.value, { rotationY: 10 }, { rotationY: 75, duration: speed, yoyo: true, repeat: -1, ease: "sine.inOut" });
+      gsap.fromTo(wingL.value, { rotationY: 10 }, { rotationY: 75, duration: speed, yoyo: true, repeat: -1, ease: "sine.inOut" });
+    };
+
+    setFlapSpeed(0.8); // Mode santai (diam di bunga) sedikit diperlambat
+
+    if (butterflyWrap.value) {
+      const flyTl = gsap.timeline({ repeat: -1, repeatDelay: 5 }); // Diam hinggap 5 detik sebelum terbang lagi
+
+      flyTl.add(() => setFlapSpeed(0.08)) // Kepakan saat terbang dikurangi temponya agar tidak terlalu ngebut
+        // Lepas landas ke kanan atas
+        .to(butterflyWrap.value, { 
+            x: 120, y: -250, rotation: 70, scale: 1.2,
+            duration: 2.5, ease: "power1.out" 
+        })
+        // Meliuk di angkasa (atas tengah melengkung)
+        .to(butterflyWrap.value, {
+            x: 350, y: -200, rotation: 120, scale: 1.5,
+            duration: 3.5, ease: "sine.inOut"
+        })
+        // Putar arah ke kiri perlahan sambil turun
+        .to(butterflyWrap.value, {
+            x: 250, y: -50, rotation: 220, scale: 1.2,
+            duration: 2.5, ease: "sine.inOut"
+        })
+        // Menukik ke kiri bawah arah bunga asal
+        .to(butterflyWrap.value, {
+            x: 50, y: -20, rotation: 330, scale: 1.0,
+            duration: 2.5, ease: "sine.inOut"
+        })
+        // Mendarat kembali pas ke titik 0, rotation 375 (360 + 15deg posisi awal) 
+        .to(butterflyWrap.value, {
+            x: 0, y: 0, rotation: 375,
+            duration: 2.5, ease: "power2.out"
+        })
+        // Begitu landing, reset semuanya ke state awal yg tenang
+        .add(() => {
+           gsap.set(butterflyWrap.value, { rotation: 15 }); // reset rotasi murni
+           setFlapSpeed(0.8); // Mode santai lagi
+        });
+      
+      swayAnimation.push(flyTl); // Masukkan ke dalam pool sway buat di auto-kill saat unmount
+    }
   }
 });
 
 onBeforeUnmount(() => {
   if (tl) tl.kill();
   swayAnimation.forEach(anim => anim.kill());
+  if (wingR.value) gsap.killTweensOf(wingR.value);
+  if (wingL.value) gsap.killTweensOf(wingL.value);
   ScrollTrigger.getAll().forEach(t => t.kill());
 });
 </script>
