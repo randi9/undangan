@@ -5,7 +5,7 @@ const parts = host.split('.')
 let subdomain: string | null = null
 let isLandingPage = false
 
-if (host === 'localhost' || host === '127.0.0.1') {
+if (host === 'localhost' || host === '127.0.0.1' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) {
   // Allow test.localhost if someone set it up
   if (parts.length >= 2 && parts[0] !== 'localhost' && parts[0] !== '127') {
     if (parts[0] === 'saya') {
