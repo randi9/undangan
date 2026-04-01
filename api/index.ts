@@ -358,10 +358,31 @@ app.post("/api/invitations", requireAuth, async (req: any, res: any) => {
     const { data: existing } = await supabase.from("invitations").select("id").eq("slug", slug).single();
     if (existing) return res.status(400).json({ error: "Slug sudah digunakan. Pilih slug lain." });
 
-    // Determine payment status based on user source
+    // Determine payment status based on user source and past payments
+    let isUserPremium = false;
+    let userPaidAt = null;
+
+    const { data: pastPayments } = await supabase
+      .from('payment_logs')
+      .select('paid_at')
+      .eq('user_id', req.user!.id)
+      .eq('status', 'paid')
+      .order('paid_at', { ascending: false })
+      .limit(1);
+
+    if (pastPayments && pastPayments.length > 0) {
+      const lastPaidAt = new Date(pastPayments[0].paid_at);
+      const expireDate = new Date(lastPaidAt);
+      expireDate.setFullYear(expireDate.getFullYear() + 1);
+      if (new Date() <= expireDate) {
+        isUserPremium = true;
+        userPaidAt = pastPayments[0].paid_at;
+      }
+    }
+
     const isAdminCreated = req.user!.user_source === "admin_created" || req.user!.role === "admin";
-    const paymentStatus = isAdminCreated ? "paid" : "trial";
-    const trialExpiresAt = isAdminCreated ? null : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
+    const paymentStatus = (isAdminCreated || isUserPremium) ? "paid" : "trial";
+    const trialExpiresAt = (isAdminCreated || isUserPremium) ? null : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
 
     const newInvitation = {
       id, slug,
@@ -395,6 +416,7 @@ app.post("/api/invitations", requireAuth, async (req: any, res: any) => {
       music_url: body.music_url || "",
       // Payment / Trial fields
       payment_status: paymentStatus,
+      paid_at: isUserPremium ? userPaidAt : (isAdminCreated ? new Date().toISOString() : null),
       trial_expires_at: trialExpiresAt,
       view_count: 0,
       max_views: 20,
@@ -543,7 +565,12 @@ app.delete("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
       }
     }
 
-    // 4. Delete DB records
+    // 4. Preserve payment history — detach payment_logs from this invitation
+    //    so the user's premium status survives invitation deletion
+    await supabase.from("payment_logs").update({ invitation_id: null }).eq("invitation_id", id);
+
+    // 5. Delete related DB records
+    await supabase.from("invitation_views").delete().eq("invitation_id", id);
     await supabase.from("photos").delete().eq("invitation_id", id);
     await supabase.from("rsvps").delete().eq("invitation_id", id);
     const { error } = await supabase.from("invitations").delete().eq("id", id);
@@ -803,12 +830,12 @@ app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) 
 
     const now = new Date().toISOString();
 
-    // Update invitation to paid
+    // Update ALL user's invitations to paid
     await supabase.from("invitations").update({
       payment_status: "paid",
       paid_at: now,
       mayar_invoice_id: `license:${paymentIdentifier}`,
-    }).eq("id", invitationId);
+    }).eq("owner_id", req.user!.id);
 
     // Update payment log
     await supabase.from("payment_logs").upsert([{
@@ -935,16 +962,28 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
         return res.json({ status: "logged", reason: "no_matching_invitation", event });
       }
 
-      // Update invitation to paid
-      await supabase.from("invitations").update({
-        payment_status: "paid",
-        paid_at: now,
-        mayar_invoice_id: invoiceId || null,
-      }).eq("id", invitationId);
+      // Fetch owner_id to update all invitations for this user
+      const { data: invOwner } = await supabase.from("invitations").select("owner_id").eq("id", invitationId).single();
 
-      // Update or insert payment log
+      if (invOwner) {
+        // Update ALL user's invitations to paid
+        await supabase.from("invitations").update({
+          payment_status: "paid",
+          paid_at: now,
+          mayar_invoice_id: invoiceId || null,
+        }).eq("owner_id", invOwner.owner_id);
+      } else {
+        await supabase.from("invitations").update({
+          payment_status: "paid",
+          paid_at: now,
+          mayar_invoice_id: invoiceId || null,
+        }).eq("id", invitationId);
+      }
+
+      // Update or insert payment log — include user_id so premium persists after deletion
       await supabase.from("payment_logs").upsert([{
         invitation_id: invitationId,
+        user_id: invOwner?.owner_id || null,
         amount: data.amount || data.total || PAYMENT_AMOUNT,
         status: "paid",
         paid_at: now,
@@ -1018,7 +1057,7 @@ app.post("/api/payment/confirm", requireAuth, async (req: any, res: any) => {
 
     const { data: invitation } = await supabase
       .from("invitations")
-      .select("id, payment_status")
+      .select("id, payment_status, owner_id")
       .eq("id", invitation_id)
       .single();
 
@@ -1032,7 +1071,7 @@ app.post("/api/payment/confirm", requireAuth, async (req: any, res: any) => {
     await supabase.from("invitations").update({
       payment_status: "paid",
       paid_at: now,
-    }).eq("id", invitation_id);
+    }).eq("owner_id", invitation.owner_id);
 
     // Log the manual confirmation
     await supabase.from("payment_logs").upsert([{
@@ -1158,7 +1197,7 @@ app.post("/api/vouchers/redeem", requireAuth, async (req: any, res: any) => {
     await supabase.from("invitations").update({
       payment_status: "paid",
       paid_at: now,
-    }).eq("id", invitation_id);
+    }).eq("owner_id", invitation.owner_id);
 
     // Also log in payment_logs
     await supabase.from("payment_logs").insert([{
