@@ -1,0 +1,29 @@
+﻿api/_utils/auth.ts(3,8): error TS1259: Module '"C:/projek/undangan/node_modules/bcryptjs/umd/index"' can only be default-imported using the 'esModuleInterop' flag
+api/index.ts(2,8): error TS1259: Module '"C:/projek/undangan/node_modules/@types/express/index"' can only be default-imported using the 'esModuleInterop' flag
+api/index.ts(3,8): error TS1259: Module '"C:/projek/undangan/node_modules/@types/cors/index"' can only be default-imported using the 'esModuleInterop' flag
+api/index.ts(4,8): error TS1259: Module '"C:/projek/undangan/node_modules/@types/multer/index"' can only be default-imported using the 'esModuleInterop' flag
+api/index.ts(5,8): error TS1259: Module '"path"' can only be default-imported using the 'esModuleInterop' flag
+api/index.ts(6,8): error TS1259: Module '"C:/projek/undangan/node_modules/sharp/lib/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/@clerk/backend/dist/api/endpoints/M2MTokenApi.d.ts(74,5): error TS18028: Private identifiers are only available when targeting ECMAScript 2015 and higher.
+node_modules/@clerk/backend/dist/errors.d.ts(1,28): error TS2307: Cannot find module '@clerk/shared/error' or its corresponding type declarations.
+  There are types at 'C:/projek/undangan/node_modules/@clerk/shared/dist/runtime/error.d.mts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+node_modules/@clerk/backend/dist/index.d.ts(1,48): error TS2307: Cannot find module '@clerk/shared/telemetry' or its corresponding type declarations.
+  There are types at 'C:/projek/undangan/node_modules/@clerk/shared/dist/runtime/telemetry.d.mts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+node_modules/@clerk/backend/dist/index.d.ts(2,36): error TS2307: Cannot find module '@clerk/shared/telemetry' or its corresponding type declarations.
+  There are types at 'C:/projek/undangan/node_modules/@clerk/shared/dist/runtime/telemetry.d.mts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+node_modules/@clerk/backend/dist/internal.d.ts(17,66): error TS2307: Cannot find module '@clerk/shared/authorization-errors' or its corresponding type declarations.
+  There are types at 'C:/projek/undangan/node_modules/@clerk/shared/dist/runtime/authorization-errors.d.mts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+node_modules/@clerk/backend/dist/jwt/verifyMachineJwt.d.ts(14,143): error TS2344: Type 'MachineTokenVerificationError' does not satisfy the constraint 'Error'.
+  Type 'MachineTokenVerificationError' is missing the following properties from type 'Error': name, message
+node_modules/@clerk/backend/dist/jwt/verifyMachineJwt.d.ts(18,156): error TS2344: Type 'MachineTokenVerificationError' does not satisfy the constraint 'Error'.
+  Type 'MachineTokenVerificationError' is missing the following properties from type 'Error': name, message
+node_modules/@clerk/backend/dist/tokens/types.d.ts(1,36): error TS2307: Cannot find module '@clerk/shared/pathToRegexp' or its corresponding type declarations.
+  There are types at 'C:/projek/undangan/node_modules/@clerk/shared/dist/runtime/pathToRegexp.d.mts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+node_modules/@clerk/express/dist/types.d.ts(5,31): error TS2307: Cannot find module '@clerk/shared/proxy' or its corresponding type declarations.
+  There are types at 'C:/projek/undangan/node_modules/@clerk/shared/dist/runtime/proxy.d.mts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+node_modules/@clerk/shared/dist/types/index.d.ts(1,35): error TS2307: Cannot find module '@zxcvbn-ts/core' or its corresponding type declarations.
+node_modules/@clerk/shared/dist/types/index.d.ts(2,46): error TS2307: Cannot find module '@zxcvbn-ts/language-common' or its corresponding type declarations.
+node_modules/@clerk/shared/dist/types/index.d.ts(3,37): error TS2307: Cannot find module '@base-org/account' or its corresponding type declarations.
+node_modules/@clerk/shared/dist/types/index.d.ts(4,40): error TS2307: Cannot find module '@coinbase/wallet-sdk' or its corresponding type declarations.
+node_modules/@clerk/shared/dist/types/index.d.ts(5,37): error TS2307: Cannot find module '@stripe/stripe-js' or its corresponding type declarations.
+node_modules/@clerk/shared/dist/types/index.d.ts(7596,53): error TS2339: Property 'theme' does not exist on type 'ClerkAppearanceRegistry'.
