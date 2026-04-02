@@ -1,5 +1,5 @@
 <template>
-  <section id="couple-section" class="bg-[#fadcdf]/50 max-w-5xl mx-auto text-center relative z-10" style="padding: 50px;" ref="sectionRef">
+  <section id="couple-section" class="bg-[#fadcdf]/50 max-w-5xl mx-auto text-center relative z-10 overflow-hidden" style="padding: 50px;" ref="sectionRef">
     <!-- Damask Background Overlay (Using SVG Pattern for precise spacing and flipping) -->
     <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-[0.1]">
       <defs>
@@ -16,16 +16,21 @@
       </defs>
       <rect width="100%" height="100%" fill="url(#damask-flip)" />
     </svg>
-    <h2 class="text-[50px] font-bold md:text-5xl mb-2 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">Mempelai</h2>
-    <div class="flex items-center justify-center gap-4 mb-12 text-[var(--theme-secondary)]">
-      <div class="h-px w-16 bg-[var(--theme-secondary)] opacity-100"></div>
-      <span class="text-xl">♥</span>
-      <div class="h-px w-16 bg-[var(--theme-secondary)] opacity-100"></div>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 10;">
+      <!-- Ornament Atas (Inline CSS Murni) -->
+      <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 280px; opacity: 0.9; margin-top: -120px; margin-bottom: -125px;" alt="Ornament Top" />
+      
+      <!-- Judul -->
+      <!-- Menggunakan clamp() untuk responsive sizing dari 50px - 60px -->
+      <h2 style="font-size: clamp(50px, 8vw, 60px); font-weight: 600; color: var(--theme-primary); position: relative; z-index: 10; margin: 0; line-height: 1;" :style="{ fontFamily: themeConfig.fontHeading }">Mempelai</h2>
+      
+      <!-- Ornament Bawah (Flipped) -->
+      <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 280px; opacity: 0.9; margin-top: -125px; margin-bottom: -100px ;transform: scaleY(-1);" alt="Ornament Bottom" />
     </div>
     
     <div class="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-8">
       <!-- Groom -->
-      <div class="flex-1 flex flex-col items-center">
+      <div class="flex-1 flex flex-col items-center groom-section">
         <!-- Wrapper bingkai + daun -->
         <div class="relative" style="width: 280px; height: 280px; margin-top: 40px; margin-bottom: 60px;">
           <div class="absolute inset-0 groom-photo">
@@ -70,8 +75,8 @@
             </div>
           </div>
         </div>
-        <h3 class="text-2xl md:text-3xl font-bold mb-3 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
-        <p v-if="invitation.groom_father || invitation.groom_mother" class="text-sm md:text-base text-[var(--theme-text-light)]">
+        <h3 class="text-2xl md:text-3xl font-bold mb-3 text-[var(--theme-primary)] groom-text" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
+        <p v-if="invitation.groom_father || invitation.groom_mother" class="text-sm md:text-base text-[var(--theme-text-light)] groom-text">
           <span class="text-xs font-light italic">Putra dari</span><br/>
           <span v-if="invitation.groom_father" class="text-md font-semibold">Bapak {{ invitation.groom_father }}</span>
           <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
@@ -80,10 +85,10 @@
       </div>
       
       <!-- Divider -->
-      <div class="text-5xl md:text-7xl text-[var(--theme-secondary)] opacity-100" :style="{ fontFamily: themeConfig.fontHeading }">&amp;</div>
+      <div class="text-5xl md:text-7xl text-[var(--theme-primary)] opacity-100" :style="{ fontFamily: themeConfig.fontHeading }">&amp;</div>
       
       <!-- Bride -->
-      <div class="flex-1 flex flex-col items-center">
+      <div class="flex-1 flex flex-col items-center bride-section">
         <!-- Wrapper bingkai + daun -->
         <div class="relative" style="width: 280px; height: 280px; margin-bottom: 60px;">
           <div class="absolute inset-0 bride-photo">
@@ -128,8 +133,8 @@
             </div>
           </div>
         </div>
-        <h3 class="text-2xl md:text-3xl font-bold mb-3 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
-        <p v-if="invitation.bride_father || invitation.bride_mother" class="text-sm md:text-base text-[var(--theme-text-light)]">
+        <h3 class="text-2xl md:text-3xl font-bold mb-3 text-[var(--theme-primary)] bride-text" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
+        <p v-if="invitation.bride_father || invitation.bride_mother" class="text-sm md:text-base text-[var(--theme-text-light)] bride-text">
           <span class="text-xs font-light italic">Putri dari</span><br/>
           <span v-if="invitation.bride_father" class="text-md font-semibold">Bapak {{ invitation.bride_father }}</span>
           <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
@@ -253,89 +258,100 @@ onMounted(() => {
   // Timeline Animasi Groom
   const tlGroom = gsap.timeline({
     scrollTrigger: {
-      trigger: '#couple-section',
-      start: 'top 80%',
+      trigger: '.groom-section',
+      start: 'top+=33% bottom',
     }
   });
 
-  tlGroom.from('.groom-photo', {
-    x: 60,
-    opacity: 0,
+  tlGroom.addLabel("start")
+  .from('.groom-photo', {
+    x: "-100vw",
     duration: 1.5,
-    ease: 'power2.out',
-  })
+    ease: 'power1.out',
+  }, "start")
   .from('.groom-flowers', {
     scale: 0,
     opacity: 0,
-    duration: 1,
-    ease: 'back.out(1.5)',
-  }, "-=0.6")
-  .from('.groom-leaf', {
-    scale: 0,
-    opacity: 0,
-    duration: 0.6,
-    ease: 'back.out(1.5)',
-    stagger: 0.05,
-  }, "-=0.5")
+    duration: 1.2,
+    ease: 'back.out(1.3)',
+  }, "start+=1.0")
   .from('.groom-butterfly', {
-    x: -300, // Datang dari kiri luar
-    y: 80, // kurva parabolik masuk
-    rotation: 80, // Kepala menghadap ke kanan maju searah jalur terbang
+    x: -300, 
+    y: 80, 
+    rotation: 80, 
     opacity: 0,
-    duration: 3.5, // Sangat lambat dan santai
+    duration: 4, 
     ease: 'power1.out',
     onComplete: () => {
-      // Saat sampai, kepak sayap ngaso (Groom: 0.8s)
       gsap.killTweensOf(['.groom-wing-r', '.groom-wing-l']);
       gsap.fromTo(['.groom-wing-r', '.groom-wing-l'], 
         { rotationY: 10 }, 
         { rotationY: 70, duration: 0.8, yoyo: true, repeat: -1, ease: "sine.inOut" }
       );
     }
-  }, "-=1.2"); // Terbang masuk barengan dengan daun mekar
+  }, "start+=1.2")
+  .from('.groom-leaf', {
+    scale: 0,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'back.out(1.3)',
+    stagger: 0.05,
+  }, "start+=1.4")
+  .from('.groom-text', {
+    x: "100vw",
+    duration: 1.5,
+    ease: 'power1.out',
+    stagger: 0.2,
+  }, "start");
 
   // Timeline Animasi Bride
   const tlBride = gsap.timeline({
     scrollTrigger: {
-      trigger: '#couple-section',
-      start: 'top 40%',
+      trigger: '.bride-section',
+      start: 'top+=33% bottom',
     }
   });
 
-  tlBride.from('.bride-photo', {
-    x: -60,
-    opacity: 0,
+  tlBride.addLabel("start")
+  .from('.bride-photo', {
+    x: "100vw",
     duration: 1.5,
-    ease: 'power2.out',
-  })
+    ease: 'power1.out',
+  }, "start")
   .from('.bride-flowers', {
     scale: 0,
     opacity: 0,
-    duration: 1,
-    ease: 'back.out(1.5)',
-  }, "-=0.6")
-  .from('.bride-leaf', {
-    scale: 0,
-    opacity: 0,
-    duration: 0.6,
-    ease: 'back.out(1.5)',
-    stagger: 0.05,
-  }, "-=0.5")
+    duration: 1.2,
+    ease: 'back.out(1.3)',
+  }, "start+=1.0")
   .from('.bride-butterfly', {
-    x: 280, // Datang melayang dari kanan luar sedikit berbeda
+    x: 280, 
     y: 40,
-    rotation: -80, // Kepala menghadap ke kiri maju searah jalur terbang
+    rotation: -80, 
     opacity: 0,
-    duration: 4.2, // Ekstra lambat untuk Bride biar gak identik
+    duration: 4.5, 
     ease: 'sine.out',
     onComplete: () => {
-      // Kepakan hinggap Bride lebih kalem lagi (1.1s)
       gsap.killTweensOf(['.bride-wing-r', '.bride-wing-l']);
       gsap.fromTo(['.bride-wing-r', '.bride-wing-l'], 
         { rotationY: 10 }, 
         { rotationY: 70, duration: 1.1, yoyo: true, repeat: -1, ease: "power1.inOut" }
       );
     }
-  }, "-=1.5");
+  }, "start+=1.0")
+  .from('.bride-leaf', {
+    scale: 0,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'back.out(1.3)',
+    stagger: 0.05,
+  }, "start+=1.4")
+  .from('.bride-text', {
+    x: "-100vw",
+    duration: 1.5,
+    ease: 'power1.out',
+    stagger: 0.2,
+  }, "start");
 });
 </script>
+
