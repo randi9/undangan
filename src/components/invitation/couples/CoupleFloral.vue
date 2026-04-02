@@ -28,14 +28,16 @@
       <div class="flex-1 flex flex-col items-center">
         <!-- Wrapper bingkai + daun -->
         <div class="relative" style="width: 280px; height: 280px; margin-top: 40px; margin-bottom: 60px;">
-          <!-- Foto (Layer paling bawah) -->
-          <div class="absolute inset-0 rounded-full overflow-hidden border-[6px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e] groom-photo">
-            <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="w-full h-full object-cover" alt="Groom" />
-            <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center text-4xl text-gray-400">👤</div>
-          </div>
+          <div class="absolute inset-0 groom-photo">
+            <!-- Foto (Layer paling bawah) -->
+            <div class="absolute inset-0 rounded-full overflow-hidden border-[6px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e]">
+              <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="w-full h-full object-cover" alt="Groom" />
+              <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center text-4xl text-gray-400">👤</div>
+            </div>
 
-          <!-- Cincin CSS -->
-          <div class="absolute inset-0 rounded-full border-[3px] border-[#21552e] opacity-60"></div>
+            <!-- Cincin CSS -->
+            <div class="absolute inset-0 rounded-full border-[3px] border-[#21552e] opacity-60"></div>
+          </div>
           
           <!-- Daun-daun Groom -->
           <img
@@ -84,14 +86,16 @@
       <div class="flex-1 flex flex-col items-center">
         <!-- Wrapper bingkai + daun -->
         <div class="relative" style="width: 280px; height: 280px; margin-bottom: 60px;">
-          <!-- Foto (Layer paling bawah) -->
-          <div class="absolute inset-0 rounded-full overflow-hidden border-[6px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e] bride-photo">
-            <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="w-full h-full object-cover" alt="Bride" />
-            <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center text-4xl text-gray-400">👤</div>
-          </div>
+          <div class="absolute inset-0 bride-photo">
+            <!-- Foto (Layer paling bawah) -->
+            <div class="absolute inset-0 rounded-full overflow-hidden border-[6px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e]">
+              <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="w-full h-full object-cover" alt="Bride" />
+              <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center text-4xl text-gray-400">👤</div>
+            </div>
 
-          <!-- Cincin CSS -->
-          <div class="absolute inset-0 rounded-full border-[3px] border-[#21552e] opacity-60"></div>
+            <!-- Cincin CSS -->
+            <div class="absolute inset-0 rounded-full border-[3px] border-[#21552e] opacity-60"></div>
+          </div>
           
           <!-- Daun-daun Bride -->
           <img
