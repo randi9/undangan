@@ -1,17 +1,33 @@
 <template>
-  <section id="couple-section" class="py-24 px-6 max-w-5xl mx-auto text-center" ref="sectionRef">
-    <h2 class="text-3xl md:text-5xl mb-2 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">Mempelai</h2>
-    <div class="flex items-center justify-center gap-4 mb-16 text-[var(--theme-secondary)]">
-      <div class="h-px w-16 bg-[var(--theme-secondary)] opacity-50"></div>
+  <section id="couple-section" class="bg-[#fadcdf]/50 max-w-5xl mx-auto text-center relative z-10" style="padding: 50px;" ref="sectionRef">
+    <!-- Damask Background Overlay (Using SVG Pattern for precise spacing and flipping) -->
+    <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-[0.1]">
+      <defs>
+        <pattern id="damask-flip" x="-45" y="-45" width="180" height="180" patternUnits="userSpaceOnUse">
+          <!-- Motif Tengah (Normal) -->
+          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="30" y="30" width="120" height="120" />
+          
+          <!-- Motif Pojok Selang-seling (Terbalik Menghadap Bawah) -->
+          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="-60" width="120" height="120" transform="rotate(180 0 0)" />
+          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="-60" width="120" height="120" transform="rotate(180 180 0)" />
+          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="120" width="120" height="120" transform="rotate(180 0 180)" />
+          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="120" width="120" height="120" transform="rotate(180 180 180)" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#damask-flip)" />
+    </svg>
+    <h2 class="text-[50px] font-bold md:text-5xl mb-2 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">Mempelai</h2>
+    <div class="flex items-center justify-center gap-4 mb-12 text-[var(--theme-secondary)]">
+      <div class="h-px w-16 bg-[var(--theme-secondary)] opacity-100"></div>
       <span class="text-xl">♥</span>
-      <div class="h-px w-16 bg-[var(--theme-secondary)] opacity-50"></div>
+      <div class="h-px w-16 bg-[var(--theme-secondary)] opacity-100"></div>
     </div>
     
     <div class="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-8">
       <!-- Groom -->
       <div class="flex-1 flex flex-col items-center">
         <!-- Wrapper bingkai + daun -->
-        <div class="relative mb-6" style="width: 280px; height: 280px;">
+        <div class="relative" style="width: 280px; height: 280px; margin-top: 40px; margin-bottom: 60px;">
           <!-- Foto (Layer paling bawah) -->
           <div class="absolute inset-0 rounded-full overflow-hidden border-[6px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e] groom-photo">
             <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="w-full h-full object-cover" alt="Groom" />
@@ -54,20 +70,20 @@
         </div>
         <h3 class="text-2xl md:text-3xl font-bold mb-3 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
         <p v-if="invitation.groom_father || invitation.groom_mother" class="text-sm md:text-base text-[var(--theme-text-light)]">
-          Putra dari<br/>
-          <span v-if="invitation.groom_father">Bapak {{ invitation.groom_father }}</span>
+          <span class="text-xs font-light italic">Putra dari</span><br/>
+          <span v-if="invitation.groom_father" class="text-md font-semibold">Bapak {{ invitation.groom_father }}</span>
           <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
-          <span v-if="invitation.groom_mother">Ibu {{ invitation.groom_mother }}</span>
+          <span v-if="invitation.groom_mother" class="text-md font-semibold">Ibu {{ invitation.groom_mother }}</span>
         </p>
       </div>
       
       <!-- Divider -->
-      <div class="text-5xl md:text-7xl text-[var(--theme-secondary)] opacity-50" :style="{ fontFamily: themeConfig.fontHeading }">&amp;</div>
+      <div class="text-5xl md:text-7xl text-[var(--theme-secondary)] opacity-100" :style="{ fontFamily: themeConfig.fontHeading }">&amp;</div>
       
       <!-- Bride -->
       <div class="flex-1 flex flex-col items-center">
         <!-- Wrapper bingkai + daun -->
-        <div class="relative mb-6" style="width: 280px; height: 280px;">
+        <div class="relative" style="width: 280px; height: 280px; margin-bottom: 60px;">
           <!-- Foto (Layer paling bawah) -->
           <div class="absolute inset-0 rounded-full overflow-hidden border-[6px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e] bride-photo">
             <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="w-full h-full object-cover" alt="Bride" />
@@ -110,10 +126,10 @@
         </div>
         <h3 class="text-2xl md:text-3xl font-bold mb-3 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
         <p v-if="invitation.bride_father || invitation.bride_mother" class="text-sm md:text-base text-[var(--theme-text-light)]">
-          Putri dari<br/>
-          <span v-if="invitation.bride_father">Bapak {{ invitation.bride_father }}</span>
+          <span class="text-xs font-light italic">Putri dari</span><br/>
+          <span v-if="invitation.bride_father" class="text-md font-semibold">Bapak {{ invitation.bride_father }}</span>
           <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
-          <span v-if="invitation.bride_mother">Ibu {{ invitation.bride_mother }}</span>
+          <span v-if="invitation.bride_mother" class="text-md font-semibold">Ibu {{ invitation.bride_mother }}</span>
         </p>
       </div>
     </div>
