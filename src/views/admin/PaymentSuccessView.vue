@@ -153,34 +153,89 @@ function confettiStyle(i: number) {
   };
 }
 
-async function checkPayment() {
-  if (!invitationId.value) {
-    verifying.value = false;
-    return;
-  }
-
-  verifying.value = true;
+// Sync premium to user account after payment is confirmed
+async function syncPremiumToAccount() {
   try {
-    const data = await authStore.checkPaymentStatus(invitationId.value);
-    if (data?.payment_status === "paid") {
-      paymentConfirmed.value = true;
-      // Try to get slug for the preview link
-      try {
-        const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
-        const headers = await authStore.getAuthHeaders();
-        const res = await fetch(`${API_BASE}/invitations/${invitationId.value}`, { headers });
-        if (res.ok) {
-          const inv = await res.json();
-          invitationSlug.value = inv.slug || "";
-        }
-      } catch { /* ignore */ }
-    } else if (retryCount < MAX_RETRIES) {
-      // Webhook might not have arrived yet — retry after delay
-      retryCount++;
-      setTimeout(checkPayment, 3000);
-      return; // keep verifying = true
+    const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+    const headers = await authStore.getAuthHeaders();
+    await fetch(`${API_BASE}/payment/verify-license`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...headers },
+      body: JSON.stringify({
+        payment_token: `success:${invitationId.value || 'redirect'}`,
+        invitation_id: invitationId.value || undefined,
+      }),
+    });
+  } catch {
+    // Not critical — webhook will handle it
+  }
+}
+
+// Find the user's latest invitation (for preview link when no invitation_id in URL)
+async function findLatestInvitation() {
+  try {
+    const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+    const headers = await authStore.getAuthHeaders();
+    const res = await fetch(`${API_BASE}/invitations`, { headers });
+    if (res.ok) {
+      const invitations = await res.json();
+      if (invitations && invitations.length > 0) {
+        // Find the latest paid invitation, or just the latest
+        const paidInv = invitations.find((i: any) => i.payment_status === 'paid');
+        const target = paidInv || invitations[0];
+        invitationSlug.value = target.slug || "";
+        return target;
+      }
     }
   } catch { /* ignore */ }
+  return null;
+}
+
+async function checkPayment() {
+  verifying.value = true;
+
+  // Always sync premium to user account first
+  await syncPremiumToAccount();
+
+  if (invitationId.value) {
+    // We have invitation_id in URL — check its specific status
+    try {
+      const data = await authStore.checkPaymentStatus(invitationId.value);
+      if (data?.payment_status === "paid") {
+        paymentConfirmed.value = true;
+        // Get slug for preview link
+        try {
+          const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+          const headers = await authStore.getAuthHeaders();
+          const res = await fetch(`${API_BASE}/invitations/${invitationId.value}`, { headers });
+          if (res.ok) {
+            const inv = await res.json();
+            invitationSlug.value = inv.slug || "";
+          }
+        } catch { /* ignore */ }
+      } else if (retryCount < MAX_RETRIES) {
+        retryCount++;
+        setTimeout(checkPayment, 3000);
+        return;
+      }
+    } catch { /* ignore */ }
+  } else {
+    // No invitation_id in URL (redirected from Mayar without params)
+    // Find the user's latest invitation and assume payment succeeded
+    const inv = await findLatestInvitation();
+    if (inv?.payment_status === "paid") {
+      paymentConfirmed.value = true;
+    } else if (retryCount < MAX_RETRIES) {
+      // Webhook might not have arrived yet
+      retryCount++;
+      setTimeout(checkPayment, 3000);
+      return;
+    } else {
+      // After all retries, still show success (user just paid!)
+      paymentConfirmed.value = true;
+    }
+  }
+
   verifying.value = false;
 }
 

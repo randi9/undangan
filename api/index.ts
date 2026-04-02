@@ -838,17 +838,35 @@ app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) 
     }
 
     if (!invitationId) {
+      // No invitation found — but user might have paid before and deleted the invitation
+      // Check payment_logs for this user and set users.paid_at if found
+      const { data: existingPayment } = await supabase
+        .from('payment_logs')
+        .select('paid_at')
+        .eq('user_id', req.user!.id)
+        .eq('status', 'paid')
+        .order('paid_at', { ascending: false })
+        .limit(1);
+
+      if (existingPayment && existingPayment.length > 0) {
+        await supabase.from('users').update({ paid_at: existingPayment[0].paid_at }).eq('id', req.user!.id);
+        return res.json({ status: "already_paid", message: "Akun sudah Premium.", synced_from: "payment_logs" });
+      }
+
       return res.status(404).json({ error: "Tidak ada undangan yang menunggu pembayaran." });
     }
 
     // Check if already paid (avoid double update)
     const { data: invitation } = await supabase
       .from("invitations")
-      .select("id, payment_status")
+      .select("id, payment_status, paid_at")
       .eq("id", invitationId)
       .single();
 
     if (invitation?.payment_status === "paid") {
+      // Still ensure users.paid_at is set (critical for premium persistence)
+      const paidAt = invitation.paid_at || new Date().toISOString();
+      await supabase.from('users').update({ paid_at: paidAt }).eq('id', req.user!.id);
       return res.json({ status: "already_paid", message: "Undangan sudah berstatus PAID.", invitation_id: invitationId });
     }
 
