@@ -358,31 +358,55 @@ app.post("/api/invitations", requireAuth, async (req: any, res: any) => {
     const { data: existing } = await supabase.from("invitations").select("id").eq("slug", slug).single();
     if (existing) return res.status(400).json({ error: "Slug sudah digunakan. Pilih slug lain." });
 
-    // Determine payment status based on user source and past payments
+    // Determine payment status — check user account premium (users.paid_at)
     let isUserPremium = false;
-    let userPaidAt = null;
+    let userPaidAt: string | null = null;
 
-    const { data: pastPayments } = await supabase
-      .from('payment_logs')
+    // 1. Check users.paid_at directly (most reliable, survives invitation deletion)
+    const { data: userRecord } = await supabase
+      .from('users')
       .select('paid_at')
-      .eq('user_id', req.user!.id)
-      .eq('status', 'paid')
-      .order('paid_at', { ascending: false })
-      .limit(1);
+      .eq('id', req.user!.id)
+      .single();
 
-    if (pastPayments && pastPayments.length > 0) {
-      const lastPaidAt = new Date(pastPayments[0].paid_at);
-      const expireDate = new Date(lastPaidAt);
+    if (userRecord?.paid_at) {
+      const paidDate = new Date(userRecord.paid_at);
+      const expireDate = new Date(paidDate);
       expireDate.setFullYear(expireDate.getFullYear() + 1);
       if (new Date() <= expireDate) {
         isUserPremium = true;
-        userPaidAt = pastPayments[0].paid_at;
+        userPaidAt = userRecord.paid_at;
+      }
+    }
+
+    // 2. Fallback: check payment_logs by user_id (for legacy data)
+    if (!isUserPremium) {
+      const { data: pastPayments } = await supabase
+        .from('payment_logs')
+        .select('paid_at')
+        .eq('user_id', req.user!.id)
+        .eq('status', 'paid')
+        .order('paid_at', { ascending: false })
+        .limit(1);
+
+      if (pastPayments && pastPayments.length > 0) {
+        const lastPaidAt = new Date(pastPayments[0].paid_at);
+        const expireDate = new Date(lastPaidAt);
+        expireDate.setFullYear(expireDate.getFullYear() + 1);
+        if (new Date() <= expireDate) {
+          isUserPremium = true;
+          userPaidAt = pastPayments[0].paid_at;
+          // Backfill users.paid_at for future checks
+          await supabase.from('users').update({ paid_at: userPaidAt }).eq('id', req.user!.id);
+        }
       }
     }
 
     const isAdminCreated = req.user!.user_source === "admin_created" || req.user!.role === "admin";
     const paymentStatus = (isAdminCreated || isUserPremium) ? "paid" : "trial";
     const trialExpiresAt = (isAdminCreated || isUserPremium) ? null : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
+
+    console.log(`[Create Invitation] User ${req.user!.id} premium=${isUserPremium}, paidAt=${userPaidAt}, status=${paymentStatus}`);
 
     const newInvitation = {
       id, slug,
@@ -830,6 +854,9 @@ app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) 
 
     const now = new Date().toISOString();
 
+    // Mark user account as premium
+    await supabase.from('users').update({ paid_at: now }).eq('id', req.user!.id);
+
     // Update ALL user's invitations to paid
     await supabase.from("invitations").update({
       payment_status: "paid",
@@ -966,6 +993,9 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
       const { data: invOwner } = await supabase.from("invitations").select("owner_id").eq("id", invitationId).single();
 
       if (invOwner) {
+        // Mark user account as premium
+        await supabase.from('users').update({ paid_at: now }).eq('id', invOwner.owner_id);
+
         // Update ALL user's invitations to paid
         await supabase.from("invitations").update({
           payment_status: "paid",
@@ -1067,6 +1097,9 @@ app.post("/api/payment/confirm", requireAuth, async (req: any, res: any) => {
     }
 
     const now = new Date().toISOString();
+
+    // Mark user account as premium
+    await supabase.from('users').update({ paid_at: now }).eq('id', invitation.owner_id);
 
     await supabase.from("invitations").update({
       payment_status: "paid",
@@ -1193,6 +1226,9 @@ app.post("/api/vouchers/redeem", requireAuth, async (req: any, res: any) => {
       redeemed_invitation_id: invitation_id,
       redeemed_at: now,
     }).eq("id", voucher.id);
+
+    // Mark user account as premium
+    await supabase.from('users').update({ paid_at: now }).eq('id', req.user!.id);
 
     await supabase.from("invitations").update({
       payment_status: "paid",
