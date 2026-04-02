@@ -1292,6 +1292,93 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+// GET /api/payment/debug-premium — Debug why user is or isn't premium
+app.get("/api/payment/debug-premium", requireAuth, async (req: any, res: any) => {
+  try {
+    const userId = req.user!.id;
+    const checks: Record<string, any> = {};
+
+    // 1. Check user record
+    const { data: userRecord, error: userErr } = await supabase
+      .from('users')
+      .select('id, username, role, user_source, paid_at, max_invitations')
+      .eq('id', userId)
+      .single();
+    checks.user_record = userErr ? { error: userErr.message } : userRecord;
+    checks.user_has_paid_at_column = userRecord ? ('paid_at' in userRecord) : false;
+    checks.user_paid_at_value = userRecord?.paid_at || null;
+
+    // 2. Check payment_logs for this user
+    const { data: paymentLogs, error: logErr } = await supabase
+      .from('payment_logs')
+      .select('id, invitation_id, user_id, status, paid_at, mayar_invoice_id, created_at')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(5);
+    checks.payment_logs_by_user_id = logErr ? { error: logErr.message } : paymentLogs;
+    checks.payment_logs_count = paymentLogs?.length || 0;
+
+    // 3. Check ALL payment_logs (to see if any exist without user_id)
+    const { data: allLogs, error: allLogErr } = await supabase
+      .from('payment_logs')
+      .select('id, invitation_id, user_id, status, paid_at, mayar_invoice_id')
+      .order('created_at', { ascending: false })
+      .limit(10);
+    checks.all_recent_payment_logs = allLogErr ? { error: allLogErr.message } : allLogs;
+
+    // 4. Check if users table has paid_at column by trying to update
+    const { error: colErr } = await supabase
+      .from('users')
+      .select('paid_at')
+      .eq('id', userId)
+      .single();
+    checks.paid_at_column_exists = !colErr || !colErr.message.includes('paid_at');
+    if (colErr) checks.paid_at_column_error = colErr.message;
+
+    // 5. Premium determination logic
+    let isUserPremium = false;
+    let premiumSource = 'none';
+
+    if (userRecord?.paid_at) {
+      const paidDate = new Date(userRecord.paid_at);
+      const expireDate = new Date(paidDate);
+      expireDate.setFullYear(expireDate.getFullYear() + 1);
+      if (new Date() <= expireDate) {
+        isUserPremium = true;
+        premiumSource = 'users.paid_at';
+      } else {
+        premiumSource = 'users.paid_at_expired';
+      }
+    }
+
+    if (!isUserPremium && paymentLogs && paymentLogs.length > 0) {
+      const paidLogs = paymentLogs.filter((l: any) => l.status === 'paid' && l.paid_at);
+      if (paidLogs.length > 0) {
+        const lastPaidAt = new Date(paidLogs[0].paid_at);
+        const expireDate = new Date(lastPaidAt);
+        expireDate.setFullYear(expireDate.getFullYear() + 1);
+        if (new Date() <= expireDate) {
+          isUserPremium = true;
+          premiumSource = 'payment_logs';
+        }
+      }
+    }
+
+    const isAdminCreated = req.user!.user_source === "admin_created" || req.user!.role === "admin";
+
+    checks.result = {
+      is_premium: isUserPremium,
+      premium_source: premiumSource,
+      is_admin_created: isAdminCreated,
+      would_get_status: (isAdminCreated || isUserPremium) ? "paid" : "trial",
+    };
+
+    res.json(checks);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message, stack: err.stack });
+  }
+});
+
 // Diagnostic endpoint to test POST pipeline on Vercel
 app.post("/api/debug", async (req: any, res: any) => {
   const checks: Record<string, string> = {};

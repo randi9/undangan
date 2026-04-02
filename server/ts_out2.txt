@@ -1,0 +1,12 @@
+﻿src/routes/auth.ts(96,39): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/auth.ts(96,44): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/auth.ts(122,56): error TS7006: Parameter '_req' implicitly has an 'any' type.
+src/routes/auth.ts(122,62): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/auth.ts(164,57): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/auth.ts(164,62): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/auth.ts(227,60): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/auth.ts(227,65): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/auth.ts(283,63): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/auth.ts(283,68): error TS7006: Parameter 'res' implicitly has an 'any' type.
+src/routes/auth.ts(313,72): error TS7006: Parameter 'req' implicitly has an 'any' type.
+src/routes/auth.ts(313,77): error TS7006: Parameter 'res' implicitly has an 'any' type.
