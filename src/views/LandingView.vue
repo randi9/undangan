@@ -1,10 +1,10 @@
 <template>
-  <div class="landing">
+  <div class="landing" :style="{ '--scroll-y': scrollY + 'px' }">
     <!-- Navbar -->
-    <nav class="lp-nav" :class="{ scrolled: navScrolled }">
+    <nav class="lp-nav" :class="{ scrolled: navScrolled || mobileMenuOpen, 'nav-hidden': navHiddenMobile }">
       <div class="lp-container lp-nav-inner">
         <a href="#" class="lp-logo">
-          <span class="lp-logo-icon">💒</span>
+          <img src="/images/logo.webp" alt="MengundangAnda Logo" class="lp-logo-img">
           <span>Mengundang<span class="lp-logo-accent">Anda</span></span>
         </a>
         <button class="lp-nav-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle menu">
@@ -15,47 +15,51 @@
           <li><a href="#tema" @click="mobileMenuOpen = false">Tema</a></li>
           <li><a href="#cara-kerja" @click="mobileMenuOpen = false">Cara Kerja</a></li>
           <li><a href="#testimoni" @click="mobileMenuOpen = false">Testimoni</a></li>
-          <li><a href="#cta" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</a></li>
+          <li><a href="#harga" @click="mobileMenuOpen = false">Harga</a></li>
+          <li><a href="https://www.mengundanganda.fun/login" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</a></li>
         </ul>
       </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="lp-hero">
-      <div class="lp-hero-ornament lp-hero-ornament-tl"></div>
-      <div class="lp-hero-ornament lp-hero-ornament-br"></div>
+      <div class="lp-hero-bg"></div>
+      <div class="lp-hero-overlay"></div>
       <div class="lp-container lp-hero-content">
-        <p class="lp-hero-kicker lp-fade-up">✨ Undangan Digital Premium</p>
+        <p class="lp-hero-kicker lp-fade-up">Siap dalam hitungan menit — bukan hari</p>
         <h1 class="lp-hero-title lp-fade-up lp-delay-1">
-          Buat Undangan Pernikahan<br>
-          <span class="lp-hero-script">yang Elegan & Berkesan</span>
+          Undangan Pernikahan Anda,<br>
+          <span class="lp-hero-script">Kapanpun. Tanpa Menunggu.</span>
         </h1>
         <p class="lp-hero-sub lp-fade-up lp-delay-2">
-          Desain cantik, mudah digunakan, langsung bagikan lewat link.<br>
-          Buat momen spesial Anda semakin istimewa.
+          Tidak perlu antri desainer. Tidak perlu menunggu berhari-hari.<br>
+          Pilih tema, isi data, dan langsung bagikan — semudah itu.
         </p>
         <div class="lp-hero-actions lp-fade-up lp-delay-3">
-          <a href="#cta" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</a>
+          <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</a>
           <a href="#tema" class="lp-btn lp-btn-outline">Lihat Tema</a>
         </div>
       </div>
-      <div class="lp-hero-scroll-hint lp-fade-up lp-delay-3">
-        <span>Scroll untuk menjelajahi</span>
-        <div class="lp-scroll-arrow"></div>
-      </div>
     </section>
 
+    <!-- Back to Top Arrow -->
+    <button class="lp-back-to-top" :class="{ visible: showBackToTop }" @click="scrollToTop" aria-label="Kembali ke atas">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+
     <!-- Fitur Section -->
-    <section id="fitur" class="lp-section lp-section-cream">
+    <section id="fitur" class="lp-section lp-section-alt">
       <div class="lp-container">
         <div class="lp-section-header">
-          <p class="lp-section-kicker">Kenapa Kami?</p>
-          <h2 class="lp-section-title">Semua yang Anda Butuhkan</h2>
-          <p class="lp-section-sub">Fitur lengkap untuk membuat undangan pernikahan digital yang sempurna</p>
+          <p class="lp-section-kicker">Kenapa MengundangAnda?</p>
+          <h2 class="lp-section-title">Undangan Cetak itu Mahal, Lama, dan Ribet.</h2>
+          <p class="lp-section-sub">Kami hadir supaya Anda bisa fokus ke momen bahagia — bukan repot ngurusin undangan.</p>
         </div>
         <div class="lp-features-grid">
-          <div class="lp-feature-card" v-for="feature in features" :key="feature.title">
-            <div class="lp-feature-icon">{{ feature.icon }}</div>
+          <div class="lp-feature-card" v-for="(feature, i) in features" :key="feature.title" ref="featureCardsRef" :style="{ transitionDelay: `${i * 100}ms` }">
+            <div class="lp-feature-icon-wrapper">
+              <Icon :icon="feature.icon" class="lp-feature-icon" />
+            </div>
             <h3>{{ feature.title }}</h3>
             <p>{{ feature.desc }}</p>
           </div>
@@ -71,14 +75,14 @@
           <h2 class="lp-section-title">Pilih Tema Favorit Anda</h2>
           <p class="lp-section-sub">Tiga pilihan desain yang dirancang dengan keindahan dan keanggunan</p>
         </div>
-        <div class="lp-themes-grid">
+        <div class="lp-themes-carousel">
           <!-- Elegant -->
           <div class="lp-theme-card">
             <div class="lp-theme-preview lp-tp-elegant">
               <div class="lp-tp-border"></div>
               <div class="lp-tp-content">
                 <div class="lp-tp-label">The Wedding Of</div>
-                <div class="lp-tp-names">Romeo & Juliet</div>
+                <div class="lp-tp-names">Romeo &amp; Juliet</div>
               </div>
             </div>
             <div class="lp-theme-info">
@@ -91,7 +95,7 @@
             <div class="lp-theme-preview lp-tp-minimalist">
               <div class="lp-tp-content">
                 <div class="lp-tp-label">THE WEDDING OF</div>
-                <div class="lp-tp-names">ROMEO & JULIET</div>
+                <div class="lp-tp-names">ROMEO &amp; JULIET</div>
               </div>
             </div>
             <div class="lp-theme-info">
@@ -106,7 +110,7 @@
               <div class="lp-tp-circle">
                 <div class="lp-tp-content">
                   <div class="lp-tp-label">The Wedding Of</div>
-                  <div class="lp-tp-names">Romeo & Juliet</div>
+                  <div class="lp-tp-names">Romeo &amp; Juliet</div>
                 </div>
               </div>
               <div class="lp-tp-deco lp-tp-deco-br">🌿</div>
@@ -116,22 +120,46 @@
               <p>Desain romantis dengan ornamen daun dan bunga, warna pastel lembut.</p>
             </div>
           </div>
+          <!-- Rustic (Mockup for Carousel) -->
+          <div class="lp-theme-card">
+            <div class="lp-theme-preview lp-tp-rustic" style="background: #e8dccb; color: #5a4b3d;">
+              <div class="lp-tp-content">
+                <div class="lp-tp-label" style="font-family: var(--lp-font-sans); font-size: 11px; letter-spacing: 2px; margin-bottom:12px;">Pernikahan</div>
+                <div class="lp-tp-names" style="font-family: var(--lp-font-script); font-size: 34px;">Romeo &amp; Juliet</div>
+              </div>
+            </div>
+            <div class="lp-theme-info">
+              <h3>Rustic Earth</h3>
+              <p>Nuansa alam yang hangat, cocok untuk acara pernikahan tema outdoor & kayu.</p>
+            </div>
+          </div>
+          <!-- Ocean (Mockup for Carousel) -->
+          <div class="lp-theme-card">
+            <div class="lp-theme-preview lp-tp-ocean" style="background: #e0f2fe; color: #0369a1;">
+              <div class="lp-tp-content" style="border: 2px solid rgba(3,105,161,0.2); border-radius: 50%; padding: 30px; width:160px; height:160px; display:flex; flex-direction:column; justify-content:center;">
+                <div class="lp-tp-names" style="font-family: var(--lp-font-serif); font-size: 24px; font-weight:600;">R &amp; J</div>
+              </div>
+            </div>
+            <div class="lp-theme-info">
+              <h3>Ocean Breeze</h3>
+              <p>Sentuhan biru air yang segar dan menyajikan ketenangan di undangan Anda.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Cara Kerja Section -->
-    <section id="cara-kerja" class="lp-section lp-section-cream">
+    <section id="cara-kerja" class="lp-section lp-section-alt">
       <div class="lp-container">
         <div class="lp-section-header">
-          <p class="lp-section-kicker">Mudah & Cepat</p>
+          <p class="lp-section-kicker">Mudah &amp; Cepat</p>
           <h2 class="lp-section-title">Cara Membuatnya</h2>
           <p class="lp-section-sub">Tiga langkah sederhana untuk undangan impian Anda</p>
         </div>
         <div class="lp-steps-grid">
           <div class="lp-step" v-for="(step, i) in steps" :key="step.title">
             <div class="lp-step-number">{{ i + 1 }}</div>
-            <div class="lp-step-icon">{{ step.icon }}</div>
             <h3>{{ step.title }}</h3>
             <p>{{ step.desc }}</p>
           </div>
@@ -162,13 +190,58 @@
       </div>
     </section>
 
+    <!-- Pricing Section -->
+    <section id="harga" class="lp-section lp-section-alt">
+      <div class="lp-container">
+        <div class="lp-section-header">
+          <p class="lp-section-kicker">Harga</p>
+          <h2 class="lp-section-title">Pilihan Paket Anda</h2>
+          <p class="lp-section-sub">Harga transparan dan terjangkau. Mulai gratis sekarang, upgrade kapan saja untuk fitur maksimal.</p>
+        </div>
+        <div class="lp-pricing-grid">
+          <!-- Free Plan -->
+          <div class="lp-pricing-card">
+            <div class="lp-pricing-header">
+              <h3>Free</h3>
+              <div class="lp-pricing-price">Gratis</div>
+              <p>Cocok untuk mencoba membuat undangan.</p>
+            </div>
+            <ul class="lp-pricing-features">
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Masa aktif 2 hari</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> 20x akses link</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Unlimited edit</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Langsung jadi setelah input data</li>
+            </ul>
+            <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-pricing-btn">Mulai Gratis</a>
+          </div>
+
+          <!-- Premium Plan -->
+          <div class="lp-pricing-card lp-pricing-premium">
+            <div class="lp-premium-badge">PALING POPULER</div>
+            <div class="lp-pricing-header">
+              <h3>Premium</h3>
+              <div class="lp-pricing-price">Rp 50.000</div>
+              <p>Fitur penuh untuk undangan tak terbatas.</p>
+            </div>
+            <ul class="lp-pricing-features">
+              <li><Icon icon="solar:star-fall-bold-duotone" class="check-icon accent" /> <strong>Semua fitur di Free</strong></li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Unlimited akses link</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> 1 tahun masa aktif</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Unlimited tamu undangan</li>
+            </ul>
+            <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- CTA Section -->
     <section id="cta" class="lp-cta">
       <div class="lp-cta-bg"></div>
       <div class="lp-container lp-cta-content">
         <h2 class="lp-cta-title">Siap Membuat Undangan<br><span>Impian Anda?</span></h2>
         <p class="lp-cta-sub">Mulai sekarang dan buat undangan pernikahan digital yang indah dalam hitungan menit.</p>
-        <a href="/" class="lp-btn lp-btn-white">Buat Undangan Gratis</a>
+        <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-white">Buat Undangan Gratis</a>
       </div>
     </section>
 
@@ -177,7 +250,7 @@
       <div class="lp-container lp-footer-inner">
         <div class="lp-footer-brand">
           <a href="#" class="lp-logo">
-            <span class="lp-logo-icon">💒</span>
+            <img src="/images/logo.webp" alt="MengundangAnda Logo" class="lp-logo-img">
             <span>Mengundang<span class="lp-logo-accent">Anda</span></span>
           </a>
           <p>Platform undangan pernikahan digital premium. Buat, desain, dan bagikan undangan Anda dengan mudah.</p>
@@ -188,6 +261,7 @@
           <a href="#tema">Tema</a>
           <a href="#cara-kerja">Cara Kerja</a>
           <a href="#testimoni">Testimoni</a>
+          <a href="#harga">Harga</a>
         </div>
         <div class="lp-footer-links">
           <h4>Kontak</h4>
@@ -207,16 +281,57 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { Icon } from '@iconify/vue'
 
 const navScrolled = ref(false)
 const mobileMenuOpen = ref(false)
+const navHiddenMobile = ref(false)
+const showBackToTop = ref(false)
+const scrollY = ref(0)
+const featureCardsRef = ref<HTMLElement[]>([])
+
+function isMobile() {
+  return window.innerWidth <= 768
+}
 
 function handleScroll() {
-  navScrolled.value = window.scrollY > 40
+  const y = window.scrollY
+  navScrolled.value = y > 40
+  scrollY.value = y
+
+  // Hero section height (approx viewport height)
+  const heroHeight = window.innerHeight
+
+  if (isMobile()) {
+    // Hide navbar after scrolling past hero on mobile
+    navHiddenMobile.value = y > heroHeight
+  } else {
+    navHiddenMobile.value = false
+  }
+
+  // Show back-to-top button after passing hero section
+  showBackToTop.value = y > heroHeight
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
+
+  // Animate feature cards on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view')
+      }
+    })
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' })
+
+  featureCardsRef.value.forEach(card => {
+    if (card) observer.observe(card)
+  })
 })
 
 onUnmounted(() => {
@@ -224,18 +339,18 @@ onUnmounted(() => {
 })
 
 const features = [
-  { icon: '🎨', title: 'Desain Premium', desc: 'Pilihan tema elegan yang dirancang oleh desainer profesional untuk momen spesial Anda.' },
-  { icon: '⚡', title: 'Mudah Digunakan', desc: 'Cukup isi data, pilih tema, dan undangan Anda siap dalam hitungan menit tanpa perlu keahlian teknis.' },
-  { icon: '🔗', title: 'Bagikan Lewat Link', desc: 'Setiap undangan memiliki link unik yang bisa langsung dibagikan via WhatsApp, Instagram, atau media sosial lainnya.' },
-  { icon: '🎵', title: 'Musik Latar', desc: 'Tambahkan lagu romantis favorit Anda sebagai musik latar undangan digital.' },
-  { icon: '📍', title: 'Peta Lokasi', desc: 'Integrasikan Google Maps agar tamu dengan mudah menemukan lokasi acara Anda.' },
-  { icon: '💌', title: 'RSVP & Ucapan', desc: 'Terima konfirmasi kehadiran dan ucapan dari tamu langsung di undangan Anda.' },
+  { icon: 'solar:stopwatch-bold-duotone', title: 'Selesai dalam 5 Menit', desc: 'Tidak perlu antri desainer atau menunggu revisi berhari-hari. Isi data, pilih tema, dan undangan langsung jadi.' },
+  { icon: 'solar:wallet-money-bold-duotone', title: 'Hemat Jutaan Rupiah', desc: 'Undangan cetak bisa makan biaya ratusan ribu hingga jutaan. Di sini, Anda bisa mulai gratis.' },
+  { icon: 'solar:smartphone-2-bold-duotone', title: 'Langsung Kirim via WhatsApp', desc: 'Satu link unik untuk semua tamu. Tinggal copy, kirim, selesai. Tidak ada lagi undangan yang tidak sampai.' },
+  { icon: 'solar:map-point-wave-bold-duotone', title: 'Musik, Peta, RSVP — Lengkap', desc: 'Bukan cuma gambar statis. Undangan Anda punya musik latar, peta lokasi interaktif, dan form ucapan dari tamu.' },
+  { icon: 'solar:pallete-2-bold-duotone', title: 'Desain Profesional, Tanpa Skill Desain', desc: 'Tema kami dirancang oleh desainer profesional. Anda tinggal pakai — hasilnya sudah premium.' },
+  { icon: 'solar:shield-check-bold-duotone', title: 'Aman & Bisa Diedit Kapan Saja', desc: 'Salah tulis tanggal? Ganti lokasi? Tenang, edit kapan pun tanpa biaya tambahan.' },
 ]
 
 const steps = [
-  { icon: '🎨', title: 'Pilih Tema', desc: 'Jelajahi koleksi tema premium kami dan pilih yang paling sesuai dengan kepribadian Anda.' },
-  { icon: '✏️', title: 'Isi Data', desc: 'Masukkan data pernikahan seperti nama, tanggal, lokasi, dan detail acara lainnya.' },
-  { icon: '🚀', title: 'Bagikan', desc: 'Undangan Anda langsung online! Bagikan link unik ke semua tamu yang Anda undang.' },
+  { title: 'Pilih Tema', desc: 'Jelajahi koleksi tema premium kami dan pilih yang paling sesuai dengan kepribadian Anda.' },
+  { title: 'Isi Data', desc: 'Masukkan data pernikahan seperti nama, tanggal, lokasi, dan detail acara lainnya.' },
+  { title: 'Bagikan', desc: 'Undangan Anda langsung online! Bagikan link unik ke semua tamu yang Anda undang.' },
 ]
 
 const testimonials = [
@@ -247,16 +362,44 @@ const testimonials = [
 
 <style scoped>
 /* ========================================
-   Landing Page — Scoped Styles
+   Landing Page — Blue & White Premium Theme
    ======================================== */
 
-/* --- Layout Helpers --- */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap');
+
+/* --- Theme Variables --- */
 .landing {
-  background: var(--inv-bg);
-  color: var(--inv-text);
+  --lp-primary: #1e3a5f;
+  --lp-primary-deep: #0f2440;
+  --lp-accent: #93c5fd;
+  --lp-accent-hover: #2563eb;
+  --lp-accent-light: rgba(59, 130, 246, 0.10);
+  --lp-accent-glow: rgba(59, 130, 246, 0.25);
+  --lp-bg: #ffffff;
+  --lp-bg-alt: #f0f5ff;
+  --lp-text: #1e293b;
+  --lp-text-light: #64748b;
+  --lp-border: rgba(59, 130, 246, 0.12);
+  --lp-navy: #0f172a;
+  --lp-navy-mid: #1e3a5f;
+  --lp-gold: #c9a96e;
+
+  --lp-font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  --lp-font-serif: 'Cormorant Garamond', Georgia, serif;
+  --lp-font-script: 'Dancing Script', cursive;
+  --lp-radius-sm: 8px;
+  --lp-radius-md: 12px;
+  --lp-radius-lg: 16px;
+  --lp-radius-xl: 24px;
+  --lp-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  background: var(--lp-bg);
+  color: var(--lp-text);
   overflow-x: hidden;
+  font-family: var(--lp-font-sans);
 }
 
+/* --- Layout Helpers --- */
 .lp-container {
   max-width: 1140px;
   margin: 0 auto;
@@ -265,10 +408,11 @@ const testimonials = [
 
 .lp-section {
   padding: 100px 0;
+  background: var(--lp-bg);
 }
 
-.lp-section-cream {
-  background: var(--inv-cream);
+.lp-section-alt {
+  background: var(--lp-bg-alt);
 }
 
 .lp-section-header {
@@ -278,27 +422,27 @@ const testimonials = [
 }
 
 .lp-section-kicker {
-  font-family: var(--font-sans);
+  font-family: var(--lp-font-sans);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--inv-gold);
+  color: var(--lp-accent);
   margin-bottom: 12px;
 }
 
 .lp-section-title {
-  font-family: var(--font-serif);
-  font-size: clamp(28px, 5vw, 40px);
+  font-family: var(--lp-font-serif);
+  font-size: clamp(28px, 5vw, 42px);
   font-weight: 600;
-  color: var(--inv-primary);
+  color: var(--lp-primary);
   margin-bottom: 16px;
   line-height: 1.2;
 }
 
 .lp-section-sub {
   font-size: 16px;
-  color: var(--inv-text-light);
+  color: var(--lp-text-light);
   line-height: 1.7;
 }
 
@@ -309,75 +453,88 @@ const testimonials = [
   justify-content: center;
   padding: 14px 32px;
   border-radius: 40px;
-  font-family: var(--font-sans);
+  font-family: var(--lp-font-sans);
   font-size: 15px;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: var(--transition);
+  transition: var(--lp-transition);
   border: 2px solid transparent;
+  letter-spacing: 0.3px;
 }
 
 .lp-btn-primary {
-  background: var(--inv-gold);
+  background: var(--lp-accent);
   color: #fff;
-  border-color: var(--inv-gold);
-  box-shadow: 0 4px 20px rgba(201, 169, 110, 0.35);
+  border-color: var(--lp-accent);
+  box-shadow: 0 4px 24px rgba(59, 130, 246, 0.35);
 }
 .lp-btn-primary:hover {
-  background: var(--inv-primary);
-  border-color: var(--inv-primary);
+  background: var(--lp-accent-hover);
+  border-color: var(--lp-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(139, 111, 78, 0.4);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.45);
 }
 
 .lp-btn-outline {
-  background: transparent;
-  color: var(--inv-primary);
-  border-color: var(--inv-gold);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
 }
 .lp-btn-outline:hover {
-  background: var(--inv-gold);
-  color: #fff;
+  background: #fff;
+  color: var(--lp-primary);
+  border-color: #fff;
   transform: translateY(-2px);
 }
 
 .lp-btn-white {
   background: #fff;
-  color: var(--inv-primary);
+  color: var(--lp-primary);
   border-color: #fff;
   font-size: 16px;
   padding: 16px 40px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
 }
 .lp-btn-white:hover {
-  background: var(--inv-cream);
+  background: var(--lp-bg-alt);
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 36px rgba(0,0,0,0.2);
 }
 
 /* --- Navbar --- */
 .lp-nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 48px);
+  max-width: 1140px;
   z-index: 100;
-  padding: 20px 0;
-  transition: var(--transition);
+  padding: 16px 24px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: var(--lp-transition);
 }
 
 .lp-nav.scrolled {
-  background: rgba(250, 248, 244, 0.95);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-  padding: 12px 0;
+  top: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 32px rgba(15, 23, 42, 0.12);
+  padding: 12px 24px;
 }
 
 .lp-nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  padding: 0;
 }
 
 .lp-logo {
@@ -385,18 +542,25 @@ const testimonials = [
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  font-family: var(--font-serif);
+  font-family: var(--lp-font-serif);
   font-size: 22px;
   font-weight: 600;
-  color: var(--inv-primary);
+  color: #fff;
+  transition: var(--lp-transition);
 }
 
-.lp-logo-icon {
-  font-size: 26px;
+.lp-nav.scrolled .lp-logo {
+  color: var(--lp-primary);
+}
+
+.lp-logo-img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
 }
 
 .lp-logo-accent {
-  color: var(--inv-gold);
+  color: var(--lp-accent);
 }
 
 .lp-nav-links {
@@ -407,28 +571,38 @@ const testimonials = [
 }
 
 .lp-nav-links a {
-  font-family: var(--font-sans);
+  font-family: var(--lp-font-sans);
   font-size: 14px;
   font-weight: 500;
-  color: var(--inv-text-light);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 20px;
-  transition: var(--transition);
+  transition: var(--lp-transition);
+}
+
+.lp-nav.scrolled .lp-nav-links a {
+  color: var(--lp-text-light);
 }
 
 .lp-nav-links a:hover {
-  color: var(--inv-primary);
-  background: var(--inv-gold-light);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.lp-nav.scrolled .lp-nav-links a:hover {
+  color: var(--lp-accent);
+  background: var(--lp-accent-light);
 }
 
 .lp-nav-cta {
-  background: var(--inv-gold) !important;
+  background: var(--lp-accent) !important;
   color: #fff !important;
   padding: 10px 24px !important;
 }
 .lp-nav-cta:hover {
-  background: var(--inv-primary) !important;
+  background: var(--lp-accent-hover) !important;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
 }
 
 .lp-nav-toggle {
@@ -446,16 +620,21 @@ const testimonials = [
   display: block;
   width: 24px;
   height: 2px;
-  background: var(--inv-primary);
+  background: #fff;
   border-radius: 2px;
-  transition: var(--transition);
+  transition: var(--lp-transition);
   position: absolute;
   left: 4px;
+}
+.lp-nav.scrolled .lp-nav-toggle span,
+.lp-nav.scrolled .lp-nav-toggle span::before,
+.lp-nav.scrolled .lp-nav-toggle span::after {
+  background: var(--lp-primary);
 }
 .lp-nav-toggle span { top: 15px; }
 .lp-nav-toggle span::before { content: ''; top: -7px; }
 .lp-nav-toggle span::after { content: ''; top: 7px; }
-.lp-nav-toggle span.open { background: transparent; }
+.lp-nav-toggle span.open { background: transparent !important; }
 .lp-nav-toggle span.open::before { transform: rotate(45deg); top: 0; }
 .lp-nav-toggle span.open::after { transform: rotate(-45deg); top: 0; }
 
@@ -469,27 +648,31 @@ const testimonials = [
   text-align: center;
   position: relative;
   padding: 120px 24px 80px;
-  background: linear-gradient(180deg, var(--inv-bg) 0%, var(--inv-cream) 100%);
+  overflow: hidden;
 }
 
-.lp-hero-ornament {
+.lp-hero-bg {
   position: absolute;
-  width: 200px;
-  height: 200px;
-  border: 1px solid rgba(201, 169, 110, 0.25);
-  pointer-events: none;
+  inset: -20%;
+  background-image: url('https://media.mengundanganda.fun/landing-page/e7f421b4-ce9a-4223-a862-802fb6c064d0.webp');
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  transform: translateY(calc(var(--scroll-y, 0px) * 0.35));
+  will-change: transform;
+  z-index: 0;
 }
-.lp-hero-ornament-tl {
-  top: 60px;
-  left: 40px;
-  border-right: none;
-  border-bottom: none;
-}
-.lp-hero-ornament-br {
-  bottom: 60px;
-  right: 40px;
-  border-left: none;
-  border-top: none;
+
+.lp-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.55) 0%,
+    rgba(30, 58, 138, 0.5) 40%,
+    rgba(30, 64, 175, 0.65) 100%
+  );
+  z-index: 1;
 }
 
 .lp-hero-content {
@@ -498,37 +681,41 @@ const testimonials = [
 }
 
 .lp-hero-kicker {
-  font-family: var(--font-sans);
+  font-family: var(--lp-font-sans);
   font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 2px;
+  font-weight: 600;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--inv-gold);
+  color: rgba(255, 255, 255, 0.95);
   margin-bottom: 24px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .lp-hero-title {
-  font-family: var(--font-serif);
-  font-size: clamp(32px, 6vw, 56px);
+  font-family: var(--lp-font-serif);
+  font-size: clamp(34px, 6vw, 60px);
   font-weight: 700;
-  color: var(--inv-primary);
-  line-height: 1.2;
+  color: #ffffff;
+  line-height: 1.15;
   margin-bottom: 24px;
+  text-shadow: 0 3px 16px rgba(255, 255, 255, 0.6), 0 1px rgba(255, 255, 255, 0.615);
 }
 
 .lp-hero-script {
-  font-family: var(--font-script);
+  font-family: var(--lp-font-script);
   font-weight: 400;
-  color: var(--inv-gold);
-  font-size: clamp(36px, 7vw, 64px);
+  color: #93c5fd;
+  font-size: clamp(38px, 7vw, 68px);
+  text-shadow: 0 3px 20px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.4);
 }
 
 .lp-hero-sub {
   font-size: 17px;
   line-height: 1.8;
-  color: var(--inv-text-light);
-  max-width: 540px;
+  color: rgba(255, 255, 255, 0.95);
+  max-width: 560px;
   margin: 0 auto 40px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .lp-hero-actions {
@@ -536,30 +723,6 @@ const testimonials = [
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-}
-
-.lp-hero-scroll-hint {
-  position: absolute;
-  bottom: 32px;
-  left: 45%;
-  transform: translateX(-45%);
-  text-align: center;
-  color: var(--inv-text-light);
-  font-size: 12px;
-  letter-spacing: 1px;
-}
-.lp-scroll-arrow {
-  width: 20px;
-  height: 20px;
-  margin: 8px auto 0;
-  border-right: 2px solid var(--inv-gold);
-  border-bottom: 2px solid var(--inv-gold);
-  transform: rotate(45deg);
-  animation: scrollBounce 2s infinite;
-}
-@keyframes scrollBounce {
-  0%, 100% { transform: rotate(45deg) translateY(0); opacity: 1; }
-  50% { transform: rotate(45deg) translateY(6px); opacity: 0.5; }
 }
 
 /* --- Fade-up animation --- */
@@ -579,64 +742,120 @@ const testimonials = [
 .lp-features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  gap: 28px;
 }
 
 .lp-feature-card {
-  background: var(--inv-bg);
-  border: 1px solid rgba(201, 169, 110, 0.15);
-  border-radius: var(--radius-lg);
-  padding: 36px 28px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--lp-border);
+  border-radius: var(--lp-radius-xl);
+  padding: 40px 32px;
   text-align: center;
-  transition: var(--transition);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px);
+}
+.lp-feature-card.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.lp-feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, var(--lp-accent-light) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 .lp-feature-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 40px rgba(139, 111, 78, 0.1);
-  border-color: var(--inv-gold);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(255, 255, 255, 0.95);
+}
+.lp-feature-card:hover::before {
+  opacity: 1;
 }
 
+.lp-feature-icon-wrapper {
+  width: 76px;
+  height: 76px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.02));
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  color: var(--lp-accent);
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.1);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+}
+.lp-feature-card:hover .lp-feature-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
+  background: var(--lp-accent);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.25);
+}
 .lp-feature-icon {
-  font-size: 40px;
-  margin-bottom: 20px;
+  font-size: 38px;
 }
 
 .lp-feature-card h3 {
-  font-family: var(--font-serif);
-  font-size: 18px;
+  font-family: var(--lp-font-serif);
+  font-size: 19px;
   font-weight: 600;
-  color: var(--inv-primary);
+  color: var(--lp-primary);
   margin-bottom: 10px;
 }
 
 .lp-feature-card p {
   font-size: 14px;
-  color: var(--inv-text-light);
+  color: var(--lp-text-light);
   line-height: 1.7;
 }
 
-/* --- Theme Previews --- */
-.lp-themes-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+/* --- Theme Previews Carousel --- */
+.lp-themes-carousel {
+  display: flex;
   gap: 32px;
+  overflow-x: auto;
+  padding: 16px 8px 48px; /* Extra padding bottom for box-shadows */
+  margin: -16px -8px -48px; /* Offset the padding to not crop shadows */
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.lp-themes-carousel::-webkit-scrollbar {
+  display: none;
 }
 
 .lp-theme-card {
-  border-radius: var(--radius-lg);
+  flex: 0 0 calc(33.333% - 22px);
+  min-width: 320px;
+  scroll-snap-align: start;
+  border-radius: var(--lp-radius-lg);
   overflow: hidden;
   background: #fff;
-  border: 1px solid rgba(201, 169, 110, 0.15);
-  transition: var(--transition);
+  border: 1px solid var(--lp-border);
+  transition: var(--lp-transition);
 }
 .lp-theme-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 16px 50px rgba(139, 111, 78, 0.15);
-  border-color: var(--inv-gold);
+  box-shadow: 0 16px 50px rgba(59, 130, 246, 0.15);
+  border-color: var(--lp-accent);
 }
 
 .lp-theme-preview {
-  height: 320px;
+  height: 480px;
   position: relative;
   display: flex;
   align-items: center;
@@ -661,15 +880,15 @@ const testimonials = [
   pointer-events: none;
 }
 .lp-tp-elegant .lp-tp-label {
-  font-family: var(--font-sans);
+  font-family: var(--lp-font-sans);
   font-size: 10px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--inv-gold);
+  color: var(--lp-gold);
   margin-bottom: 14px;
 }
 .lp-tp-elegant .lp-tp-names {
-  font-family: var(--font-script);
+  font-family: var(--lp-font-script);
   font-size: 38px;
   color: #fff;
 }
@@ -680,7 +899,7 @@ const testimonials = [
   color: #111;
 }
 .lp-tp-minimalist .lp-tp-label {
-  font-family: var(--font-sans);
+  font-family: var(--lp-font-sans);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 2px;
@@ -688,7 +907,7 @@ const testimonials = [
   margin-bottom: 10px;
 }
 .lp-tp-minimalist .lp-tp-names {
-  font-family: var(--font-sans);
+  font-family: var(--lp-font-sans);
   font-size: 30px;
   font-weight: 800;
   letter-spacing: -1px;
@@ -711,14 +930,14 @@ const testimonials = [
   border: 1px solid rgba(138, 154, 91, 0.2);
 }
 .lp-tp-floral .lp-tp-label {
-  font-family: var(--font-serif);
+  font-family: var(--lp-font-serif);
   font-size: 11px;
   font-style: italic;
   color: #8a9a5b;
   margin-bottom: 8px;
 }
 .lp-tp-floral .lp-tp-names {
-  font-family: var(--font-serif);
+  font-family: var(--lp-font-serif);
   font-size: 20px;
   font-weight: 600;
   color: #4a5d4e;
@@ -735,19 +954,19 @@ const testimonials = [
   padding: 24px;
 }
 .lp-theme-info h3 {
-  font-family: var(--font-serif);
+  font-family: var(--lp-font-serif);
   font-size: 20px;
   font-weight: 600;
-  color: var(--inv-primary);
+  color: var(--lp-primary);
   margin-bottom: 8px;
 }
 .lp-theme-info p {
   font-size: 14px;
-  color: var(--inv-text-light);
+  color: var(--lp-text-light);
   line-height: 1.6;
 }
 
-/* --- Steps --- */
+/* --- Steps Timeline --- */
 .lp-steps-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -757,11 +976,12 @@ const testimonials = [
 .lp-steps-grid::before {
   content: '';
   position: absolute;
-  top: 40px;
-  left: 15%;
-  right: 15%;
+  top: 24px; /* Center of the number circle (48px / 2) */
+  left: 16%;
+  right: 16%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--inv-gold), transparent);
+  background: rgba(59, 130, 246, 0.2); /* Dashed or light base line */
+  border-top: 2px dashed rgba(59, 130, 246, 0.4);
   z-index: 0;
 }
 
@@ -770,18 +990,33 @@ const testimonials = [
   position: relative;
   z-index: 1;
 }
+.lp-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  right: -25px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid var(--lp-accent);
+  border-bottom: 2px solid var(--lp-accent);
+  transform: rotate(-45deg);
+  z-index: 2;
+  border-radius: 2px;
+}
 
 .lp-step-number {
-  font-family: var(--font-serif);
-  font-size: 14px;
+  font-family: var(--lp-font-sans);
+  font-size: 16px;
   font-weight: 700;
-  width: 32px;
-  height: 32px;
-  line-height: 32px;
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
   border-radius: 50%;
-  background: var(--inv-gold);
+  background: var(--lp-accent);
   color: #fff;
   margin: 0 auto 16px;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3), 0 0 0 8px var(--lp-bg-alt); /* Fake stroke to cut the timeline */
+
 }
 
 .lp-step-icon {
@@ -790,16 +1025,16 @@ const testimonials = [
 }
 
 .lp-step h3 {
-  font-family: var(--font-serif);
+  font-family: var(--lp-font-serif);
   font-size: 20px;
   font-weight: 600;
-  color: var(--inv-primary);
+  color: var(--lp-primary);
   margin-bottom: 10px;
 }
 
 .lp-step p {
   font-size: 14px;
-  color: var(--inv-text-light);
+  color: var(--lp-text-light);
   line-height: 1.7;
   max-width: 280px;
   margin: 0 auto;
@@ -809,23 +1044,24 @@ const testimonials = [
 .lp-testimonials-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  gap: 28px;
 }
 
 .lp-testimonial {
-  background: var(--inv-cream);
-  border: 1px solid rgba(201, 169, 110, 0.12);
-  border-radius: var(--radius-lg);
+  background: var(--lp-bg-alt);
+  border: 1px solid var(--lp-border);
+  border-radius: var(--lp-radius-lg);
   padding: 32px;
-  transition: var(--transition);
+  transition: var(--lp-transition);
 }
 .lp-testimonial:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(139, 111, 78, 0.08);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.1);
+  border-color: var(--lp-accent);
 }
 
 .lp-testimonial-stars {
-  color: var(--inv-gold);
+  color: #f59e0b;
   font-size: 16px;
   letter-spacing: 2px;
   margin-bottom: 16px;
@@ -834,7 +1070,7 @@ const testimonials = [
 .lp-testimonial-text {
   font-size: 15px;
   line-height: 1.7;
-  color: var(--inv-text);
+  color: var(--lp-text);
   font-style: italic;
   margin-bottom: 24px;
 }
@@ -849,24 +1085,140 @@ const testimonials = [
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--inv-gold-light);
+  background: var(--lp-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
+  border: 2px solid rgba(59, 130, 246, 0.15);
 }
 
 .lp-testimonial-name {
-  font-family: var(--font-serif);
+  font-family: var(--lp-font-serif);
   font-weight: 600;
   font-size: 15px;
-  color: var(--inv-primary);
+  color: var(--lp-primary);
 }
 
 .lp-testimonial-role {
   font-size: 12px;
-  color: var(--inv-text-light);
+  color: var(--lp-text-light);
   margin-top: 2px;
+}
+
+/* --- Pricing --- */
+.lp-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  max-width: 840px;
+  margin: 0 auto;
+}
+
+.lp-pricing-card {
+  background: var(--lp-bg);
+  border: 1px solid var(--lp-border);
+  border-radius: var(--lp-radius-xl);
+  padding: 40px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: var(--lp-transition);
+}
+.lp-pricing-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.lp-pricing-premium {
+  border: 2px solid var(--lp-accent);
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15);
+  transform: scale(1.03);
+}
+.lp-pricing-premium:hover {
+  transform: scale(1.05) translateY(-6px);
+  box-shadow: 0 20px 48px rgba(59, 130, 246, 0.25);
+  border-color: var(--lp-accent);
+}
+
+.lp-premium-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--lp-accent), #93c5fd);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.lp-pricing-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--lp-border);
+}
+.lp-pricing-header h3 {
+  font-size: 20px;
+  color: var(--lp-text-light);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.lp-pricing-premium .lp-pricing-header h3 {
+  color: var(--lp-accent);
+}
+.lp-pricing-price {
+  font-family: var(--lp-font-serif);
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--lp-primary);
+  margin-bottom: 12px;
+}
+.lp-pricing-header p {
+  color: var(--lp-text-light);
+  font-size: 14px;
+}
+
+.lp-pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 40px;
+  flex: 1;
+}
+.lp-pricing-features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--lp-text);
+  margin-bottom: 16px;
+}
+.check-icon {
+  font-size: 22px;
+  color: #cbd5e1;
+}
+.check-icon.accent {
+  color: var(--lp-accent);
+}
+
+.lp-pricing-btn {
+  width: 100%;
+}
+.lp-pricing-card:not(.lp-pricing-premium) .lp-pricing-btn {
+  border-color: rgba(30, 58, 95, 0.2);
+  color: var(--lp-text);
+  background: transparent;
+  border: 2px solid rgba(30, 58, 95, 0.2);
+}
+.lp-pricing-card:not(.lp-pricing-premium) .lp-pricing-btn:hover {
+  background: rgba(30, 58, 95, 0.04);
+  border-color: var(--lp-text-light);
+  color: var(--lp-primary);
 }
 
 /* --- CTA Section --- */
@@ -880,8 +1232,17 @@ const testimonials = [
 .lp-cta-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #2c2417 0%, #4a3a28 50%, #3d2e1c 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #1e40af 100%);
   z-index: 0;
+}
+.lp-cta-bg::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
 }
 
 .lp-cta-content {
@@ -890,7 +1251,7 @@ const testimonials = [
 }
 
 .lp-cta-title {
-  font-family: var(--font-serif);
+  font-family: var(--lp-font-serif);
   font-size: clamp(28px, 5vw, 44px);
   font-weight: 600;
   color: #fff;
@@ -898,8 +1259,8 @@ const testimonials = [
   margin-bottom: 20px;
 }
 .lp-cta-title span {
-  font-family: var(--font-script);
-  color: var(--inv-gold);
+  font-family: var(--lp-font-script);
+  color: #93c5fd;
   font-weight: 400;
   font-size: clamp(36px, 6vw, 56px);
 }
@@ -914,7 +1275,7 @@ const testimonials = [
 
 /* --- Footer --- */
 .lp-footer {
-  background: #1a150e;
+  background: var(--lp-navy);
   color: rgba(255,255,255,0.7);
   padding-top: 60px;
 }
@@ -927,10 +1288,14 @@ const testimonials = [
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-.lp-footer-brand .lp-logo {
+.lp-footer .lp-logo {
   color: #fff;
   margin-bottom: 16px;
 }
+.lp-footer .lp-logo-accent {
+  color: var(--lp-accent);
+}
+
 .lp-footer-brand p {
   font-size: 14px;
   line-height: 1.7;
@@ -938,7 +1303,7 @@ const testimonials = [
 }
 
 .lp-footer-links h4 {
-  font-family: var(--font-serif);
+  font-family: var(--lp-font-serif);
   font-size: 16px;
   color: #fff;
   margin-bottom: 16px;
@@ -950,10 +1315,10 @@ const testimonials = [
   color: rgba(255,255,255,0.5);
   text-decoration: none;
   padding: 4px 0;
-  transition: var(--transition);
+  transition: var(--lp-transition);
 }
 .lp-footer-links a:hover {
-  color: var(--inv-gold);
+  color: #60a5fa;
 }
 
 .lp-footer-bottom {
@@ -965,15 +1330,52 @@ const testimonials = [
   color: rgba(255,255,255,0.35);
 }
 
+/* --- Back to Top Button --- */
+.lp-back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 99;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: var(--lp-accent);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.35);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px) scale(0.8);
+}
+.lp-back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+.lp-back-to-top:hover {
+  background: var(--lp-accent-hover);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 28px rgba(59, 130, 246, 0.5);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .lp-features-grid,
-  .lp-themes-grid,
   .lp-testimonials-grid {
     grid-template-columns: 1fr;
     max-width: 440px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .lp-theme-card {
+    flex: 0 0 85%;
+    min-width: 280px;
   }
 
   .lp-steps-grid {
@@ -983,52 +1385,127 @@ const testimonials = [
     margin-left: auto;
     margin-right: auto;
   }
-  .lp-steps-grid::before { display: none; }
+  .lp-steps-grid::before { 
+    display: none;
+  }
+  .lp-step:not(:last-child)::after {
+    top: auto;
+    bottom: -28px;
+    right: 50%;
+    transform: translateX(50%) rotate(45deg); /* Arrow pointing down */
+  }
+
+  .lp-pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .lp-pricing-premium {
+    transform: none;
+  }
+  .lp-pricing-premium:hover {
+    transform: translateY(-6px);
+  }
 
   .lp-footer-inner {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-
-  .lp-hero-ornament { display: none; }
 }
 
 @media (max-width: 768px) {
+  /* Hide navbar when scrolling past hero on mobile */
+  .lp-nav.nav-hidden {
+    transform: translateX(-50%) translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .lp-nav-toggle { display: block; }
 
   .lp-nav-links {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 280px;
-    height: 100vh;
-    background: var(--inv-bg);
-    flex-direction: column;
-    padding: 80px 32px 40px;
-    gap: 4px;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.1);
-    transition: right 0.35s ease;
-    z-index: 200;
-  }
-  .lp-nav-links.open { right: 0; }
-
-  .lp-nav-links a {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
     width: 100%;
-    padding: 12px 16px !important;
-    font-size: 16px !important;
-    border-radius: var(--radius-sm) !important;
+    height: auto;
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: var(--lp-radius-xl);
+    flex-direction: column;
+    padding: 24px 20px;
+    gap: 8px;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px) scale(0.98);
+    transform-origin: top center;
+    z-index: 100;
   }
-  .lp-nav-cta {
-    margin-top: 12px;
+  
+  .lp-nav-links.open { 
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  .lp-nav-links li {
+    width: 100%;
+  }
+  .lp-nav-links a {
+    display: block;
+    width: 100%;
+    padding: 16px 20px !important;
+    font-size: 16px !important;
+    border-radius: var(--lp-radius-md) !important;
+    color: var(--lp-primary) !important;
     text-align: center;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px;
+  }
+  .lp-nav-links a:hover {
+    background: rgba(59, 130, 246, 0.08) !important;
+    color: var(--lp-accent) !important;
+  }
+  .lp-nav-links a.lp-nav-cta {
+    margin-top: 12px;
+    padding: 16px 20px !important;
+    text-align: center;
+    color: #ffffff !important;
+    background: var(--lp-accent) !important;
+    border-radius: var(--lp-radius-lg) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+  }
+  .lp-nav-links a.lp-nav-cta:hover {
+    background: var(--lp-accent-hover) !important;
+    box-shadow: 0 10px 28px rgba(59, 130, 246, 0.4);
+    color: #ffffff !important;
   }
 
   .lp-section { padding: 72px 0; }
 
   .lp-features-grid,
-  .lp-themes-grid,
   .lp-testimonials-grid {
     grid-template-columns: 1fr;
+  }
+
+  .lp-hero-bg {
+    background-position: center center;
+  }
+
+  .lp-theme-preview {
+    height: 400px;
+  }
+
+  .lp-back-to-top {
+    bottom: 24px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
   }
 }
 </style>
