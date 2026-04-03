@@ -101,6 +101,7 @@ const r2SecretAccessKey = process.env.R2_SECRET_ACCESS_KEY || "";
 const s3Client = new S3Client({
   region: "auto",
   endpoint: `https://${r2AccountId}.r2.cloudflarestorage.com`,
+  forcePathStyle: true,
   credentials: {
     accessKeyId: r2AccessKeyId,
     secretAccessKey: r2SecretAccessKey,
