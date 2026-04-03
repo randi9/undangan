@@ -16,7 +16,7 @@
           <li><a href="#cara-kerja" @click="mobileMenuOpen = false">Cara Kerja</a></li>
           <li><a href="#testimoni" @click="mobileMenuOpen = false">Testimoni</a></li>
           <li><a href="#harga" @click="mobileMenuOpen = false">Harga</a></li>
-          <li><router-link to="/login" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</router-link></li>
+          <li><a href="https://www.mengundanganda.fun/login" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</a></li>
         </ul>
       </div>
     </nav>
@@ -36,13 +36,9 @@
           Pilih tema, isi data, dan langsung bagikan — semudah itu.
         </p>
         <div class="lp-hero-actions lp-fade-up lp-delay-3">
-          <router-link to="/login" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</router-link>
+          <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</a>
           <a href="#tema" class="lp-btn lp-btn-outline">Lihat Tema</a>
         </div>
-      </div>
-      <div class="lp-hero-scroll-hint lp-fade-up lp-delay-3">
-        <span>Scroll untuk menjelajahi</span>
-        <div class="lp-scroll-arrow"></div>
       </div>
     </section>
 
@@ -216,7 +212,7 @@
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Unlimited edit</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Langsung jadi setelah input data</li>
             </ul>
-            <router-link to="/login" class="lp-btn lp-pricing-btn">Mulai Gratis</router-link>
+            <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-pricing-btn">Mulai Gratis</a>
           </div>
 
           <!-- Premium Plan -->
@@ -233,7 +229,7 @@
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> 1 tahun masa aktif</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Unlimited tamu undangan</li>
             </ul>
-            <router-link to="/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</router-link>
+            <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</a>
           </div>
         </div>
       </div>
@@ -245,7 +241,7 @@
       <div class="lp-container lp-cta-content">
         <h2 class="lp-cta-title">Siap Membuat Undangan<br><span>Impian Anda?</span></h2>
         <p class="lp-cta-sub">Mulai sekarang dan buat undangan pernikahan digital yang indah dalam hitungan menit.</p>
-        <router-link to="/login" class="lp-btn lp-btn-white">Buat Undangan Gratis</router-link>
+        <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-white">Buat Undangan Gratis</a>
       </div>
     </section>
 
@@ -727,31 +723,6 @@ const testimonials = [
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-}
-
-.lp-hero-scroll-hint {
-  position: absolute;
-  bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 12px;
-  letter-spacing: 1px;
-  z-index: 2;
-}
-.lp-scroll-arrow {
-  width: 20px;
-  height: 20px;
-  margin: 8px auto 0;
-  border-right: 2px solid rgba(147, 197, 253, 0.7);
-  border-bottom: 2px solid rgba(147, 197, 253, 0.7);
-  transform: rotate(45deg);
-  animation: scrollBounce 2s infinite;
-}
-@keyframes scrollBounce {
-  0%, 100% { transform: rotate(45deg) translateY(0); opacity: 1; }
-  50% { transform: rotate(45deg) translateY(6px); opacity: 0.5; }
 }
 
 /* --- Fade-up animation --- */
@@ -1322,8 +1293,7 @@ const testimonials = [
   margin-bottom: 16px;
 }
 .lp-footer .lp-logo-accent {
-  color: #000000;
-  text-shadow: 0 3px 16px rgba(8, 106, 226, 0.6), 0 1px rgba(13, 161, 219, 0.615);
+  color: var(--lp-accent);
 }
 
 .lp-footer-brand p {

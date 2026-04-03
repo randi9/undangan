@@ -78,7 +78,7 @@ import { SignIn } from '@clerk/vue'
 }
 .logo-light {
   font-weight: 400;
-  color: #595c5e;
+  color: #93c5fd;
 }
 
 .login-main {
