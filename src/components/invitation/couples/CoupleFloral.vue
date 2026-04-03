@@ -131,7 +131,7 @@
       </div>
       
       <!-- Divider -->
-      <div class="text-5xl md:text-7xl text-[var(--theme-primary)] opacity-100" :style="{ fontFamily: themeConfig.fontHeading }">&amp;</div>
+      <div class="relative z-10 text-5xl md:text-7xl text-[var(--theme-primary)] opacity-100" :style="{ fontFamily: themeConfig.fontHeading }">&amp;</div>
       
       <!-- Bride -->
       <div class="flex-1 flex flex-col items-center bride-section">

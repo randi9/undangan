@@ -110,13 +110,14 @@ watch(() => props.target, async (newVal) => {
 .roller-container {
   /* Expand height to slightly reveal numbers tumbling from above and below */
   height: 1.6em; 
-  width: 0.75em;
+  /* Oswald font is naturally very slender, 0.55em neatly hugs the digits without forced gaps */
+  width: 0.55em;
   
   /* Alpha mask to fade numbers smoothly at the top and bottom edge boundaries */
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
 
   /* Keeps spacing without the ugly background boxes */
-  margin: 0 1px;
+  margin: 0 -1px;
 }
 </style>
