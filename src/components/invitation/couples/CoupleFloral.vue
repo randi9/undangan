@@ -1,21 +1,67 @@
 <template>
-  <section id="couple-section" class="bg-[#fadcdf]/50 max-w-5xl mx-auto text-center relative z-10 overflow-hidden" style="padding: 50px;" ref="sectionRef">
-    <!-- Damask Background Overlay (Using SVG Pattern for precise spacing and flipping) -->
-    <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-[0.1]">
-      <defs>
-        <pattern id="damask-flip" x="-45" y="-45" width="180" height="180" patternUnits="userSpaceOnUse">
-          <!-- Motif Tengah (Normal) -->
-          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="30" y="30" width="120" height="120" />
-          
-          <!-- Motif Pojok Selang-seling (Terbalik Menghadap Bawah) -->
-          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="-60" width="120" height="120" transform="rotate(180 0 0)" />
-          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="-60" width="120" height="120" transform="rotate(180 180 0)" />
-          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="120" width="120" height="120" transform="rotate(180 0 180)" />
-          <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="120" width="120" height="120" transform="rotate(180 180 180)" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#damask-flip)" />
-    </svg>
+  <section id="couple-section" class="max-w-5xl mx-auto text-center relative z-10 overflow-visible pt-[60px] pb-[50px] px-[50px]" ref="sectionRef">
+    <!-- Wavy Extender Layer overlapping Hero (height reduced to 40px) -->
+    <div class="absolute top-0 left-0 w-full h-[40px] transform -translate-y-[99%] z-20 pointer-events-none" style="
+      -webkit-mask-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 1440 60\' xmlns=\'http://www.w3.org/2000/svg\' preserveAspectRatio=\'none\'%3E%3Cpath d=\'M0,60 C320,0 420,60 740,30 C1060,0 1120,60 1440,0 L1440,60 L0,60 Z\' fill=\'black\'/%3E%3C/svg%3E');
+      mask-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 1440 60\' xmlns=\'http://www.w3.org/2000/svg\' preserveAspectRatio=\'none\'%3E%3Cpath d=\'M0,60 C320,0 420,60 740,30 C1060,0 1120,60 1440,0 L1440,60 L0,60 Z\' fill=\'black\'/%3E%3C/svg%3E');
+      mask-size: 100% 100%;
+    ">
+      <!-- Base color mathing standard theme bg to hide straight lines underneath -->
+      <div class="absolute inset-0" style="background-color: var(--theme-bg, #ffffff);"></div>
+      <!-- Overlay matching the pink couple section -->
+      <div class="absolute inset-0 bg-[#fbebeb]"></div>
+      
+      <!-- Seamless Damask Pattern Offset -->
+      <svg class="absolute inset-0 w-full h-[40px] opacity-[0.1]">
+        <defs>
+          <!-- Using y="-5" seamlessly aligns this pattern with y="-45" below it since this is elevated by 40px -->
+          <pattern id="damask-extender" x="-45" y="-5" width="180" height="180" patternUnits="userSpaceOnUse">
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="30" y="30" width="120" height="120" />
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="-60" width="120" height="120" transform="rotate(180 0 0)" />
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="-60" width="120" height="120" transform="rotate(180 180 0)" />
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="120" width="120" height="120" transform="rotate(180 0 180)" />
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="120" width="120" height="120" transform="rotate(180 180 180)" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#damask-extender)" />
+      </svg>
+    </div>
+
+    <!-- MAIN BACKGROUND WRAPPER (Includes pink bg + damask) -->
+    <!-- Extends 40px below the element to drape over CountdownFloral -->
+    <div class="absolute top-0 left-0 w-full h-[calc(100%+40px)] z-[0] pointer-events-none" style="
+      -webkit-mask-image: 
+        linear-gradient(black, black),
+        url('data:image/svg+xml,%3Csvg viewBox=\'0 0 1440 60\' xmlns=\'http://www.w3.org/2000/svg\' preserveAspectRatio=\'none\'%3E%3Cpath d=\'M0,0 L1440,0 L1440,20 C1120,60 1060,0 740,30 C420,60 320,0 0,20 Z\' fill=\'black\'/%3E%3C/svg%3E');
+      mask-image: 
+        linear-gradient(black, black),
+        url('data:image/svg+xml,%3Csvg viewBox=\'0 0 1440 60\' xmlns=\'http://www.w3.org/2000/svg\' preserveAspectRatio=\'none\'%3E%3Cpath d=\'M0,0 L1440,0 L1440,20 C1120,60 1060,0 740,30 C420,60 320,0 0,20 Z\' fill=\'black\'/%3E%3C/svg%3E');
+      -webkit-mask-size: 100% calc(100% - 39px), 100% 40px;
+      mask-size: 100% calc(100% - 39px), 100% 40px;
+      -webkit-mask-position: top left, bottom left;
+      mask-position: top left, bottom left;
+      -webkit-mask-repeat: no-repeat, no-repeat;
+      mask-repeat: no-repeat, no-repeat;
+    ">
+      <div class="absolute inset-0 bg-[#fbebeb]"></div>
+      
+      <!-- Damask Background Overlay (Using SVG Pattern for precise spacing and flipping) -->
+      <!-- Pattern is naturally seamless up to the extended height! -->
+      <svg class="absolute inset-0 w-full h-full opacity-[0.1]">
+        <defs>
+          <pattern id="damask-flip" x="-45" y="-45" width="180" height="180" patternUnits="userSpaceOnUse">
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="30" y="30" width="120" height="120" />
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="-60" width="120" height="120" transform="rotate(180 0 0)" />
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="-60" width="120" height="120" transform="rotate(180 180 0)" />
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="120" width="120" height="120" transform="rotate(180 0 180)" />
+            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="120" width="120" height="120" transform="rotate(180 180 180)" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#damask-flip)" />
+      </svg>
+    </div>
+
+    <!-- INNER CONTENT - Placed naturally above the absolute z-[0] background, keeping flowers safe from the CSS mask! -->
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 10;">
       <!-- Ornament Atas (Inline CSS Murni) -->
       <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 280px; opacity: 0.9; margin-top: -120px; margin-bottom: -125px;" alt="Ornament Top" />
@@ -355,3 +401,5 @@ onMounted(() => {
 });
 </script>
 
+<style scoped>
+</style>

@@ -322,9 +322,15 @@ const currentPhotoUrl = computed(() => {
 
 function updateCountdown() {
   const dateStr = invitation.value?.akad_date || invitation.value?.resepsi_date;
+  const timeStr = invitation.value?.akad_date ? invitation.value?.akad_time : invitation.value?.resepsi_time;
+  
   if (!dateStr) return;
 
-  const target = new Date(dateStr).getTime();
+  // Combine date and time (fallback to 00:00:00 if time is missing)
+  const safeTime = timeStr || '00:00:00';
+  const targetDateStr = dateStr.includes('T') ? dateStr : `${dateStr}T${safeTime}`;
+  
+  const target = new Date(targetDateStr).getTime();
   const now = Date.now();
   const diff = Math.max(0, target - now);
 
