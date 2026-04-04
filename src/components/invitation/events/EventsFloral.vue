@@ -167,7 +167,7 @@ function handleTouchStart(e: TouchEvent) {
 function handleTouchMove(e: TouchEvent) {
   if (!trapEnabled || !e.touches?.length) return;
   
-  const currentY = e.touches[0].clientY;
+  const currentY = e.touches[0]?.clientY ?? 0;
   const deltaY = startY - currentY; // Positif jika usap Naik (scroll turun)
   
   // Lepaskan native swipe bila sudah keluar batas Slide Internal
@@ -205,14 +205,14 @@ onMounted(() => {
         if (currentStep < totalSteps - 1) {
           trapEnabled = true;
           // Mengarahkan langsung ke elemennya (sectionRef.value) agar GSAP mengakalkulasi ulang posisi akuratnya langsung di frame tersebut.
-          gsap.to(window, { duration: 0.6, scrollTo: { y: sectionRef.value, autoKill: false }, ease: 'power2.out' }); 
+          gsap.to(window, { duration: 0.6, scrollTo: { y: sectionRef.value ?? undefined, autoKill: false }, ease: 'power2.out' }); 
         } 
       },
       // Saat Scroll UP kembali dari bagian bawah menembus border layar atas
       onLeaveBack: () => { 
         if (currentStep > 0) {
           trapEnabled = true;
-          gsap.to(window, { duration: 0.6, scrollTo: { y: sectionRef.value, autoKill: false }, ease: 'power2.out' });
+          gsap.to(window, { duration: 0.6, scrollTo: { y: sectionRef.value ?? undefined, autoKill: false }, ease: 'power2.out' });
         } 
       }
     });

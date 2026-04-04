@@ -19,7 +19,7 @@
         <transition :name="slideDirectionName">
           <img 
             :key="selectedIndex"
-            :src="resolveAssetUrl(photos[selectedIndex].url, apiBase)" 
+            :src="resolveAssetUrl(photos[selectedIndex]?.url ?? '', apiBase)" 
             class="main-image cursor-pointer" 
             @click="$emit('openLightbox', selectedIndex)"
           />
@@ -46,7 +46,7 @@
             :style="item.offset === 0 ? { borderColor: 'var(--theme-primary)' } : {}"
             @click="changeSlide(item.index)"
           >
-            <img :src="resolveAssetUrl(item.photo.url, apiBase)" class="thumbnail-img" />
+            <img :src="resolveAssetUrl(item.photo?.url ?? '', apiBase)" class="thumbnail-img" />
           </div>
         </div>
       </div>
@@ -132,11 +132,11 @@ let touchStartX = 0;
 let touchEndX = 0;
 
 function onTouchStart(e: TouchEvent) {
-  touchStartX = e.changedTouches[0].screenX;
+  touchStartX = e.changedTouches[0]?.screenX ?? 0;
 }
 
 function onTouchEnd(e: TouchEvent) {
-  touchEndX = e.changedTouches[0].screenX;
+  touchEndX = e.changedTouches[0]?.screenX ?? 0;
   handleSwipeGesture();
 }
 
