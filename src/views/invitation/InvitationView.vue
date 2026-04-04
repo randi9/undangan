@@ -499,6 +499,7 @@ onBeforeUnmount(() => {
         :photos="invitation.photos"
         :theme-config="activeTheme"
         :api-base="apiBase"
+        :gallery-type="invitation.gallery_type || 'carousel'"
         @open-lightbox="openLightbox"
       />
 
