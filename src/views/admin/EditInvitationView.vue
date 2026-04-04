@@ -1073,8 +1073,37 @@ async function handleSubmit() {
   try {
     const id = route.params.id as string;
     await store.updateInvitation(id, {
-      ...form,
+      slug: form.slug,
+      theme: form.theme,
+      groom_name: form.groom_name,
+      bride_name: form.bride_name,
+      groom_full_name: form.groom_full_name,
+      bride_full_name: form.bride_full_name,
+      groom_father: form.groom_father,
+      groom_mother: form.groom_mother,
+      bride_father: form.bride_father,
+      bride_mother: form.bride_mother,
+      groom_photo: form.groom_photo,
+      bride_photo: form.bride_photo,
+      cover_photo: form.cover_photo,
+      akad_date: form.akad_date,
+      akad_time: form.akad_time,
+      akad_venue: form.akad_venue,
+      akad_address: form.akad_address,
+      akad_map_url: form.akad_map_url,
+      resepsi_date: form.resepsi_date,
+      resepsi_time: form.resepsi_time,
+      resepsi_venue: form.resepsi_venue,
+      resepsi_address: form.resepsi_address,
+      resepsi_map_url: form.resepsi_map_url,
       love_story: form.love_story.filter((s) => s.title || s.date),
+      quote: form.quote,
+      bank_name: form.bank_name,
+      bank_account: form.bank_account,
+      bank_holder: form.bank_holder,
+      music_url: form.music_url,
+      gallery_type: form.gallery_type,
+      photos: form.photos,
     });
     showToast("success", "Undangan berhasil diperbarui! 🎉");
     setTimeout(() => router.push("/"), 1500);
@@ -1089,13 +1118,37 @@ onMounted(async () => {
   const id = route.params.id as string;
   const data = await store.fetchInvitationById(id);
   if (data) {
-    Object.assign(form, {
-      ...data,
-      theme: data.theme || "elegant",
-      gallery_type: data.gallery_type || themeGalleryDefaults[data.theme || 'elegant'] || 'carousel',
-      love_story: normalizeLoveStory(data.love_story),
-      photos: data.photos || [],
-    });
+    form.slug = data.slug || "";
+    form.theme = data.theme || "elegant";
+    form.groom_name = data.groom_name || "";
+    form.bride_name = data.bride_name || "";
+    form.groom_full_name = data.groom_full_name || "";
+    form.bride_full_name = data.bride_full_name || "";
+    form.groom_father = data.groom_father || "";
+    form.groom_mother = data.groom_mother || "";
+    form.bride_father = data.bride_father || "";
+    form.bride_mother = data.bride_mother || "";
+    form.groom_photo = data.groom_photo || "";
+    form.bride_photo = data.bride_photo || "";
+    form.cover_photo = data.cover_photo || "";
+    form.akad_date = data.akad_date || "";
+    form.akad_time = data.akad_time || "";
+    form.akad_venue = data.akad_venue || "";
+    form.akad_address = data.akad_address || "";
+    form.akad_map_url = data.akad_map_url || "";
+    form.resepsi_date = data.resepsi_date || "";
+    form.resepsi_time = data.resepsi_time || "";
+    form.resepsi_venue = data.resepsi_venue || "";
+    form.resepsi_address = data.resepsi_address || "";
+    form.resepsi_map_url = data.resepsi_map_url || "";
+    form.love_story = normalizeLoveStory(data.love_story);
+    form.quote = data.quote || "";
+    form.bank_name = data.bank_name || "";
+    form.bank_account = data.bank_account || "";
+    form.bank_holder = data.bank_holder || "";
+    form.music_url = data.music_url || "";
+    form.gallery_type = data.gallery_type || themeGalleryDefaults[data.theme || 'elegant'] || 'carousel';
+    form.photos = data.photos || [];
   }
   loading.value = false;
 });

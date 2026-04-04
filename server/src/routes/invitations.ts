@@ -376,6 +376,8 @@ router.put("/:id", requireAuth, async (req: Request, res: Response) => {
       updateData.love_story = parseLoveStory(body.love_story) ?? [];
     }
 
+    console.log("[UPDATE] gallery_type from body:", body.gallery_type, "| in updateData:", updateData.gallery_type);
+
     const { data: updated, error: updateError } = await supabase
       .from("invitations")
       .update(updateData)
