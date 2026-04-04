@@ -852,6 +852,12 @@ input, textarea, select {
   gap: 10px;
 }
 
+.form-section-title svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
 .form-section-subtitle {
   font-size: 13px;
   color: var(--admin-text-secondary);
@@ -929,6 +935,9 @@ textarea.form-input {
 .photo-upload-zone .upload-icon {
   font-size: 40px;
   margin-bottom: 12px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .photo-upload-zone .upload-text {
