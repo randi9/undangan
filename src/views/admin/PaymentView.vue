@@ -3,8 +3,8 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar">
       <router-link to="/" class="sidebar-brand">
-        <div class="sidebar-brand-icon">
-          <span class="material-symbols-rounded">church</span>
+        <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
+          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
         <div class="sidebar-brand-text">Undangan<span>Gen</span></div>
       </router-link>

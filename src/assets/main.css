@@ -888,6 +888,10 @@ textarea.form-input {
   cursor: pointer;
   transition: var(--transition);
   background: var(--admin-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .photo-upload-zone:hover,
@@ -1470,6 +1474,10 @@ textarea.form-input {
   text-align: center;
   color: var(--admin-text-secondary);
   font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .single-photo-upload .upload-placeholder .icon {

@@ -5,7 +5,7 @@ import multer from "multer";
 import path from "path";
 import sharp from "sharp";
 import { createClient } from "@supabase/supabase-js";
-import { S3Client, PutObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectsCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "node:crypto";
 import {
   clerkMw, requireAuth, requireAdmin,
@@ -760,6 +760,38 @@ app.post("/api/upload/multiple", requireAuth, upload.array("photos", 20), (req: 
     } catch (err: any) {
       console.error("Upload error:", err);
       res.status(500).json({ error: err.message || "Failed to upload files" });
+    }
+  })();
+});
+
+// Delete file from R2
+app.delete("/api/upload/file", requireAuth, (req: express.Request, res: express.Response) => {
+  void (async () => {
+    try {
+      const { url } = req.body;
+      if (!url) return res.status(400).json({ error: "No URL provided" });
+
+      const isMusic = url.includes("music.mengundanganda.fun");
+      const bucket = isMusic ? "music" : "uploads";
+      
+      let key = "";
+      try {
+        const parsed = new URL(url);
+        key = parsed.pathname.replace(/^\//, '');
+      } catch {
+        const match = url.match(/\.fun\/(.+)$/) || url.match(/\.com\/(.+)$/);
+        key = match ? match[1] : url.split('/').pop() || "";
+      }
+
+      if (!key) return res.status(400).json({ error: "Invalid URL" });
+
+      const command = new DeleteObjectCommand({ Bucket: bucket, Key: key });
+      await s3Client.send(command);
+
+      res.json({ success: true, message: "File deleted from R2" });
+    } catch (err: any) {
+      console.error("Delete file error:", err);
+      res.status(500).json({ error: "Failed to delete file" });
     }
   })();
 });

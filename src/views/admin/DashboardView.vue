@@ -3,8 +3,8 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar">
       <router-link to="/" class="sidebar-brand">
-        <div class="sidebar-brand-icon">
-          <span class="material-symbols-rounded">church</span>
+        <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
+          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
         <div class="sidebar-brand-text">Undangan<span>Gen</span></div>
       </router-link>
@@ -179,7 +179,7 @@
                 class="invitation-card-cover"
                 style="display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#e8ecf4,#d1d5e0)"
               >
-                <span class="material-symbols-rounded" style="font-size:48px;color:#94a3b8">church</span>
+                <img src="/images/logo.webp" alt="Logo" style="width:48px;height:48px;object-fit:cover;opacity:0.4" />
               </div>
             </div>
 

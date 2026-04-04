@@ -2,8 +2,8 @@
   <div class="admin-page-simple">
     <header class="simple-topbar">
       <router-link to="/" class="simple-topbar-brand">
-        <div class="sidebar-brand-icon" style="width:32px;height:32px;border-radius:10px">
-          <span class="material-symbols-rounded" style="font-size:18px">church</span>
+        <div class="sidebar-brand-icon" style="width:32px;height:32px;border-radius:10px;overflow:hidden;background:transparent">
+          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
         <span class="sidebar-brand-text" style="font-size:17px">Undangan<span>Gen</span></span>
       </router-link>
@@ -143,6 +143,9 @@
                     Upload Foto
                   </div>
                 </div>
+                <button v-if="form.groom_photo" type="button" class="btn btn-danger btn-sm" style="margin: 12px auto 0; display: flex;" @click="removeGroomPhoto">
+                  Hapus Foto
+                </button>
                 <input
                   ref="groomPhotoInput"
                   type="file"
@@ -206,6 +209,9 @@
                     Upload Foto
                   </div>
                 </div>
+                <button v-if="form.bride_photo" type="button" class="btn btn-danger btn-sm" style="margin: 12px auto 0; display: flex;" @click="removeBridePhoto">
+                  Hapus Foto
+                </button>
                 <input
                   ref="bridePhotoInput"
                   type="file"
@@ -256,21 +262,20 @@
               class="photo-upload-zone"
               @click="($refs.coverPhotoInput as HTMLInputElement).click()"
             >
-              <div v-if="form.cover_photo">
+              <div v-if="form.cover_photo" style="position: relative; display: inline-block;">
                 <img
                   :src="getPhotoUrl(form.cover_photo)"
                   alt="Foto sampul"
-                  style="max-height: 200px; border-radius: 8px"
+                  style="max-height: 200px; border-radius: 8px; display: block;"
                 />
-                <p
-                  style="
-                    margin-top: 8px;
-                    font-size: 13px;
-                    color: var(--admin-text-secondary);
-                  "
+                <button
+                  type="button"
+                  title="Hapus foto"
+                  style="position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; background: #ef4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);"
+                  @click.stop="removeCoverPhoto"
                 >
-                  Klik untuk ganti foto
-                </p>
+                  ✕
+                </button>
               </div>
               <div v-else>
                 <Icon icon="lucide:camera" class="upload-icon" style="color: var(--admin-text-secondary);" />
@@ -477,7 +482,7 @@
                 <button
                   type="button"
                   class="remove-btn"
-                  @click="form.photos.splice(index, 1)"
+                  @click="removeGalleryPhoto(index)"
                 >
                   ×
                 </button>
@@ -517,16 +522,17 @@
             <h3 class="form-section-title"><Icon icon="lucide:music" style="color: var(--admin-primary);" /> Musik Latar</h3>
             <p class="form-section-subtitle">Pilih lagu yang akan berputar otomatis saat undangan dibuka</p>
             <div class="form-group">
-              <div class="single-photo-upload" style="aspect-ratio: auto; height: auto; padding: 24px;" @click="musicFileInput?.click()">
+              <div class="photo-upload-zone" style="padding: 24px;" @click="musicFileInput?.click()">
                 <div v-if="form.music_url" style="width: 100%; text-align: center;">
-                  <Icon icon="lucide:headphones" style="font-size: 32px; margin-bottom: 8px; color: var(--admin-primary);" />
-                  <div style="font-weight: 500; font-size: 14px; margin-bottom: 12px; word-break: break-all; color: var(--admin-primary)">Lagu Terpilih</div>
-                  <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 36px; margin-bottom: 12px;"></audio>
+                  <Icon icon="lucide:headphones" class="upload-icon" style="color: var(--admin-primary);" />
+                  <div class="upload-text" style="color: var(--admin-primary); margin-bottom: 12px; word-break: break-all;">Lagu Terpilih</div>
+                  <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 40px; margin-bottom: 16px;"></audio>
                   <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic">Hapus Lagu</button>
                 </div>
-                <div v-else class="upload-placeholder">
-                  <Icon icon="lucide:music-4" style="font-size: 32px; color: var(--admin-text-secondary); margin-bottom: 8px;" />
-                  Upload File Audio (.mp3, .m4a, .wav)
+                <div v-else>
+                  <Icon icon="lucide:music-4" class="upload-icon" style="color: var(--admin-text-secondary);" />
+                  <div class="upload-text">Upload File Audio</div>
+                  <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 10MB</div>
                 </div>
               </div>
               <input
@@ -853,7 +859,12 @@ async function handleSingleUpload(
   const file = input.files?.[0];
   if (!file) return;
   try {
-    form[field] = await store.uploadPhoto(file, form.slug || undefined);
+    const oldUrl = form[field];
+    const newUrl = await store.uploadPhoto(file, form.slug || undefined);
+    if (oldUrl) {
+      await store.deleteFile(oldUrl).catch(() => {});
+    }
+    form[field] = newUrl;
   } catch {
     showToast("error", "Gagal upload foto");
   }
@@ -882,6 +893,9 @@ async function handleMusicUpload(event: Event) {
 
   try {
     const url = await store.uploadMusic(file, form.slug || undefined);
+    if (form.music_url) {
+      await store.deleteFile(form.music_url).catch(() => {});
+    }
     form.music_url = url;
     showToast("success", "Musik berhasil diupload");
   } catch {
@@ -890,8 +904,40 @@ async function handleMusicUpload(event: Event) {
   input.value = "";
 }
 
-function removeMusic() {
-  form.music_url = "";
+async function removeMusic() {
+  if (form.music_url) {
+    await store.deleteFile(form.music_url).catch(() => {});
+    form.music_url = "";
+  }
+}
+
+async function removeCoverPhoto() {
+  if (form.cover_photo) {
+    await store.deleteFile(form.cover_photo).catch(() => {});
+    form.cover_photo = "";
+  }
+}
+
+async function removeGroomPhoto() {
+  if (form.groom_photo) {
+    await store.deleteFile(form.groom_photo).catch(() => {});
+    form.groom_photo = "";
+  }
+}
+
+async function removeBridePhoto() {
+  if (form.bride_photo) {
+    await store.deleteFile(form.bride_photo).catch(() => {});
+    form.bride_photo = "";
+  }
+}
+
+async function removeGalleryPhoto(index: number) {
+  const photo = form.photos[index];
+  if (photo && photo.url) {
+    await store.deleteFile(photo.url).catch(() => {});
+  }
+  form.photos.splice(index, 1);
 }
 
 function showToast(type: string, message: string) {

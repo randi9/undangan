@@ -207,6 +207,20 @@ export const useInvitationStore = defineStore('invitation', () => {
     return await safeJson(res)
   }
 
+  async function deleteFile(url: string): Promise<void> {
+    if (!url) return
+    const headersConfig = await authHeaders()
+    const res = await fetch(`${API_BASE}/upload/file`, {
+      method: 'DELETE',
+      headers: { ...headersConfig, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    })
+    if (!res.ok) {
+      const data = await safeJson(res).catch(() => ({}))
+      console.error('Failed to delete file from R2:', data.error)
+    }
+  }
+
   return {
     invitations,
     currentInvitation,
@@ -220,6 +234,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     deleteInvitation,
     uploadPhoto,
     uploadMusic,
-    uploadPhotos
+    uploadPhotos,
+    deleteFile
   }
 })
