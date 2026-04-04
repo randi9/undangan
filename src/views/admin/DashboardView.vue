@@ -3,10 +3,10 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar">
       <router-link to="/" class="sidebar-brand">
-        <div class="sidebar-brand-icon">
-          <span class="material-symbols-rounded">church</span>
+        <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
+          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
-        <div class="sidebar-brand-text">Undangan<span>Gen</span></div>
+        <div class="sidebar-brand-text">Mengundang<span>Anda</span></div>
       </router-link>
 
       <nav class="sidebar-nav">
@@ -43,7 +43,14 @@
     <!-- Main Content -->
     <div class="admin-main">
       <header class="admin-topbar">
-        <div class="search-bar">
+        <router-link to="/" class="mobile-brand">
+          <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
+            <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
+          </div>
+          <div class="sidebar-brand-text" style="font-size:16px;">Mengundang<span>Anda</span></div>
+        </router-link>
+
+        <div v-if="authStore.isAdmin || (authStore.user?.max_invitations ?? 0) > 1" class="search-bar">
           <span class="material-symbols-rounded" style="font-size:20px">search</span>
           <input
             v-model="searchQuery"
@@ -52,7 +59,7 @@
           />
         </div>
         <div class="topbar-actions">
-          <div v-if="authStore.user && !authStore.isAdmin && !hasReachedLimit" class="invitation-limit-info">
+          <div v-if="authStore.user && !authStore.isAdmin && !hasReachedLimit && (authStore.user.max_invitations ?? 0) > 1" class="invitation-limit-info">
             <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
             {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
           </div>
@@ -179,7 +186,7 @@
                 class="invitation-card-cover"
                 style="display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#e8ecf4,#d1d5e0)"
               >
-                <span class="material-symbols-rounded" style="font-size:48px;color:#94a3b8">church</span>
+                <img src="/images/logo.webp" alt="Logo" style="width:48px;height:48px;object-fit:cover;opacity:0.4" />
               </div>
             </div>
 

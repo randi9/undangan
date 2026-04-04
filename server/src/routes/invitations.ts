@@ -425,24 +425,30 @@ router.delete("/:id", requireAuth, async (req: Request, res: Response) => {
     const uploadsToDelete: string[] = [];
     const musicToDelete: string[] = [];
 
-    const extractFileName = (url: string) => {
+    // Extract R2 key from public URL (supports both flat "uuid.webp" and folder "slug/uuid.webp")
+    const extractR2Key = (url: string) => {
       if (!url) return null;
-      const parts = url.split("/");
-      return parts[parts.length - 1];
+      try {
+        const parsed = new URL(url);
+        return parsed.pathname.replace(/^\//, '') || null;
+      } catch {
+        const match = url.match(/\.fun\/(.+)$/) || url.match(/\.com\/(.+)$/);
+        return match ? match[1] : url.split('/').pop() || null;
+      }
     };
 
     if (inv) {
       for (const field of ["cover_photo", "groom_photo", "bride_photo"]) {
-        const name = extractFileName((inv as any)[field]);
+        const name = extractR2Key((inv as any)[field]);
         if (name) uploadsToDelete.push(name);
       }
-      const musicName = extractFileName(inv.music_url);
+      const musicName = extractR2Key(inv.music_url);
       if (musicName) musicToDelete.push(musicName);
     }
 
     if (photos) {
       for (const p of photos) {
-        const name = extractFileName(p.url);
+        const name = extractR2Key(p.url);
         if (name) uploadsToDelete.push(name);
       }
     }

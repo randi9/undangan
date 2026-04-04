@@ -1,4 +1,4 @@
-# Undangan Generator
+# MengundangAnda
 
 Aplikasi generator undangan pernikahan dengan frontend Vue dan backend Express + Supabase.
 

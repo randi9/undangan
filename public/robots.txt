@@ -1,0 +1,15 @@
+# MengundangAnda - Undangan Pernikahan Digital
+# https://saya.mengundanganda.fun
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /login
+Disallow: /sign-up
+Disallow: /create
+Disallow: /edit/
+Disallow: /payment
+Disallow: /users
+Disallow: /vouchers
+
+Sitemap: https://saya.mengundanganda.fun/sitemap.xml

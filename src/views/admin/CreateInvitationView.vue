@@ -2,10 +2,10 @@
   <div class="admin-page-simple">
     <header class="simple-topbar">
       <router-link to="/" class="simple-topbar-brand">
-        <div class="sidebar-brand-icon" style="width:32px;height:32px;border-radius:10px">
-          <span class="material-symbols-rounded" style="font-size:18px">church</span>
+        <div class="sidebar-brand-icon" style="width:32px;height:32px;border-radius:10px;overflow:hidden;background:transparent">
+          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
-        <span class="sidebar-brand-text" style="font-size:17px">Undangan<span>Gen</span></span>
+        <span class="sidebar-brand-text" style="font-size:17px">Mengundang<span>Anda</span></span>
       </router-link>
       <nav class="simple-topbar-nav">
         <router-link to="/" class="btn btn-outline btn-sm">
@@ -81,11 +81,25 @@
             <small v-if="slugStatus === 'taken'" style="color: #ef4444; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px;">
               <Icon icon="lucide:alert-circle" /> Link sudah dipakai, coba variasi lain
             </small>
+            <div v-if="slugStatus === 'taken' && slugSuggestions.length > 0" class="slug-suggestions">
+              <small style="color: var(--admin-text-secondary); font-size: 12px; display: block; margin-bottom: 6px;">💡 Saran yang tersedia:</small>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <button
+                  v-for="s in slugSuggestions"
+                  :key="s"
+                  type="button"
+                  class="slug-suggestion-chip"
+                  @click="applySuggestion(s)"
+                >
+                  {{ s }}
+                </button>
+              </div>
+            </div>
             <small v-else-if="slugStatus === 'available'" style="color: #10b981; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px;">
               <Icon icon="lucide:check" /> Link tersedia!
             </small>
             <small v-else style="color: var(--admin-text-secondary); font-size: 12px; margin-top: 4px; display: block;">
-              Undangan akan bisa diakses di: /invitation/<strong>{{ form.slug || "slug-anda" }}</strong>
+              Undangan akan bisa diakses di: <strong>{{ form.slug || "slug-anda" }}.mengundanganda.fun</strong>
             </small>
           </div>
         </div>
@@ -119,6 +133,9 @@
                   Upload Foto
                 </div>
               </div>
+              <button v-if="form.groom_photo" type="button" class="btn btn-danger btn-sm" style="margin: 12px auto 0; display: flex;" @click="removeGroomPhoto">
+                Hapus Foto
+              </button>
               <input
                 ref="groomPhotoInput"
                 type="file"
@@ -193,6 +210,9 @@
                   Upload Foto
                 </div>
               </div>
+              <button v-if="form.bride_photo" type="button" class="btn btn-danger btn-sm" style="margin: 12px auto 0; display: flex;" @click="removeBridePhoto">
+                Hapus Foto
+              </button>
               <input
                 ref="bridePhotoInput"
                 type="file"
@@ -260,21 +280,20 @@
             @dragleave="coverDragover = false"
             @drop.prevent="handleCoverDrop"
           >
-            <div v-if="form.cover_photo">
+            <div v-if="form.cover_photo" style="position: relative; display: inline-block;">
               <img
                 :src="resolveAssetUrl(form.cover_photo, apiBase)"
                 alt="Foto sampul"
-                style="max-height: 200px; border-radius: 8px"
+                style="max-height: 200px; border-radius: 8px; display: block;"
               />
-              <p
-                style="
-                  margin-top: 8px;
-                  font-size: 13px;
-                  color: var(--admin-text-secondary);
-                "
+              <button
+                type="button"
+                title="Hapus foto"
+                style="position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; background: #ef4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);"
+                @click.stop="removeCoverPhoto"
               >
-                Klik untuk ganti foto
-              </p>
+                ✕
+              </button>
             </div>
             <div v-else>
               <Icon icon="lucide:camera" class="upload-icon" style="color: var(--admin-text-secondary);" />
@@ -563,16 +582,17 @@
             Pilih lagu yang akan berputar otomatis saat undangan dibuka
           </p>
           <div class="form-group">
-            <div class="single-photo-upload" style="aspect-ratio: auto; height: auto; padding: 24px;" @click="musicFileInput?.click()">
+            <div class="photo-upload-zone" style="padding: 24px;" @click="musicFileInput?.click()">
               <div v-if="form.music_url" style="width: 100%; text-align: center;">
-                <Icon icon="lucide:headphones" style="font-size: 32px; margin-bottom: 8px; color: var(--admin-primary);" />
-                <div style="font-weight: 500; font-size: 14px; margin-bottom: 12px; word-break: break-all; color: var(--admin-primary)">Lagu Terpilih</div>
-                <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 36px; margin-bottom: 12px;"></audio>
+                <Icon icon="lucide:headphones" class="upload-icon" style="color: var(--admin-primary);" />
+                <div class="upload-text" style="color: var(--admin-primary); margin-bottom: 12px; word-break: break-all;">Lagu Terpilih</div>
+                <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 40px; margin-bottom: 16px;"></audio>
                 <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic">Hapus Lagu</button>
               </div>
-              <div v-else class="upload-placeholder">
-                <Icon icon="lucide:music-4" style="font-size: 32px; color: var(--admin-text-secondary); margin-bottom: 8px;" />
-                Upload File Audio (.mp3, .m4a, .wav)
+              <div v-else>
+                <Icon icon="lucide:music-4" class="upload-icon" style="color: var(--admin-text-secondary);" />
+                <div class="upload-text">Upload File Audio</div>
+                <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 10MB</div>
               </div>
             </div>
             <input
@@ -711,6 +731,35 @@
 .input-success {
   border-color: #10b981 !important;
 }
+
+.slug-suggestions {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: var(--admin-surface, #f8fafc);
+  border: 1px solid var(--admin-border, #e2e8f0);
+  border-radius: 8px;
+}
+
+.slug-suggestion-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--admin-primary, #3b82f6);
+  background: white;
+  border: 1px solid var(--admin-primary, #3b82f6);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.slug-suggestion-chip:hover {
+  background: var(--admin-primary, #3b82f6);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
 </style>
 
 <script setup lang="ts">
@@ -739,6 +788,7 @@ const galleryDragover = ref(false);
 const toast = ref<{ type: string; message: string } | null>(null);
 
 const slugStatus = ref<"idle" | "loading" | "available" | "taken">("idle");
+const slugSuggestions = ref<string[]>([]);
 let slugCheckTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const groomPhotoInput = ref<HTMLInputElement>();
@@ -791,6 +841,8 @@ function handleSlugInput() {
     .replace(/[^a-z0-9-]/g, "-")
     .replace(/-+/g, "-");
 
+  slugSuggestions.value = [];
+
   if (!form.slug) {
     slugStatus.value = "idle";
     return;
@@ -807,13 +859,38 @@ function handleSlugInput() {
       
       if (res.ok) {
         slugStatus.value = data.available ? "available" : "taken";
+        if (!data.available && data.suggestions) {
+          slugSuggestions.value = data.suggestions;
+        }
       } else {
         slugStatus.value = "idle";
       }
     } catch {
       slugStatus.value = "idle";
     }
-  }, 500); // 500ms debounce
+  }, 500);
+}
+
+function applySuggestion(suggestion: string) {
+  form.slug = suggestion;
+  slugSuggestions.value = [];
+  slugStatus.value = "loading";
+  // Re-check the suggestion to confirm it
+  setTimeout(async () => {
+    try {
+      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+      const res = await fetch(`${API_BASE}/invitations/check-slug/${form.slug}`);
+      const data = await res.json();
+      if (res.ok) {
+        slugStatus.value = data.available ? "available" : "taken";
+        if (!data.available && data.suggestions) {
+          slugSuggestions.value = data.suggestions;
+        }
+      }
+    } catch {
+      slugStatus.value = "idle";
+    }
+  }, 100);
 }
 
 function triggerUpload(type: string) {
@@ -831,7 +908,11 @@ async function handleSingleUpload(
   if (!file) return;
 
   try {
-    const url = await store.uploadPhoto(file);
+    const oldUrl = form[field];
+    const url = await store.uploadPhoto(file, form.slug || undefined);
+    if (oldUrl) {
+      await store.deleteFile(oldUrl).catch(() => {});
+    }
     form[field] = url;
   } catch {
     showToast("error", "Gagal upload foto");
@@ -845,7 +926,10 @@ async function handleMusicUpload(event: Event) {
   if (!file) return;
 
   try {
-    const url = await store.uploadMusic(file);
+    const url = await store.uploadMusic(file, form.slug || undefined);
+    if (form.music_url) {
+      await store.deleteFile(form.music_url).catch(() => {});
+    }
     form.music_url = url;
     showToast("success", "Musik berhasil diupload");
   } catch {
@@ -854,8 +938,32 @@ async function handleMusicUpload(event: Event) {
   input.value = "";
 }
 
-function removeMusic() {
-  form.music_url = "";
+async function removeMusic() {
+  if (form.music_url) {
+    await store.deleteFile(form.music_url).catch(() => {});
+    form.music_url = "";
+  }
+}
+
+async function removeCoverPhoto() {
+  if (form.cover_photo) {
+    await store.deleteFile(form.cover_photo).catch(() => {});
+    form.cover_photo = "";
+  }
+}
+
+async function removeGroomPhoto() {
+  if (form.groom_photo) {
+    await store.deleteFile(form.groom_photo).catch(() => {});
+    form.groom_photo = "";
+  }
+}
+
+async function removeBridePhoto() {
+  if (form.bride_photo) {
+    await store.deleteFile(form.bride_photo).catch(() => {});
+    form.bride_photo = "";
+  }
 }
 
 async function handleCoverDrop(event: DragEvent) {
@@ -863,7 +971,7 @@ async function handleCoverDrop(event: DragEvent) {
   const file = event.dataTransfer?.files[0];
   if (!file || !file.type.startsWith("image/")) return;
   try {
-    form.cover_photo = await store.uploadPhoto(file);
+    form.cover_photo = await store.uploadPhoto(file, form.slug || undefined);
   } catch {
     showToast("error", "Gagal upload foto");
   }
@@ -875,7 +983,7 @@ async function handleGalleryUpload(event: Event) {
   if (files.length === 0) return;
 
   try {
-    const results = await store.uploadPhotos(files);
+    const results = await store.uploadPhotos(files, form.slug || undefined);
     results.forEach((r) => {
       form.photos.push({ url: r.url, caption: "" });
     });
@@ -893,7 +1001,7 @@ async function handleGalleryDrop(event: DragEvent) {
   if (files.length === 0) return;
 
   try {
-    const results = await store.uploadPhotos(files);
+    const results = await store.uploadPhotos(files, form.slug || undefined);
     results.forEach((r) => {
       form.photos.push({ url: r.url, caption: "" });
     });
@@ -902,7 +1010,11 @@ async function handleGalleryDrop(event: DragEvent) {
   }
 }
 
-function removeGalleryPhoto(index: number) {
+async function removeGalleryPhoto(index: number) {
+  const photo = form.photos[index];
+  if (photo && photo.url) {
+    await store.deleteFile(photo.url).catch(() => {});
+  }
   form.photos.splice(index, 1);
 }
 
