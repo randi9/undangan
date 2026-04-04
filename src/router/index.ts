@@ -64,56 +64,56 @@ if (isLandingPage) {
       path: '/login/:pathMatch(.*)*',
       name: 'login',
       component: () => import('@/views/auth/LoginView.vue'),
-      meta: { title: 'Login - UndanganGen', guest: true }
+      meta: { title: 'Login - Mengundang Anda', guest: true }
     },
     {
       path: '/sign-up/:pathMatch(.*)*',
       name: 'sign-up',
       component: () => import('@/views/auth/SignupView.vue'),
-      meta: { title: 'Sign Up - UndanganGen', guest: true }
+      meta: { title: 'Sign Up - Mengundang Anda', guest: true }
     },
     {
       path: '/',
       name: 'dashboard',
       component: () => import('@/views/admin/DashboardView.vue'),
-      meta: { title: 'Dashboard - Undangan Generator', requiresAuth: true }
+      meta: { title: 'Dashboard - MengundangAnda', requiresAuth: true }
     },
 
     {
       path: '/create',
       name: 'create',
       component: () => import('@/views/admin/CreateInvitationView.vue'),
-      meta: { title: 'Buat Undangan - Undangan Generator', requiresAuth: true }
+      meta: { title: 'Buat Undangan - MengundangAnda', requiresAuth: true }
     },
     {
       path: '/edit/:id',
       name: 'edit',
       component: () => import('@/views/admin/EditInvitationView.vue'),
-      meta: { title: 'Edit Undangan - Undangan Generator', requiresAuth: true }
+      meta: { title: 'Edit Undangan - MengundangAnda', requiresAuth: true }
     },
     {
       path: '/users',
       name: 'users',
       component: () => import('@/views/admin/UserManagementView.vue'),
-      meta: { title: 'Kelola User - UndanganGen', requiresAuth: true, requiresAdmin: true }
+      meta: { title: 'Kelola User - MengundangAnda', requiresAuth: true, requiresAdmin: true }
     },
     {
       path: '/vouchers',
       name: 'vouchers',
       component: () => import('@/views/admin/VoucherManageView.vue'),
-      meta: { title: 'Kelola Voucher - UndanganGen', requiresAuth: true, requiresAdmin: true }
+      meta: { title: 'Kelola Voucher - MengundangAnda', requiresAuth: true, requiresAdmin: true }
     },
     {
       path: '/payment',
       name: 'payment',
       component: () => import('@/views/admin/PaymentView.vue'),
-      meta: { title: 'Pembayaran - UndanganGen', requiresAuth: true }
+      meta: { title: 'Pembayaran - MengundangAnda', requiresAuth: true }
     },
     {
       path: '/payment/success',
       name: 'payment-success',
       component: () => import('@/views/admin/PaymentSuccessView.vue'),
-      meta: { title: 'Pembayaran Berhasil - UndanganGen', requiresAuth: true }
+      meta: { title: 'Pembayaran Berhasil - MengundangAnda', requiresAuth: true }
     },
     {
       path: '/landing',
@@ -137,7 +137,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  document.title = (to.meta.title as string) || 'Undangan Generator'
+  document.title = (to.meta.title as string) || 'MengundangAnda'
   return true
 })
 

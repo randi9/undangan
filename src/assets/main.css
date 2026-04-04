@@ -167,7 +167,7 @@ input, textarea, select {
 }
 
 .sidebar-brand-text span {
-  color: var(--admin-primary);
+  color: #93c5fd;
 }
 
 .sidebar-nav {
@@ -270,6 +270,31 @@ input, textarea, select {
   color: var(--admin-danger);
 }
 
+/* --- Mobile Brand --- */
+.mobile-brand {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.mobile-brand .sidebar-brand-text {
+  font-weight: 700;
+  color: var(--admin-text);
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+@media (max-width: 768px) {
+  .mobile-brand {
+    display: flex;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only-topbar {
+    display: none !important;
+  }
+}
+
 /* --- Top bar --- */
 .admin-topbar {
   position: sticky;
@@ -298,6 +323,7 @@ input, textarea, select {
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* Search Bar */
@@ -1294,7 +1320,7 @@ textarea.form-input {
   
   .topbar-actions {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-end;
   }
 
   /* Simple Header Layout */

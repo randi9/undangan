@@ -6,7 +6,7 @@
         <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
           <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
-        <div class="sidebar-brand-text">Undangan<span>Gen</span></div>
+        <div class="sidebar-brand-text">Mengundang<span>Anda</span></div>
       </router-link>
       <nav class="sidebar-nav">
         <router-link to="/" class="sidebar-link">
@@ -23,6 +23,15 @@
 
     <!-- Main Content -->
     <div class="admin-main">
+      <header class="admin-topbar mobile-only-topbar" style="border-bottom:none;">
+        <router-link to="/" class="mobile-brand">
+          <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
+            <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
+          </div>
+          <div class="sidebar-brand-text" style="font-size:16px;">Mengundang<span>Anda</span></div>
+        </router-link>
+      </header>
+
       <div class="admin-container">
         <div class="success-wrapper">
           <!-- Loading / Verifying -->

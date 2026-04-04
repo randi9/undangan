@@ -5,7 +5,7 @@
         <div class="sidebar-brand-icon" style="width:32px;height:32px;border-radius:10px;overflow:hidden;background:transparent">
           <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
-        <span class="sidebar-brand-text" style="font-size:17px">Undangan<span>Gen</span></span>
+        <span class="sidebar-brand-text" style="font-size:17px">Mengundang<span>Anda</span></span>
       </router-link>
       <nav class="simple-topbar-nav">
         <router-link to="/" class="btn btn-outline btn-sm">
