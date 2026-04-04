@@ -110,8 +110,12 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import CountdownDigit from './CountdownDigit.vue';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Array konfigurasi rumpun rumput (ukuran, letak, kecepatan goyang berbeda)
 const grasses = [
@@ -189,6 +193,7 @@ const sectionRef = ref<HTMLElement | null>(null);
 const isVisible = ref(false);
 
 let observer: IntersectionObserver | null = null;
+let ctx: gsap.Context | null = null;
 
 onMounted(() => {
   observer = new IntersectionObserver((entries) => {
@@ -204,6 +209,23 @@ onMounted(() => {
 
   if (sectionRef.value) {
     observer.observe(sectionRef.value);
+
+    // Animasi GSAP: Cinematic "Walk-Through" transisi ke Slide Berikutnya
+    ctx = gsap.context(() => {
+      gsap.to(sectionRef.value, {
+        scrollTrigger: {
+          trigger: sectionRef.value,
+          start: "top top",     // Dimulai tepat saat ujung atas layar menyentuh section ini
+          end: "bottom top",    // Selesai saat element sepenuhnya lewat (atau tergusur)
+          scrub: true,          // Mengikat kepergerakan scroll
+        },
+        y: () => (sectionRef.value?.offsetHeight || 0) * 0.5, // Parallax turun perlahan (Curtain overlap)
+        scale: 1.1,         // Efek berjalan maju menembus ruangan
+        opacity: 0,         // Memudar gelap
+        filter: "blur(5px)",// Cinematic depth of field
+        ease: "none"
+      });
+    }, sectionRef.value);
   }
 });
 
@@ -215,6 +237,7 @@ watch(sectionRef, (el) => {
 
 onUnmounted(() => {
   if (observer) observer.disconnect();
+  ctx?.revert();
 });
 
 const formatNumber = (num: number) => {
