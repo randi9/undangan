@@ -89,6 +89,20 @@
               <small v-if="slugStatus === 'taken'" style="color: #ef4444; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px;">
                 <Icon icon="lucide:alert-circle" /> Link sudah dipakai, coba variasi lain
               </small>
+              <div v-if="slugStatus === 'taken' && slugSuggestions.length > 0" class="slug-suggestions">
+                <small style="color: var(--admin-text-secondary); font-size: 12px; display: block; margin-bottom: 6px;">💡 Saran yang tersedia:</small>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                  <button
+                    v-for="s in slugSuggestions"
+                    :key="s"
+                    type="button"
+                    class="slug-suggestion-chip"
+                    @click="applySuggestion(s)"
+                  >
+                    {{ s }}
+                  </button>
+                </div>
+              </div>
               <small v-else-if="slugStatus === 'available'" style="color: #10b981; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px;">
                 <Icon icon="lucide:check" /> Link tersedia!
               </small>
@@ -656,6 +670,35 @@
 .input-success {
   border-color: #10b981 !important;
 }
+
+.slug-suggestions {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: var(--admin-surface, #f8fafc);
+  border: 1px solid var(--admin-border, #e2e8f0);
+  border-radius: 8px;
+}
+
+.slug-suggestion-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--admin-primary, #3b82f6);
+  background: white;
+  border: 1px solid var(--admin-primary, #3b82f6);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.slug-suggestion-chip:hover {
+  background: var(--admin-primary, #3b82f6);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
 </style>
 
 <script setup lang="ts">
@@ -684,6 +727,7 @@ const toast = ref<{ type: string; message: string } | null>(null);
 const musicFileInput = ref<HTMLInputElement>();
 
 const slugStatus = ref<"idle" | "loading" | "available" | "taken">("idle");
+const slugSuggestions = ref<string[]>([]);
 let slugCheckTimeout: ReturnType<typeof setTimeout> | null = null;
 
 // Preview Refs & State
@@ -748,6 +792,8 @@ function handleSlugInput() {
     .replace(/[^a-z0-9-]/g, "-")
     .replace(/-+/g, "-");
 
+  slugSuggestions.value = [];
+
   if (!form.slug) {
     slugStatus.value = "idle";
     return;
@@ -765,13 +811,38 @@ function handleSlugInput() {
       
       if (res.ok) {
         slugStatus.value = data.available ? "available" : "taken";
+        if (!data.available && data.suggestions) {
+          slugSuggestions.value = data.suggestions;
+        }
       } else {
         slugStatus.value = "idle";
       }
     } catch {
       slugStatus.value = "idle";
     }
-  }, 500); // 500ms debounce
+  }, 500);
+}
+
+function applySuggestion(suggestion: string) {
+  form.slug = suggestion;
+  slugSuggestions.value = [];
+  slugStatus.value = "loading";
+  setTimeout(async () => {
+    try {
+      const excludeId = route.params.id;
+      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+      const res = await fetch(`${API_BASE}/invitations/check-slug/${form.slug}?exclude_id=${excludeId}`);
+      const data = await res.json();
+      if (res.ok) {
+        slugStatus.value = data.available ? "available" : "taken";
+        if (!data.available && data.suggestions) {
+          slugSuggestions.value = data.suggestions;
+        }
+      }
+    } catch {
+      slugStatus.value = "idle";
+    }
+  }, 100);
 }
 
 async function handleSingleUpload(
@@ -782,7 +853,7 @@ async function handleSingleUpload(
   const file = input.files?.[0];
   if (!file) return;
   try {
-    form[field] = await store.uploadPhoto(file);
+    form[field] = await store.uploadPhoto(file, form.slug || undefined);
   } catch {
     showToast("error", "Gagal upload foto");
   }
@@ -794,7 +865,7 @@ async function handleGalleryUpload(event: Event) {
   const files = Array.from(input.files || []);
   if (files.length === 0) return;
   try {
-    const results = await store.uploadPhotos(files);
+    const results = await store.uploadPhotos(files, form.slug || undefined);
     results.forEach((r) => {
       form.photos.push({ url: r.url, caption: "" });
     });
@@ -810,7 +881,7 @@ async function handleMusicUpload(event: Event) {
   if (!file) return;
 
   try {
-    const url = await store.uploadMusic(file);
+    const url = await store.uploadMusic(file, form.slug || undefined);
     form.music_url = url;
     showToast("success", "Musik berhasil diupload");
   } catch {

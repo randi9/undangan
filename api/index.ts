@@ -192,11 +192,30 @@ app.get("/api/invitations/check-slug/:slug", async (req: any, res: any) => {
     
     const { data } = await query.single();
     
-    // If data exists, it's taken. If not, it's available.
-    res.json({ available: !data });
+    if (!data) {
+      return res.json({ available: true });
+    }
+
+    // Slug is taken — generate smart suggestions (prefix-based)
+    const prefixes = [
+      "nikah-", "wedding-", "undangan-", "menikah-",
+      `${new Date().getFullYear()}-`,
+      `${Math.floor(Math.random() * 99) + 1}-`,
+    ];
+    const candidates = prefixes.map(p => p + slug);
+
+    // Batch-check which candidates are available
+    const { data: existing } = await supabase
+      .from("invitations")
+      .select("slug")
+      .in("slug", candidates);
+
+    const takenSlugs = new Set((existing || []).map((r: any) => r.slug));
+    const suggestions = candidates.filter(c => !takenSlugs.has(c)).slice(0, 3);
+
+    res.json({ available: false, suggestions });
   } catch (err: any) {
-    // If the error is PGRST116 (0 rows returned), it means it's available! 
-    // Supabase .single() throws an error instead of returning null if no rows match.
+    // PGRST116 = 0 rows from .single() — slug is available
     if (err.code === "PGRST116") {
       return res.json({ available: true });
     }
@@ -546,24 +565,32 @@ app.delete("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
     const uploadsToDelete: string[] = [];
     const musicToDelete: string[] = [];
 
-    const extractFileName = (url: string) => {
+    // Extract R2 key from public URL (supports both flat "uuid.webp" and folder "slug/uuid.webp")
+    const extractR2Key = (url: string) => {
       if (!url) return null;
-      const parts = url.split("/");
-      return parts[parts.length - 1]; // last segment is the filename
+      try {
+        const parsed = new URL(url);
+        // pathname is like /slug/uuid.webp or /uuid.webp — strip leading slash
+        return parsed.pathname.replace(/^\//, '') || null;
+      } catch {
+        // Fallback: take everything after the last domain slash
+        const match = url.match(/\.fun\/(.+)$/) || url.match(/\.com\/(.+)$/);
+        return match ? match[1] : url.split('/').pop() || null;
+      }
     };
 
     if (inv) {
       for (const field of ["cover_photo", "groom_photo", "bride_photo"]) {
-        const name = extractFileName((inv as any)[field]);
+        const name = extractR2Key((inv as any)[field]);
         if (name) uploadsToDelete.push(name);
       }
-      const musicName = extractFileName(inv.music_url);
+      const musicName = extractR2Key(inv.music_url);
       if (musicName) musicToDelete.push(musicName);
     }
 
     if (photos) {
       for (const p of photos) {
-        const name = extractFileName(p.url);
+        const name = extractR2Key(p.url);
         if (name) uploadsToDelete.push(name);
       }
     }
@@ -671,7 +698,7 @@ async function compressImage(buffer: Buffer): Promise<Buffer> {
     .toBuffer();
 }
 
-async function uploadToSupabaseStorage(file: Express.Multer.File) {
+async function uploadToSupabaseStorage(file: Express.Multer.File, slug?: string) {
   const isImage = file.mimetype.startsWith("image/");
 
   let buffer = file.buffer;
@@ -684,13 +711,15 @@ async function uploadToSupabaseStorage(file: Express.Multer.File) {
     contentType = "image/webp";
   }
 
-  const name = `${uuidv4()}${ext}`;
+  const filename = `${uuidv4()}${ext}`;
+  // Use slug as folder prefix: slug/uuid.webp — falls back to flat if no slug
+  const key = slug ? `${slug}/${filename}` : filename;
   const isMusic = file.mimetype.startsWith("audio/");
   const bucket = isMusic ? "music" : "uploads";
   
   const command = new PutObjectCommand({
     Bucket: bucket,
-    Key: name,
+    Key: key,
     Body: buffer,
     ContentType: contentType,
   });
@@ -701,15 +730,17 @@ async function uploadToSupabaseStorage(file: Express.Multer.File) {
     ? process.env.R2_PUBLIC_URL_MUSIC || "https://music.mengundanganda.fun"
     : process.env.R2_PUBLIC_URL_UPLOADS || "https://media.mengundanganda.fun";
   
-  const publicUrl = `${publicUrlBase}/${name}`;
-  return { url: publicUrl, filename: name };
+  const publicUrl = `${publicUrlBase}/${key}`;
+  return { url: publicUrl, filename: key };
 }
 
 app.post("/api/upload/single", requireAuth, upload.single("photo"), (req: express.Request, res: express.Response) => {
   void (async () => {
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
     try {
-      const result = await uploadToSupabaseStorage(req.file);
+      const slug = (req.query.slug as string) || undefined;
+      console.log(`[Upload Single] slug="${slug || '(none)'}", file="${req.file.originalname}"`);
+      const result = await uploadToSupabaseStorage(req.file, slug);
       res.json(result);
     } catch (err: any) {
       console.error("Upload error:", err);
@@ -723,7 +754,8 @@ app.post("/api/upload/multiple", requireAuth, upload.array("photos", 20), (req: 
     const files = req.files as Express.Multer.File[];
     if (!files || files.length === 0) return res.status(400).json({ error: "No files uploaded" });
     try {
-      const results = await Promise.all(files.map(uploadToSupabaseStorage));
+      const slug = (req.query.slug as string) || undefined;
+      const results = await Promise.all(files.map(f => uploadToSupabaseStorage(f, slug)));
       res.json(results);
     } catch (err: any) {
       console.error("Upload error:", err);

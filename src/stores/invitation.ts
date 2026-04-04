@@ -157,10 +157,11 @@ export const useInvitationStore = defineStore('invitation', () => {
     }
   }
 
-  async function uploadPhoto(file: File): Promise<string> {
+  async function uploadPhoto(file: File, slug?: string): Promise<string> {
     const formData = new FormData()
     formData.append('photo', file)
-    const res = await fetch(`${API_BASE}/upload/single`, {
+    const slugParam = slug ? `?slug=${encodeURIComponent(slug)}` : ''
+    const res = await fetch(`${API_BASE}/upload/single${slugParam}`, {
       method: 'POST',
       headers: await authHeaders(),
       body: formData
@@ -173,10 +174,11 @@ export const useInvitationStore = defineStore('invitation', () => {
     return data.url
   }
 
-  async function uploadMusic(file: File): Promise<string> {
+  async function uploadMusic(file: File, slug?: string): Promise<string> {
     const formData = new FormData()
     formData.append('photo', file)
-    const res = await fetch(`${API_BASE}/upload/single`, {
+    const slugParam = slug ? `?slug=${encodeURIComponent(slug)}` : ''
+    const res = await fetch(`${API_BASE}/upload/single${slugParam}`, {
       method: 'POST',
       headers: await authHeaders(),
       body: formData
@@ -189,10 +191,11 @@ export const useInvitationStore = defineStore('invitation', () => {
     return data.url
   }
 
-  async function uploadPhotos(files: File[]): Promise<Array<{ url: string; filename: string }>> {
+  async function uploadPhotos(files: File[], slug?: string): Promise<Array<{ url: string; filename: string }>> {
     const formData = new FormData()
     files.forEach(file => formData.append('photos', file))
-    const res = await fetch(`${API_BASE}/upload/multiple`, {
+    const slugParam = slug ? `?slug=${encodeURIComponent(slug)}` : ''
+    const res = await fetch(`${API_BASE}/upload/multiple${slugParam}`, {
       method: 'POST',
       headers: await authHeaders(),
       body: formData

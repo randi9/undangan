@@ -31,7 +31,7 @@ async function compressImage(buffer: Buffer): Promise<Buffer> {
     .toBuffer();
 }
 
-async function uploadBufferToStorage(file: Express.Multer.File) {
+async function uploadBufferToStorage(file: Express.Multer.File, slug?: string) {
   const isAudio = isAudioMime(file.mimetype);
   const isImage = file.mimetype.startsWith("image/");
 
@@ -47,7 +47,9 @@ async function uploadBufferToStorage(file: Express.Multer.File) {
   }
 
   const cleanExt = ext.replace(/[^a-zA-Z0-9.]/g, "") || ".jpg";
-  const name = `${uuidv4()}${cleanExt}`;
+  const filename = `${uuidv4()}${cleanExt}`;
+  // Use slug as folder prefix: slug/uuid.webp — falls back to flat if no slug
+  const key = slug ? `${slug}/${filename}` : filename;
 
   const isMusic = isAudioMime(file.mimetype);
   const bucket = isMusic ? "music" : "uploads";
@@ -68,7 +70,7 @@ async function uploadBufferToStorage(file: Express.Multer.File) {
 
   const command = new PutObjectCommand({
     Bucket: bucket,
-    Key: name,
+    Key: key,
     Body: buffer,
     ContentType: contentType,
   });
@@ -80,8 +82,8 @@ async function uploadBufferToStorage(file: Express.Multer.File) {
     throw error;
   }
 
-  const publicUrl = `${publicUrlBase}/${name}`;
-  return { url: publicUrl, filename: name };
+  const publicUrl = `${publicUrlBase}/${key}`;
+  return { url: publicUrl, filename: key };
 }
 
 const upload = multer({
@@ -110,7 +112,8 @@ router.post(
       }
 
       try {
-        const uploaded = await uploadBufferToStorage(req.file);
+        const slug = (req.query.slug as string) || undefined;
+        const uploaded = await uploadBufferToStorage(req.file, slug);
         res.json(uploaded);
       } catch (err: any) {
         console.error("Upload single error:", err);
@@ -133,7 +136,8 @@ router.post(
       }
 
       try {
-        const uploaded = await Promise.all(files.map(uploadBufferToStorage));
+        const slug = (req.query.slug as string) || undefined;
+        const uploaded = await Promise.all(files.map(f => uploadBufferToStorage(f, slug)));
         res.json(uploaded);
       } catch {
         res.status(500).json({ error: "Failed to upload files" });
