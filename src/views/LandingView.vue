@@ -329,8 +329,11 @@ onMounted(() => {
   nextTick(() => {
     updateLpIframeScale()
     if (lpScreenRefs.length > 0) {
-      lpResizeObserver = new ResizeObserver(() => updateLpIframeScale())
-      lpResizeObserver.observe(lpScreenRefs[0])
+      const el = lpScreenRefs[0];
+      if (el) {
+        lpResizeObserver = new ResizeObserver(() => updateLpIframeScale())
+        lpResizeObserver.observe(el)
+      }
     }
   })
 })
@@ -351,8 +354,11 @@ function setLpScreenRef(el: HTMLElement | null) {
 
 function updateLpIframeScale() {
   if (lpScreenRefs.length > 0) {
-    const width = lpScreenRefs[0].clientWidth
-    if (width > 0) lpIframeScale.value = width / 375
+    const el = lpScreenRefs[0];
+    if (el) {
+      const width = el.clientWidth
+      if (width > 0) lpIframeScale.value = width / 375
+    }
   }
 }
 

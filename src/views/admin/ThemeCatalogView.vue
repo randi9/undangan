@@ -194,8 +194,11 @@ function setScreenRef(el: HTMLElement | null) {
 
 function updateIframeScale() {
   if (screenRefs.length > 0) {
-    const width = screenRefs[0].clientWidth;
-    if (width > 0) iframeScale.value = width / 375;
+    const el = screenRefs[0];
+    if (el) {
+      const width = el.clientWidth;
+      if (width > 0) iframeScale.value = width / 375;
+    }
   }
 }
 
@@ -255,8 +258,11 @@ onMounted(async () => {
     updateIframeScale();
     // Watch for container resize
     if (screenRefs.length > 0) {
-      resizeObserver = new ResizeObserver(() => updateIframeScale());
-      resizeObserver.observe(screenRefs[0]);
+      const el = screenRefs[0];
+      if (el) {
+        resizeObserver = new ResizeObserver(() => updateIframeScale());
+        resizeObserver.observe(el);
+      }
     }
   });
 });
