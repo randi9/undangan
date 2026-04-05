@@ -10,6 +10,15 @@
       transform-origin: 0% 58%;
     "></div>
 
+    <!-- Title / Initials Wrapper (Tampil di awal, hilang saat zoom) -->
+    <div ref="titleRef" class="absolute top-[15%] inset-x-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+      <div v-if="invitation.groom_name && invitation.bride_name" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 0.5rem; text-shadow: 1px 1px 4px rgba(255,255,255,0.8);">
+        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '3.5rem', color: 'var(--theme-primary)', transform: 'rotate(-5deg)' }">{{ invitation.groom_name.charAt(0).toUpperCase() }}</span>
+        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '2.5rem', color: 'var(--theme-secondary)', fontStyle: 'italic', opacity: 0.8 }">&amp;</span>
+        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '3.5rem', color: 'var(--theme-primary)', transform: 'rotate(5deg)' }">{{ invitation.bride_name.charAt(0).toUpperCase() }}</span>
+      </div>
+    </div>
+
     <!-- Overlay Hitam Pembayangan (untuk background warna terang) -->
     <div ref="overlayRef" class="absolute inset-0 pointer-events-none z-[1]" style="background-color: rgba(0,0,0,0);"></div>
 
@@ -23,7 +32,7 @@
 
         <!-- TAB 1: INFORMASI AKAD NIKAH -->
         <div ref="akadRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 py-6 text-center" style="opacity: 0;">
-          <div class="text-3xl mb-2 drop-shadow-md" style="line-height:1;">💍</div>
+          <div class="text-3xl drop-shadow-md mb-2" style="line-height:1;">💍</div>
           <h3 class="text-2xl md:text-3xl font-bold mb-4 drop-shadow-md" :style="{ fontFamily: themeConfig.fontHeading, color: 'white' }">Akad Nikah</h3>
           <div class="space-y-2 text-sm md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.akad_date">{{ formatDateLong(invitation.akad_date) }}</p>
@@ -40,7 +49,7 @@
 
         <!-- TAB 2: INFORMASI RESEPSI PESTA -->
         <div ref="resepsiRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 py-6 text-center" style="opacity: 0;">
-          <div class="text-3xl mb-2 drop-shadow-md" style="line-height:1;">🎉</div>
+          <div class="text-3xl drop-shadow-md mb-2" style="line-height:1;">🎉</div>
           <h3 class="text-2xl md:text-3xl font-bold mb-4 drop-shadow-md" :style="{ fontFamily: themeConfig.fontHeading, color: 'white' }">Resepsi</h3>
           <div class="space-y-2 text-sm md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.resepsi_date">{{ formatDateLong(invitation.resepsi_date) }}</p>
@@ -90,6 +99,7 @@ const overlayRef = ref<HTMLElement | null>(null);
 const boardRef = ref<HTMLElement | null>(null);
 const akadRef = ref<HTMLElement | null>(null);
 const resepsiRef = ref<HTMLElement | null>(null);
+const titleRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
 let currentStep = 0;
@@ -119,12 +129,13 @@ function unfreezeScroll() {
 // ---------------------------------------------
 function animateToStep(targetStep: number, onDone: () => void) {
   if (targetStep === 1 && currentStep === 0) {
-    // 0 -> 1: Zoom In + tampilkan Akad
+    // 0 -> 1: Teks hilang (0-0.5s), BARU Zoom In (0.5s)
     const tl = gsap.timeline({ onComplete: onDone });
-    tl.to(bgRef.value, { scale: 3.5, duration: 2.0, ease: 'power2.inOut' }, 0);
-    tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)', duration: 2.0, ease: 'power2.inOut' }, 0);
-    tl.to(boardRef.value, { opacity: 1, duration: 0.5, ease: 'power1.out' }, 1.0);
-    tl.to(akadRef.value, { opacity: 1, duration: 0.8 }, 1.8);
+    tl.to(titleRef.value, { opacity: 0, duration: 0.5, ease: 'power2.out' }, 0);
+    tl.to(bgRef.value, { scale: 3.5, duration: 2.0, ease: 'power2.inOut' }, 0.5);
+    tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)', duration: 2.0, ease: 'power2.inOut' }, 0.5);
+    tl.to(boardRef.value, { opacity: 1, duration: 0.5, ease: 'power1.out' }, 1.5);
+    tl.to(akadRef.value, { opacity: 1, duration: 0.8 }, 2.3);
   } 
   else if (targetStep === 2 && currentStep === 1) {
     // 1 -> 2: Akad ke Resepsi
@@ -139,11 +150,12 @@ function animateToStep(targetStep: number, onDone: () => void) {
       .to(akadRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
   }
   else if (targetStep === 0 && currentStep === 1) {
-    // 1 -> 0: Zoom Out kembali
+    // 1 -> 0: Zoom Out dahulu, BARU teks muncul di akhir
     const tl = gsap.timeline({ onComplete: onDone });
-    tl.to([akadRef.value, resepsiRef.value, boardRef.value], { opacity: 0, duration: 0.5 }, 0);
-    tl.to(bgRef.value, { scale: 1, duration: 1.8, ease: 'power2.inOut' }, 0);
-    tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)', duration: 1.8, ease: 'power2.inOut' }, 0);
+    tl.to([akadRef.value, resepsiRef.value, boardRef.value], { opacity: 0, duration: 0.4 }, 0);
+    tl.to(bgRef.value, { scale: 1, duration: 1.8, ease: 'power2.inOut' }, 0.2);
+    tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)', duration: 1.8, ease: 'power2.inOut' }, 0.2);
+    tl.to(titleRef.value, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 1.8);
   }
   else {
     onDone();
@@ -190,6 +202,7 @@ function resetToInitial() {
   isAnimating = false;
   pendingRelease = null;
   gsap.set(bgRef.value, { scale: 1 });
+  gsap.set(titleRef.value, { opacity: 1 });
   gsap.set(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)' });
   gsap.set(boardRef.value, { opacity: 0 });
   gsap.set(akadRef.value, { opacity: 0 });
@@ -202,6 +215,7 @@ function resetToFinal() {
   isAnimating = false;
   pendingRelease = null;
   gsap.set(bgRef.value, { scale: 3.5 });
+  gsap.set(titleRef.value, { opacity: 0 });
   gsap.set(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)' });
   gsap.set(boardRef.value, { opacity: 1 });
   gsap.set(akadRef.value, { opacity: 0 });
