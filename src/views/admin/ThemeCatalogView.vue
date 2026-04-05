@@ -232,7 +232,7 @@ const themes = [
   },
   {
     id: 'floral',
-    name: 'Botanical Floral',
+    name: 'Floral',
     description: 'Desain romantis dengan ornamen daun dan bunga, warna pastel lembut. Sempurna untuk nuansa garden party yang penuh keindahan alam.',
     color: '#4a5d4e',
     bgColor: '#4a5d4e',

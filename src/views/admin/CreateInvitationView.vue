@@ -606,11 +606,12 @@
           </div>
 
           <button
+            v-if="form.banks.length < 2"
             type="button"
             class="btn btn-outline"
             @click="form.banks.push({ bank_name: '', bank_account: '', bank_holder: '' })"
           >
-            + Tambah Bank
+            + Tambah Rekening (Maks. 2)
           </button>
         </div>
 
@@ -733,7 +734,7 @@
               <div style="font-size: 8px; letter-spacing: 3px; color: #e6e0d4; text-transform: uppercase;">The Wedding</div>
               <div style="font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; margin-top: 4px;">Romeo & Juliet</div>
             </div>
-            <div class="edit-theme-label">Botanical Floral</div>
+            <div class="edit-theme-label">Floral</div>
             <div v-if="form.theme === 'floral'" class="edit-theme-active-badge">Aktif</div>
           </div>
           <div class="edit-theme-card" :class="{ active: form.theme === 'minimalist' }" @click="selectTheme('minimalist')">

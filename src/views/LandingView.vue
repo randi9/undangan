@@ -92,7 +92,7 @@
     </section>
 
     <!-- Tema Section -->
-    <section id="tema" class="lp-section" aria-label="Koleksi Tema">
+    <section id="tema" class="lp-section lp-section-alt" aria-label="Koleksi Tema">
       <div class="lp-container">
         <div class="lp-section-header">
           <p class="lp-section-kicker">Koleksi Tema</p>
@@ -165,7 +165,7 @@
     </section>
 
     <!-- Cara Kerja Section -->
-    <section id="cara-kerja" class="lp-section lp-section-alt" aria-label="Cara Kerja">
+    <section id="cara-kerja" class="lp-section" aria-label="Cara Kerja">
       <div class="lp-container">
         <div class="lp-section-header">
           <p class="lp-section-kicker">Mudah &amp; Cepat</p>
@@ -183,7 +183,7 @@
     </section>
 
     <!-- Testimoni Section -->
-    <section id="testimoni" class="lp-section" aria-label="Testimoni Pengguna">
+    <section id="testimoni" class="lp-section lp-section-alt" aria-label="Testimoni Pengguna">
       <div class="lp-container">
         <div class="lp-section-header">
           <p class="lp-section-kicker">Apa Kata Mereka</p>
@@ -206,7 +206,7 @@
     </section>
 
     <!-- Pricing Section -->
-    <section id="harga" class="lp-section lp-section-alt" aria-label="Harga">
+    <section id="harga" class="lp-section" aria-label="Harga">
       <div class="lp-container">
         <div class="lp-section-header">
           <p class="lp-section-kicker">Harga</p>
@@ -428,7 +428,7 @@ const themesData = [
   },
   {
     id: 'floral',
-    name: 'Botanical Floral',
+    name: 'Floral',
     description: 'Desain romantis dengan ornamen daun dan bunga, warna pastel lembut. Sempurna untuk nuansa garden party yang penuh keindahan alam.',
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
