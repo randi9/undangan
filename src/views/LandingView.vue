@@ -104,11 +104,12 @@
             <div class="lp-theme-preview">
               <div class="lp-theme-device-frame">
                 <div class="lp-theme-device-notch"></div>
-                <div class="lp-theme-device-screen">
+                <div class="lp-theme-device-screen" :ref="(el) => setLpScreenRef(el as HTMLElement)">
                   <iframe
                     v-if="theme.sampleUrl"
                     :src="theme.sampleUrl"
                     class="lp-theme-iframe"
+                    :style="{ transform: `scale(${lpIframeScale})` }"
                     loading="lazy"
                     :title="'Preview tema ' + theme.name"
                     sandbox="allow-scripts allow-same-origin"
@@ -264,7 +265,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
 
 const navScrolled = ref(false)
@@ -323,11 +324,37 @@ onMounted(() => {
   featureCardsRef.value.forEach(card => {
     if (card) observer.observe(card)
   })
+
+  // Init iframe scaling
+  nextTick(() => {
+    updateLpIframeScale()
+    if (lpScreenRefs.length > 0) {
+      lpResizeObserver = new ResizeObserver(() => updateLpIframeScale())
+      lpResizeObserver.observe(lpScreenRefs[0])
+    }
+  })
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
+  lpResizeObserver?.disconnect()
 })
+
+// Dynamic iframe scaling for theme previews
+const lpIframeScale = ref(0.5)
+const lpScreenRefs: HTMLElement[] = []
+let lpResizeObserver: ResizeObserver | null = null
+
+function setLpScreenRef(el: HTMLElement | null) {
+  if (el && !lpScreenRefs.includes(el)) lpScreenRefs.push(el)
+}
+
+function updateLpIframeScale() {
+  if (lpScreenRefs.length > 0) {
+    const width = lpScreenRefs[0].clientWidth
+    if (width > 0) lpIframeScale.value = width / 375
+  }
+}
 
 const features = [
   { icon: 'solar:stopwatch-bold-duotone', title: 'Selesai dalam 5 Menit' },
@@ -1015,7 +1042,6 @@ const themesData = [
   border: none;
   pointer-events: none;
   transform-origin: top left;
-  transform: scale(0.58);
   background: #fff;
 }
 

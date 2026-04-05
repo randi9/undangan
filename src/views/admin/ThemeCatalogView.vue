@@ -88,11 +88,12 @@
             <div class="theme-preview-container">
               <div class="theme-preview-device">
                 <div class="theme-preview-notch"></div>
-                <div class="theme-preview-screen">
+                <div class="theme-preview-screen" :ref="(el) => setScreenRef(el as HTMLElement)">
                   <iframe
                     v-if="theme.sampleUrl"
                     :src="theme.sampleUrl"
                     class="theme-preview-iframe"
+                    :style="{ transform: `scale(${iframeScale})` }"
                     loading="lazy"
                     :title="'Preview tema ' + theme.name"
                     sandbox="allow-scripts allow-same-origin"
@@ -107,7 +108,6 @@
               <div class="theme-accent-bar" :style="{ background: theme.bgGradient }"></div>
             </div>
 
-            <!-- Theme Info -->
             <div class="theme-catalog-info">
               <div class="theme-catalog-header">
                 <div class="theme-name-row">
@@ -115,7 +115,6 @@
                   <h3 class="theme-catalog-name">{{ theme.name }}</h3>
                 </div>
               </div>
-              <p class="theme-catalog-desc">{{ theme.description }}</p>
               <div class="theme-catalog-actions">
                 <a
                   v-if="theme.sampleUrl"
@@ -174,7 +173,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, nextTick } from "vue";
 import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
 import { UserButton } from "@clerk/vue";
@@ -183,6 +182,22 @@ import { Icon } from "@iconify/vue";
 const store = useInvitationStore();
 const authStore = useAuthStore();
 const toast = ref<{ type: string; message: string } | null>(null);
+
+// Dynamic iframe scaling
+const iframeScale = ref(0.5);
+const screenRefs: HTMLElement[] = [];
+let resizeObserver: ResizeObserver | null = null;
+
+function setScreenRef(el: HTMLElement | null) {
+  if (el && !screenRefs.includes(el)) screenRefs.push(el);
+}
+
+function updateIframeScale() {
+  if (screenRefs.length > 0) {
+    const width = screenRefs[0].clientWidth;
+    if (width > 0) iframeScale.value = width / 375;
+  }
+}
 
 const invitations = computed(() => store.invitations);
 
@@ -219,7 +234,7 @@ const themes = [
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
     bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
-    sampleUrl: 'ayang-aku.mengundanganda.fun',  // ← Isi dengan link undangan contoh
+    sampleUrl: 'https://ayang-aku.mengundanganda.fun',  // ← Isi dengan link undangan contoh
     icon: 'solar:leaf-bold-duotone',
   },
   {
@@ -236,6 +251,18 @@ const themes = [
 
 onMounted(async () => {
   await store.fetchInvitations();
+  nextTick(() => {
+    updateIframeScale();
+    // Watch for container resize
+    if (screenRefs.length > 0) {
+      resizeObserver = new ResizeObserver(() => updateIframeScale());
+      resizeObserver.observe(screenRefs[0]);
+    }
+  });
+});
+
+onUnmounted(() => {
+  resizeObserver?.disconnect();
 });
 </script>
 
@@ -301,7 +328,7 @@ onMounted(async () => {
 .theme-preview-device {
   position: relative;
   width: 100%;
-  aspect-ratio: 9 / 14;
+  aspect-ratio: 9 / 16;
   background: #1a1a2e;
   border-radius: 24px 24px 0 0;
   overflow: hidden;
@@ -338,34 +365,7 @@ onMounted(async () => {
   border: none;
   pointer-events: none;
   transform-origin: top left;
-  /* Scale is dynamically applied based on container width */
-  transform: scale(0.55);
   background: #fff;
-}
-
-/* Responsive iframe scaling */
-@media (min-width: 1200px) {
-  .theme-preview-iframe {
-    transform: scale(0.6);
-  }
-}
-
-@media (max-width: 1199px) and (min-width: 992px) {
-  .theme-preview-iframe {
-    transform: scale(0.48);
-  }
-}
-
-@media (max-width: 991px) and (min-width: 769px) {
-  .theme-preview-iframe {
-    transform: scale(0.55);
-  }
-}
-
-@media (max-width: 768px) {
-  .theme-preview-iframe {
-    transform: scale(0.7);
-  }
 }
 
 .theme-preview-placeholder {
@@ -499,7 +499,7 @@ onMounted(async () => {
   }
 
   .theme-preview-device {
-    aspect-ratio: 9 / 12;
+    aspect-ratio: 9 / 14;
   }
 
   .theme-catalog-card:hover {
