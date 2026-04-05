@@ -1,5 +1,10 @@
 <template>
   <section v-if="invitation.akad_venue || invitation.resepsi_venue" class="py-24 px-6 max-w-5xl mx-auto text-center">
+    <div v-if="invitation.groom_name && invitation.bride_name" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: -0.25rem;">
+      <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '3rem', color: 'var(--theme-primary)', transform: 'rotate(-5deg)', textShadow: '1px 1px 2px rgba(0,0,0,0.05)' }">{{ invitation.groom_name.charAt(0).toUpperCase() }}</span>
+      <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '2rem', color: 'var(--theme-secondary)', fontStyle: 'italic', opacity: 0.8 }">&amp;</span>
+      <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '3rem', color: 'var(--theme-primary)', transform: 'rotate(5deg)', textShadow: '1px 1px 2px rgba(0,0,0,0.05)' }">{{ invitation.bride_name.charAt(0).toUpperCase() }}</span>
+    </div>
     <h2 class="text-3xl md:text-5xl mb-2 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">Acara</h2>
     <div class="flex items-center justify-center gap-4 mb-16 text-[var(--theme-secondary)]">
       <div class="h-px w-16 bg-[var(--theme-secondary)] opacity-50"></div>

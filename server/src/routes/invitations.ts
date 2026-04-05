@@ -205,6 +205,7 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       bank_account,
       bank_holder,
       music_url,
+      gallery_type,
       photos,
     } = req.body;
 
@@ -255,6 +256,7 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       bank_account: bank_account || "",
       bank_holder: bank_holder || "",
       music_url: music_url || "",
+      gallery_type: gallery_type || "carousel",
     };
 
     const { data: created, error: createError } = await supabase
@@ -361,6 +363,7 @@ router.put("/:id", requireAuth, async (req: Request, res: Response) => {
       "bank_account",
       "bank_holder",
       "music_url",
+      "gallery_type",
     ];
 
     for (const field of updatableFields) {
@@ -372,6 +375,8 @@ router.put("/:id", requireAuth, async (req: Request, res: Response) => {
     if (body.love_story !== undefined) {
       updateData.love_story = parseLoveStory(body.love_story) ?? [];
     }
+
+    console.log("[UPDATE] gallery_type from body:", body.gallery_type, "| in updateData:", updateData.gallery_type);
 
     const { data: updated, error: updateError } = await supabase
       .from("invitations")

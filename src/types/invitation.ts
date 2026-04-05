@@ -53,6 +53,7 @@ export interface Invitation {
   bank_account: string;
   bank_holder: string;
   music_url?: string;
+  gallery_type?: 'carousel' | 'masonry';
   photos?: Photo[];
   rsvps?: Rsvp[];
   photo_count?: number;
@@ -102,5 +103,6 @@ export interface CreateInvitationPayload {
   bank_account?: string;
   bank_holder?: string;
   music_url?: string;
+  gallery_type?: 'carousel' | 'masonry';
   photos?: Photo[];
 }

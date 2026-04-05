@@ -10,6 +10,15 @@
       transform-origin: 0% 58%;
     "></div>
 
+    <!-- Title / Initials Wrapper (Tampil di awal, hilang saat zoom) -->
+    <div ref="titleRef" class="absolute top-[15%] inset-x-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+      <div v-if="invitation.groom_name && invitation.bride_name" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 0.5rem; text-shadow: 1px 1px 4px rgba(255,255,255,0.8);">
+        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '3.5rem', color: 'var(--theme-primary)', transform: 'rotate(-5deg)' }">{{ invitation.groom_name.charAt(0).toUpperCase() }}</span>
+        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '2.5rem', color: 'var(--theme-secondary)', fontStyle: 'italic', opacity: 0.8 }">&amp;</span>
+        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '3.5rem', color: 'var(--theme-primary)', transform: 'rotate(5deg)' }">{{ invitation.bride_name.charAt(0).toUpperCase() }}</span>
+      </div>
+    </div>
+
     <!-- Overlay Hitam Pembayangan (untuk background warna terang) -->
     <div ref="overlayRef" class="absolute inset-0 pointer-events-none z-[1]" style="background-color: rgba(0,0,0,0);"></div>
 
@@ -23,7 +32,7 @@
 
         <!-- TAB 1: INFORMASI AKAD NIKAH -->
         <div ref="akadRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 py-6 text-center" style="opacity: 0;">
-          <div class="text-3xl mb-2 drop-shadow-md" style="line-height:1;">💍</div>
+          <div class="text-3xl drop-shadow-md mb-2" style="line-height:1;">💍</div>
           <h3 class="text-2xl md:text-3xl font-bold mb-4 drop-shadow-md" :style="{ fontFamily: themeConfig.fontHeading, color: 'white' }">Akad Nikah</h3>
           <div class="space-y-2 text-sm md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.akad_date">{{ formatDateLong(invitation.akad_date) }}</p>
@@ -40,7 +49,7 @@
 
         <!-- TAB 2: INFORMASI RESEPSI PESTA -->
         <div ref="resepsiRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 py-6 text-center" style="opacity: 0;">
-          <div class="text-3xl mb-2 drop-shadow-md" style="line-height:1;">🎉</div>
+          <div class="text-3xl drop-shadow-md mb-2" style="line-height:1;">🎉</div>
           <h3 class="text-2xl md:text-3xl font-bold mb-4 drop-shadow-md" :style="{ fontFamily: themeConfig.fontHeading, color: 'white' }">Resepsi</h3>
           <div class="space-y-2 text-sm md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.resepsi_date">{{ formatDateLong(invitation.resepsi_date) }}</p>
@@ -64,11 +73,10 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation } from '@/types/invitation';
 
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 defineProps<{
   invitation: Invitation;
@@ -91,135 +99,220 @@ const overlayRef = ref<HTMLElement | null>(null);
 const boardRef = ref<HTMLElement | null>(null);
 const akadRef = ref<HTMLElement | null>(null);
 const resepsiRef = ref<HTMLElement | null>(null);
+const titleRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
 let currentStep = 0;
 const totalSteps = 3; // 0 (Awal), 1 (Zoom+Akad), 2 (Resepsi)
 let isAnimating = false;
-let trapEnabled = false;
+let isTrapActive = false;
+let pendingRelease: 'down' | 'up' | null = null;
+
+// Debounce untuk mencegah dobel trigger
+let lastStepTime = 0;
+const STEP_COOLDOWN = 300; // ms minimum antar step
+
+function freezeScroll() {
+  if (document.body.style.overflow === 'hidden') return;
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+  document.body.style.paddingRight = `${scrollbarWidth}px`;
+  document.body.style.overflow = 'hidden';
+}
+
+function unfreezeScroll() {
+  document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
+}
 
 // ---------------------------------------------
-// SISTEM INTENT-SCROLL (1 Kedutan = 1 Langkah Full)
+// ANIMASI PER STEP
 // ---------------------------------------------
+function animateToStep(targetStep: number, onDone: () => void) {
+  if (targetStep === 1 && currentStep === 0) {
+    // 0 -> 1: Teks hilang (0-0.5s), BARU Zoom In (0.5s)
+    const tl = gsap.timeline({ onComplete: onDone });
+    tl.to(titleRef.value, { opacity: 0, duration: 0.5, ease: 'power2.out' }, 0);
+    tl.to(bgRef.value, { scale: 3.5, duration: 2.0, ease: 'power2.inOut' }, 0.5);
+    tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)', duration: 2.0, ease: 'power2.inOut' }, 0.5);
+    tl.to(boardRef.value, { opacity: 1, duration: 0.5, ease: 'power1.out' }, 1.5);
+    tl.to(akadRef.value, { opacity: 1, duration: 0.8 }, 2.3);
+  } 
+  else if (targetStep === 2 && currentStep === 1) {
+    // 1 -> 2: Akad ke Resepsi
+    gsap.timeline({ onComplete: onDone })
+      .to(akadRef.value, { opacity: 0, duration: 0.4 })
+      .to(resepsiRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
+  } 
+  else if (targetStep === 1 && currentStep === 2) {
+    // 2 -> 1: Resepsi kembali ke Akad
+    gsap.timeline({ onComplete: onDone })
+      .to(resepsiRef.value, { opacity: 0, duration: 0.4 })
+      .to(akadRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
+  }
+  else if (targetStep === 0 && currentStep === 1) {
+    // 1 -> 0: Zoom Out dahulu, BARU teks muncul di akhir
+    const tl = gsap.timeline({ onComplete: onDone });
+    tl.to([akadRef.value, resepsiRef.value, boardRef.value], { opacity: 0, duration: 0.4 }, 0);
+    tl.to(bgRef.value, { scale: 1, duration: 1.8, ease: 'power2.inOut' }, 0.2);
+    tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)', duration: 1.8, ease: 'power2.inOut' }, 0.2);
+    tl.to(titleRef.value, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 1.8);
+  }
+  else {
+    onDone();
+  }
+}
 
-function processStepAdvance(direction: 1 | -1) {
+function processStep(direction: 1 | -1) {
+  const now = Date.now();
+  if (now - lastStepTime < STEP_COOLDOWN) return;
+  if (isAnimating) return;
+
   const nextStep = currentStep + direction;
 
+  // Keluar ke bawah: sudah di step terakhir, scroll down
+  if (nextStep >= totalSteps) {
+    pendingRelease = 'down';
+    isTrapActive = false;
+    unfreezeScroll();
+    isAnimating = false;
+    return;
+  }
+  // Keluar ke atas: sudah di step 0, scroll up
+  if (nextStep < 0) {
+    pendingRelease = 'up';
+    isTrapActive = false;
+    unfreezeScroll();
+    isAnimating = false;
+    return;
+  }
+
+  lastStepTime = now;
   isAnimating = true;
-  
-  if (nextStep === 1 && currentStep === 0) {
-    // 0 -> 1: Zoom In penuh, di ujung perlambatannya (1.8s) teks langsung muncul
-    gsap.to(bgRef.value, { scale: 3.5, duration: 2.0, ease: 'power2.inOut' });
-    gsap.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)', duration: 2.0, ease: 'power2.inOut' });
-    gsap.to(boardRef.value, { opacity: 1, duration: 0.5, delay: 1.0, ease: 'power1.out' });
-    
-    // Delay 1.8s: Masih dalam sepersekian detik terakhir zoom (menghindari jeda layarkosong yang kaku)
-    gsap.to(akadRef.value, { opacity: 1, duration: 0.8, delay: 1.8, onComplete: () => { isAnimating = false; currentStep = 1; }});
-  } 
-  else if (nextStep === 2 && currentStep === 1) {
-    // 1 -> 2: Akad ke Resepsi
-    gsap.timeline({ onComplete: () => { isAnimating = false; currentStep = 2; }})
-      .to(akadRef.value, { opacity: 0, duration: 0.4 })
-      .to(resepsiRef.value, { opacity: 1, duration: 0.8 }, "+=0.1");
-  } 
-  else if (nextStep === 1 && currentStep === 2) {
-    // 2 -> 1: Resepsi kembali ke Akad (Up Scroll)
-    gsap.timeline({ onComplete: () => { isAnimating = false; currentStep = 1; }})
-      .to(resepsiRef.value, { opacity: 0, duration: 0.4 })
-      .to(akadRef.value, { opacity: 1, duration: 0.8 }, "+=0.1");
-  }
-  else if (nextStep === 0 && currentStep === 1) {
-    // 1 -> 0: Zoom Out ke Awal (Up Scroll)
-    gsap.to([akadRef.value, resepsiRef.value, boardRef.value], { opacity: 0, duration: 0.5 });
-    gsap.to(bgRef.value, { scale: 1, duration: 1.8, ease: 'power2.inOut' });
-    gsap.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)', duration: 1.8, ease: 'power2.inOut', onComplete: () => { isAnimating = false; currentStep = 0; } });
-  }
+  pendingRelease = null;
+
+  animateToStep(nextStep, () => {
+    currentStep = nextStep;
+    isAnimating = false;
+  });
 }
 
-// Handler Khusus PC (Mouse Scroll / Desktop Trackpad)
+// Mengembalikan semua animasi ke state awal (saat masuk ulang dari arah atas)
+function resetToInitial() {
+  currentStep = 0;
+  isAnimating = false;
+  pendingRelease = null;
+  gsap.set(bgRef.value, { scale: 1 });
+  gsap.set(titleRef.value, { opacity: 1 });
+  gsap.set(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)' });
+  gsap.set(boardRef.value, { opacity: 0 });
+  gsap.set(akadRef.value, { opacity: 0 });
+  gsap.set(resepsiRef.value, { opacity: 0 });
+}
+
+// Mengembalikan ke state akhir (saat masuk ulang dari arah bawah)
+function resetToFinal() {
+  currentStep = totalSteps - 1; // step 2
+  isAnimating = false;
+  pendingRelease = null;
+  gsap.set(bgRef.value, { scale: 3.5 });
+  gsap.set(titleRef.value, { opacity: 0 });
+  gsap.set(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)' });
+  gsap.set(boardRef.value, { opacity: 1 });
+  gsap.set(akadRef.value, { opacity: 0 });
+  gsap.set(resepsiRef.value, { opacity: 1 });
+}
+
+// ---- SCROLL HANDLERS ----
+
 function handleWheel(e: WheelEvent) {
-  if (!trapEnabled) return;
+  if (!isTrapActive) return;
   
-  // Kalau mau lanjut keluar dari Section ini (Udah mentok 3 tapi discroll Down, atau di 0 tapi discroll Up)
-  if (e.deltaY > 0 && currentStep >= totalSteps - 1) {
-     trapEnabled = false; 
-     return; // Lepas Trap! Biarkan Web scroll kebawah normal
-  }
-  if (e.deltaY < 0 && currentStep <= 0) {
-     trapEnabled = false;
-     return; // Lepas Trap! Biarkan Web scroll keatas normal
+  const dir: 1 | -1 = e.deltaY > 0 ? 1 : -1;
+
+  // Jika sudah mentok dan arah sesuai, biarkan native scroll
+  if (pendingRelease === 'down' && dir === 1) return;
+  if (pendingRelease === 'up' && dir === -1) return;
+
+  // Kalau user balik arah dari pending release, cancel release
+  if (pendingRelease && ((pendingRelease === 'down' && dir === -1) || (pendingRelease === 'up' && dir === 1))) {
+    pendingRelease = null;
   }
 
-  // Masih didalam urutan? TAHAN LAJU SCROLL!
+  // Wajib preventDefault saat trap aktif agar tidak ada scroll native/geser
   e.preventDefault();
-
-  if (!isAnimating) {
-    processStepAdvance(e.deltaY > 0 ? 1 : -1);
-  }
+  e.stopPropagation();
+  processStep(dir);
 }
 
-// Handler Khusus HP (Mobile Swipe)
-let startY = 0;
+let touchStartY = 0;
+let touchHandled = false;
+
 function handleTouchStart(e: TouchEvent) {
-  startY = e.touches?.[0]?.clientY || 0;
+  touchStartY = e.touches?.[0]?.clientY || 0;
+  touchHandled = false;
 }
 
 function handleTouchMove(e: TouchEvent) {
-  if (!trapEnabled || !e.touches?.length) return;
-  
-  const currentY = e.touches[0]?.clientY ?? 0;
-  const deltaY = startY - currentY; // Positif jika usap Naik (scroll turun)
-  
-  // Lepaskan native swipe bila sudah keluar batas Slide Internal
-  if (deltaY > 0 && currentStep >= totalSteps - 1) { trapEnabled = false; return; }
-  if (deltaY < 0 && currentStep <= 0) { trapEnabled = false; return; }
+  if (!isTrapActive || !e.touches?.length) return;
 
-  // Diwajibkan usapan cukup niat (>40px), bukan sekadar goyangan tak sengaja
-  if (Math.abs(deltaY) > 40) {
-    e.preventDefault(); // Lumpuhkan dorongan layar alami
-    if (!isAnimating) {
-      processStepAdvance(deltaY > 0 ? 1 : -1);
-      startY = currentY; // Reset jarak agar tdk terspam dobel
-    }
-  } else {
-    // Kalau gesekan pendek / gemetar, layar TIDAK BOLEH NGIBRIT bergerak juga
-    e.preventDefault(); 
+  const currentY = e.touches[0]?.clientY ?? 0;
+  const deltaY = touchStartY - currentY;
+  const dir: 1 | -1 = deltaY > 0 ? 1 : -1;
+
+  // Jika pending release searah, biarkan native
+  if (pendingRelease === 'down' && dir === 1) return;
+  if (pendingRelease === 'up' && dir === -1) return;
+
+  // Cancel release jika arah balik
+  if (pendingRelease && ((pendingRelease === 'down' && dir === -1) || (pendingRelease === 'up' && dir === 1))) {
+    pendingRelease = null;
+  }
+
+  e.preventDefault();
+
+  if (Math.abs(deltaY) > 40 && !touchHandled) {
+    touchHandled = true;
+    processStep(dir);
+    touchStartY = currentY;
   }
 }
 
 onMounted(() => {
   if (!sectionRef.value) return;
 
-  // Binding Trap System Tepat Sasaran
   window.addEventListener('wheel', handleWheel, { passive: false });
   window.addEventListener('touchstart', handleTouchStart, { passive: true });
   window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
-  // Gunakan ScrollTrigger HANYA untuk "Mendeteksi Garis Radar" & memicu Mode Jebakan
   ctx = gsap.context(() => {
     ScrollTrigger.create({
       trigger: sectionRef.value,
       start: 'top top',
-      // Murni saat bagian atas viewport mengenai garis awal => Trap Layar!
-      onEnter: (self) => { 
-        if (currentStep < totalSteps - 1) {
-          trapEnabled = true;
-          // Mengarahkan langsung ke elemennya (sectionRef.value) agar GSAP mengakalkulasi ulang posisi akuratnya langsung di frame tersebut.
-          gsap.to(window, { duration: 0.6, scrollTo: { y: sectionRef.value ?? undefined, autoKill: false }, ease: 'power2.out' }); 
-        } 
+      // Hanya detect transisi saat boundary viewport dilewati, tidak menggunakan mode pin GSAP
+      onEnter: () => {
+        if (!isTrapActive && pendingRelease !== 'down') {
+          isTrapActive = true;
+          pendingRelease = null;
+          freezeScroll();
+          window.scrollTo({ top: sectionRef.value?.offsetTop ?? 0 }); // Instan framing presisi
+          resetToInitial();
+        }
       },
-      // Saat Scroll UP kembali dari bagian bawah menembus border layar atas
-      onLeaveBack: () => { 
-        if (currentStep > 0) {
-          trapEnabled = true;
-          gsap.to(window, { duration: 0.6, scrollTo: { y: sectionRef.value ?? undefined, autoKill: false }, ease: 'power2.out' });
-        } 
+      onLeaveBack: () => {
+        if (!isTrapActive && pendingRelease !== 'up') {
+          isTrapActive = true;
+          pendingRelease = null;
+          freezeScroll();
+          window.scrollTo({ top: sectionRef.value?.offsetTop ?? 0 });
+          resetToFinal();
+        }
       }
     });
-  }, sectionRef.value);
+  });
 });
 
 onUnmounted(() => {
+  unfreezeScroll();
   ctx?.revert();
   window.removeEventListener('wheel', handleWheel);
   window.removeEventListener('touchstart', handleTouchStart);
