@@ -150,13 +150,13 @@
                   Segera Hadir
                 </button>
 
-                <router-link
-                  :to="`/create?theme=${theme.id}`"
+                <a
+                  :href="`https://www.mengundanganda.fun/create?theme=${theme.id}`"
                   class="btn btn-primary btn-sm lp-theme-btn lp-theme-btn-use"
                 >
                   <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">brush</span>
                   Pakai Tema Ini
-                </router-link>
+                </a>
               </div>
             </div>
           </div>
