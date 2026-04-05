@@ -24,43 +24,49 @@
 
     <!-- Kontainer Konten Dalam Papan Papan -->
     <div ref="boardRef" class="absolute inset-0 flex items-center justify-center z-[2]" style="opacity: 0;">
-      <div class="relative flex items-center justify-center transform translate-y-[-5%]" style="width: clamp(280px, 70vw, 420px);">
+      <div class="relative flex items-center justify-center transform translate-y-[-1%]" style="width: clamp(280px, 70vw, 420px);">
         
         <!-- Papan Kosong Tak Kasatmata untuk menjaga dimensi pembungkus papan -->
         <img src="https://media.mengundanganda.fun/tema%20floral/acara%20section/7de1e0a0-702e-4cbd-845e-a7b44faa28db.webp" 
              class="w-full pointer-events-none opacity-0" />
 
         <!-- TAB 1: INFORMASI AKAD NIKAH -->
-        <div ref="akadRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 py-6 text-center" style="opacity: 0;">
-          <div class="text-3xl drop-shadow-md mb-2" style="line-height:1;">💍</div>
-          <h3 class="text-2xl md:text-3xl font-bold mb-4 drop-shadow-md" :style="{ fontFamily: themeConfig.fontHeading, color: 'white' }">Akad Nikah</h3>
-          <div class="space-y-2 text-sm md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
+        <div ref="akadRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 pb-8 pt-2 text-center" style="opacity: 0;">
+          <h3 class="text-3xl md:text-3xl font-medium drop-shadow-md tracking-[0.15em]" :style="{ fontFamily: themeConfig.fontHeading, color: 'white', marginTop: '-10px', marginBottom: '4px' }">Akad Nikah</h3>
+          <img src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_f229438c-f0ae-4381-9521-b52bd72d0308.webp" style="width: clamp(144px, 20vw, 176px); opacity: 0.9; margin-top: -70px; margin-bottom: -45px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); pointer-events: none;" alt="Decoration" />
+          <div class="space-y-1 text-xs md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.akad_date">{{ formatDateLong(invitation.akad_date) }}</p>
             <p v-if="invitation.akad_time">{{ invitation.akad_time }}</p>
-            <p v-if="invitation.akad_venue" class="font-bold mt-2 text-lg">{{ invitation.akad_venue }}</p>
-            <p v-if="invitation.akad_address" class="text-xs md:text-sm font-light opacity-90">{{ invitation.akad_address }}</p>
+            <p v-if="invitation.akad_venue" class="font-semibold text-md" style="margin-top:6px;">{{ invitation.akad_venue }}</p>
+            <p v-if="invitation.akad_address" class="text-xs italic md:text-sm font-light opacity-90" style="margin-top:2px; margin-bottom:0px; line-height: 1.2;">{{ invitation.akad_address }}</p>
           </div>
           <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" 
-             class="inline-flex shadow-sm items-center gap-2 mt-5 px-6 py-2.5 rounded-full text-xs font-semibold text-white hover:bg-white hover:text-black transition-colors"
-             style="border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2);">
-            📍 Buka Maps
+             style="display: inline-block; margin-top: 12px; padding: 8px 24px; border-radius: 9999px; font-size: 13px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
+             onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
+             onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
+             onmousedown="this.style.transform='scale(0.95)';"
+             onmouseup="this.style.transform='scale(1)';">
+            Buka Maps
           </a>
         </div>
 
         <!-- TAB 2: INFORMASI RESEPSI PESTA -->
-        <div ref="resepsiRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 py-6 text-center" style="opacity: 0;">
-          <div class="text-3xl drop-shadow-md mb-2" style="line-height:1;">🎉</div>
-          <h3 class="text-2xl md:text-3xl font-bold mb-4 drop-shadow-md" :style="{ fontFamily: themeConfig.fontHeading, color: 'white' }">Resepsi</h3>
-          <div class="space-y-2 text-sm md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
+        <div ref="resepsiRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 pb-8 pt-2 text-center translate-y-[-2%]" style="opacity: 0;">
+          <h3 class="text-3xl md:text-3xl font-medium drop-shadow-md tracking-[0.15em]" :style="{ fontFamily: themeConfig.fontHeading, color: 'white', marginTop: '-10px', marginBottom: '4px' }">Resepsi</h3>
+          <img src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_f229438c-f0ae-4381-9521-b52bd72d0308.webp" style="width: clamp(144px, 20vw, 176px); opacity: 0.9; margin-top: -70px; margin-bottom: -45px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); pointer-events: none;" alt="Decoration" />
+          <div class="space-y-1 text-xs md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.resepsi_date">{{ formatDateLong(invitation.resepsi_date) }}</p>
             <p v-if="invitation.resepsi_time">{{ invitation.resepsi_time }}</p>
-            <p v-if="invitation.resepsi_venue" class="font-bold mt-2 text-lg">{{ invitation.resepsi_venue }}</p>
-            <p v-if="invitation.resepsi_address" class="text-xs md:text-sm font-light opacity-90">{{ invitation.resepsi_address }}</p>
+            <p v-if="invitation.resepsi_venue" class="font-semibold text-md" style="margin-top:6px;">{{ invitation.resepsi_venue }}</p>
+            <p v-if="invitation.resepsi_address" class="text-xs italic md:text-sm font-light opacity-90" style="margin-top:2px; margin-bottom:0px; line-height: 1.2;">{{ invitation.resepsi_address }}</p>
           </div>
           <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank"
-             class="inline-flex shadow-sm items-center gap-2 mt-5 px-6 py-2.5 rounded-full text-xs font-semibold text-white hover:bg-white hover:text-black transition-colors"
-             style="border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2);">
-            📍 Buka Maps
+             style="display: inline-block; margin-top: 12px; padding: 8px 24px; border-radius: 9999px; font-size: 13px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
+             onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
+             onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
+             onmousedown="this.style.transform='scale(0.95)';"
+             onmouseup="this.style.transform='scale(1)';">
+            Buka Maps
           </a>
         </div>
 

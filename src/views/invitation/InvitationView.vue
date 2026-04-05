@@ -461,6 +461,13 @@ onBeforeUnmount(() => {
         </div>
       </component>
 
+      <!-- QUOTE (Dynamic per theme) -->
+      <component :is="activeQuote"
+        v-if="invitation.quote"
+        :quote="invitation.quote"
+        :theme-config="activeTheme"
+      />
+
       <!-- COUPLE PROFILES (Dynamic per theme) -->
       <component :is="activeCouple"
         :invitation="invitation"
@@ -508,13 +515,6 @@ onBeforeUnmount(() => {
       <!-- GIFT (Dynamic per theme) -->
       <component :is="activeGift"
         :invitation="invitation"
-        :theme-config="activeTheme"
-      />
-
-      <!-- QUOTE (Dynamic per theme) -->
-      <component :is="activeQuote"
-        v-if="invitation.quote"
-        :quote="invitation.quote"
         :theme-config="activeTheme"
       />
 

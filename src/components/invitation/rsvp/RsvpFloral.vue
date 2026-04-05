@@ -1,8 +1,52 @@
 <template>
-  <section style="position: relative; padding: 48px 24px; max-width: 1024px; margin: 0 auto; text-align: center; z-index: 10;">
+  <section style="position: relative; max-width: 100%; margin: 0 auto; text-align: center; z-index: 10; overflow: hidden; margin-bottom: 20px;">
+    
+    <!-- OVERLAY TRANSISI MIST / KABUT (Untuk melembutkan perpindahan warna Gallery ke RSVP) -->
+    <!-- Overlay ini diletakkan di atas layer bunga agar batas keras terpotongnya bunga tertutup kabut -->
+    <div ref="mistOverlay" style="position: absolute; top: -1px; left: 0; right: 0; height: 180px; background: linear-gradient(to bottom, var(--theme-bg) 0%, rgba(253, 251, 247, 0.9) 30%, transparent 100%); z-index: 30; pointer-events: none;"></div>
+    
+    <!-- BUNGKUSAN KONTEN UTAMA YANG DIANIMASIKAN -->
+    <div ref="rsvpWrapper" style="position: relative; padding: 48px 24px 100px; max-width: 1024px; margin: 0 auto; z-index: 10;">
+    
+    <!-- ============================================== -->
+    <!-- DEKORASI BUNGA BAGIAN ATAS (TOP DECORATIONS)   -->
+    <!-- ============================================== -->
+    <!-- PANDUAN MENGOTAK-NGATIK POSISI: 
+         - Ubah nilai "top: ..." untuk menaikkan/menurunkan posisi keseluruhan set bunga
+         - Ubah nilai "left: ..." atau "right: ..." pada masing-masing pembungkus untuk menggeser ke samping
+         - Ubah nilai "width: clamp(...)" pada gambar "img" untuk memperbesar/memperkecil skalanya
+    -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; width: 100%; height: 0; pointer-events: none;">
+        
+        <!-- KIRI -->
+        <div style="position: absolute; left: -10px; top: -50px; z-index: 5;">
+          <div ref="decorTopLeft">
+            <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" 
+                 style="width: clamp(180px, 28vw, 280px); transform: scaleX(-1); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" alt="Decor Left" />
+          </div>
+        </div>
+        
+        <!-- TENGAH -->
+        <div style="position: absolute; left: 50%; transform: translateX(-50%); top: -30px; z-index: 6;">
+          <div ref="decorTopCenter">
+            <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_01297b2b-dbbe-4b77-aedd-58249a231062.webp" 
+                 style="width: clamp(100px, 35vw, 300px); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" alt="Decor Center" />
+          </div>
+        </div>
+        
+        <!-- KANAN -->
+        <div style="position: absolute; right: -10px; top: -50px; z-index: 5;">
+          <div ref="decorTopRight">
+            <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" 
+                 style="width: clamp(180px, 28vw, 280px); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" alt="Decor Right" />
+          </div>
+        </div>
+
+    </div>
+    <!-- ============================================== -->
     <!-- Header with Floral Ornament -->
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 64px; position: relative;">
-      <h2 style="font-size: clamp(36px, 6vw, 60px); margin-bottom: 16px; color: var(--theme-primary); position: relative; z-index: 10; margin-top: 40px; letter-spacing: 0.025em; text-shadow: 0 1px 2px rgba(0,0,0,0.05);" 
+      <h2 style="font-size: clamp(36px, 6vw, 60px); font-weight: bold; margin-bottom: 16px; color: var(--theme-primary); position: relative; z-index: 10; margin-top: 70px; letter-spacing: 0.025em; text-shadow: 0 1px 2px rgba(0,0,0,0.05);" 
           :style="{ fontFamily: themeConfig.fontHeading }">
         RSVP
       </h2>
@@ -35,15 +79,13 @@
             <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #374151;">Apakah Anda akan hadir?</label>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
               <button type="button" @click="form.attendance = 'hadir'" 
-                      :style="form.attendance === 'hadir' ? 'border-color: var(--theme-primary); background-color: var(--theme-primary); color: white; transform: scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.1);' : 'border-color: rgba(0,0,0,0.1); color: #4b5563;'"
-                      style="flex: 1; padding: 14px 16px; border-radius: 16px; border-width: 1px; border-style: solid; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; min-width: 120px; background-color: transparent;">
-                <span v-if="form.attendance === 'hadir'">✓</span>
+                      :style="form.attendance === 'hadir' ? 'border-color: var(--theme-primary); background-color: var(--theme-primary); color: white; transform: scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.1);' : 'border-color: rgba(0,0,0,0.1); background-color: transparent; color: #4b5563; transform: scale(1);'"
+                      style="flex: 1; padding: 14px 16px; border-radius: 16px; border-width: 1px; border-style: solid; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; min-width: 120px;">
                 Hadir
               </button>
               <button type="button" @click="form.attendance = 'tidak_hadir'" 
-                      :style="form.attendance === 'tidak_hadir' ? 'border-color: #f87171; background-color: #fef2f2; color: #dc2626; transform: scale(1.02); box-shadow: 0 2px 8px rgba(0,0,0,0.05);' : 'border-color: rgba(0,0,0,0.1); color: #4b5563;'"
-                      style="flex: 1; padding: 14px 16px; border-radius: 16px; border-width: 1px; border-style: solid; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; min-width: 120px; background-color: transparent;">
-                <span v-if="form.attendance === 'tidak_hadir'">✕</span>
+                      :style="form.attendance === 'tidak_hadir' ? 'border-color: #f87171; background-color: #fef2f2; color: #dc2626; transform: scale(1.02); box-shadow: 0 2px 8px rgba(0,0,0,0.05);' : 'border-color: rgba(0,0,0,0.1); background-color: transparent; color: #4b5563; transform: scale(1);'"
+                      style="flex: 1; padding: 14px 16px; border-radius: 16px; border-width: 1px; border-style: solid; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; min-width: 120px;">
                 Tidak Hadir
               </button>
             </div>
@@ -53,10 +95,13 @@
                :style="form.attendance === 'hadir' ? 'transform: scaleY(1); opacity: 1; height: auto;' : 'transform: scaleY(0); opacity: 0; height: 0; overflow: hidden;'"
                style="transform-origin: top; transition: all 0.3s ease-out; margin: 0; padding: 0;">
             <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #374151;">Jumlah Tamu</label>
-            <div style="position: relative;">
-              <input v-model.number="form.guest_count" type="number" min="1" max="10" placeholder="1" class="custom-input" 
-                     style="width: 100%; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.7); outline: none; transition: all 0.3s; font-size: 15px; box-sizing: border-box; -moz-appearance: textfield; appearance: textfield;" />
-              <div style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 14px; font-weight: 500;">Orang</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; border-radius: 16px; border: 1px solid rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.7); overflow: hidden; transition: all 0.3s;" onfocusin="this.style.borderColor='var(--theme-primary)'; this.style.boxShadow='0 0 0 4px rgba(33, 85, 46, 0.1)';" onfocusout="this.style.borderColor='rgba(0,0,0,0.1)'; this.style.boxShadow='none';">
+              <button type="button" @click="form.guest_count = Math.max(1, form.guest_count - 1)" style="width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #4b5563; background: transparent; border: none; cursor: pointer; transition: all 0.2s;" onmouseenter="this.style.backgroundColor='rgba(0,0,0,0.05)'" onmouseleave="this.style.backgroundColor='transparent'">−</button>
+              <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
+                <input v-model.number="form.guest_count" type="number" min="1" max="10" class="no-spin" style="width: 40px; text-align: center; border: none; background: transparent; font-size: 16px; font-weight: 600; outline: none; -moz-appearance: textfield; appearance: textfield;" />
+                <span style="color: #6b7280; font-size: 14px; font-weight: 500; margin-left: 4px;">Orang</span>
+              </div>
+              <button type="button" @click="form.guest_count = Math.min(10, form.guest_count + 1)" style="width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 20px; color: #4b5563; background: transparent; border: none; cursor: pointer; transition: all 0.2s;" onmouseenter="this.style.backgroundColor='rgba(0,0,0,0.05)'" onmouseleave="this.style.backgroundColor='transparent'">+</button>
             </div>
           </div>
           
@@ -126,13 +171,52 @@
         </div>
       </div>
     </div>
+  </div>
+
+    <!-- ============================================== -->
+    <!-- DEKORASI BUNGA BAGIAN BAWAH (BOTTOM DECORATIONS) -->
+    <!-- ============================================== -->
+    <!-- Posisi bottom: 0 agar menempel tepat di garis bawah area RSVP -->
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; width: 100%; height: 0; pointer-events: none; ">
+        
+        <!-- KIRI BAWAH (di-flip terhadap sumbu X -> ke atas) -->
+        <div style="position: absolute; left: 10px; bottom: -75px; z-index: 5;">
+          <div>
+            <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" 
+                 style="width: clamp(180px, 28vw, 280px); transform: scaleX(-1) scaleY(-1); filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" alt="Decor Bottom Left" />
+          </div>
+        </div>
+        
+        <!-- TENGAH BAWAH (di-flip terhadap sumbu X -> ke atas) -->
+        <div style="position: absolute; left: 50%; transform: translateX(-50%); bottom: -20px; z-index: 6;">
+          <div>
+            <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_01297b2b-dbbe-4b77-aedd-58249a231062.webp" 
+                 style="width: clamp(100px, 20vw, 150px); transform: scaleY(-1); filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" alt="Decor Bottom Center" />
+          </div>
+        </div>
+        
+        <!-- KANAN BAWAH (di-flip terhadap sumbu X -> ke atas) -->
+        <div style="position: absolute; right: 10px; bottom: -75px; z-index: 5;">
+          <div>
+            <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" 
+                 style="width: clamp(180px, 28vw, 280px); transform: scaleY(-1); filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" alt="Decor Bottom Right" />
+          </div>
+        </div>
+
+    </div>
+    <!-- ============================================== -->
+
   </section>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, ref, onMounted, onUnmounted } from 'vue';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import type { Rsvp } from '@/types/invitation';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const props = defineProps<{
   rsvpMessages: Rsvp[];
@@ -151,6 +235,47 @@ const form = reactive({
   message: '',
 });
 
+const rsvpWrapper = ref<HTMLElement | null>(null);
+const mistOverlay = ref<HTMLElement | null>(null);
+
+let ctx: gsap.Context | null = null;
+
+onMounted(() => {
+  if (!rsvpWrapper.value) return;
+
+  ctx = gsap.context(() => {
+    // 1. Animasi Kabut Pemisah (Mist) Perlahan Menghilang Menampakkan Bunga
+    if (mistOverlay.value) {
+      gsap.to(mistOverlay.value, {
+        opacity: 0, // Kabutnya di-fade out perlahan saat scroll
+        scrollTrigger: {
+          trigger: mistOverlay.value,
+          start: 'top 60%',
+          end: 'top 20%',
+          scrub: 0.5,
+        }
+      });
+    }
+
+    // 2. Animasi RSVP Form dan Konten (Masuk Halus dari Bawah)
+    gsap.from(rsvpWrapper.value, {
+      y: 80,
+      opacity: 0,
+      duration: 1.5,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: rsvpWrapper.value,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
+    });
+  });
+});
+
+onUnmounted(() => {
+  ctx?.revert();
+});
+
 function onSubmit() {
   emit('submitRsvp', { ...form });
 }
@@ -161,6 +286,12 @@ function onSubmit() {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+input[type="number"].no-spin::-webkit-outer-spin-button, 
+input[type="number"].no-spin::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .custom-input:focus {

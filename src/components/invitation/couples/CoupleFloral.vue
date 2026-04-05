@@ -61,33 +61,33 @@
       </svg>
     </div>
 
-    <!-- INNER CONTENT - Placed naturally above the absolute z-[0] background, keeping flowers safe from the CSS mask! -->
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 10;">
-      <!-- Ornament Atas (Inline CSS Murni) -->
-      <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 280px; opacity: 0.9; margin-top: -120px; margin-bottom: -125px;" alt="Ornament Top" />
-      
-      <!-- Judul -->
-      <!-- Menggunakan clamp() untuk responsive sizing dari 50px - 60px -->
-      <h2 style="font-size: clamp(50px, 8vw, 60px); font-weight: 600; color: var(--theme-primary); position: relative; z-index: 10; margin: 0; line-height: 1;" :style="{ fontFamily: themeConfig.fontHeading }">Mempelai</h2>
-      
-      <!-- Ornament Bawah (Flipped) -->
-      <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 280px; opacity: 0.9; margin-top: -125px; margin-bottom: -100px ;transform: scaleY(-1);" alt="Ornament Bottom" />
-    </div>
+
     
     <div class="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-8">
       <!-- Groom -->
-      <div class="flex-1 flex flex-col items-center groom-section">
+      <div class="flex-1 flex flex-col items-center groom-section pt-4 md:pt-0">
+        <!-- Groom Title + Ornaments -->
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 10; margin-bottom: -10px;">
+          <!-- Ornament Atas -->
+          <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -80px;" alt="Ornament Top" />
+          
+          <h2 style="font-size: clamp(34px, 6vw, 44px); font-weight: 600; color: var(--theme-primary); position: relative; z-index: 10; margin: 0; line-height: 1;" :style="{ fontFamily: themeConfig.fontHeading }">The Groom</h2>
+          
+          <!-- Ornament Bawah -->
+          <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -60px ;transform: scaleY(-1);" alt="Ornament Bottom" />
+        </div>
+
         <!-- Wrapper bingkai + daun -->
-        <div class="relative" style="width: 280px; height: 280px; margin-top: 40px; margin-bottom: 60px;">
+        <div class="relative" style="width: 280px; height: 280px; margin-top: 10px; margin-bottom: 60px;">
           <div class="absolute inset-0 groom-photo">
             <!-- Foto (Layer paling bawah) -->
-            <div class="absolute inset-0 rounded-full overflow-hidden border-[6px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e]">
+            <div class="absolute inset-0 rounded-full overflow-hidden border-[3px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e]">
               <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="w-full h-full object-cover" alt="Groom" />
               <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center text-4xl text-gray-400">👤</div>
             </div>
 
             <!-- Cincin CSS -->
-            <div class="absolute inset-0 rounded-full border-[3px] border-[#21552e] opacity-60"></div>
+            <div class="absolute inset-0 rounded-full border-[1px] border-[#21552e] opacity-60"></div>
           </div>
           
           <!-- Daun-daun Groom -->
@@ -130,22 +130,30 @@
         </p>
       </div>
       
-      <!-- Divider -->
-      <div class="relative z-10 text-5xl md:text-7xl text-[var(--theme-primary)] opacity-100" :style="{ fontFamily: themeConfig.fontHeading }">&amp;</div>
-      
       <!-- Bride -->
-      <div class="flex-1 flex flex-col items-center bride-section">
+      <div class="flex-1 flex flex-col items-center bride-section mt-12 md:mt-0">
+        <!-- Bride Title + Ornaments -->
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 10; margin-bottom: -10px;">
+          <!-- Ornament Atas -->
+          <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -80px;" alt="Ornament Top" />
+          
+          <h2 style="font-size: clamp(34px, 6vw, 44px); font-weight: 600; color: var(--theme-primary); position: relative; z-index: 10; margin: 0; line-height: 1;" :style="{ fontFamily: themeConfig.fontHeading }">The Bride</h2>
+          
+          <!-- Ornament Bawah -->
+          <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -60px ;transform: scaleY(-1);" alt="Ornament Bottom" />
+        </div>
+
         <!-- Wrapper bingkai + daun -->
-        <div class="relative" style="width: 280px; height: 280px; margin-bottom: 60px;">
+        <div class="relative" style="width: 280px; height: 280px; margin-top: 10px; margin-bottom: 60px;">
           <div class="absolute inset-0 bride-photo">
             <!-- Foto (Layer paling bawah) -->
-            <div class="absolute inset-0 rounded-full overflow-hidden border-[6px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e]">
+            <div class="absolute inset-0 rounded-full overflow-hidden border-[3px] shadow-[0_10px_25px_rgba(0,0,0,0.15)] border-[#21552e]">
               <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="w-full h-full object-cover" alt="Bride" />
               <div v-else class="w-full h-full bg-gray-200 flex items-center justify-center text-4xl text-gray-400">👤</div>
             </div>
 
             <!-- Cincin CSS -->
-            <div class="absolute inset-0 rounded-full border-[3px] border-[#21552e] opacity-60"></div>
+            <div class="absolute inset-0 rounded-full border-[1px] border-[#21552e] opacity-60"></div>
           </div>
           
           <!-- Daun-daun Bride -->

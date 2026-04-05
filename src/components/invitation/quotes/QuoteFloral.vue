@@ -31,11 +31,11 @@
       <div ref="butterflyWrap" class="absolute top-[8%] md:top-[10%] -left-[30px] md:-left-[70px] lg:-left-[90px] z-[30] w-12 md:w-16 h-12 md:h-16 pointer-events-none opacity-0 drop-shadow-[0_5px_5px_rgba(0,0,0,0.15)]" style="perspective: 800px;">
         <!-- Wadah Sayap Kanan (Box utuh) -->
         <div class="absolute inset-0" style="transform-style: preserve-3d;">
-          <img ref="wingR" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/4ae3ad21-d1a3-4894-9ca3-9168237469ba.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
+          <img ref="wingR" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_b9f5f24b-f710-4ac7-b1e0-699161385ad4.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
         </div>
         <!-- Wadah Sayap Kiri (Box utuh yang sama 100% hanya di-mirror, anti-menghilang dari awal!) -->
         <div class="absolute inset-0" style="transform: scaleX(-1); transform-style: preserve-3d;">
-          <img ref="wingL" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/4ae3ad21-d1a3-4894-9ca3-9168237469ba.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
+          <img ref="wingL" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_b9f5f24b-f710-4ac7-b1e0-699161385ad4.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
         </div>
       </div>
       
