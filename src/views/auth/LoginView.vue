@@ -10,13 +10,20 @@
     </header>
 
     <main class="login-main">
-      <SignIn routing="path" path="/login" signUpUrl="/sign-up" fallbackRedirectUrl="/" />
+      <SignIn routing="path" path="/login" signUpUrl="/sign-up" :fallbackRedirectUrl="redirectUrl" :forceRedirectUrl="redirectUrl" />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { SignIn } from '@clerk/vue'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+
+const route = useRoute()
+const redirectUrl = computed(() => {
+  return typeof route.query.redirect_url === 'string' && route.query.redirect_url ? route.query.redirect_url : '/'
+})
 </script>
 
 <style scoped>

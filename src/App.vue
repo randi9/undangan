@@ -37,7 +37,7 @@ watchEffect(() => {
     // User benar-benar signed out (bukan sedang loading)
     authStore.user = null
     if (route.meta.requiresAuth) {
-      router.push('/login')
+      router.push({ path: '/login', query: { redirect_url: route.fullPath } })
     }
   }
 })
