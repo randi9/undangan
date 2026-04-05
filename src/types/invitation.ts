@@ -4,6 +4,12 @@ export interface LoveStoryItem {
   description: string;
 }
 
+export interface BankAccount {
+  bank_name: string;
+  bank_account: string;
+  bank_holder: string;
+}
+
 export interface Photo {
   id?: string;
   invitation_id?: string;
@@ -52,6 +58,7 @@ export interface Invitation {
   bank_name: string;
   bank_account: string;
   bank_holder: string;
+  banks?: BankAccount[];
   music_url?: string;
   gallery_type?: 'carousel' | 'masonry';
   photos?: Photo[];
@@ -102,6 +109,7 @@ export interface CreateInvitationPayload {
   bank_name?: string;
   bank_account?: string;
   bank_holder?: string;
+  banks?: BankAccount[];
   music_url?: string;
   gallery_type?: 'carousel' | 'masonry';
   photos?: Photo[];

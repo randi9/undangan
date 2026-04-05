@@ -18,6 +18,9 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Photo } from '@/types/invitation';
 import { resolveAssetUrl } from '@/utils/url';
 
@@ -29,6 +32,46 @@ defineProps<{
 defineEmits<{
   (e: 'openLightbox', index: number): void;
 }>();
+
+let triggers: ScrollTrigger[] = [];
+
+onMounted(() => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Tunggu sedikit agar DOM & Vue selesai me-render kolom CSS
+  setTimeout(() => {
+    const items = document.querySelectorAll('.masonry-item');
+    
+    items.forEach((item) => {
+      // Set initial scale to 0 agar gambar tidak muncul dulu sebesar ukuran aslinya
+      // sebelum scrolltrigger berjalan
+      gsap.set(item, { scale: 0 });
+
+      const st = ScrollTrigger.create({
+        trigger: item,
+        // Animasi akan jalan ketika bagian atas-tengah item (turun 66%) terkena bagian bawah layar
+        start: 'top+=66% bottom',
+        once: true, // Animasi hanya berjalan SATU KALI saat pertama kali dibuka
+        onEnter: () => {
+          // Efek murni scale up tanpa fade
+          gsap.fromTo(item, 
+            { scale: 0 },
+            { scale: 1, duration: 0.5, ease: 'back.out(1.5)', overwrite: 'auto' }
+          );
+        }
+      });
+      
+      triggers.push(st);
+    });
+    
+    // Refresh scroll triggers untuk memastikan kalkulasi dimensi masonry presisi
+    ScrollTrigger.refresh();
+  }, 100);
+});
+
+onUnmounted(() => {
+  triggers.forEach(t => t.kill());
+});
 </script>
 
 <style scoped>

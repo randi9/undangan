@@ -507,32 +507,64 @@
             </div>
           </div>
 
-          <!-- Quote & Extras -->
+          <!-- Quote -->
           <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:quote" style="color: var(--admin-primary);" /> Quote & Tambahan</h3>
-            <p class="form-section-subtitle">Kutipan dan informasi tambahan</p>
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <label class="form-label">Kutipan / Ayat</label>
-                <textarea
-                  v-model="form.quote"
-                  class="form-input"
-                  rows="3"
-                ></textarea>
+            <h3 class="form-section-title"><Icon icon="lucide:quote" style="color: var(--admin-primary);" /> Kutipan / Ayat</h3>
+            <p class="form-section-subtitle">Kutipan atau ayat yang ditampilkan di undangan</p>
+            <div class="form-group">
+              <label class="form-label">Kutipan / Ayat</label>
+              <textarea
+                v-model="form.quote"
+                class="form-input"
+                rows="3"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Bank Accounts (Gift) -->
+          <div class="form-section">
+            <h3 class="form-section-title"><Icon icon="lucide:wallet" style="color: var(--admin-primary);" /> Informasi Bank (Gift)</h3>
+            <p class="form-section-subtitle">Rekening untuk amplop digital. Bisa lebih dari satu.</p>
+
+            <div
+              v-for="(bank, index) in form.banks"
+              :key="index"
+              class="bank-item"
+            >
+              <div class="bank-item-header">
+                <span class="bank-item-number">Bank {{ index + 1 }}</span>
+                <button
+                  type="button"
+                  class="btn btn-danger btn-icon btn-sm"
+                  @click="form.banks.splice(index, 1)"
+                  title="Hapus bank"
+                >
+                  ×
+                </button>
               </div>
-              <div class="form-group">
-                <label class="form-label">Nama Bank (Gift)</label>
-                <input v-model="form.bank_name" class="form-input" />
-              </div>
-              <div class="form-group">
-                <label class="form-label">No. Rekening</label>
-                <input v-model="form.bank_account" class="form-input" />
-              </div>
-              <div class="form-group full-width">
-                <label class="form-label">Atas Nama</label>
-                <input v-model="form.bank_holder" class="form-input" />
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Nama Bank</label>
+                  <input v-model="bank.bank_name" class="form-input" placeholder="BCA" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">No. Rekening</label>
+                  <input v-model="bank.bank_account" class="form-input" placeholder="1234567890" />
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Atas Nama</label>
+                  <input v-model="bank.bank_holder" class="form-input" placeholder="Ahmad Andi Pratama" />
+                </div>
               </div>
             </div>
+
+            <button
+              type="button"
+              class="btn btn-outline"
+              @click="form.banks.push({ bank_name: '', bank_account: '', bank_holder: '' })"
+            >
+              + Tambah Bank
+            </button>
           </div>
           <!-- Background Music -->
           <div class="form-section">
@@ -771,6 +803,32 @@
 .gallery-type-btn.active small {
   opacity: 0.85;
 }
+
+.bank-item {
+  padding: 20px;
+  background: var(--admin-bg, #f8fafc);
+  border: 1px solid var(--admin-border, #e2e8f0);
+  border-radius: var(--radius-md, 12px);
+  margin-bottom: 16px;
+  transition: border-color 0.2s ease;
+}
+.bank-item:hover {
+  border-color: var(--admin-primary, #3b82f6);
+}
+.bank-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.bank-item-number {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--admin-primary, #3b82f6);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 </style>
 
 <script setup lang="ts">
@@ -778,7 +836,7 @@ import { Icon } from '@iconify/vue';
 import { ref, reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
-import type { LoveStoryItem, Photo } from "@/types/invitation";
+import type { LoveStoryItem, Photo, BankAccount } from "@/types/invitation";
 import { resolveAssetUrl } from "@/utils/url";
 
 const route = useRoute();
@@ -842,9 +900,7 @@ const form = reactive({
   resepsi_map_url: "",
   love_story: [] as LoveStoryItem[],
   quote: "",
-  bank_name: "",
-  bank_account: "",
-  bank_holder: "",
+  banks: [] as BankAccount[],
   music_url: "",
   gallery_type: 'carousel' as 'carousel' | 'masonry',
   photos: [] as Photo[],
@@ -1098,9 +1154,10 @@ async function handleSubmit() {
       resepsi_map_url: form.resepsi_map_url,
       love_story: form.love_story.filter((s) => s.title || s.date),
       quote: form.quote,
-      bank_name: form.bank_name,
-      bank_account: form.bank_account,
-      bank_holder: form.bank_holder,
+      bank_name: form.banks[0]?.bank_name || "",
+      bank_account: form.banks[0]?.bank_account || "",
+      bank_holder: form.banks[0]?.bank_holder || "",
+      banks: form.banks.filter((b) => b.bank_name || b.bank_account),
       music_url: form.music_url,
       gallery_type: form.gallery_type,
       photos: form.photos,
@@ -1143,9 +1200,14 @@ onMounted(async () => {
     form.resepsi_map_url = data.resepsi_map_url || "";
     form.love_story = normalizeLoveStory(data.love_story);
     form.quote = data.quote || "";
-    form.bank_name = data.bank_name || "";
-    form.bank_account = data.bank_account || "";
-    form.bank_holder = data.bank_holder || "";
+    // Load banks: prefer banks array, fallback to legacy single fields
+    if (data.banks && Array.isArray(data.banks) && data.banks.length > 0) {
+      form.banks = data.banks;
+    } else if (data.bank_name) {
+      form.banks = [{ bank_name: data.bank_name, bank_account: data.bank_account || "", bank_holder: data.bank_holder || "" }];
+    } else {
+      form.banks = [];
+    }
     form.music_url = data.music_url || "";
     form.gallery_type = data.gallery_type || themeGalleryDefaults[data.theme || 'elegant'] || 'carousel';
     form.photos = data.photos || [];

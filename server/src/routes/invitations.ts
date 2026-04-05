@@ -207,6 +207,7 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       music_url,
       gallery_type,
       photos,
+      banks,
     } = req.body;
 
     // Check slug
@@ -257,6 +258,7 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       bank_holder: bank_holder || "",
       music_url: music_url || "",
       gallery_type: gallery_type || "carousel",
+      // banks: Array.isArray(banks) ? banks : [],
     };
 
     const { data: created, error: createError } = await supabase
@@ -364,6 +366,7 @@ router.put("/:id", requireAuth, async (req: Request, res: Response) => {
       "bank_holder",
       "music_url",
       "gallery_type",
+      // "banks",
     ];
 
     for (const field of updatableFields) {

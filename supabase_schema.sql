@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS invitations (
   bank_name TEXT,
   bank_account TEXT,
   bank_holder TEXT,
+  banks JSONB DEFAULT '[]'::jsonb,
   music_url TEXT DEFAULT '',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
