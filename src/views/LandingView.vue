@@ -100,7 +100,7 @@
           <p class="lp-section-sub">Tiga pilihan desain yang dirancang dengan keindahan dan keanggunan</p>
         </div>
         <div class="lp-themes-carousel">
-          <div class="lp-theme-card" v-for="theme in themesData" :key="theme.id">
+          <div class="lp-theme-card" v-for="theme in themesData" :key="theme.id" :style="{ '--card-accent': theme.color }">
             <div class="lp-theme-preview">
               <div class="lp-theme-device-frame">
                 <div class="lp-theme-device-notch"></div>
@@ -114,18 +114,50 @@
                     :title="'Preview tema ' + theme.name"
                     sandbox="allow-scripts allow-same-origin"
                   ></iframe>
-                  <div v-else class="lp-theme-placeholder" :style="{ background: theme.bgGradient }">
-                    <div class="lp-tp-content">
-                      <div class="lp-tp-label" :style="{ color: theme.labelColor }">{{ theme.label }}</div>
-                      <div class="lp-tp-names" :style="{ fontFamily: theme.nameFont, color: theme.nameColor, fontSize: theme.nameSize }">{{ theme.nameSample }}</div>
-                    </div>
+                  <div v-else class="lp-theme-placeholder">
+                    <Icon :icon="theme.icon" class="lp-placeholder-icon" />
+                    <span class="lp-placeholder-text">Preview akan tersedia</span>
                   </div>
                 </div>
               </div>
+              <div class="lp-theme-accent-bar" :style="{ background: theme.bgGradient }"></div>
             </div>
+            
             <div class="lp-theme-info">
-              <h3>{{ theme.name }}</h3>
-              <p>{{ theme.description }}</p>
+              <div class="lp-theme-header">
+                <div class="lp-theme-name-row">
+                  <Icon :icon="theme.icon" class="lp-theme-name-icon" :style="{ color: theme.color }" />
+                  <h3 class="lp-theme-name">{{ theme.name }}</h3>
+                </div>
+              </div>
+              <div class="lp-theme-actions">
+                <a
+                  v-if="theme.sampleUrl"
+                  :href="theme.sampleUrl"
+                  target="_blank"
+                  class="btn btn-outline btn-sm lp-theme-btn"
+                >
+                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span>
+                  Lihat Contoh
+                </a>
+                <button
+                  v-else
+                  class="btn btn-outline btn-sm lp-theme-btn"
+                  disabled
+                  title="Link contoh akan segera tersedia"
+                >
+                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">hourglass_top</span>
+                  Segera Hadir
+                </button>
+
+                <router-link
+                  :to="`/create?theme=${theme.id}`"
+                  class="btn btn-primary btn-sm lp-theme-btn lp-theme-btn-use"
+                >
+                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">brush</span>
+                  Pakai Tema Ini
+                </router-link>
+              </div>
             </div>
           </div>
         </div>
@@ -387,41 +419,32 @@ const themesData = [
   {
     id: 'elegant',
     name: 'Elegant Gold',
-    description: 'Desain klasik premium dengan aksen emas dan font serif yang mewah.',
-    sampleUrl: '',  // ← Isi dengan link undangan contoh
-    bgGradient: 'linear-gradient(180deg, #2c2417 0%, #3d3425 100%)',
-    label: 'The Wedding Of',
-    labelColor: '#c9a96e',
-    nameSample: 'Romeo & Juliet',
-    nameFont: "var(--lp-font-script)",
-    nameColor: '#fff',
-    nameSize: '38px',
+    description: 'Desain klasik premium dengan aksen emas dan font serif yang mewah. Cocok untuk acara formal dan mewah yang membutuhkan sentuhan kemewahan.',
+    color: '#c9a96e',
+    bgColor: '#2c2417',
+    bgGradient: 'linear-gradient(135deg, #2c2417, #5a4b3d)',
+    sampleUrl: '',
+    icon: 'solar:crown-bold-duotone',
   },
   {
     id: 'floral',
-    name: 'Romantic Floral',
-    description: 'Desain romantis dengan ornamen daun dan bunga, warna pastel lembut.',
-    sampleUrl: '',  // ← Isi dengan link undangan contoh
-    bgGradient: 'linear-gradient(180deg, #fdfbf7 0%, #f4f6e9 100%)',
-    label: 'The Wedding Of',
-    labelColor: '#8a9a5b',
-    nameSample: 'Romeo & Juliet',
-    nameFont: "var(--lp-font-serif)",
-    nameColor: '#4a5d4e',
-    nameSize: '28px',
+    name: 'Botanical Floral',
+    description: 'Desain romantis dengan ornamen daun dan bunga, warna pastel lembut. Sempurna untuk nuansa garden party yang penuh keindahan alam.',
+    color: '#4a5d4e',
+    bgColor: '#4a5d4e',
+    bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
+    sampleUrl: 'https://ayang-aku.mengundanganda.fun',
+    icon: 'solar:leaf-bold-duotone',
   },
   {
     id: 'minimalist',
-    name: 'Modern Minimalist',
-    description: 'Tampilan bersih & modern dengan ruang putih luas dan font sans-serif tebal.',
-    sampleUrl: '',  // ← Isi dengan link undangan contoh
-    bgGradient: 'linear-gradient(180deg, #ffffff 0%, #f9f9f9 100%)',
-    label: 'THE WEDDING OF',
-    labelColor: '#999',
-    nameSample: 'ROMEO & JULIET',
-    nameFont: "var(--lp-font-sans)",
-    nameColor: '#111',
-    nameSize: '30px',
+    name: 'Clean Minimalist',
+    description: 'Tampilan bersih & modern dengan ruang putih luas dan font sans-serif tebal. Untuk pasangan yang mencintai kesederhanaan dan keanggunan modern.',
+    color: '#111111',
+    bgColor: '#f9f9f9',
+    bgGradient: 'linear-gradient(135deg, #1e293b, #475569)',
+    sampleUrl: '',
+    icon: 'solar:minimalistic-magnifer-bold-duotone',
   },
 ]
 </script>
@@ -1013,7 +1036,7 @@ const themesData = [
 .lp-theme-device-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 9 / 14;
+  aspect-ratio: 9 / 16;
   background: #1a1a2e;
   border-radius: 20px 20px 0 0;
   overflow: hidden;
@@ -1055,41 +1078,76 @@ const themesData = [
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 12px;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
 }
 
-.lp-tp-content {
-  text-align: center;
-  z-index: 2;
+.lp-placeholder-icon {
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.25);
 }
 
-.lp-tp-label {
-  font-family: var(--lp-font-sans);
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 12px;
+.lp-placeholder-text {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  font-weight: 500;
 }
 
-.lp-tp-names {
-  font-weight: 600;
+.lp-theme-accent-bar {
+  height: 4px;
+  border-radius: 2px 2px 0 0;
 }
 
 .lp-theme-info {
-  padding: 24px;
+  padding: 20px 24px 24px;
 }
-.lp-theme-info h3 {
-  font-family: var(--lp-font-serif);
-  font-size: 20px;
-  font-weight: 600;
+
+.lp-theme-header {
+  margin-bottom: 16px;
+}
+
+.lp-theme-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lp-theme-name-icon {
+  font-size: 22px;
+}
+
+.lp-theme-name {
+  font-size: 18px;
+  font-weight: 700;
   color: var(--lp-primary);
-  margin-bottom: 8px;
+  margin: 0;
 }
-.lp-theme-info p {
-  font-size: 14px;
-  color: var(--lp-text-light);
-  line-height: 1.6;
+
+.lp-theme-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lp-theme-btn {
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
+  white-space: nowrap;
+  font-size: 13px !important;
+  padding: 8px 12px !important;
+}
+
+.lp-theme-btn-use {
+  flex: 1.2;
+}
+
+.lp-theme-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* --- Steps Timeline --- */
