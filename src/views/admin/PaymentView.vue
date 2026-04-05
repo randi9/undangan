@@ -14,6 +14,10 @@
           <span class="material-symbols-rounded">dashboard</span>
           Dashboard
         </router-link>
+        <router-link to="/themes" class="sidebar-link">
+          <span class="material-symbols-rounded">palette</span>
+          Tema
+        </router-link>
         <router-link to="/payment" class="sidebar-link" exact>
           <span class="material-symbols-rounded">payments</span>
           Pembayaran
@@ -70,7 +74,7 @@
           <div v-if="paymentData?.payment_status === 'paid'" class="payment-card payment-success-card">
             <Icon icon="ph:check-circle-duotone" class="payment-success-icon" />
             <h2>Undangan Sudah Premium!</h2>
-            <p>Undangan Anda sudah dalam status <strong>PAID</strong>. Semua fitur sudah aktif tanpa watermark dan tanpa batas akses.</p>
+            <p>Undangan Anda sudah dalam status <strong>PAID</strong>. Semua fitur premium sudah aktif tanpa batas akses.</p>
             <div class="payment-actions">
               <router-link to="/" class="btn btn-primary btn-lg">
                 <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">dashboard</span>
@@ -86,7 +90,7 @@
                 <Icon icon="ph:sketch-logo-duotone" class="payment-icon" />
               </div>
               <h1>Upgrade ke Premium</h1>
-              <p class="payment-subtitle">Hapus watermark & dapatkan akses penuh untuk undangan Anda</p>
+              <p class="payment-subtitle">Dapatkan akses penuh dan fitur premium untuk undangan Anda</p>
             </div>
 
             <!-- Trial Status -->
@@ -107,7 +111,7 @@
                     <Icon icon="ph:clock-duotone" class="trial-stat-icon" />
                   </div>
                   <div class="trial-stat-info">
-                    <div class="trial-stat-label">Sisa Waktu Trial</div>
+                    <div class="trial-stat-label">Sisa Waktu Free</div>
                     <div class="trial-stat-value">
                       <template v-if="paymentData.trial_time_remaining">
                         {{ paymentData.trial_time_remaining.hours }}j {{ paymentData.trial_time_remaining.minutes }}m
@@ -122,7 +126,7 @@
               </div>
               <div v-if="paymentData.trial_expired || paymentData.views_exhausted" class="trial-warning">
                 <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">warning</span>
-                {{ paymentData.trial_expired ? 'Masa trial telah berakhir!' : 'Batas akses trial telah tercapai!' }}
+                {{ paymentData.trial_expired ? 'Masa free telah berakhir!' : 'Batas akses free telah tercapai!' }}
                 Segera upgrade untuk melanjutkan.
               </div>
             </div>
@@ -132,24 +136,28 @@
               <div class="feature-col feature-trial">
                 <h3>
                   <Icon icon="ph:gift-duotone" class="feature-title-icon" />
-                  Trial
+                  Free
                 </h3>
                 <ul>
                   <li class="feature-item feature-limited">
                     <Icon icon="ph:hourglass-duotone" class="feature-list-icon" />
-                    2 Hari durasi
+                    Masa aktif 2 hari
                   </li>
                   <li class="feature-item feature-limited">
                     <Icon icon="ph:eye-duotone" class="feature-list-icon" />
-                    Maks. 20x akses link
-                  </li>
-                  <li class="feature-item feature-limited">
-                    <Icon icon="ph:image-square-duotone" class="feature-list-icon" />
-                    Ada watermark
+                    20x akses link
                   </li>
                   <li class="feature-item feature-included">
                     <Icon icon="ph:pencil-simple-duotone" class="feature-list-icon" />
-                    Edit undangan
+                    Unlimited edit
+                  </li>
+                  <li class="feature-item feature-included">
+                    <Icon icon="ph:check-circle-duotone" class="feature-list-icon" />
+                    Langsung jadi setelah input data
+                  </li>
+                  <li class="feature-item feature-included">
+                    <Icon icon="ph:monitor-play-duotone" class="feature-list-icon" />
+                    Live preview editor
                   </li>
                 </ul>
               </div>
@@ -160,20 +168,20 @@
                 </h3>
                 <ul>
                   <li class="feature-item feature-included">
-                    <Icon icon="ph:infinity-duotone" class="feature-list-icon" style="color: #3b82f6;" />
-                    Akses selamanya
+                    <Icon icon="ph:star-duotone" class="feature-list-icon" style="color: #3b82f6;" />
+                    <strong>Semua fitur di Free</strong>
                   </li>
                   <li class="feature-item feature-included">
-                    <Icon icon="ph:eye-duotone" class="feature-list-icon" style="color: #3b82f6;" />
+                    <Icon icon="ph:infinity-duotone" class="feature-list-icon" style="color: #3b82f6;" />
                     Unlimited akses link
                   </li>
                   <li class="feature-item feature-included">
-                    <Icon icon="ph:image-square-bold" class="feature-list-icon" style="color: #3b82f6;" />
-                    Tanpa watermark
+                    <Icon icon="ph:calendar-check-duotone" class="feature-list-icon" style="color: #3b82f6;" />
+                    1 tahun masa aktif
                   </li>
                   <li class="feature-item feature-included">
-                    <Icon icon="ph:pencil-simple-duotone" class="feature-list-icon" style="color: #3b82f6;" />
-                    Edit undangan
+                    <Icon icon="ph:users-duotone" class="feature-list-icon" style="color: #3b82f6;" />
+                    Unlimited tamu undangan
                   </li>
                 </ul>
               </div>

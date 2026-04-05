@@ -78,6 +78,12 @@ if (isLandingPage) {
       component: () => import('@/views/admin/DashboardView.vue'),
       meta: { title: 'Dashboard - MengundangAnda', requiresAuth: true }
     },
+    {
+      path: '/themes',
+      name: 'themes',
+      component: () => import('@/views/admin/ThemeCatalogView.vue'),
+      meta: { title: 'Koleksi Tema - MengundangAnda', requiresAuth: true }
+    },
 
     {
       path: '/create',

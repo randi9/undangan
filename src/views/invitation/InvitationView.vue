@@ -419,22 +419,16 @@ onBeforeUnmount(() => {
   <!-- Main UI Wrapper -->
   <div v-else :style="themeStyles" class="relative bg-[var(--theme-bg)] text-[var(--theme-text)] font-[var(--font-body)] overflow-x-hidden min-h-screen selection:bg-[var(--theme-primary)] selection:text-white pb-32">
 
-    <!-- WATERMARK OVERLAY (Trial mode) -->
-    <div v-if="invitation.show_watermark" class="watermark-overlay" aria-hidden="true">
-      <div class="watermark-grid">
-        <div v-for="i in 12" :key="i" class="watermark-text">TRIAL — MengundangAnda.fun</div>
-      </div>
-    </div>
-
-    <!-- TRIAL INFO BANNER -->
+    <!-- Free INFO BANNER -->
     <div v-if="invitation.is_trial && isOpened" class="trial-banner">
       <div class="trial-banner-content">
-        <span class="trial-badge">⏱️ TRIAL</span>
+        <span class="trial-badge">⏱️ Free</span>
         <span v-if="invitation.views_remaining !== null && invitation.views_remaining !== undefined">
           Sisa {{ invitation.views_remaining }} akses
         </span>
         <span class="trial-separator">•</span>
-        <span>Upgrade untuk hapus watermark & akses penuh</span>
+        <span>Upgrade untuk hapus Free Banner & akses penuh</span>
+        <span>Kunjungi <a href="https://mengundanganda.fun" style="color: blue;">mengundanganda.fun</a></span>
       </div>
     </div>
 
@@ -578,17 +572,17 @@ onBeforeUnmount(() => {
 /* TRIAL BANNER */
 .trial-banner {
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  z-index: 95;
+  z-index: 999;
   background: linear-gradient(135deg, #ff6b35, #f7931e);
   color: white;
   padding: 10px 16px;
   text-align: center;
   font-size: 0.85rem;
   font-weight: 500;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 .trial-banner-content {
   display: flex;

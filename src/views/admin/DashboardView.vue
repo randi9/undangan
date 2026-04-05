@@ -14,6 +14,10 @@
           <span class="material-symbols-rounded">dashboard</span>
           Dashboard
         </router-link>
+        <router-link to="/themes" class="sidebar-link">
+          <span class="material-symbols-rounded">palette</span>
+          Tema
+        </router-link>
         <router-link v-if="!hasReachedLimit" to="/create" class="sidebar-link">
           <span class="material-symbols-rounded">add_circle</span>
           Buat Undangan

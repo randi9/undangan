@@ -100,73 +100,31 @@
           <p class="lp-section-sub">Tiga pilihan desain yang dirancang dengan keindahan dan keanggunan</p>
         </div>
         <div class="lp-themes-carousel">
-          <!-- Elegant -->
-          <div class="lp-theme-card">
-            <div class="lp-theme-preview lp-tp-elegant">
-              <div class="lp-tp-border"></div>
-              <div class="lp-tp-content">
-                <div class="lp-tp-label">The Wedding Of</div>
-                <div class="lp-tp-names">Romeo &amp; Juliet</div>
-              </div>
-            </div>
-            <div class="lp-theme-info">
-              <h3>Elegant Gold</h3>
-              <p>Desain klasik premium dengan aksen emas dan font serif yang mewah.</p>
-            </div>
-          </div>
-          <!-- Minimalist -->
-          <div class="lp-theme-card">
-            <div class="lp-theme-preview lp-tp-minimalist">
-              <div class="lp-tp-content">
-                <div class="lp-tp-label">THE WEDDING OF</div>
-                <div class="lp-tp-names">ROMEO &amp; JULIET</div>
-              </div>
-            </div>
-            <div class="lp-theme-info">
-              <h3>Modern Minimalist</h3>
-              <p>Tampilan bersih &amp; modern dengan ruang putih luas dan font sans-serif tebal.</p>
-            </div>
-          </div>
-          <!-- Floral -->
-          <div class="lp-theme-card">
-            <div class="lp-theme-preview lp-tp-floral">
-              <div class="lp-tp-deco lp-tp-deco-tl">🌿</div>
-              <div class="lp-tp-circle">
-                <div class="lp-tp-content">
-                  <div class="lp-tp-label">The Wedding Of</div>
-                  <div class="lp-tp-names">Romeo &amp; Juliet</div>
+          <div class="lp-theme-card" v-for="theme in themesData" :key="theme.id">
+            <div class="lp-theme-preview">
+              <div class="lp-theme-device-frame">
+                <div class="lp-theme-device-notch"></div>
+                <div class="lp-theme-device-screen">
+                  <iframe
+                    v-if="theme.sampleUrl"
+                    :src="theme.sampleUrl"
+                    class="lp-theme-iframe"
+                    loading="lazy"
+                    :title="'Preview tema ' + theme.name"
+                    sandbox="allow-scripts allow-same-origin"
+                  ></iframe>
+                  <div v-else class="lp-theme-placeholder" :style="{ background: theme.bgGradient }">
+                    <div class="lp-tp-content">
+                      <div class="lp-tp-label" :style="{ color: theme.labelColor }">{{ theme.label }}</div>
+                      <div class="lp-tp-names" :style="{ fontFamily: theme.nameFont, color: theme.nameColor, fontSize: theme.nameSize }">{{ theme.nameSample }}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="lp-tp-deco lp-tp-deco-br">🌿</div>
             </div>
             <div class="lp-theme-info">
-              <h3>Romantic Floral</h3>
-              <p>Desain romantis dengan ornamen daun dan bunga, warna pastel lembut.</p>
-            </div>
-          </div>
-          <!-- Rustic (Mockup for Carousel) -->
-          <div class="lp-theme-card">
-            <div class="lp-theme-preview lp-tp-rustic" style="background: #e8dccb; color: #5a4b3d;">
-              <div class="lp-tp-content">
-                <div class="lp-tp-label" style="font-family: var(--lp-font-sans); font-size: 11px; letter-spacing: 2px; margin-bottom:12px;">Pernikahan</div>
-                <div class="lp-tp-names" style="font-family: var(--lp-font-script); font-size: 34px;">Romeo &amp; Juliet</div>
-              </div>
-            </div>
-            <div class="lp-theme-info">
-              <h3>Rustic Earth</h3>
-              <p>Nuansa alam yang hangat, cocok untuk acara pernikahan tema outdoor & kayu.</p>
-            </div>
-          </div>
-          <!-- Ocean (Mockup for Carousel) -->
-          <div class="lp-theme-card">
-            <div class="lp-theme-preview lp-tp-ocean" style="background: #e0f2fe; color: #0369a1;">
-              <div class="lp-tp-content" style="border: 2px solid rgba(3,105,161,0.2); border-radius: 50%; padding: 30px; width:160px; height:160px; display:flex; flex-direction:column; justify-content:center;">
-                <div class="lp-tp-names" style="font-family: var(--lp-font-serif); font-size: 24px; font-weight:600;">R &amp; J</div>
-              </div>
-            </div>
-            <div class="lp-theme-info">
-              <h3>Ocean Breeze</h3>
-              <p>Sentuhan biru air yang segar dan menyajikan ketenangan di undangan Anda.</p>
+              <h3>{{ theme.name }}</h3>
+              <p>{{ theme.description }}</p>
             </div>
           </div>
         </div>
@@ -390,6 +348,48 @@ const testimonials = [
   { avatar: '👰', name: 'Aisyah & Rizky', role: 'Menikah November 2025', text: 'Awalnya cuma iseng coba, eh ternyata hasilnya bagus banget. Temen-temen pada nanya bikin undangannya dimana, hehe. Prosesnya gampang, tinggal isi data terus langsung jadi.' },
   { avatar: '💑', name: 'Dewi & Arif', role: 'Menikah Januari 2026', text: 'Suka banget sama fitur petanya, jadi tamu ga perlu nanya-nanya lagi lokasi nikahan. Musiknya juga bikin undangan kerasa lebih hidup. Worth it sih menurutku.' },
   { avatar: '💍', name: 'Sarah & Budi', role: 'Menikah Maret 2026', text: 'Sempet mikir mau cetak undangan, tapi setelah coba ini langsung berubah pikiran. Hemat banget dan hasilnya malah lebih cantik. Tema floral-nya beneran elegan!' },
+]
+
+const themesData = [
+  {
+    id: 'elegant',
+    name: 'Elegant Gold',
+    description: 'Desain klasik premium dengan aksen emas dan font serif yang mewah.',
+    sampleUrl: '',  // ← Isi dengan link undangan contoh
+    bgGradient: 'linear-gradient(180deg, #2c2417 0%, #3d3425 100%)',
+    label: 'The Wedding Of',
+    labelColor: '#c9a96e',
+    nameSample: 'Romeo & Juliet',
+    nameFont: "var(--lp-font-script)",
+    nameColor: '#fff',
+    nameSize: '38px',
+  },
+  {
+    id: 'floral',
+    name: 'Romantic Floral',
+    description: 'Desain romantis dengan ornamen daun dan bunga, warna pastel lembut.',
+    sampleUrl: '',  // ← Isi dengan link undangan contoh
+    bgGradient: 'linear-gradient(180deg, #fdfbf7 0%, #f4f6e9 100%)',
+    label: 'The Wedding Of',
+    labelColor: '#8a9a5b',
+    nameSample: 'Romeo & Juliet',
+    nameFont: "var(--lp-font-serif)",
+    nameColor: '#4a5d4e',
+    nameSize: '28px',
+  },
+  {
+    id: 'minimalist',
+    name: 'Modern Minimalist',
+    description: 'Tampilan bersih & modern dengan ruang putih luas dan font sans-serif tebal.',
+    sampleUrl: '',  // ← Isi dengan link undangan contoh
+    bgGradient: 'linear-gradient(180deg, #ffffff 0%, #f9f9f9 100%)',
+    label: 'THE WEDDING OF',
+    labelColor: '#999',
+    nameSample: 'ROMEO & JULIET',
+    nameFont: "var(--lp-font-sans)",
+    nameColor: '#111',
+    nameSize: '30px',
+  },
 ]
 </script>
 
@@ -944,12 +944,12 @@ const testimonials = [
   display: flex;
   gap: 32px;
   overflow-x: auto;
-  padding: 16px 8px 48px; /* Extra padding bottom for box-shadows */
-  margin: -16px -8px -48px; /* Offset the padding to not crop shadows */
+  padding: 16px 8px 48px;
+  margin: -16px -8px -48px;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .lp-themes-carousel::-webkit-scrollbar {
   display: none;
@@ -972,12 +972,59 @@ const testimonials = [
 }
 
 .lp-theme-preview {
-  height: 480px;
   position: relative;
+  padding: 24px 24px 0;
+  background: linear-gradient(180deg, #f0f5ff 0%, #e8ecf4 100%);
+}
+
+.lp-theme-device-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 14;
+  background: #1a1a2e;
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.1), inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+}
+
+.lp-theme-device-notch {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  z-index: 2;
+}
+
+.lp-theme-device-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+}
+
+.lp-theme-iframe {
+  width: 375px;
+  height: 812px;
+  border: none;
+  pointer-events: none;
+  transform-origin: top left;
+  transform: scale(0.58);
+  background: #fff;
+}
+
+.lp-theme-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
 .lp-tp-content {
@@ -985,87 +1032,17 @@ const testimonials = [
   z-index: 2;
 }
 
-/* Elegant */
-.lp-tp-elegant {
-  background: #2c2417;
-  color: #fff;
-}
-.lp-tp-elegant .lp-tp-border {
-  position: absolute;
-  inset: 16px;
-  border: 1px solid rgba(201, 169, 110, 0.3);
-  pointer-events: none;
-}
-.lp-tp-elegant .lp-tp-label {
+.lp-tp-label {
   font-family: var(--lp-font-sans);
   font-size: 10px;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--lp-gold);
-  margin-bottom: 14px;
-}
-.lp-tp-elegant .lp-tp-names {
-  font-family: var(--lp-font-script);
-  font-size: 38px;
-  color: #fff;
+  margin-bottom: 12px;
 }
 
-/* Minimalist */
-.lp-tp-minimalist {
-  background: #ffffff;
-  color: #111;
-}
-.lp-tp-minimalist .lp-tp-label {
-  font-family: var(--lp-font-sans);
-  font-size: 10px;
+.lp-tp-names {
   font-weight: 600;
-  letter-spacing: 2px;
-  color: #999;
-  margin-bottom: 10px;
 }
-.lp-tp-minimalist .lp-tp-names {
-  font-family: var(--lp-font-sans);
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: -1px;
-  color: #111;
-}
-
-/* Floral */
-.lp-tp-floral {
-  background: #fdfbf7;
-  color: #4a5d4e;
-}
-.lp-tp-circle {
-  background: rgba(255,255,255,0.85);
-  border-radius: 50%;
-  width: 180px;
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(138, 154, 91, 0.2);
-}
-.lp-tp-floral .lp-tp-label {
-  font-family: var(--lp-font-serif);
-  font-size: 11px;
-  font-style: italic;
-  color: #8a9a5b;
-  margin-bottom: 8px;
-}
-.lp-tp-floral .lp-tp-names {
-  font-family: var(--lp-font-serif);
-  font-size: 20px;
-  font-weight: 600;
-  color: #4a5d4e;
-}
-.lp-tp-deco {
-  position: absolute;
-  font-size: 44px;
-  opacity: 0.4;
-}
-.lp-tp-deco-tl { top: 16px; left: 16px; transform: rotate(135deg); }
-.lp-tp-deco-br { bottom: 16px; right: 16px; transform: rotate(-45deg); }
 
 .lp-theme-info {
   padding: 24px;

@@ -13,6 +13,10 @@
           <span class="material-symbols-rounded">dashboard</span>
           Dashboard
         </router-link>
+        <router-link to="/themes" class="sidebar-link">
+          <span class="material-symbols-rounded">palette</span>
+          Tema
+        </router-link>
       </nav>
       <div class="sidebar-footer" style="padding: 1rem 0; border-top: 1px solid #e1e8f0; margin-top: auto;">
         <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
@@ -56,20 +60,20 @@
             <h1>Pembayaran Berhasil! 🎉</h1>
             <p class="success-message">
               Undangan Anda sekarang sudah <strong>Premium</strong>.<br>
-              Watermark telah dihapus dan akses link menjadi unlimited.
+              Semua fitur premium sudah aktif dan akses link menjadi unlimited.
             </p>
             <div class="success-features">
               <div class="success-feature">
                 <span class="material-symbols-rounded" style="color: #10b981;">check_circle</span>
-                Tanpa watermark
+                Unlimited akses link
               </div>
               <div class="success-feature">
                 <span class="material-symbols-rounded" style="color: #10b981;">check_circle</span>
-                Akses link unlimited
+                1 tahun masa aktif
               </div>
               <div class="success-feature">
                 <span class="material-symbols-rounded" style="color: #10b981;">check_circle</span>
-                Aktif selamanya
+                Unlimited tamu undangan
               </div>
             </div>
             <div class="success-actions">

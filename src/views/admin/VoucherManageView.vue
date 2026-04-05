@@ -14,6 +14,10 @@
           <span class="material-symbols-rounded">dashboard</span>
           Dashboard
         </router-link>
+        <router-link to="/themes" class="sidebar-link">
+          <span class="material-symbols-rounded">palette</span>
+          Tema
+        </router-link>
         <router-link to="/users" class="sidebar-link">
           <span class="material-symbols-rounded">group</span>
           Kelola User
