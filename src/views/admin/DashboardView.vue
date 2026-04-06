@@ -218,6 +218,7 @@
                 <span title="Tema Undangan"><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">palette</span> <strong style="text-transform: capitalize">{{ invitation.theme || 'Elegant' }}</strong></span>
                 <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">photo_camera</span> {{ invitation.photo_count || 0 }} foto</span>
                 <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">mail</span> {{ invitation.rsvp_count || 0 }} RSVP</span>
+                <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">visibility</span> {{ invitation.view_count || 0 }} views</span>
                 <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">calendar_today</span> {{ formatDate(invitation.created_at) }}</span>
               </div>
               <div class="invitation-card-actions">
