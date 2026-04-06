@@ -3,7 +3,7 @@
     <h2 class="text-3xl md:text-4xl mb-2 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">Wedding Gift</h2>
     <div class="flex items-center justify-center gap-4 mb-8 text-[var(--theme-secondary)]">
       <div class="h-px w-12 bg-[var(--theme-secondary)] opacity-50"></div>
-      <span class="text-xl">🎁</span>
+      <span class="text-xl"></span>
       <div class="h-px w-12 bg-[var(--theme-secondary)] opacity-50"></div>
     </div>
     
