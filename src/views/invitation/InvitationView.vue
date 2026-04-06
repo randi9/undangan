@@ -332,17 +332,36 @@ const currentPhotoUrl = computed(() => {
   return photo ? resolveAssetUrl(photo.url, apiBase) : "";
 });
 
+function parseTimeStr(raw: string | undefined | null): string {
+  if (!raw) return '00:00:00';
+  // Extract first HH:MM or HH:MM:SS from free-text like "08:00 - 10:00 WIB"
+  const match = raw.match(/(\d{1,2}:\d{2}(?::\d{2})?)/);
+  return match ? match[1] : '00:00:00';
+}
+
 function updateCountdown() {
   const dateStr = invitation.value?.akad_date || invitation.value?.resepsi_date;
   const timeStr = invitation.value?.akad_date ? invitation.value?.akad_time : invitation.value?.resepsi_time;
   
   if (!dateStr) return;
 
-  // Combine date and time (fallback to 00:00:00 if time is missing)
-  const safeTime = timeStr || '00:00:00';
+  // Extract parseable time from free-text (e.g. "08:00 - 10:00 WIB" → "08:00")
+  const safeTime = parseTimeStr(timeStr);
   const targetDateStr = dateStr.includes('T') ? dateStr : `${dateStr}T${safeTime}`;
   
   const target = new Date(targetDateStr).getTime();
+  if (isNaN(target)) {
+    // Fallback: parse date only without time
+    const fallback = new Date(dateStr).getTime();
+    if (isNaN(fallback)) return;
+    const diff = Math.max(0, fallback - Date.now());
+    countdown.days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    countdown.hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    countdown.minutes = Math.floor((diff / (1000 * 60)) % 60);
+    countdown.seconds = Math.floor((diff / 1000) % 60);
+    return;
+  }
+
   const now = Date.now();
   const diff = Math.max(0, target - now);
 

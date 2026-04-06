@@ -241,7 +241,8 @@ onUnmounted(() => {
 });
 
 const formatNumber = (num: number) => {
-  return num.toString().padStart(2, '0').split('');
+  const safe = isNaN(num) ? 0 : num;
+  return safe.toString().padStart(2, '0').split('');
 };
 </script>
 
