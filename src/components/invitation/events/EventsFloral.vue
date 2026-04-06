@@ -13,9 +13,9 @@
     <!-- Title / Initials Wrapper (Tampil di awal, hilang saat zoom) -->
     <div ref="titleRef" class="absolute top-[15%] inset-x-0 flex flex-col items-center justify-center z-10 pointer-events-none">
       <div v-if="invitation.groom_name && invitation.bride_name" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 0.5rem; text-shadow: 1px 1px 4px rgba(255,255,255,0.8);">
-        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '3.5rem', color: 'var(--theme-primary)', transform: 'rotate(-5deg)' }">{{ invitation.groom_name.charAt(0).toUpperCase() }}</span>
-        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '2.5rem', color: 'var(--theme-secondary)', fontStyle: 'italic', opacity: 0.8 }">&amp;</span>
-        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '3.5rem', color: 'var(--theme-primary)', transform: 'rotate(5deg)' }">{{ invitation.bride_name.charAt(0).toUpperCase() }}</span>
+        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '2.75rem', color: 'var(--theme-primary)', transform: 'rotate(-5deg)' }">{{ invitation.groom_name.charAt(0).toUpperCase() }}</span>
+        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '2rem', color: 'var(--theme-secondary)', fontStyle: 'italic', opacity: 0.8 }">&amp;</span>
+        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '2.75rem', color: 'var(--theme-primary)', transform: 'rotate(5deg)' }">{{ invitation.bride_name.charAt(0).toUpperCase() }}</span>
       </div>
     </div>
 
@@ -32,16 +32,16 @@
 
         <!-- TAB 1: INFORMASI AKAD NIKAH -->
         <div ref="akadRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 pb-8 pt-2 text-center" style="opacity: 0;">
-          <h3 class="text-3xl md:text-3xl font-medium drop-shadow-md tracking-[0.15em]" :style="{ fontFamily: themeConfig.fontHeading, color: 'white', marginTop: '-10px', marginBottom: '4px' }">Akad Nikah</h3>
+          <h3 class="text-2xl md:text-2xl font-medium drop-shadow-md tracking-[0.15em]" :style="{ fontFamily: themeConfig.fontHeading, color: 'white', marginTop: '-10px', marginBottom: '4px' }">Akad Nikah</h3>
           <img src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_f229438c-f0ae-4381-9521-b52bd72d0308.webp" style="width: clamp(144px, 20vw, 176px); opacity: 0.9; margin-top: -70px; margin-bottom: -45px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); pointer-events: none;" alt="Decoration" />
-          <div class="space-y-1 text-xs md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
+          <div class="space-y-1 text-[11px] md:text-sm font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.akad_date">{{ formatDateLong(invitation.akad_date) }}</p>
             <p v-if="invitation.akad_time">{{ invitation.akad_time }}</p>
-            <p v-if="invitation.akad_venue" class="font-semibold text-md" style="margin-top:6px;">{{ invitation.akad_venue }}</p>
-            <p v-if="invitation.akad_address" class="text-xs italic md:text-sm font-light opacity-90" style="margin-top:2px; margin-bottom:0px; line-height: 1.2;">{{ invitation.akad_address }}</p>
+            <p v-if="invitation.akad_venue" class="font-semibold text-sm" style="margin-top:6px;">{{ invitation.akad_venue }}</p>
+            <p v-if="invitation.akad_address" class="text-[10px] italic md:text-xs font-light opacity-90" style="margin-top:2px; margin-bottom:0px; line-height: 1.2;">{{ invitation.akad_address }}</p>
           </div>
           <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" 
-             style="display: inline-block; margin-top: 12px; padding: 8px 24px; border-radius: 9999px; font-size: 13px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
+             style="display: inline-block; margin-top: 12px; padding: 6px 20px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
              onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
              onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
              onmousedown="this.style.transform='scale(0.95)';"
@@ -52,16 +52,16 @@
 
         <!-- TAB 2: INFORMASI RESEPSI PESTA -->
         <div ref="resepsiRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 pb-8 pt-2 text-center translate-y-[-2%]" style="opacity: 0;">
-          <h3 class="text-3xl md:text-3xl font-medium drop-shadow-md tracking-[0.15em]" :style="{ fontFamily: themeConfig.fontHeading, color: 'white', marginTop: '-10px', marginBottom: '4px' }">Resepsi</h3>
+          <h3 class="text-2xl md:text-2xl font-medium drop-shadow-md tracking-[0.15em]" :style="{ fontFamily: themeConfig.fontHeading, color: 'white', marginTop: '-10px', marginBottom: '4px' }">Resepsi</h3>
           <img src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_f229438c-f0ae-4381-9521-b52bd72d0308.webp" style="width: clamp(144px, 20vw, 176px); opacity: 0.9; margin-top: -70px; margin-bottom: -45px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); pointer-events: none;" alt="Decoration" />
-          <div class="space-y-1 text-xs md:text-base font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
+          <div class="space-y-1 text-[11px] md:text-sm font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.resepsi_date">{{ formatDateLong(invitation.resepsi_date) }}</p>
             <p v-if="invitation.resepsi_time">{{ invitation.resepsi_time }}</p>
-            <p v-if="invitation.resepsi_venue" class="font-semibold text-md" style="margin-top:6px;">{{ invitation.resepsi_venue }}</p>
-            <p v-if="invitation.resepsi_address" class="text-xs italic md:text-sm font-light opacity-90" style="margin-top:2px; margin-bottom:0px; line-height: 1.2;">{{ invitation.resepsi_address }}</p>
+            <p v-if="invitation.resepsi_venue" class="font-semibold text-sm" style="margin-top:6px;">{{ invitation.resepsi_venue }}</p>
+            <p v-if="invitation.resepsi_address" class="text-[10px] italic md:text-xs font-light opacity-90" style="margin-top:2px; margin-bottom:0px; line-height: 1.2;">{{ invitation.resepsi_address }}</p>
           </div>
           <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank"
-             style="display: inline-block; margin-top: 12px; padding: 8px 24px; border-radius: 9999px; font-size: 13px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
+             style="display: inline-block; margin-top: 12px; padding: 6px 20px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
              onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
              onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
              onmousedown="this.style.transform='scale(0.95)';"

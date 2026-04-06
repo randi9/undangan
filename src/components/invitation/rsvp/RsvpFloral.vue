@@ -1,9 +1,9 @@
 <template>
-  <section style="position: relative; max-width: 100%; margin: 0 auto; text-align: center; z-index: 10; overflow: hidden; margin-bottom: 20px; background-color: #dcf2dc;">
+  <section style="position: relative; max-width: 100%; margin: 0 auto; text-align: center; z-index: 10; overflow: hidden; background-color: rgba(213, 245, 204, 0.6);">
     
     <!-- OVERLAY TRANSISI MIST / KABUT (Untuk melembutkan perpindahan warna Gallery ke RSVP) -->
     <!-- Overlay ini diletakkan di atas layer bunga agar batas keras terpotongnya bunga tertutup kabut -->
-    <div ref="mistOverlay" style="position: absolute; top: -1px; left: 0; right: 0; height: 180px; background: linear-gradient(to bottom, #dcf2dc 0%, rgba(220, 242, 220, 0.9) 30%, transparent 100%); z-index: 30; pointer-events: none;"></div>
+    <div ref="mistOverlay" style="position: absolute; top: -1px; left: 0; right: 0; height: 180px; background: linear-gradient(to bottom, rgba(213, 245, 204, 0.6) 0%, rgba(213, 245, 204, 0.6) 30%, transparent 100%); z-index: 30; pointer-events: none;"></div>
     
     <!-- BUNGKUSAN KONTEN UTAMA YANG DIANIMASIKAN -->
     <div ref="rsvpWrapper" style="position: relative; padding: 48px 24px 100px; max-width: 1024px; margin: 0 auto; z-index: 10;">

@@ -1,17 +1,42 @@
 <template>
-  <footer class="pt-20 pb-32 px-6 text-center text-[#1e3a5f] relative overflow-hidden bg-white">
-    <div class="absolute inset-0 bg-gradient-to-b from-white to-[#f0f5ff] z-0"></div>
-    <div class="relative z-10 flex flex-col items-center justify-center">
-      <p class="text-4xl md:text-5xl mb-4 text-[#1e3a5f] drop-shadow-sm" :style="{ fontFamily: themeConfig.fontHeading }">
+  <footer style="padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background-color: #ffffff;">
+    
+    <!-- Background Gradient -->
+    <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(to bottom, #ffffff, #eefcf2); z-index: 0;"></div>
+    
+    <!-- Floral Corner Bottom Left -->
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" 
+         style="position: absolute; bottom: -40px; left: -40px; width: clamp(180px, 40vw, 250px); opacity: 0.4; transform: scaleX(-1) scaleY(-1); pointer-events: none; z-index: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" 
+         alt="" />
+         
+    <!-- Floral Corner Bottom Right -->
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" 
+         style="position: absolute; bottom: -40px; right: -40px; width: clamp(180px, 40vw, 250px); opacity: 0.4; transform: scaleY(-1); pointer-events: none; z-index: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" 
+         alt="" />
+
+    <!-- Center Top Floral Decor -->
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/randidewi_febdf7bf-6b49-40da-954d-b0fd0e4902de.webp" 
+         style="position: absolute; top: -40px; left: 50%; transform: translateX(-50%); width: 220px; opacity: 0.35; pointer-events: none; z-index: 0;" 
+         alt="" />
+
+    <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin-top: 20px;">
+      <p style="font-size: clamp(34px, 8vw, 48px); margin-bottom: 16px; color: #2d5a27; font-weight: 600; letter-spacing: 0.02em; margin-top: 0;" :style="{ fontFamily: themeConfig.fontHeading }">
         {{ invitation.groom_name }} &amp; {{ invitation.bride_name }}
       </p>
-      <p class="text-sm font-medium tracking-wide text-[#475569]">Terima kasih telah menjadi bagian dari kebahagiaan kami</p>
       
-      <div class="mt-16 flex flex-col items-center gap-3 border-t border-[#1e3a5f]/10 pt-8 w-full max-w-sm mx-auto">
-        <span class="text-[10px] uppercase tracking-widest text-[#64748b] font-bold">Dibuat dengan</span>
-        <a href="https://mengundanganda.fun" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 hover:scale-105 transition-transform duration-300">
-          <img src="/images/logo.webp" alt="MengundangAnda Logo" class="w-8 h-8 md:w-10 md:h-10 object-contain mb-1 drop-shadow-sm" />
-          <span class="text-sm md:text-base font-bold tracking-[0.15em] text-[#0f2440]">Mengundang<span class="font-normal text-[#3b82f6]">Anda</span></span>
+      <p style="font-size: clamp(13px, 3.5vw, 14px); font-weight: 500; letter-spacing: 0.05em; color: #4d784a; max-width: 400px; line-height: 1.6; margin: 0 auto;">
+        Terima kasih yang terdalam telah menjadi bagian dari hari bahagia kami. Doa restu Anda adalah anugerah terbesar.
+      </p>
+      
+      <!-- Jarak ekstrim besar untuk memisahkan dari Ucapan Terima Kasih -->
+      <div style="margin-top: 50px; display: flex; flex-direction: column; align-items: center; gap: 5px; padding-top: 16px; width: 100%; max-width: 280px; margin-left: auto; margin-right: auto; opacity: 0.9;">
+        <span style="font-size: clamp(10px, 2.5vw, 11px); text-transform: uppercase; letter-spacing: 0.25em; color: #5e8b5a; font-weight: 700; margin: 0;">POWERED BY</span>
+        
+        <a href="https://mengundanganda.fun" target="_blank" rel="noopener noreferrer" style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; margin-top: 4px; transition: transform 0.3s ease;">
+          <img src="/images/logo.webp" alt="MengundangAnda Logo" style="width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15)); margin: 0;" />
+          <span style="font-size: clamp(13px, 3.5vw, 14px); font-weight: 700; letter-spacing: 0.15em; color: #374151; margin-top: 4px;">
+            Mengundang<span style="font-weight: 700; color: #3b82f6;">Anda</span>
+          </span>
         </a>
       </div>
     </div>
