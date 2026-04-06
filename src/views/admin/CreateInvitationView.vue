@@ -355,7 +355,7 @@
             <div v-else>
               <Icon icon="lucide:camera" class="upload-icon" style="color: var(--admin-text-secondary);" />
               <div class="upload-text">Klik atau drag foto ke sini</div>
-              <div class="upload-hint">JPG, PNG, WebP • Max 10MB</div>
+              <div class="upload-hint">JPG, PNG, WebP • Max 20MB</div>
             </div>
           </div>
           <input
@@ -587,7 +587,7 @@
             <Icon icon="lucide:image-plus" class="upload-icon" style="color: var(--admin-text-secondary);" />
             <div class="upload-text">Klik atau drag foto ke sini</div>
             <div class="upload-hint">
-              Bisa upload banyak foto sekaligus • JPG, PNG, WebP • Max 10MB per
+              Bisa upload banyak foto sekaligus • JPG, PNG, WebP • Max 20MB per
               foto
             </div>
           </div>
@@ -709,7 +709,7 @@
               <div v-else>
                 <Icon icon="lucide:music-4" class="upload-icon" style="color: var(--admin-text-secondary);" />
                 <div class="upload-text">Upload File Audio</div>
-                <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 10MB</div>
+                <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 20MB</div>
               </div>
             </div>
             <input
@@ -1098,6 +1098,9 @@ import { useInvitationStore } from "@/stores/invitation";
 import type { LoveStoryItem, Photo, BankAccount } from "@/types/invitation";
 import { resolveAssetUrl } from "@/utils/url";
 
+const MAX_FILE_SIZE_MB = 20;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const router = useRouter();
 const route = useRoute();
 const store = useInvitationStore();
@@ -1246,6 +1249,11 @@ async function handleSingleUpload(
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (!file) return;
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
+    input.value = "";
+    return;
+  }
 
   try {
     const oldUrl = form[field];
@@ -1264,6 +1272,11 @@ async function handleMusicUpload(event: Event) {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
   if (!file) return;
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
+    input.value = "";
+    return;
+  }
 
   try {
     const url = await store.uploadMusic(file, form.slug || undefined);
@@ -1310,6 +1323,10 @@ async function handleCoverDrop(event: DragEvent) {
   coverDragover.value = false;
   const file = event.dataTransfer?.files[0];
   if (!file || !file.type.startsWith("image/")) return;
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
+    return;
+  }
   try {
     form.cover_photo = await store.uploadPhoto(file, form.slug || undefined);
   } catch {
@@ -1321,9 +1338,18 @@ async function handleGalleryUpload(event: Event) {
   const input = event.target as HTMLInputElement;
   const files = Array.from(input.files || []);
   if (files.length === 0) return;
+  const oversized = files.filter(f => f.size > MAX_FILE_SIZE_BYTES);
+  if (oversized.length > 0) {
+    showToast("error", `${oversized.length} file melebihi batas ${MAX_FILE_SIZE_MB}MB dan dilewati.`);
+  }
+  const validFiles = files.filter(f => f.size <= MAX_FILE_SIZE_BYTES);
+  if (validFiles.length === 0) {
+    input.value = "";
+    return;
+  }
 
   try {
-    const results = await store.uploadPhotos(files, form.slug || undefined);
+    const results = await store.uploadPhotos(validFiles, form.slug || undefined);
     results.forEach((r) => {
       form.photos.push({ url: r.url, caption: "" });
     });
@@ -1339,9 +1365,15 @@ async function handleGalleryDrop(event: DragEvent) {
     f.type.startsWith("image/"),
   );
   if (files.length === 0) return;
+  const oversized = files.filter(f => f.size > MAX_FILE_SIZE_BYTES);
+  if (oversized.length > 0) {
+    showToast("error", `${oversized.length} file melebihi batas ${MAX_FILE_SIZE_MB}MB dan dilewati.`);
+  }
+  const validFiles = files.filter(f => f.size <= MAX_FILE_SIZE_BYTES);
+  if (validFiles.length === 0) return;
 
   try {
-    const results = await store.uploadPhotos(files, form.slug || undefined);
+    const results = await store.uploadPhotos(validFiles, form.slug || undefined);
     results.forEach((r) => {
       form.photos.push({ url: r.url, caption: "" });
     });
