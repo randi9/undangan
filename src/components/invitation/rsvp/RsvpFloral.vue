@@ -1,9 +1,9 @@
 <template>
-  <section style="position: relative; max-width: 100%; margin: 0 auto; text-align: center; z-index: 10; overflow: hidden; margin-bottom: 20px;">
+  <section style="position: relative; max-width: 100%; margin: 0 auto; text-align: center; z-index: 10; overflow: hidden; margin-bottom: 20px; background-color: #dcf2dc;">
     
     <!-- OVERLAY TRANSISI MIST / KABUT (Untuk melembutkan perpindahan warna Gallery ke RSVP) -->
     <!-- Overlay ini diletakkan di atas layer bunga agar batas keras terpotongnya bunga tertutup kabut -->
-    <div ref="mistOverlay" style="position: absolute; top: -1px; left: 0; right: 0; height: 180px; background: linear-gradient(to bottom, var(--theme-bg) 0%, rgba(253, 251, 247, 0.9) 30%, transparent 100%); z-index: 30; pointer-events: none;"></div>
+    <div ref="mistOverlay" style="position: absolute; top: -1px; left: 0; right: 0; height: 180px; background: linear-gradient(to bottom, #dcf2dc 0%, rgba(220, 242, 220, 0.9) 30%, transparent 100%); z-index: 30; pointer-events: none;"></div>
     
     <!-- BUNGKUSAN KONTEN UTAMA YANG DIANIMASIKAN -->
     <div ref="rsvpWrapper" style="position: relative; padding: 48px 24px 100px; max-width: 1024px; margin: 0 auto; z-index: 10;">
@@ -61,7 +61,7 @@
         
         <!-- Decoration top right -->
         <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/cf584d49-6790-4bb8-971f-89cdc91c6e00.webp" 
-             style="position: absolute; top: -48px; right: -48px; width: 160px; opacity: 0.15; transform: rotate(45deg); pointer-events: none;" />
+             style="position: absolute; top: -48px; right: -48px; width: 160px; opacity: 0.5; transform: rotate(45deg); pointer-events: none; z-index: 0;" />
         
         <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; margin-top: 0; color: var(--theme-primary); display: flex; align-items: center; gap: 12px; position: relative; z-index: 10;" 
             :style="{ fontFamily: themeConfig.fontHeading }">
@@ -131,7 +131,7 @@
           
           <!-- Decoration bottom left -->
           <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/38c7b2f4-88da-4e1c-9457-5b84781baea5.webp" 
-               style="position: absolute; bottom: -40px; left: -40px; width: 160px; opacity: 0.08; pointer-events: none;" />
+               style="position: absolute; bottom: -40px; left: -40px; width: 160px; opacity: 0.5; pointer-events: none; z-index: 0;" />
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; position: relative; z-index: 10;">
             <h3 style="font-size: 24px; font-weight: bold; margin: 0; color: var(--theme-primary);" :style="{ fontFamily: themeConfig.fontHeading }">Buku Tamu</h3>
