@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, reactive, watch, nextTick, type Component } from "vue";
+
+// === DESKTOP IFRAME MODE ===
+// On desktop, we render the invitation inside an iframe so vw units work like mobile
+const isInsideIframe = window.self !== window.top;
+const windowWidth = ref(window.innerWidth);
+const isDesktop = computed(() => windowWidth.value > 430 && !isInsideIframe);
+
+function onResize() { windowWidth.value = window.innerWidth; }
+if (!isInsideIframe) {
+  window.addEventListener('resize', onResize);
+}
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -363,7 +374,18 @@ async function handleSubmitRsvp(form: { guest_name: string; attendance: 'hadir' 
   }
 }
 
+// Current URL for iframe src (desktop mode)
+const currentUrl = computed(() => window.location.href);
+
 onMounted(async () => {
+  // On desktop, we only render the iframe shell — skip all data loading
+  if (isDesktop.value) return;
+
+  // Hide scrollbar when inside iframe (desktop phone frame)
+  if (isInsideIframe) {
+    document.documentElement.classList.add('hide-scrollbar');
+  }
+
   const slug = (route.meta.subdomain as string) || (route.params.slug as string);
   
   // -- LIVE PREVIEW INTERCEPT --
@@ -401,11 +423,28 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   if (countdownTimer) clearInterval(countdownTimer);
   ScrollTrigger.getAll().forEach(t => t.kill());
+  window.removeEventListener('resize', onResize);
 });
 </script>
 
 <template>
-  <div v-if="loading" class="min-h-screen flex items-center justify-center bg-gray-50">
+  <!-- ========================================= -->
+  <!-- DESKTOP MODE: Render inside phone-frame iframe -->
+  <!-- ========================================= -->
+  <div v-if="isDesktop" class="desktop-phone-wrapper">
+    <div class="desktop-phone-frame">
+      <iframe 
+        :src="currentUrl" 
+        class="phone-iframe"
+        title="Undangan Pernikahan"
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- MOBILE MODE: Render normally (or inside iframe) -->
+  <!-- ========================================= -->
+  <div v-else-if="loading" class="min-h-screen flex items-center justify-center bg-gray-50">
     <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-amber-700"></div>
   </div>
 
@@ -542,6 +581,43 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* ==============================
+   DESKTOP: Phone Frame Wrapper
+   ============================== */
+.desktop-phone-wrapper {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #ffffff;
+}
+
+.desktop-phone-frame {
+  position: relative;
+  width: 390px;
+  height: 95vh;
+  height: 95dvh;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow:
+    -1px 0 0 rgba(0,0,0,0.06),
+    1px 0 0 rgba(0,0,0,0.06),
+    -4px 0 16px rgba(0,0,0,0.08),
+    4px 0 16px rgba(0,0,0,0.08),
+    -8px 0 30px rgba(0,0,0,0.05),
+    8px 0 30px rgba(0,0,0,0.05);
+  background: #fff;
+}
+
+.phone-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
 /* WATERMARK OVERLAY */
 .watermark-overlay {
   position: fixed;
@@ -601,5 +677,16 @@ onBeforeUnmount(() => {
 }
 .trial-separator {
   opacity: 0.6;
+}
+</style>
+
+<!-- Non-scoped: targets html element inside iframe -->
+<style>
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 </style>

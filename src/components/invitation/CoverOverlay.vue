@@ -86,17 +86,6 @@ const emit = defineEmits<{
 const stampRef = ref(null);
 
 const bukaAmplop = () => {
-  // Request fullscreen mode directly upon click (user gesture required)
-  try {
-    const docElm = document.documentElement as any;
-    if (docElm.requestFullscreen) {
-      docElm.requestFullscreen().catch((e: Error) => console.log(e));
-    } else if (docElm.webkitRequestFullscreen) { // iOS/Safari fallback
-      docElm.webkitRequestFullscreen();
-    }
-  } catch (err) {
-    console.warn("Fullscreen not supported or blocked", err);
-  }
 
   gsap.to(stampRef.value, {
     scale: 1.5,
