@@ -1,18 +1,74 @@
 <template>
-  <section v-if="bankList.length > 0" style="position: relative; padding: 48px 24px; max-width: 1024px; margin: 0 auto; text-align: center; z-index: 10;">
+  <section ref="sectionRef" v-if="bankList.length > 0" style="position: relative; padding: 50px 0 220px; max-width: 100%; overflow: hidden; margin: 0 auto; text-align: center; z-index: 10;">
+    
+    <!-- Giant Oval Background -->
+    <div style="position: absolute; top: 100px; bottom: 100px; left: 50%; width: 150vw; transform: translateX(-50%); background-color: rgba(213, 245, 204, 0.6); border-radius: 50%; z-index: -1;"></div>
+    
+    <!-- ===== DEKORASI BUNGA ATAS ===== -->
+    <!-- Sudut Kiri Layer Belakang (z-index: 3) -->
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_d151064b-d520-429e-b5c9-32b7276bf585.webp" 
+         style="position: absolute; top: 120px; left: -20px; transform: scaleX(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 3; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Kiri Atas Belakang" />
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_d151064b-d520-429e-b5c9-32b7276bf585.webp" 
+         style="position: absolute; top: 120px; right: -20px; width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 3; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Kanan Atas Belakang" />
+
+    <!-- Lapis Menengah (z-index: 4) -->
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" 
+         style="position: absolute; top: 80px; left: 80px; transform: scaleX(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 4; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Atas Kiri" />
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" 
+         style="position: absolute; top: 80px; right: 80px; width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 4; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Atas Kanan" />
+
+    <!-- Tengah (z-index: 5) -->
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_ce378e24-3552-41ff-b345-5776c2cfa1ff.webp" 
+         style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: clamp(200px, 30vw, 300px); pointer-events: none; z-index: 5; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Atas" />
+         
+    <!-- ===== DEKORASI BUNGA BAWAH ===== -->
+    <!-- Lapis Belakang (z-index: 3) -->
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_d151064b-d520-429e-b5c9-32b7276bf585.webp" 
+         style="position: absolute; bottom: 120px; left: -20px; transform: scaleX(-1) scaleY(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 3; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Kiri Bawah Belakang" />
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_d151064b-d520-429e-b5c9-32b7276bf585.webp" 
+         style="position: absolute; bottom: 120px; right: -20px; transform: scaleY(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 3; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Kanan Bawah Belakang" />
+
+    <!-- Lapis Menengah (z-index: 4) -->
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" 
+         style="position: absolute; bottom: 80px; left: 80px; transform: scaleX(-1) scaleY(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 4; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Bawah Kiri" />
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" 
+         style="position: absolute; bottom: 80px; right: 80px; transform: scaleY(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 4; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Bawah Kanan" />
+         
+    <!-- Tengah (z-index: 5) -->
+    <img src="https://media.mengundanganda.fun/tema%20floral/rsvp/sashkeh_ce378e24-3552-41ff-b345-5776c2cfa1ff.webp" 
+         style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) scaleY(-1); width: clamp(200px, 30vw, 300px); pointer-events: none; z-index: 5; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" 
+         class="gift-floral-decor"
+         alt="Bunga Bawah" />
+    
+    <!-- Inner Content Wrapper -->
+    <div style="max-width: 1024px; margin: 0 auto; padding: 0 24px; position: relative;">
     
     <!-- Header with Floral Ornament -->
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 64px; position: relative;">
-      <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" 
-           style="width: 100%; max-width: 240px; opacity: 0.9; margin-bottom: -70px; transition: transform 0.7s ease;" 
-           alt="Ornament" />
-      <h2 style="font-size: clamp(36px, 6vw, 60px); margin-bottom: 16px; color: var(--theme-primary); position: relative; z-index: 10; margin-top: 40px; letter-spacing: 0.025em; text-shadow: 0 1px 2px rgba(0,0,0,0.05);" 
+      <h2 style="font-size: clamp(36px, 6vw, 60px); margin-bottom: 16px; color: var(--theme-primary); position: relative; z-index: 10; margin-top: 140px; letter-spacing: 0.025em; text-shadow: 0 1px 2px rgba(0,0,0,0.05);" 
           :style="{ fontFamily: themeConfig.fontHeading }">
         Wedding Gift
       </h2>
       <p style="color: var(--theme-text-light); font-size: clamp(14px, 3vw, 16px); margin-top: 8px; max-width: 512px; margin-left: auto; margin-right: auto; line-height: 1.625;">
-        Doa restu Anda merupakan karunia yang sangat berarti bagi kami.<br />
-        Namun, apabila Anda ingin memberikan tanda kasih, kami menyediakan amplop digital di bawah ini.
+        Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun, apabila Anda ingin memberikan tanda kasih, kami menyediakan amplop digital di bawah ini.
       </p>
     </div>
     
@@ -77,14 +133,19 @@
       </div>
       
     </div>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation, BankAccount } from '@/types/invitation';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const props = defineProps<{
   invitation: Invitation;
@@ -92,6 +153,30 @@ const props = defineProps<{
 }>();
 
 const copiedIndex = ref<number | null>(null);
+const sectionRef = ref<HTMLElement | null>(null);
+let ctx: gsap.Context | null = null;
+
+onMounted(() => {
+  if (!sectionRef.value) return;
+  
+  ctx = gsap.context(() => {
+    gsap.from('.gift-floral-decor', {
+      scale: 0,
+      opacity: 0,
+      duration: 1.2,
+      stagger: 0.1,
+      ease: 'back.out(1.5)',
+      scrollTrigger: {
+        trigger: sectionRef.value,
+        start: 'top 75%'
+      }
+    });
+  }, sectionRef.value);
+});
+
+onUnmounted(() => {
+  ctx?.revert();
+});
 
 const bankList = computed<BankAccount[]>(() => {
   if (props.invitation.banks && Array.isArray(props.invitation.banks) && props.invitation.banks.length > 0) {
