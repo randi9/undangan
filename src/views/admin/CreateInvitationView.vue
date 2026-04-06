@@ -33,6 +33,51 @@
             Isi informasi di bawah untuk membuat undangan pernikahan
           </p>
 
+          <!-- Onboarding Guide Banner -->
+          <div v-if="showGuide" class="onboarding-banner">
+            <button class="onboarding-close" @click="dismissGuide" title="Tutup panduan">
+              <Icon icon="lucide:x" />
+            </button>
+            <div class="onboarding-header">
+              <Icon icon="lucide:book-open" style="font-size: 20px;" />
+              <span>Panduan Singkat Membuat Undangan</span>
+            </div>
+            <div class="onboarding-steps">
+              <div class="onboarding-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <strong>Pilih Tema & Buat URL</strong>
+                  <span>Pilih desain undangan, lalu buat alamat unik, contoh: <em>andi-sarah</em></span>
+                </div>
+              </div>
+              <div class="onboarding-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <strong>Isi Data Mempelai</strong>
+                  <span>Nama panggilan wajib diisi. Nama lengkap, nama orang tua opsional.</span>
+                </div>
+              </div>
+              <div class="onboarding-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <strong>Upload Foto & Isi Acara</strong>
+                  <span>Foto sampul, detail akad/resepsi, galeri, dan musik latar.</span>
+                </div>
+              </div>
+              <div class="onboarding-step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <strong>Klik "Buat Undangan"</strong>
+                  <span>Setelah selesai, klik tombol biru di bawah. Undangan langsung bisa disebar!</span>
+                </div>
+              </div>
+            </div>
+            <div class="onboarding-footer">
+              <Icon icon="lucide:lightbulb" style="color: #f59e0b; flex-shrink: 0;" />
+              <span>Yang bertanda <strong>*</strong> wajib diisi. Sisanya opsional — bisa dilengkapi nanti lewat menu <strong>Edit</strong>.</span>
+            </div>
+          </div>
+
           <form @submit.prevent="handleSubmit">
             <!-- Theme Selector -->
             <div class="form-section">
@@ -54,6 +99,10 @@
             <div class="form-section">
               <h3 class="form-section-title"><Icon icon="lucide:link" style="color: var(--admin-primary);" /> URL Undangan</h3>
               <p class="form-section-subtitle">Slug unik untuk alamat undangan</p>
+              <div class="helper-tip">
+                <Icon icon="lucide:info" class="helper-tip-icon" />
+                <span>Gunakan nama pasangan yang mudah diingat, contoh: <strong>andi-sarah</strong>, <strong>budi-dan-ani</strong>. Tamu akan mengakses undangan di alamat ini.</span>
+              </div>
           <div class="form-group">
             <label class="form-label">Slug (URL)</label>
             <div style="position: relative;">
@@ -108,6 +157,10 @@
         <div class="form-section">
           <h3 class="form-section-title"><Icon icon="lucide:users" style="color: var(--admin-primary);" /> Informasi Pasangan</h3>
           <p class="form-section-subtitle">Data mempelai pria dan wanita</p>
+          <div class="helper-tip">
+            <Icon icon="lucide:info" class="helper-tip-icon" />
+            <span>Hanya <strong>Nama Panggilan</strong> yang wajib. Nama lengkap & orang tua opsional tapi akan terlihat lebih lengkap di undangan.</span>
+          </div>
 
           <div class="split-grid">
             <!-- Groom -->
@@ -272,6 +325,10 @@
           <p class="form-section-subtitle">
             Foto utama yang ditampilkan di halaman depan undangan
           </p>
+          <div class="helper-tip">
+            <Icon icon="lucide:info" class="helper-tip-icon" />
+            <span>Gunakan foto <strong>portrait</strong> (tegak) untuk hasil terbaik. Foto prewedding sangat direkomendasikan!</span>
+          </div>
           <div
             class="photo-upload-zone"
             :class="{ dragover: coverDragover }"
@@ -314,6 +371,10 @@
         <div class="form-section">
           <h3 class="form-section-title"><Icon icon="lucide:calendar-days" style="color: var(--admin-primary);" /> Detail Acara</h3>
           <p class="form-section-subtitle">Informasi waktu dan tempat acara</p>
+          <div class="helper-tip">
+            <Icon icon="lucide:info" class="helper-tip-icon" />
+            <span>Isi <strong>tanggal, waktu, tempat, dan alamat</strong> acara. Link Google Maps opsional tapi memudahkan tamu menemukan lokasi.</span>
+          </div>
 
           <div class="split-grid">
             <!-- Akad -->
@@ -442,6 +503,10 @@
           <p class="form-section-subtitle">
             Ceritakan perjalanan cinta kalian (opsional)
           </p>
+          <div class="helper-tip">
+            <Icon icon="lucide:info" class="helper-tip-icon" />
+            <span>Klik <strong>"+ Tambah Cerita"</strong> untuk menambahkan momen, misalnya: "2020 — Pertama Bertemu", "2023 — Lamaran". Bagian ini opsional.</span>
+          </div>
 
           <div
             v-for="(story, index) in form.love_story"
@@ -489,6 +554,10 @@
           <p class="form-section-subtitle">
             Upload foto-foto prewedding atau momen spesial
           </p>
+          <div class="helper-tip">
+            <Icon icon="lucide:info" class="helper-tip-icon" />
+            <span>Bisa upload banyak foto sekaligus. Pilih mode <strong>Carousel</strong> (slideshow) atau <strong>Masonry</strong> (grid bertumpuk). Bagian ini opsional.</span>
+          </div>
 
           <!-- Gallery Type Selector -->
           <div class="gallery-type-selector">
@@ -572,6 +641,10 @@
           <p class="form-section-subtitle">
             Rekening untuk amplop digital. Bisa lebih dari satu. (opsional)
           </p>
+          <div class="helper-tip">
+            <Icon icon="lucide:info" class="helper-tip-icon" />
+            <span>Tamu bisa mengirim hadiah uang digital. Klik <strong>"+ Tambah Rekening"</strong> lalu isi nama bank, nomor rekening, dan atas nama. Maksimal 2 rekening.</span>
+          </div>
 
           <div
             v-for="(bank, index) in form.banks"
@@ -621,6 +694,10 @@
           <p class="form-section-subtitle">
             Pilih lagu yang akan berputar otomatis saat undangan dibuka
           </p>
+          <div class="helper-tip">
+            <Icon icon="lucide:info" class="helper-tip-icon" />
+            <span>Upload file lagu favorit (MP3/M4A). Lagu akan otomatis diputar saat tamu membuka undangan. Bagian ini opsional.</span>
+          </div>
           <div class="form-group">
             <div class="photo-upload-zone" style="padding: 24px;" @click="musicFileInput?.click()">
               <div v-if="form.music_url" style="width: 100%; text-align: center;">
@@ -871,6 +948,142 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--admin-primary, #3b82f6);
+}
+
+/* ===== Onboarding Banner ===== */
+.onboarding-banner {
+  position: relative;
+  background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 28px;
+  animation: slideDown 0.4s ease-out;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.onboarding-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  transition: all 0.2s;
+}
+.onboarding-close:hover {
+  background: rgba(0,0,0,0.05);
+  color: #64748b;
+}
+.onboarding-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 18px;
+}
+.onboarding-steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+  .onboarding-steps {
+    grid-template-columns: 1fr;
+  }
+}
+.onboarding-step {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+.onboarding-step:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.08);
+  transform: translateY(-1px);
+}
+.step-number {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.step-content strong {
+  font-size: 13px;
+  color: #1e293b;
+}
+.step-content span {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
+.onboarding-footer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #64748b;
+  background: rgba(255,255,255,0.6);
+  padding: 10px 14px;
+  border-radius: 10px;
+  line-height: 1.5;
+}
+
+/* ===== Helper Tips ===== */
+.helper-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #3b82f6;
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  line-height: 1.5;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.helper-tip-icon {
+  color: #3b82f6;
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.helper-tip strong {
+  color: #334155;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -922,6 +1135,12 @@ const musicFileInput = ref<HTMLInputElement>();
 const previewIframe = ref<HTMLIFrameElement>();
 const mobilePreviewIframe = ref<HTMLIFrameElement>();
 const showMobilePreview = ref(false);
+const showGuide = ref(localStorage.getItem('hideCreateGuide') !== 'true');
+
+function dismissGuide() {
+  showGuide.value = false;
+  localStorage.setItem('hideCreateGuide', 'true');
+}
 
 const form = reactive({
   slug: "",
