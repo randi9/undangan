@@ -288,17 +288,17 @@
         </div>
         <div class="lp-footer-links">
           <h4>Legal</h4>
-          <router-link to="/terms">Syarat & Ketentuan</router-link>
-          <router-link to="/privacy">Kebijakan Privasi</router-link>
+          <a href="/terms">Syarat & Ketentuan</a>
+          <a href="/privacy">Kebijakan Privasi</a>
         </div>
       </div>
       <div class="lp-footer-bottom">
         <div class="lp-container lp-footer-bottom-inner">
           <p>&copy; 2026 MengundangAnda. All rights reserved.</p>
           <div class="lp-footer-bottom-links">
-            <router-link to="/terms">Syarat & Ketentuan</router-link>
+            <a href="/terms">Syarat & Ketentuan</a>
             <span class="lp-footer-dot">·</span>
-            <router-link to="/privacy">Kebijakan Privasi</router-link>
+            <a href="/privacy">Kebijakan Privasi</a>
           </div>
         </div>
       </div>
