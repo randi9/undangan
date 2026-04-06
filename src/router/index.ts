@@ -41,8 +41,26 @@ if (isLandingPage) {
   // Landing page untuk subdomain saya.*
   routes = [
     {
-      path: '/:pathMatch(.*)*',
+      path: '/',
       name: 'landing',
+      component: () => import('@/views/LandingView.vue'),
+      meta: { title: 'MengundangAnda — Undangan Digital Pernikahan Premium' }
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('@/views/TermsView.vue'),
+      meta: { title: 'Syarat & Ketentuan - MengundangAnda' }
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('@/views/PrivacyView.vue'),
+      meta: { title: 'Kebijakan Privasi - MengundangAnda' }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'landing-fallback',
       component: () => import('@/views/LandingView.vue'),
       meta: { title: 'MengundangAnda — Undangan Digital Pernikahan Premium' }
     }
@@ -126,6 +144,18 @@ if (isLandingPage) {
       name: 'landing-preview',
       component: () => import('@/views/LandingView.vue'),
       meta: { title: 'MengundangAnda — Undangan Digital Pernikahan Premium' }
+    },
+    {
+      path: '/terms',
+      name: 'terms-admin',
+      component: () => import('@/views/TermsView.vue'),
+      meta: { title: 'Syarat & Ketentuan - MengundangAnda' }
+    },
+    {
+      path: '/privacy',
+      name: 'privacy-admin',
+      component: () => import('@/views/PrivacyView.vue'),
+      meta: { title: 'Kebijakan Privasi - MengundangAnda' }
     },
     {
       // Fallback for localhost testing without subdomain

@@ -10,7 +10,14 @@
     </header>
 
     <main class="login-main">
-      <SignUp routing="path" path="/sign-up" signInUrl="/login" :fallbackRedirectUrl="redirectUrl" :forceRedirectUrl="redirectUrl" />
+      <div class="signup-wrapper">
+        <SignUp routing="path" path="/sign-up" signInUrl="/login" :fallbackRedirectUrl="redirectUrl" :forceRedirectUrl="redirectUrl" />
+        <p class="legal-consent">
+          Dengan mendaftar, Anda menyetujui
+          <a href="/terms" target="_blank">Syarat & Ketentuan</a> dan
+          <a href="/privacy" target="_blank">Kebijakan Privasi</a> kami.
+        </p>
+      </div>
     </main>
   </div>
 </template>
@@ -96,5 +103,33 @@ const redirectUrl = computed(() => {
   padding: 24px;
   position: relative;
   z-index: 10;
+}
+
+.signup-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.legal-consent {
+  font-size: 12.5px;
+  color: #94a3b8;
+  text-align: center;
+  max-width: 340px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.legal-consent a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.legal-consent a:hover {
+  color: #2563eb;
+  text-decoration: underline;
 }
 </style>

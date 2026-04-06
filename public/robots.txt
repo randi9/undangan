@@ -3,9 +3,9 @@
 
 User-agent: *
 Allow: /
+Allow: /terms
+Allow: /privacy
 Disallow: /api/
-Disallow: /login
-Disallow: /sign-up
 Disallow: /create
 Disallow: /edit/
 Disallow: /payment
