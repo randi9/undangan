@@ -761,8 +761,8 @@
       </div>
 
       <!-- Tombol FAB Mobile Preview -->
-      <button class="mobile-preview-fab btn btn-primary" @click="showMobilePreview = true">
-        <span style="font-size: 20px;">👀</span> Lihat Preview
+      <button class="mobile-preview-fab" @click="showMobilePreview = true">
+        <Icon icon="lucide:eye" style="font-size: 20px;" /> Lihat Preview
       </button>
 
       <!-- Modal Fullscreen Mobile Preview -->
