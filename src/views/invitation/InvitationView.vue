@@ -336,7 +336,7 @@ function parseTimeStr(raw: string | undefined | null): string {
   if (!raw) return '00:00:00';
   // Extract first HH:MM or HH:MM:SS from free-text like "08:00 - 10:00 WIB"
   const match = raw.match(/(\d{1,2}:\d{2}(?::\d{2})?)/);
-  return match ? match[1] : '00:00:00';
+  return match?.[1] ?? '00:00:00';
 }
 
 function updateCountdown() {
