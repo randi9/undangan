@@ -20,6 +20,7 @@ import { useInvitationStore } from "@/stores/invitation";
 import type { Invitation, LoveStoryItem, Rsvp } from "@/types/invitation";
 import type { ThemeConfig } from "@/types/theme";
 import { resolveAssetUrl } from "@/utils/url";
+import { Icon } from "@iconify/vue";
 
 // --- SECTION COMPONENT IMPORTS ---
 import CoverOverlay from "@/components/invitation/CoverOverlay.vue";
@@ -574,8 +575,8 @@ onBeforeUnmount(() => {
 
     <!-- Music Player -->
     <audio ref="musicPlayer" v-if="invitation.music_url" :src="resolveAssetUrl(invitation.music_url, apiBase)" loop preload="auto"></audio>
-    <button v-if="invitation.music_url && isOpened" @click="toggleMusic" :class="['fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full shadow-xl flex items-center justify-center transition-all bg-[var(--theme-primary)] text-white hover:scale-110', isPlaying ? 'animate-pulse' : '']">
-      <span>{{ isPlaying ? '🎵' : '🔇' }}</span>
+    <button v-if="invitation.music_url && isOpened" @click="toggleMusic" :class="['fixed bottom-8 right-6 z-50 w-12 h-12 rounded-full shadow-lg border border-white/50 backdrop-blur-md flex items-center justify-center transition-all duration-300', isPlaying ? 'bg-white/40 text-[var(--theme-primary)] hover:scale-105 active:scale-95' : 'bg-white/20 text-gray-500 opacity-80 hover:opacity-100 hover:scale-105 active:scale-95']">
+      <Icon :icon="isPlaying ? 'ph:music-notes-simple-fill' : 'ph:speaker-slash-fill'" class="w-5 h-5 drop-shadow-sm" />
     </button>
   </div>
 </template>

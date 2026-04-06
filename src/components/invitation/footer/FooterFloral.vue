@@ -1,5 +1,5 @@
 <template>
-  <footer class="py-20 px-6 text-center text-[#1e3a5f] relative overflow-hidden bg-white">
+  <footer class="pt-20 pb-32 px-6 text-center text-[#1e3a5f] relative overflow-hidden bg-white">
     <div class="absolute inset-0 bg-gradient-to-b from-white to-[#f0f5ff] z-0"></div>
     <div class="relative z-10 flex flex-col items-center justify-center">
       <p class="text-4xl md:text-5xl mb-4 text-[#1e3a5f] drop-shadow-sm" :style="{ fontFamily: themeConfig.fontHeading }">
