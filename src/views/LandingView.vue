@@ -286,10 +286,20 @@
           <a href="#">Instagram</a>
           <a href="#">WhatsApp</a>
         </div>
+        <div class="lp-footer-links">
+          <h4>Legal</h4>
+          <a href="/terms">Syarat & Ketentuan</a>
+          <a href="/privacy">Kebijakan Privasi</a>
+        </div>
       </div>
       <div class="lp-footer-bottom">
-        <div class="lp-container">
+        <div class="lp-container lp-footer-bottom-inner">
           <p>&copy; 2026 MengundangAnda. All rights reserved.</p>
+          <div class="lp-footer-bottom-links">
+            <a href="/terms">Syarat & Ketentuan</a>
+            <span class="lp-footer-dot">·</span>
+            <a href="/privacy">Kebijakan Privasi</a>
+          </div>
         </div>
       </div>
     </footer>
@@ -1466,7 +1476,7 @@ const themesData = [
 
 .lp-footer-inner {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 48px;
   padding-bottom: 48px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -1507,11 +1517,36 @@ const themesData = [
 
 .lp-footer-bottom {
   padding: 20px 0;
-  text-align: center;
+}
+.lp-footer-bottom-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 .lp-footer-bottom p {
   font-size: 13px;
   color: rgba(255,255,255,0.35);
+  margin: 0;
+}
+.lp-footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lp-footer-bottom-links a {
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.lp-footer-bottom-links a:hover {
+  color: #60a5fa;
+}
+.lp-footer-dot {
+  color: rgba(255,255,255,0.2);
+  font-size: 14px;
 }
 
 /* --- Back to Top Button --- */

@@ -263,23 +263,8 @@ app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
           payment_required: true,
         });
       }
-
+      
       showWatermark = true;
-
-      // Track view — only for non-preview requests
-      const isPreview = req.query.preview === "true";
-      if (!isPreview) {
-        const viewerIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
-        await supabase.from("invitation_views").insert([{
-          invitation_id: invitation.id,
-          viewer_ip: viewerIp,
-        }]);
-        // Increment view_count on the invitation
-        await supabase
-          .from("invitations")
-          .update({ view_count: (invitation.view_count || 0) + 1 })
-          .eq("id", invitation.id);
-      }
     } else if (paymentStatus === "paid" && invitation.paid_at) {
       // Periksa batas 1 tahun dari tanggal pembayaran
       const paidDate = new Date(invitation.paid_at);
@@ -294,6 +279,43 @@ app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
           expired: true,
         });
       }
+    }
+
+    // --- Track view for ALL invitations (trial & paid) ---
+    // Only track if not a preview request.
+    const isPreview = req.query.preview === "true";
+    if (!isPreview) {
+      const viewerIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
+      
+      const incrementView = async () => {
+        try {
+          // 1. Cek apakah IP ini sudah pernah mengunjungi undangan ini
+          const { data: existingView } = await supabase
+            .from("invitation_views")
+            .select("id")
+            .eq("invitation_id", invitation.id)
+            .eq("viewer_ip", viewerIp)
+            .single();
+
+          // Jika belum pernah dikunjungi oleh IP ini, catat dan tambahkan angkanya
+          if (!existingView) {
+            await supabase.from("invitation_views").insert([{
+              invitation_id: invitation.id,
+              viewer_ip: viewerIp,
+            }]);
+            
+            await supabase
+              .from("invitations")
+              .update({ view_count: (invitation.view_count || 0) + 1 })
+              .eq("id", invitation.id);
+          }
+        } catch (err) {
+          console.error("[View Tracker] Failed to track unique view:", err);
+        }
+      };
+
+      // Fire and forget
+      incrementView();
     }
 
     const { data: photos } = await supabase

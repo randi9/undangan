@@ -20,6 +20,7 @@ import { useInvitationStore } from "@/stores/invitation";
 import type { Invitation, LoveStoryItem, Rsvp } from "@/types/invitation";
 import type { ThemeConfig } from "@/types/theme";
 import { resolveAssetUrl } from "@/utils/url";
+import { Icon } from "@iconify/vue";
 
 // Covers
 import CoverElegant from "@/components/invitation/covers/CoverElegant.vue";
@@ -374,17 +375,36 @@ const currentPhotoUrl = computed(() => {
   return photo ? resolveAssetUrl(photo.url, apiBase) : "";
 });
 
+function parseTimeStr(raw: string | undefined | null): string {
+  if (!raw) return '00:00:00';
+  // Extract first HH:MM or HH:MM:SS from free-text like "08:00 - 10:00 WIB"
+  const match = raw.match(/(\d{1,2}:\d{2}(?::\d{2})?)/);
+  return match?.[1] ?? '00:00:00';
+}
+
 function updateCountdown() {
   const dateStr = invitation.value?.akad_date || invitation.value?.resepsi_date;
   const timeStr = invitation.value?.akad_date ? invitation.value?.akad_time : invitation.value?.resepsi_time;
   
   if (!dateStr) return;
 
-  // Combine date and time (fallback to 00:00:00 if time is missing)
-  const safeTime = timeStr || '00:00:00';
+  // Extract parseable time from free-text (e.g. "08:00 - 10:00 WIB" → "08:00")
+  const safeTime = parseTimeStr(timeStr);
   const targetDateStr = dateStr.includes('T') ? dateStr : `${dateStr}T${safeTime}`;
   
   const target = new Date(targetDateStr).getTime();
+  if (isNaN(target)) {
+    // Fallback: parse date only without time
+    const fallback = new Date(dateStr).getTime();
+    if (isNaN(fallback)) return;
+    const diff = Math.max(0, fallback - Date.now());
+    countdown.days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    countdown.hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    countdown.minutes = Math.floor((diff / (1000 * 60)) % 60);
+    countdown.seconds = Math.floor((diff / 1000) % 60);
+    return;
+  }
+
   const now = Date.now();
   const diff = Math.max(0, target - now);
 
@@ -617,8 +637,8 @@ onBeforeUnmount(() => {
 
     <!-- Music Player -->
     <audio ref="musicPlayer" v-if="invitation.music_url" :src="resolveAssetUrl(invitation.music_url, apiBase)" loop preload="auto"></audio>
-    <button v-if="invitation.music_url && isOpened" @click="toggleMusic" :class="['fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full shadow-xl flex items-center justify-center transition-all bg-[var(--theme-primary)] text-white hover:scale-110', isPlaying ? 'animate-pulse' : '']">
-      <span>{{ isPlaying ? '🎵' : '🔇' }}</span>
+    <button v-if="invitation.music_url && isOpened" @click="toggleMusic" :class="['fixed bottom-8 right-6 z-50 w-12 h-12 rounded-full shadow-lg border border-white/50 backdrop-blur-md flex items-center justify-center transition-all duration-300', isPlaying ? 'bg-white/40 text-[var(--theme-primary)] hover:scale-105 active:scale-95' : 'bg-white/20 text-gray-500 opacity-80 hover:opacity-100 hover:scale-105 active:scale-95']">
+      <Icon :icon="isPlaying ? 'ph:music-notes-simple-fill' : 'ph:speaker-slash-fill'" class="w-5 h-5 drop-shadow-sm" />
     </button>
   </div>
 </template>

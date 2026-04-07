@@ -1099,13 +1099,22 @@ textarea.form-input {
   right: 24px;
   z-index: 90;
   border-radius: 50px;
-  padding: 14px 20px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  color: var(--admin-primary);
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
+}
+.mobile-preview-fab:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
 }
 .mobile-preview-fab:active {
   transform: scale(0.95);
