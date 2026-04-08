@@ -251,7 +251,7 @@ function animateHeroOval() {
   gsap.set(heroOval.value, { scale: 0.6, opacity: 0 });
   gsap.set(heroTextItems.value, { y: 30, opacity: 0 });
 
-  const tl = gsap.timeline({ delay: 4 });
+  const tl = gsap.timeline({ delay: 0.2 });
 
   tl.to(heroOval.value, {
     scale: 1,
@@ -552,7 +552,15 @@ onBeforeUnmount(() => {
       
       <!-- HERO (Dynamic per theme) -->
       <component :is="activeHero" :overlay-gradient="activeTheme.overlayGradient">
-        <div ref="heroOval" class="flex flex-col gap-4 items-center justify-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] mx-auto rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)] opacity-0 p-6 md:p-10 text-center">
+        <div ref="heroOval" :class="[
+            'flex flex-col gap-4 items-center justify-center mx-auto opacity-0 p-6 md:p-10 text-center relative z-10',
+            themeName !== 'elegant_blue' 
+              ? 'w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
+              : 'w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
+          ]"
+        >
+          <img v-if="themeName === 'elegant_blue'" src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(1).png" alt="Frame" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain -z-10 pointer-events-none drop-shadow-lg" style="max-width: none;" />
+
           <p :ref="setHeroTextRef" class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium opacity-0">The Wedding of</p>
           <h1 :ref="setHeroTextRef" class="text-5xl md:text-7xl lg:text-8xl mb-1 opacity-0 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]" :style="{ fontFamily: activeTheme.fontHeading }">
             {{ invitation.groom_name }}
