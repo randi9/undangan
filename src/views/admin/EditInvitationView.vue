@@ -280,7 +280,7 @@
               <div v-else>
                 <Icon icon="lucide:camera" class="upload-icon" style="color: var(--admin-text-secondary);" />
                 <div class="upload-text">Klik atau drag foto ke sini</div>
-                <div class="upload-hint">JPG, PNG, WebP • Max 20MB (otomatis dikonversi ke WebP)</div>
+                <div class="upload-hint">JPG, PNG, WebP • Max 20MB</div>
               </div>
             </div>
             <input
