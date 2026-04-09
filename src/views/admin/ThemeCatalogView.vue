@@ -250,6 +250,16 @@ const themes = [
     sampleUrl: '',  // ← Isi dengan link undangan contoh
     icon: 'solar:minimalistic-magnifer-bold-duotone',
   },
+  {
+    id: 'elegant_blue',
+    name: 'Elegant Blue',
+    description: 'Desain elegan dengan nuansa biru dusty yang menenangkan dipadukan dengan aksen champagne gold.',
+    color: '#A3B5C3',
+    bgColor: '#1e3a8a',
+    bgGradient: 'linear-gradient(135deg, #1e3a8a, #A3B5C3)',
+    sampleUrl: '',
+    icon: 'solar:stars-bold-duotone',
+  },
 ];
 
 onMounted(async () => {

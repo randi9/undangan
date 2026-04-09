@@ -22,122 +22,164 @@ import type { ThemeConfig } from "@/types/theme";
 import { resolveAssetUrl } from "@/utils/url";
 import { Icon } from "@iconify/vue";
 
-// --- SECTION COMPONENT IMPORTS ---
-import CoverOverlay from "@/components/invitation/CoverOverlay.vue";
+// Covers
+import CoverElegant from "@/components/invitation/covers/CoverElegant.vue";
+import CoverFloral from "@/components/invitation/covers/CoverFloral.vue";
+import CoverMinimalist from "@/components/invitation/covers/CoverMinimalist.vue";
+import CoverElegantBlue from "@/components/invitation/covers/CoverElegantBlue.vue";
 
 // Heroes
 import HeroElegant from "@/components/invitation/heroes/HeroElegant.vue";
 import HeroFloral from "@/components/invitation/heroes/HeroFloral.vue";
 import HeroMinimalist from "@/components/invitation/heroes/HeroMinimalist.vue";
+import HeroElegantBlue from "@/components/invitation/heroes/HeroElegantBlue.vue";
 
 // Quotes
 import QuoteElegant from "@/components/invitation/quotes/QuoteElegant.vue";
 import QuoteFloral from "@/components/invitation/quotes/QuoteFloral.vue";
 import QuoteMinimalist from "@/components/invitation/quotes/QuoteMinimalist.vue";
+import QuoteElegantBlue from "@/components/invitation/quotes/QuoteElegantBlue.vue";
 
 // Couples
 import CoupleElegant from "@/components/invitation/couples/CoupleElegant.vue";
 import CoupleFloral from "@/components/invitation/couples/CoupleFloral.vue";
 import CoupleMinimalist from "@/components/invitation/couples/CoupleMinimalist.vue";
+import CoupleElegantBlue from "@/components/invitation/couples/CoupleElegantBlue.vue";
 
 // Countdowns
 import CountdownElegant from "@/components/invitation/countdowns/CountdownElegant.vue";
 import CountdownFloral from "@/components/invitation/countdowns/CountdownFloral.vue";
 import CountdownMinimalist from "@/components/invitation/countdowns/CountdownMinimalist.vue";
+import CountdownElegantBlue from "@/components/invitation/countdowns/CountdownElegantBlue.vue";
 
 // Events
 import EventsElegant from "@/components/invitation/events/EventsElegant.vue";
 import EventsFloral from "@/components/invitation/events/EventsFloral.vue";
 import EventsMinimalist from "@/components/invitation/events/EventsMinimalist.vue";
+import EventsElegantBlue from "@/components/invitation/events/EventsElegantBlue.vue";
 
 // Love Story
 import LoveStoryElegant from "@/components/invitation/lovestory/LoveStoryElegant.vue";
 import LoveStoryFloral from "@/components/invitation/lovestory/LoveStoryFloral.vue";
 import LoveStoryMinimalist from "@/components/invitation/lovestory/LoveStoryMinimalist.vue";
+import LoveStoryElegantBlue from "@/components/invitation/lovestory/LoveStoryElegantBlue.vue";
 
 // Gallery
 import GalleryElegant from "@/components/invitation/gallery/GalleryElegant.vue";
 import GalleryFloral from "@/components/invitation/gallery/GalleryFloral.vue";
 import GalleryMinimalist from "@/components/invitation/gallery/GalleryMinimalist.vue";
+import GalleryElegantBlue from "@/components/invitation/gallery/GalleryElegantBlue.vue";
 
 // RSVP
 import RsvpElegant from "@/components/invitation/rsvp/RsvpElegant.vue";
 import RsvpFloral from "@/components/invitation/rsvp/RsvpFloral.vue";
 import RsvpMinimalist from "@/components/invitation/rsvp/RsvpMinimalist.vue";
+import RsvpElegantBlue from "@/components/invitation/rsvp/RsvpElegantBlue.vue";
 
 // Gift
 import GiftElegant from "@/components/invitation/gift/GiftElegant.vue";
 import GiftFloral from "@/components/invitation/gift/GiftFloral.vue";
 import GiftMinimalist from "@/components/invitation/gift/GiftMinimalist.vue";
+import GiftElegantBlue from "@/components/invitation/gift/GiftElegantBlue.vue";
 
 // Footer
 import FooterElegant from "@/components/invitation/footer/FooterElegant.vue";
 import FooterFloral from "@/components/invitation/footer/FooterFloral.vue";
 import FooterMinimalist from "@/components/invitation/footer/FooterMinimalist.vue";
+import FooterElegantBlue from "@/components/invitation/footer/FooterElegantBlue.vue";
 
 // --- COMPONENT MAPS ---
+const coverComponents: Record<string, Component> = {
+  elegant: CoverElegant,
+  floral: CoverFloral,
+  minimalist: CoverMinimalist,
+  elegant_blue: CoverElegantBlue,
+};
 const heroComponents: Record<string, Component> = {
   elegant: HeroElegant,
   floral: HeroFloral,
   minimalist: HeroMinimalist,
+  elegant_blue: HeroElegantBlue,
 };
 
 const quoteComponents: Record<string, Component> = {
   elegant: QuoteElegant,
   floral: QuoteFloral,
   minimalist: QuoteMinimalist,
+  elegant_blue: QuoteElegantBlue,
 };
 
 const coupleComponents: Record<string, Component> = {
   elegant: CoupleElegant,
   floral: CoupleFloral,
   minimalist: CoupleMinimalist,
+  elegant_blue: CoupleElegantBlue,
 };
 
 const countdownComponents: Record<string, Component> = {
   elegant: CountdownElegant,
   floral: CountdownFloral,
   minimalist: CountdownMinimalist,
+  elegant_blue: CountdownElegantBlue,
 };
 
 const eventsComponents: Record<string, Component> = {
   elegant: EventsElegant,
   floral: EventsFloral,
   minimalist: EventsMinimalist,
+  elegant_blue: EventsElegantBlue,
 };
 
 const loveStoryComponents: Record<string, Component> = {
   elegant: LoveStoryElegant,
   floral: LoveStoryFloral,
   minimalist: LoveStoryMinimalist,
+  elegant_blue: LoveStoryElegantBlue,
 };
 
 const galleryComponents: Record<string, Component> = {
   elegant: GalleryElegant,
   floral: GalleryFloral,
   minimalist: GalleryMinimalist,
+  elegant_blue: GalleryElegantBlue,
 };
 
 const rsvpComponents: Record<string, Component> = {
   elegant: RsvpElegant,
   floral: RsvpFloral,
   minimalist: RsvpMinimalist,
+  elegant_blue: RsvpElegantBlue,
 };
 
 const giftComponents: Record<string, Component> = {
   elegant: GiftElegant,
   floral: GiftFloral,
   minimalist: GiftMinimalist,
+  elegant_blue: GiftElegantBlue,
 };
 
 const footerComponents: Record<string, Component> = {
   elegant: FooterElegant,
   floral: FooterFloral,
   minimalist: FooterMinimalist,
+  elegant_blue: FooterElegantBlue,
 };
 
 // --- THEME DATA SYSTEM ---
 const themes: Record<string, ThemeConfig> = {
+  elegant_blue: {
+    name: 'elegant_blue',
+    bg: '#F8F9FA',
+    surface: '#ffffff',
+    primary: '#A3B5C3',
+    secondary: '#D4AF37',
+    text: '#3E4C59',
+    textLight: '#A3B5C3',
+    fontHeading: "'Playfair Display', serif",
+    fontBody: "'Inter', sans-serif",
+    overlayGradient: 'linear-gradient(180deg, rgba(62,76,89,0.5) 0%, rgba(62,76,89,0.85) 100%)',
+    coverImage: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=1080&q=80',
+  },
   elegant: {
     name: 'elegant',
     bg: '#faf8f4',
@@ -209,7 +251,7 @@ function animateHeroOval() {
   gsap.set(heroOval.value, { scale: 0.6, opacity: 0 });
   gsap.set(heroTextItems.value, { y: 30, opacity: 0 });
 
-  const tl = gsap.timeline({ delay: 4 });
+  const tl = gsap.timeline({ delay: 0.2 });
 
   tl.to(heroOval.value, {
     scale: 1,
@@ -245,6 +287,7 @@ const activeTheme = computed((): ThemeConfig => {
 const themeName = computed(() => activeTheme.value.name);
 
 // Dynamic component selectors
+const activeCover = computed(() => coverComponents[themeName.value] || CoverElegant);
 const activeHero = computed(() => heroComponents[themeName.value] || HeroElegant);
 const activeQuote = computed(() => quoteComponents[themeName.value] || QuoteElegant);
 const activeCouple = computed(() => coupleComponents[themeName.value] || CoupleElegant);
@@ -492,7 +535,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- COVER OVERLAY -->
-    <CoverOverlay
+    <component :is="activeCover"
       v-show="!isOpened || isClosingOverlay"
       :groom-name="invitation.groom_name"
       :bride-name="invitation.bride_name"
@@ -509,7 +552,15 @@ onBeforeUnmount(() => {
       
       <!-- HERO (Dynamic per theme) -->
       <component :is="activeHero" :overlay-gradient="activeTheme.overlayGradient">
-        <div ref="heroOval" class="flex flex-col gap-4 items-center justify-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] mx-auto rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)] opacity-0 p-6 md:p-10 text-center">
+        <div ref="heroOval" :class="[
+            'flex flex-col gap-4 items-center justify-center mx-auto opacity-0 p-6 md:p-10 text-center relative z-10',
+            themeName !== 'elegant_blue' 
+              ? 'w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
+              : 'w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
+          ]"
+        >
+          <img v-if="themeName === 'elegant_blue'" src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(1).png" alt="Frame" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain -z-10 pointer-events-none drop-shadow-lg" style="max-width: none;" />
+
           <p :ref="setHeroTextRef" class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium opacity-0">The Wedding of</p>
           <h1 :ref="setHeroTextRef" class="text-5xl md:text-7xl lg:text-8xl mb-1 opacity-0 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]" :style="{ fontFamily: activeTheme.fontHeading }">
             {{ invitation.groom_name }}

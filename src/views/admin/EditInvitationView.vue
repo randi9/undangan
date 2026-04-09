@@ -697,6 +697,14 @@
             <div class="edit-theme-label">Clean Minimalist</div>
             <div v-if="form.theme === 'minimalist'" class="edit-theme-active-badge">Aktif</div>
           </div>
+          <div class="edit-theme-card" :class="{ active: form.theme === 'elegant_blue' }" @click="selectTheme('elegant_blue')">
+            <div class="edit-theme-preview" style="background: #1e3a8a; color: #fff;">
+              <div style="font-size: 8px; letter-spacing: 3px; color: #A3B5C3; text-transform: uppercase;">The Wedding Of</div>
+              <div style="font-family: 'Playfair Display', serif; font-size: 22px; margin-top: 4px;">Romeo & Juliet</div>
+            </div>
+            <div class="edit-theme-label">Elegant Blue</div>
+            <div v-if="form.theme === 'elegant_blue'" class="edit-theme-active-badge">Aktif</div>
+          </div>
         </div>
       </div>
     </div>
@@ -854,9 +862,10 @@ const themeGalleryDefaults: Record<string, 'carousel' | 'masonry'> = {
   floral: 'carousel',
   elegant: 'masonry',
   minimalist: 'masonry',
+  elegant_blue: 'masonry',
 };
 
-function selectTheme(themeId: "elegant" | "minimalist" | "floral") {
+function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue") {
   if (form) {
     form.theme = themeId;
     form.gallery_type = themeGalleryDefaults[themeId] || 'carousel';
@@ -880,7 +889,7 @@ const showMobilePreview = ref(false);
 
 const form = reactive({
   slug: "",
-  theme: "elegant" as "elegant" | "minimalist" | "floral",
+  theme: "elegant" as "elegant" | "minimalist" | "floral" | "elegant_blue",
   groom_name: "",
   bride_name: "",
   groom_full_name: "",
