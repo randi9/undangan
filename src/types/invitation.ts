@@ -31,7 +31,7 @@ export interface Rsvp {
 export interface Invitation {
   id: string;
   slug: string;
-  theme: "elegant" | "minimalist" | "floral";
+  theme: "elegant" | "minimalist" | "floral" | "elegant_blue";
   groom_name: string;
   bride_name: string;
   groom_full_name: string;
@@ -82,7 +82,7 @@ export interface Invitation {
 
 export interface CreateInvitationPayload {
   slug: string;
-  theme: "elegant" | "minimalist" | "floral";
+  theme: "elegant" | "minimalist" | "floral" | "elegant_blue";
   groom_name: string;
   bride_name: string;
   groom_full_name?: string;
