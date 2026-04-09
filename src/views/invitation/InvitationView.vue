@@ -169,15 +169,15 @@ const footerComponents: Record<string, Component> = {
 const themes: Record<string, ThemeConfig> = {
   elegant_blue: {
     name: 'elegant_blue',
-    bg: '#F8F9FA',
-    surface: '#ffffff',
-    primary: '#A3B5C3',
-    secondary: '#D4AF37',
-    text: '#3E4C59',
-    textLight: '#A3B5C3',
+    bg: '#FCFBF8',
+    surface: '#F8FAFC',
+    primary: '#a8d0e6',
+    secondary: '#1E293B',
+    text: '#1E293B',
+    textLight: '#64748B',
     fontHeading: "'Playfair Display', serif",
-    fontBody: "'Inter', sans-serif",
-    overlayGradient: 'linear-gradient(180deg, rgba(62,76,89,0.5) 0%, rgba(62,76,89,0.85) 100%)',
+    fontBody: "'Playfair Display', serif",
+    overlayGradient: 'linear-gradient(180deg, rgba(30,41,59,0.4) 0%, rgba(30,41,59,0.85) 100%)',
     coverImage: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=1080&q=80',
   },
   elegant: {
@@ -559,7 +559,7 @@ onBeforeUnmount(() => {
               : 'w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
           ]"
         >
-          <img v-if="themeName === 'elegant_blue'" src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(1).png" alt="Frame" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain -z-10 pointer-events-none drop-shadow-lg" style="max-width: none;" />
+          <img v-if="themeName === 'elegant_blue'" src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(10).png" alt="Frame" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain -z-10 pointer-events-none" style="max-width: none;" />
 
           <p :ref="setHeroTextRef" class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium opacity-0">The Wedding of</p>
           <h1 :ref="setHeroTextRef" class="text-5xl md:text-7xl lg:text-8xl mb-1 opacity-0 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]" :style="{ fontFamily: activeTheme.fontHeading }">

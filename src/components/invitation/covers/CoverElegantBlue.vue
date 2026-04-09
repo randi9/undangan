@@ -4,7 +4,7 @@
       'fixed inset-0 z-[100] flex flex-col items-center justify-between w-full h-[100dvh] bg-[var(--theme-bg)] transition-opacity duration-[400ms] ease-out',
       isClosing ? 'opacity-0 pointer-events-none' : 'opacity-100',
     ]"
-    :style="{ backgroundColor: '#F8F9FA', fontFamily: fontBody }"
+    :style="{ backgroundColor: 'var(--theme-bg)', fontFamily: fontBody }"
   >
     <!-- Background Image -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex justify-center items-center">
@@ -16,9 +16,9 @@
     <div ref="topContentRef" style="width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding-top: 10vh; padding-bottom: 28vh; padding-left: 24px; padding-right: 24px; position: relative; z-index: 10; transition: opacity 0.4s;">
       
       <!-- Groom & Bride Header (Atas) -->
-      <h1 :style="{ fontFamily: fontHeading, fontSize: 'clamp(2.5rem, 10vw, 3.5rem)', lineHeight: '1', color: '#2c333f', textAlign: 'center', margin: 0, textShadow: '0 2px 4px rgba(255,255,255,0.8)' }">
+      <h1 :style="{ fontFamily: fontHeading, fontSize: 'clamp(2.5rem, 10vw, 3.5rem)', lineHeight: '1', color: 'var(--theme-text)', textAlign: 'center', margin: 0, textShadow: '0 2px 4px rgba(255,255,255,0.8)' }">
         {{ groomName }}
-        <span style="display: block; font-size: clamp(1.5rem, 6vw, 2.2rem); color: #D4AF37; margin-top: 2px; margin-bottom: 2px;">&amp;</span>
+        <span style="display: block; font-size: clamp(1.5rem, 6vw, 2.2rem); color: var(--theme-primary); margin-top: 2px; margin-bottom: 2px;">&amp;</span>
         {{ brideName }}
       </h1>
       
@@ -29,9 +29,9 @@
       </div>
 
       <!-- Kepada Yth (Di Atas Amplop) -->
-      <div style="text-align: center; z-index: 10; background-color: rgba(255, 255, 255, 0.2); padding: 8px 24px; border-radius: 12px; backdrop-filter: blur(2px);">
-        <p style="font-size: 10px; letter-spacing: 0.15em; color: #2c333f; text-transform: uppercase; margin: 0 0 6px 0; font-weight: 500; opacity: 0.8;">Kepada Yth.</p>
-        <h3 style="font-size: 16px; font-weight: 700; color: #2c333f; max-width: 240px; margin: 0 auto; line-height: 1.4; text-shadow: 0 1px 3px rgba(255,255,255,0.8);">{{ guestName || 'Tamu Undangan' }}</h3>
+      <div style="text-align: center; z-index: 10; background-color: rgba(255, 255, 255, 0.4); padding: 8px 24px; border-radius: 12px; backdrop-filter: blur(4px);">
+        <p style="font-size: 10px; letter-spacing: 0.15em; color: var(--theme-text-light); text-transform: uppercase; margin: 0 0 6px 0; font-weight: 500;">Kepada Yth.</p>
+        <h3 style="font-size: 16px; font-weight: 700; color: var(--theme-text); max-width: 240px; margin: 0 auto; line-height: 1.4; text-shadow: 0 1px 3px rgba(255,255,255,0.8);">{{ guestName || 'Tamu Undangan' }}</h3>
       </div>
     </div>
 
@@ -42,34 +42,35 @@
       <div class="relative w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px]" style="perspective: 1200px; aspect-ratio: 34/22;">
         
         <!-- 1. BACK BODY -->
-        <svg ref="envelopeBackRef" class="absolute inset-0 w-full h-full text-[#A3B5C3] drop-shadow-xl z-[1]" viewBox="0 0 340 220" fill="currentColor" preserveAspectRatio="none">
-          <path d="M0 20 L340 20 L340 220 L0 220 Z" />
+        <svg ref="envelopeBackRef" class="absolute inset-0 w-full h-full text-[var(--theme-primary)] drop-shadow-xl z-[1]" viewBox="0 0 340 220" fill="currentColor" preserveAspectRatio="none">
+          <path d="M0 20 L340 20 L340 220 L0 220 Z" class="opacity-90" />
         </svg>
 
         <!-- 2. THE PAPER (Slides up and scales!) portrait shape -->
         <div class="absolute inset-0 z-[2] flex justify-center items-end" style="padding-bottom: 5%;">
           <div
             ref="paperRef"
-            class="relative w-[90%] h-[90%] bg-[#F8F9FA]"
+            class="relative w-[90%] h-[90%] bg-[var(--theme-bg)] overflow-hidden"
             style="will-change: transform; transform-origin: center center;"
           >
+            <div class="absolute inset-0 bg-gradient-to-b from-[var(--theme-primary)]/10 to-transparent z-[1] w-full h-full mix-blend-multiply"></div>
             <!-- Decorator for border and shadow that fades out cleanly on zoom -->
-            <div ref="paperDecorRef" class="absolute inset-0 rounded-[2px] shadow-[0_-2px_6px_rgba(0,0,0,0.05)] border border-[#A3B5C3]/20"></div>
+            <div ref="paperDecorRef" class="absolute inset-0 z-[2] rounded-[2px] shadow-[0_-2px_6px_rgba(0,0,0,0.05)] border border-[var(--theme-primary)]/20"></div>
           </div>
         </div>
 
         <!-- 3. FRONT POCKET -->
-        <svg ref="envelopeFrontRef" class="absolute inset-0 w-full h-full z-[3] pointer-events-none drop-shadow-md" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-          <path d="M0 20 L170 130 L0 220 Z" fill="#8ba1b2"/>
-          <path d="M340 20 L170 130 L340 220 Z" fill="#8ba1b2"/>
-          <path d="M0 220 L170 130 L340 220 Z" fill="#9db1c1"/>
+        <svg ref="envelopeFrontRef" class="absolute inset-0 w-full h-full text-[var(--theme-primary)] z-[3] pointer-events-none drop-shadow-md" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <path d="M0 20 L170 130 L0 220 Z" fill="currentColor" class="opacity-75"/>
+          <path d="M340 20 L170 130 L340 220 Z" fill="currentColor" class="opacity-75"/>
+          <path d="M0 220 L170 130 L340 220 Z" fill="currentColor" class="opacity-90"/>
         </svg>
 
         <!-- 4. TOP FLAP -->
-        <div ref="flapWrapperRef" class="absolute left-0 w-full z-[4] origin-top" style="perspective: 1000px; top: 9%; height: 59%;">
+        <div ref="flapWrapperRef" class="absolute left-0 w-full z-[4] origin-top text-[var(--theme-primary)]" style="perspective: 1000px; top: 9%; height: 59%;">
           <svg ref="flapRef" class="w-full h-full origin-top" viewBox="0 0 340 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0 0 L170 130 L340 0 Z" fill="#A3B5C3" class="drop-shadow-[0_4px_6px_rgba(0,0,0,0.25)]"/>
-            <path d="M0 0 L170 130 L340 0" stroke="#F8F9FA" stroke-opacity="0.25" stroke-width="1.5"/>
+            <path d="M0 0 L170 130 L340 0 Z" fill="currentColor" class="drop-shadow-[0_4px_6px_rgba(0,0,0,0.25)]"/>
+            <path d="M0 0 L170 130 L340 0" stroke="var(--theme-bg)" stroke-opacity="0.25" stroke-width="1.5"/>
           </svg>
         </div>
 
@@ -77,10 +78,10 @@
         <button
           ref="sealRef"
           @click="bukaAmplop"
-          class="absolute left-1/2 z-[5] w-12 sm:w-14 h-12 sm:h-14 rounded-full bg-[#2c333f] border-[3px] border-[#2c333f]/50 flex items-center justify-center cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-[0_0_20px_rgba(44,51,63,0.4)]"
+          class="absolute left-1/2 z-[5] w-12 sm:w-14 h-12 sm:h-14 rounded-full bg-[var(--theme-primary)] border-[3px] border-[var(--theme-bg)]/50 flex items-center justify-center cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-lg"
           style="top: 66%; transform: translate(-50%, -50%);"
         >
-          <span ref="sealTextRef" class="text-[#F8F9FA] text-[10px] sm:text-xs font-bold tracking-widest mt-0.5 transition-opacity pointer-events-none">BUKA</span>
+          <span ref="sealTextRef" class="text-[var(--theme-bg)] text-[10px] sm:text-xs font-bold tracking-widest mt-0.5 transition-opacity pointer-events-none">BUKA</span>
         </button>
         
       </div>
