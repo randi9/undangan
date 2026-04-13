@@ -1,0 +1,9 @@
+name = "wildcard-proxy"
+main = "wildcard-proxy.js"
+compatibility_date = "2024-09-01"
+
+# Route: hanya intercept wildcard subdomain
+# Root domain (mengundanganda.com) TIDAK di-intercept
+routes = [
+  { pattern = "*.mengundanganda.com/*", zone_name = "mengundanganda.com" }
+]
