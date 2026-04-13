@@ -16,11 +16,11 @@
         <defs>
           <!-- Using y="-5" seamlessly aligns this pattern with y="-45" below it since this is elevated by 40px -->
           <pattern id="damask-extender" x="-45" y="-5" width="180" height="180" patternUnits="userSpaceOnUse">
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="30" y="30" width="120" height="120" />
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="-60" width="120" height="120" transform="rotate(180 0 0)" />
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="-60" width="120" height="120" transform="rotate(180 180 0)" />
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="120" width="120" height="120" transform="rotate(180 0 180)" />
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="120" width="120" height="120" transform="rotate(180 180 180)" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="30" y="30" width="120" height="120" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="-60" width="120" height="120" transform="rotate(180 0 0)" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="-60" width="120" height="120" transform="rotate(180 180 0)" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="120" width="120" height="120" transform="rotate(180 0 180)" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="120" width="120" height="120" transform="rotate(180 180 180)" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#damask-extender)" />
@@ -50,11 +50,11 @@
       <svg class="absolute inset-0 w-full h-full opacity-[0.1]">
         <defs>
           <pattern id="damask-flip" x="-45" y="-45" width="180" height="180" patternUnits="userSpaceOnUse">
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="30" y="30" width="120" height="120" />
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="-60" width="120" height="120" transform="rotate(180 0 0)" />
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="-60" width="120" height="120" transform="rotate(180 180 0)" />
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="120" width="120" height="120" transform="rotate(180 0 180)" />
-            <image href="https://media.mengundanganda.fun/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="120" width="120" height="120" transform="rotate(180 180 180)" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="30" y="30" width="120" height="120" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="-60" width="120" height="120" transform="rotate(180 0 0)" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="-60" width="120" height="120" transform="rotate(180 180 0)" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="-60" y="120" width="120" height="120" transform="rotate(180 0 180)" />
+            <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="120" y="120" width="120" height="120" transform="rotate(180 180 180)" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#damask-flip)" />
@@ -69,12 +69,12 @@
         <!-- Groom Title + Ornaments -->
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 10; margin-bottom: -10px;">
           <!-- Ornament Atas -->
-          <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -80px;" alt="Ornament Top" />
+          <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -80px;" alt="Ornament Top" />
           
           <h2 style="font-size: clamp(34px, 6vw, 44px); font-weight: 600; color: var(--theme-primary); position: relative; z-index: 10; margin: 0; line-height: 1;" :style="{ fontFamily: themeConfig.fontHeading }">The Groom</h2>
           
           <!-- Ornament Bawah -->
-          <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -60px ;transform: scaleY(-1);" alt="Ornament Bottom" />
+          <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -60px ;transform: scaleY(-1);" alt="Ornament Bottom" />
         </div>
 
         <!-- Wrapper bingkai + daun -->
@@ -135,12 +135,12 @@
         <!-- Bride Title + Ornaments -->
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 10; margin-bottom: -10px;">
           <!-- Ornament Atas -->
-          <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -80px;" alt="Ornament Top" />
+          <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -80px;" alt="Ornament Top" />
           
           <h2 style="font-size: clamp(34px, 6vw, 44px); font-weight: 600; color: var(--theme-primary); position: relative; z-index: 10; margin: 0; line-height: 1;" :style="{ fontFamily: themeConfig.fontHeading }">The Bride</h2>
           
           <!-- Ornament Bawah -->
-          <img src="https://media.mengundanganda.fun/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -60px ;transform: scaleY(-1);" alt="Ornament Bottom" />
+          <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/82c51b8b-c9f4-4608-826d-4c116b501296.webp" style="width: 100%; max-width: 180px; opacity: 0.9; margin-top: -80px; margin-bottom: -60px ;transform: scaleY(-1);" alt="Ornament Bottom" />
         </div>
 
         <!-- Wrapper bingkai + daun -->
@@ -213,11 +213,11 @@ defineProps<{
   apiBase: string;
 }>();
 
-const leaf1 = "https://media.mengundanganda.fun/tema%20floral/couple%20section/18c54d85-bbc7-4169-8b60-ce6f2cd7d500.webp";
-const flower1 = "https://media.mengundanganda.fun/tema%20floral/couple%20section/cf584d49-6790-4bb8-971f-89cdc91c6e00.webp";
-const flower2 = "https://media.mengundanganda.fun/tema%20floral/couple%20section/38c7b2f4-88da-4e1c-9457-5b84781baea5.webp";
-const butterfly1 = "https://media.mengundanganda.fun/29d5acff-4f27-431b-9c56-3e96b0c83a8a.webp"; // Kupu-kupu Groom
-const butterfly2 = "https://media.mengundanganda.fun/517b341e-b782-430a-b8ef-b9ec0b21bdb7.webp"; // Kupu-kupu Bride
+const leaf1 = "https://media.mengundanganda.com/tema%20floral/couple%20section/18c54d85-bbc7-4169-8b60-ce6f2cd7d500.webp";
+const flower1 = "https://media.mengundanganda.com/tema%20floral/couple%20section/cf584d49-6790-4bb8-971f-89cdc91c6e00.webp";
+const flower2 = "https://media.mengundanganda.com/tema%20floral/couple%20section/38c7b2f4-88da-4e1c-9457-5b84781baea5.webp";
+const butterfly1 = "https://media.mengundanganda.com/29d5acff-4f27-431b-9c56-3e96b0c83a8a.webp"; // Kupu-kupu Groom
+const butterfly2 = "https://media.mengundanganda.com/517b341e-b782-430a-b8ef-b9ec0b21bdb7.webp"; // Kupu-kupu Bride
 
 // Radius lingkaran = 140px, center = 140,140
 const R = 140;

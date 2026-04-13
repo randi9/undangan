@@ -4,7 +4,7 @@
     
     <!-- Background Pemandian Event Utama -->
     <div ref="bgRef" class="absolute inset-0 w-full h-full" style="
-      background-image: url('https://media.mengundanganda.fun/tema%20floral/acara%20section/7de1e0a0-702e-4cbd-845e-a7b44faa28db.webp');
+      background-image: url('https://media.mengundanganda.com/tema%20floral/acara%20section/7de1e0a0-702e-4cbd-845e-a7b44faa28db.webp');
       background-size: cover;
       background-position: center;
       transform-origin: 0% 58%;
@@ -27,13 +27,13 @@
       <div class="relative flex items-center justify-center transform translate-y-[-1%]" style="width: clamp(280px, 70vw, 420px);">
         
         <!-- Papan Kosong Tak Kasatmata untuk menjaga dimensi pembungkus papan -->
-        <img src="https://media.mengundanganda.fun/tema%20floral/acara%20section/7de1e0a0-702e-4cbd-845e-a7b44faa28db.webp" 
+        <img src="https://media.mengundanganda.com/tema%20floral/acara%20section/7de1e0a0-702e-4cbd-845e-a7b44faa28db.webp" 
              class="w-full pointer-events-none opacity-0" />
 
         <!-- TAB 1: INFORMASI AKAD NIKAH -->
         <div ref="akadRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 pb-8 pt-2 text-center" style="opacity: 0;">
           <h3 class="text-2xl md:text-2xl font-medium drop-shadow-md tracking-[0.15em]" :style="{ fontFamily: themeConfig.fontHeading, color: 'white', marginTop: '-10px', marginBottom: '4px' }">Akad Nikah</h3>
-          <img src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_f229438c-f0ae-4381-9521-b52bd72d0308.webp" style="width: clamp(144px, 20vw, 176px); opacity: 0.9; margin-top: -70px; margin-bottom: -45px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); pointer-events: none;" alt="Decoration" />
+          <img src="https://media.mengundanganda.com/tema%20floral/quotes%20section/sashkeh_f229438c-f0ae-4381-9521-b52bd72d0308.webp" style="width: clamp(144px, 20vw, 176px); opacity: 0.9; margin-top: -70px; margin-bottom: -45px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); pointer-events: none;" alt="Decoration" />
           <div class="space-y-1 text-[11px] md:text-sm font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.akad_date">{{ formatDateLong(invitation.akad_date) }}</p>
             <p v-if="invitation.akad_time">{{ invitation.akad_time }}</p>
@@ -53,7 +53,7 @@
         <!-- TAB 2: INFORMASI RESEPSI PESTA -->
         <div ref="resepsiRef" class="absolute inset-0 flex flex-col items-center justify-center px-10 pb-8 pt-2 text-center translate-y-[-2%]" style="opacity: 0;">
           <h3 class="text-2xl md:text-2xl font-medium drop-shadow-md tracking-[0.15em]" :style="{ fontFamily: themeConfig.fontHeading, color: 'white', marginTop: '-10px', marginBottom: '4px' }">Resepsi</h3>
-          <img src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_f229438c-f0ae-4381-9521-b52bd72d0308.webp" style="width: clamp(144px, 20vw, 176px); opacity: 0.9; margin-top: -70px; margin-bottom: -45px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); pointer-events: none;" alt="Decoration" />
+          <img src="https://media.mengundanganda.com/tema%20floral/quotes%20section/sashkeh_f229438c-f0ae-4381-9521-b52bd72d0308.webp" style="width: clamp(144px, 20vw, 176px); opacity: 0.9; margin-top: -70px; margin-bottom: -45px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); pointer-events: none;" alt="Decoration" />
           <div class="space-y-1 text-[11px] md:text-sm font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
             <p v-if="invitation.resepsi_date">{{ formatDateLong(invitation.resepsi_date) }}</p>
             <p v-if="invitation.resepsi_time">{{ invitation.resepsi_time }}</p>

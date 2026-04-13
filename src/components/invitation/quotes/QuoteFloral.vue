@@ -4,7 +4,7 @@
     <!-- Background Image -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
       <img
-        src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/6cd02fb2-7e3f-47a4-b2d6-9f3ea8a653be.webp"
+        src="https://media.mengundanganda.com/tema%20floral/quotes%20section/6cd02fb2-7e3f-47a4-b2d6-9f3ea8a653be.webp"
         alt="Quotes Background"
         class="min-w-full min-h-full w-full h-full object-cover object-center scale-[1.15]"
       />
@@ -21,38 +21,38 @@
       
       <!-- Top Corner Flowers (Behind) -->
       <div class="absolute top-[5%] md:top-[8%] -left-[100px] md:-left-[160px] lg:-left-[200px] z-[5] scale-x-[-1]">
-        <img ref="elTopFlowerL" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/779b40ba-3585-4cd0-b13c-52c7db3ed79f.webp" class="w-[200px] md:w-[260px] lg:w-[320px] origin-bottom object-contain opacity-0" />
+        <img ref="elTopFlowerL" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/779b40ba-3585-4cd0-b13c-52c7db3ed79f.webp" class="w-[200px] md:w-[260px] lg:w-[320px] origin-bottom object-contain opacity-0" />
       </div>
       <div class="absolute top-[5%] md:top-[8%] -right-[100px] md:-right-[160px] lg:-right-[200px] z-[5]">
-        <img ref="elTopFlowerR" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/779b40ba-3585-4cd0-b13c-52c7db3ed79f.webp" class="w-[200px] md:w-[260px] lg:w-[320px] origin-bottom object-contain opacity-0" />
+        <img ref="elTopFlowerR" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/779b40ba-3585-4cd0-b13c-52c7db3ed79f.webp" class="w-[200px] md:w-[260px] lg:w-[320px] origin-bottom object-contain opacity-0" />
       </div>
       
       <!-- Kupu-Kupu (Hinggap di bunga kiri atas) -->
       <div ref="butterflyWrap" class="absolute top-[8%] md:top-[10%] -left-[30px] md:-left-[70px] lg:-left-[90px] z-[30] w-12 md:w-16 h-12 md:h-16 pointer-events-none opacity-0 drop-shadow-[0_5px_5px_rgba(0,0,0,0.15)]" style="perspective: 800px;">
         <!-- Wadah Sayap Kanan (Box utuh) -->
         <div class="absolute inset-0" style="transform-style: preserve-3d;">
-          <img ref="wingR" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_b9f5f24b-f710-4ac7-b1e0-699161385ad4.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
+          <img ref="wingR" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/sashkeh_b9f5f24b-f710-4ac7-b1e0-699161385ad4.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
         </div>
         <!-- Wadah Sayap Kiri (Box utuh yang sama 100% hanya di-mirror, anti-menghilang dari awal!) -->
         <div class="absolute inset-0" style="transform: scaleX(-1); transform-style: preserve-3d;">
-          <img ref="wingL" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/sashkeh_b9f5f24b-f710-4ac7-b1e0-699161385ad4.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
+          <img ref="wingL" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/sashkeh_b9f5f24b-f710-4ac7-b1e0-699161385ad4.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" />
         </div>
       </div>
       
       <!-- Top Leaves (Behind) -->
       <div class="absolute top-[40%] md:top-[35%] -left-20 md:-left-32 lg:-left-36 z-0 scale-x-[-1]">
-        <img ref="elTopLeafL" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/c9a1f603-e986-409b-a60a-2321fa6c315f.webp" class="w-40 md:w-60 lg:w-72 origin-bottom object-contain opacity-0" />
+        <img ref="elTopLeafL" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/c9a1f603-e986-409b-a60a-2321fa6c315f.webp" class="w-40 md:w-60 lg:w-72 origin-bottom object-contain opacity-0" />
       </div>
       <div class="absolute top-[40%] md:top-[35%] -right-20 md:-right-32 lg:-right-36 z-0">
-        <img ref="elTopLeafR" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/c9a1f603-e986-409b-a60a-2321fa6c315f.webp" class="w-40 md:w-60 lg:w-72 origin-bottom object-contain opacity-0" />
+        <img ref="elTopLeafR" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/c9a1f603-e986-409b-a60a-2321fa6c315f.webp" class="w-40 md:w-60 lg:w-72 origin-bottom object-contain opacity-0" />
       </div>
 
       <!-- Pink Lilies (Behind) -->
       <div class="absolute bottom-[10%] md:bottom-[15%] -left-20 md:-left-32 lg:-left-40 z-[5] scale-x-[-1]">
-        <img ref="elLilyL" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/a2eac167-6565-4119-8f80-a630b7c4be8f.webp" class="w-[140px] md:w-[220px] lg:w-[260px] origin-bottom object-contain opacity-0" />
+        <img ref="elLilyL" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/a2eac167-6565-4119-8f80-a630b7c4be8f.webp" class="w-[140px] md:w-[220px] lg:w-[260px] origin-bottom object-contain opacity-0" />
       </div>
       <div class="absolute bottom-[15%] md:bottom-[20%] -right-20 md:-right-32 lg:-right-40 z-[5]">
-        <img ref="elLilyR" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/a2eac167-6565-4119-8f80-a630b7c4be8f.webp" class="w-[140px] md:w-[220px] lg:w-[260px] origin-bottom object-contain opacity-0" />
+        <img ref="elLilyR" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/a2eac167-6565-4119-8f80-a630b7c4be8f.webp" class="w-[140px] md:w-[220px] lg:w-[260px] origin-bottom object-contain opacity-0" />
       </div>
 
       <!-- The Main Oval Container -->
@@ -65,29 +65,29 @@
       <!-- Slanted Flowers (Front) -->
       <div class="absolute -bottom-[7%] md:-bottom-[5%] -left-10 md:-left-16 lg:-left-20 z-[15] scale-x-[-1] drop-shadow-md">
         <!-- Base rotation adjustment to fix slant after mirror -->
-        <img ref="elSlantedL" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/9d8274ec-db48-45ba-af73-f1ab2fe09a5b.webp" class="w-36 md:w-56 lg:w-64 origin-bottom object-contain opacity-0" style="transform: rotate(10deg)" />
+        <img ref="elSlantedL" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/9d8274ec-db48-45ba-af73-f1ab2fe09a5b.webp" class="w-36 md:w-56 lg:w-64 origin-bottom object-contain opacity-0" style="transform: rotate(10deg)" />
       </div>
       <div class="absolute -bottom-[8%] md:-bottom-[6%] -right-16 md:-right-20 lg:-right-24 z-[15] drop-shadow-md">
-        <img ref="elSlantedR" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/9d8274ec-db48-45ba-af73-f1ab2fe09a5b.webp" class="w-36 md:w-56 lg:w-64 origin-bottom object-contain opacity-0" style="transform: rotate(-10deg)" />
+        <img ref="elSlantedR" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/9d8274ec-db48-45ba-af73-f1ab2fe09a5b.webp" class="w-36 md:w-56 lg:w-64 origin-bottom object-contain opacity-0" style="transform: rotate(-10deg)" />
       </div>
 
       <!-- Center Flower (Front) -->
       <div class="absolute -bottom-24 md:-bottom-36 lg:-bottom-40 left-1/2 -translate-x-1/2 z-[20] drop-shadow-lg w-[240px] md:w-[380px] lg:w-[440px]">
-        <img ref="elCenter" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/6d9799cc-d69c-4f9c-bbef-71910b1154a3.webp" class="w-full origin-bottom object-contain opacity-0" />
+        <img ref="elCenter" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/6d9799cc-d69c-4f9c-bbef-71910b1154a3.webp" class="w-full origin-bottom object-contain opacity-0" />
       </div>
 
       <!-- Hanging Flowers (Langsung di main container, tanpa wrapper terpisah) -->
       <!-- Bunga Gantung 1 (Kiri Luar) -->
-      <img ref="elHang1" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/f70692c3-8e4e-41a5-a0ac-1c29ca9e5190.webp" class="absolute bottom-[-30%] md:bottom-[-30%] lg:bottom-[-30%] -left-[15%] md:-left-[15%] lg:-left-[15%] w-[150px] md:w-[250px] lg:w-[290px] origin-top object-contain opacity-0 z-[15] pointer-events-none drop-shadow-sm" />
+      <img ref="elHang1" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/f70692c3-8e4e-41a5-a0ac-1c29ca9e5190.webp" class="absolute bottom-[-30%] md:bottom-[-30%] lg:bottom-[-30%] -left-[15%] md:-left-[15%] lg:-left-[15%] w-[150px] md:w-[250px] lg:w-[290px] origin-top object-contain opacity-0 z-[15] pointer-events-none drop-shadow-sm" />
 
       <!-- Bunga Gantung 2 (Kiri Dalam) -->
-      <img ref="elHang2" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/ed906d03-4e79-406f-92cb-8e2ab5295fc0.webp" class="absolute bottom-[-45%] md:bottom-[-45%] lg:bottom-[-45%] left-[-5%] md:left-[2%] lg:left-[2%] w-[180px] md:w-[300px] lg:w-[350px] origin-top object-contain opacity-0 z-[15] pointer-events-none drop-shadow-sm" />
+      <img ref="elHang2" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/ed906d03-4e79-406f-92cb-8e2ab5295fc0.webp" class="absolute bottom-[-45%] md:bottom-[-45%] lg:bottom-[-45%] left-[-5%] md:left-[2%] lg:left-[2%] w-[180px] md:w-[300px] lg:w-[350px] origin-top object-contain opacity-0 z-[15] pointer-events-none drop-shadow-sm" />
 
       <!-- Bunga Gantung 3 (Kanan Dalam) -->
-      <img ref="elHang3" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/87409c71-6799-4d5c-bbf8-bfde4df717b6.webp" class="absolute bottom-[-50%] md:bottom-[-50%] lg:bottom-[-50%] -right-[5%] md:-right-[5%] lg:-right-[5%] w-[190px] md:w-[320px] lg:w-[360px] origin-top object-contain opacity-0 z-[15] pointer-events-none drop-shadow-sm" />
+      <img ref="elHang3" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/87409c71-6799-4d5c-bbf8-bfde4df717b6.webp" class="absolute bottom-[-50%] md:bottom-[-50%] lg:bottom-[-50%] -right-[5%] md:-right-[5%] lg:-right-[5%] w-[190px] md:w-[320px] lg:w-[360px] origin-top object-contain opacity-0 z-[15] pointer-events-none drop-shadow-sm" />
       
       <!-- Bunga Gantung 4 (Kanan Luar) -->
-      <img ref="elHang4" src="https://media.mengundanganda.fun/tema%20floral/quotes%20section/ed906d03-4e79-406f-92cb-8e2ab5295fc0.webp" class="absolute bottom-[-35%] md:bottom-[-35%] lg:bottom-[-35%] -right-[20%] md:-right-[20%] lg:-right-[20%] w-[150px] md:w-[250px] lg:w-[290px] origin-top object-contain opacity-0 z-[15] pointer-events-none drop-shadow-sm" />
+      <img ref="elHang4" src="https://media.mengundanganda.com/tema%20floral/quotes%20section/ed906d03-4e79-406f-92cb-8e2ab5295fc0.webp" class="absolute bottom-[-35%] md:bottom-[-35%] lg:bottom-[-35%] -right-[20%] md:-right-[20%] lg:-right-[20%] w-[150px] md:w-[250px] lg:w-[290px] origin-top object-contain opacity-0 z-[15] pointer-events-none drop-shadow-sm" />
 
     </div>
     </div>

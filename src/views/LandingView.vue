@@ -16,7 +16,7 @@
           <li><a href="#cara-kerja" @click="mobileMenuOpen = false">Cara Kerja</a></li>
           <li><a href="#testimoni" @click="mobileMenuOpen = false">Testimoni</a></li>
           <li><a href="#harga" @click="mobileMenuOpen = false">Harga</a></li>
-          <li><a href="https://www.mengundanganda.fun/login" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</a></li>
+          <li><a href="https://www.mengundanganda.com/login" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</a></li>
         </ul>
       </div>
     </nav>
@@ -37,7 +37,7 @@
           Pilih tema, isi data, dan langsung bagikan, semudah itu.
         </p>
         <div class="lp-hero-actions lp-fade-up lp-delay-3">
-          <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</a>
+          <a href="https://www.mengundanganda.com/login" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</a>
           <a href="#tema" class="lp-btn lp-btn-outline">Lihat Tema</a>
         </div>
       </div>
@@ -81,11 +81,11 @@
             <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Menghemat waktu bolak-balik ke halaman berbeda.</li>
             <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Pengalaman membuat undangan jadi sangat mudah.</li>
           </ul>
-          <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-primary lp-showcase-btn">Coba Sekarang</a>
+          <a href="https://www.mengundanganda.com/login" class="lp-btn lp-btn-primary lp-showcase-btn">Coba Sekarang</a>
         </div>
         <div class="lp-showcase-image">
           <div class="lp-mockup-wrapper">
-             <img src="https://media.mengundanganda.fun/landing-page/Screenshot%202026-04-03%20191057.webp" alt="Tampilan fitur Live Preview Editor undangan pernikahan digital MengundangAnda" class="lp-mockup-img" loading="lazy" />
+             <img src="https://media.mengundanganda.com/landing-page/Screenshot%202026-04-03%20191057.webp" alt="Tampilan fitur Live Preview Editor undangan pernikahan digital MengundangAnda" class="lp-mockup-img" loading="lazy" />
           </div>
         </div>
       </div>
@@ -151,7 +151,7 @@
                 </button>
 
                 <a
-                  :href="`https://www.mengundanganda.fun/create?theme=${theme.id}`"
+                  :href="`https://www.mengundanganda.com/create?theme=${theme.id}`"
                   class="btn btn-primary btn-sm lp-theme-btn lp-theme-btn-use"
                 >
                   <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">brush</span>
@@ -228,7 +228,7 @@
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Langsung jadi setelah input data</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Live preview editor</li>
             </ul>
-            <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-pricing-btn">Mulai Gratis</a>
+            <a href="https://www.mengundanganda.com/login" class="lp-btn lp-pricing-btn">Mulai Gratis</a>
           </div>
 
           <!-- Premium Plan -->
@@ -245,7 +245,7 @@
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> 1 tahun masa aktif</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Unlimited tamu undangan</li>
             </ul>
-            <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</a>
+            <a href="https://www.mengundanganda.com/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</a>
           </div>
         </div>
       </div>
@@ -257,7 +257,7 @@
       <div class="lp-container lp-cta-content">
         <h2 class="lp-cta-title">Siap Membuat Undangan<br><span>Impian Anda?</span></h2>
         <p class="lp-cta-sub">Mulai sekarang dan buat undangan pernikahan digital yang indah dalam hitungan menit.</p>
-        <a href="https://www.mengundanganda.fun/login" class="lp-btn lp-btn-white">Buat Undangan Gratis</a>
+        <a href="https://www.mengundanganda.com/login" class="lp-btn lp-btn-white">Buat Undangan Gratis</a>
       </div>
     </section>
     </main>
@@ -282,7 +282,7 @@
         </div>
         <div class="lp-footer-links">
           <h4>Kontak</h4>
-          <a href="mailto:halo@mengundanganda.fun">halo@mengundanganda.fun</a>
+          <a href="mailto:halo@mengundanganda.com">halo@mengundanganda.com</a>
           <a href="#">Instagram</a>
           <a href="#">WhatsApp</a>
         </div>
@@ -443,7 +443,7 @@ const themesData = [
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
     bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
-    sampleUrl: 'https://ayang-aku.mengundanganda.fun',
+    sampleUrl: 'https://ayang-aku.mengundanganda.com',
     icon: 'solar:leaf-bold-duotone',
   },
   {
@@ -753,7 +753,7 @@ const themesData = [
 .lp-hero-bg {
   position: absolute;
   inset: -20%;
-  background-image: url('https://media.mengundanganda.fun/landing-page/e7f421b4-ce9a-4223-a862-802fb6c064d0.webp');
+  background-image: url('https://media.mengundanganda.com/landing-page/e7f421b4-ce9a-4223-a862-802fb6c064d0.webp');
   background-size: cover;
   background-position: center 30%;
   background-repeat: no-repeat;

@@ -2,7 +2,7 @@
   <section ref="sectionRef" v-if="quote" class="relative min-h-screen flex items-center justify-center py-20 px-6 text-center z-0 overflow-hidden">
     <!-- Background Image -->
     <div class="absolute inset-0 w-full h-full -z-10 pointer-events-none">
-      <img src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(12).png"
+      <img src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(12).png"
            class="absolute inset-0 w-full h-full object-cover"
            style="-webkit-mask-image: linear-gradient(183deg, transparent 0%, rgba(0,0,0,0.02) 10%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.32) 50%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.78) 80%, rgba(0,0,0,0.92) 90%, black 100%); mask-image: linear-gradient(183deg, transparent 0%, rgba(0,0,0,0.02) 10%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.32) 50%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.78) 80%, rgba(0,0,0,0.92) 90%, black 100%);"
            alt="Background" />
@@ -18,7 +18,7 @@
     </div>
 
     <!-- Bottom Decoration -->
-    <img src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(14).png"
+    <img src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(14).png"
          class="absolute bottom-0 left-0 w-full h-auto object-cover max-w-none pointer-events-none z-[5]"
          alt="Bottom Decoration" />
 
@@ -28,28 +28,28 @@
     -->
     <!-- 1. Layer Paling Dasar (Merak 1) -->
     <div class="absolute pointer-events-none scroll-anim" style="z-index: 10; bottom: 50px; left: 170px; width: 40%;">
-      <img src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(17).png"
+      <img src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(17).png"
            class="w-full h-auto object-contain max-w-none animate-breathe-1"
            alt="Layer 17" />
     </div>
          
     <!-- 2. Layer Kedua (Daun Kiri) -->
     <div class="absolute pointer-events-none scroll-anim" style="z-index: 11; bottom: -20px; left: -50px; width: 70%;">
-      <img src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(16).png"
+      <img src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(16).png"
            class="w-full h-auto object-contain max-w-none animate-sway-left"
            alt="Layer 16" />
     </div>
          
     <!-- 3. Layer Ketiga (Merak 2) -->
     <div class="absolute pointer-events-none scroll-anim" style="z-index: 12; bottom: -50px; left: 120px; width: 60%;">
-      <img src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(18).png"
+      <img src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(18).png"
            class="w-full h-auto object-contain max-w-none animate-breathe-2"
            alt="Layer 18" />
     </div>
          
     <!-- 4. Layer Paling Depan (Daun Kanan) -->
     <div class="absolute pointer-events-none scroll-anim" style="z-index: 13; bottom: -50px; right: -20px; width: 30%;">
-      <img src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(15).png"
+      <img src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(15).png"
            class="w-full h-auto object-contain max-w-none animate-sway-right"
            alt="Layer 15" />
     </div>

@@ -3,11 +3,11 @@
     <!-- Navigation -->
     <nav class="legal-nav">
       <div class="legal-nav-inner">
-        <a href="https://saya.mengundanganda.fun" class="legal-logo">
+        <a href="https://saya.mengundanganda.com" class="legal-logo">
           <img src="/images/logo.webp" alt="MengundangAnda Logo" class="legal-logo-img">
           <span>Mengundang<span class="legal-logo-accent">Anda</span></span>
         </a>
-        <a href="https://www.mengundanganda.fun/login" class="legal-nav-cta">Buat Undangan</a>
+        <a href="https://www.mengundanganda.com/login" class="legal-nav-cta">Buat Undangan</a>
       </div>
     </nav>
 
@@ -298,7 +298,7 @@
               <p>Menolak pemrosesan data untuk tujuan tertentu yang tidak esensial</p>
             </div>
           </div>
-          <p>Untuk menggunakan hak-hak Anda, kirim email ke <a href="mailto:halo@mengundanganda.fun">halo@mengundanganda.fun</a> dengan subjek "<strong>Permintaan Hak Privasi</strong>". Kami akan merespons dalam waktu <strong>14 hari kerja</strong>.</p>
+          <p>Untuk menggunakan hak-hak Anda, kirim email ke <a href="mailto:halo@mengundanganda.com">halo@mengundanganda.com</a> dengan subjek "<strong>Permintaan Hak Privasi</strong>". Kami akan merespons dalam waktu <strong>14 hari kerja</strong>.</p>
         </section>
 
         <section id="retensi">
@@ -385,15 +385,15 @@
           <h2>Hubungi Kami</h2>
           <p>Jika Anda memiliki pertanyaan, kekhawatiran, atau permintaan terkait privasi dan perlindungan data, jangan ragu untuk menghubungi kami:</p>
           <div class="legal-contact-grid">
-            <a href="mailto:halo@mengundanganda.fun" class="legal-contact-card">
+            <a href="mailto:halo@mengundanganda.com" class="legal-contact-card">
               <Icon icon="solar:letter-bold-duotone" class="legal-contact-icon" />
               <span class="legal-contact-label">Email Privasi</span>
-              <span class="legal-contact-value">halo@mengundanganda.fun</span>
+              <span class="legal-contact-value">halo@mengundanganda.com</span>
             </a>
-            <a href="https://saya.mengundanganda.fun" class="legal-contact-card">
+            <a href="https://saya.mengundanganda.com" class="legal-contact-card">
               <Icon icon="solar:global-bold-duotone" class="legal-contact-icon" />
               <span class="legal-contact-label">Website</span>
-              <span class="legal-contact-value">saya.mengundanganda.fun</span>
+              <span class="legal-contact-value">saya.mengundanganda.com</span>
             </a>
           </div>
           <p class="legal-note" style="margin-top: 20px;">Waktu respon: maksimal 14 hari kerja untuk permintaan terkait hak data pribadi.</p>

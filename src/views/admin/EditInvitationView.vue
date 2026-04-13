@@ -107,7 +107,7 @@
                 <Icon icon="lucide:check" /> Link tersedia!
               </small>
               <small v-else style="color: var(--admin-text-secondary); font-size: 12px; margin-top: 4px; display: block;">
-                Undangan akan bisa diakses di: <strong>{{ form.slug || "slug-anda" }}.mengundanganda.fun</strong>
+                Undangan akan bisa diakses di: <strong>{{ form.slug || "slug-anda" }}.mengundanganda.com</strong>
               </small>
             </div>
           </div>

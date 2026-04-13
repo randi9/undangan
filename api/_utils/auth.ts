@@ -214,7 +214,7 @@ export async function createUserHandler(req: Request, res: Response) {
         createParams.emailAddress = [username];
       } else {
         createParams.username = username;
-        createParams.emailAddress = [`${username}@mengundanganda.fun`];
+        createParams.emailAddress = [`${username}@mengundanganda.com`];
       }
 
       clerkUser = await clerkClient.users.createUser(createParams);

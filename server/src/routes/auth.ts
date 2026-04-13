@@ -192,7 +192,7 @@ router.post("/users", requireAuth, requireAdmin, async (req: Request, res: Respo
       } else {
         createParams.username = username;
         // Generate a dummy email to satisfy Clerk if email is required
-        createParams.emailAddress = [`${username}@mengundanganda.fun`];
+        createParams.emailAddress = [`${username}@mengundanganda.com`];
       }
 
       clerkUser = await clerkClient.users.createUser(createParams);
