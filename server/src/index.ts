@@ -46,7 +46,7 @@ function isAllowedOrigin(origin: string): boolean {
   // Exact match
   if (allowedOrigins.has(origin)) return true;
 
-  // Subdomain match (e.g. saya.mengundanganda.com, slug.mengundanganda.com)
+  // Subdomain match (e.g. slug.mengundanganda.com)
   try {
     const url = new URL(origin);
     for (const base of baseDomains) {

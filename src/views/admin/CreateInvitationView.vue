@@ -1,14 +1,14 @@
 <template>
   <div class="admin-page-simple">
     <header class="simple-topbar">
-      <router-link to="/" class="simple-topbar-brand">
+      <router-link to="/dashboard" class="simple-topbar-brand">
         <div class="sidebar-brand-icon" style="width:32px;height:32px;border-radius:10px;overflow:hidden;background:transparent">
           <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
         <span class="sidebar-brand-text" style="font-size:17px">Mengundang<span>Anda</span></span>
       </router-link>
       <nav class="simple-topbar-nav">
-        <router-link to="/" class="btn btn-outline btn-sm">
+        <router-link to="/dashboard" class="btn btn-outline btn-sm">
           <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">arrow_back</span>
           Kembali ke Dashboard
         </router-link>
@@ -731,7 +731,7 @@
             margin-top: 24px;
           "
         >
-          <router-link to="/" class="btn btn-outline btn-lg">Batal</router-link>
+          <router-link to="/dashboard" class="btn btn-outline btn-lg">Batal</router-link>
           <button
             type="submit"
             class="btn btn-primary btn-lg"
@@ -1477,7 +1477,7 @@ async function handleSubmit() {
       banks: filteredBanks,
     });
     showToast("success", "Undangan berhasil dibuat! 🎉");
-    setTimeout(() => router.push("/"), 1500);
+    setTimeout(() => router.push("/dashboard"), 1500);
   } catch (e: any) {
     showToast("error", e.message || "Gagal membuat undangan");
   } finally {

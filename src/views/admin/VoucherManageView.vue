@@ -2,7 +2,7 @@
   <div class="admin-layout">
     <!-- Sidebar -->
     <aside class="admin-sidebar">
-      <router-link to="/" class="sidebar-brand">
+      <router-link to="/dashboard" class="sidebar-brand">
         <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
           <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
@@ -10,19 +10,19 @@
       </router-link>
 
       <nav class="sidebar-nav">
-        <router-link to="/" class="sidebar-link">
+        <router-link to="/dashboard" class="sidebar-link">
           <span class="material-symbols-rounded">dashboard</span>
           Dashboard
         </router-link>
-        <router-link to="/themes" class="sidebar-link">
+        <router-link to="/dashboard/themes" class="sidebar-link">
           <span class="material-symbols-rounded">palette</span>
           Tema
         </router-link>
-        <router-link to="/users" class="sidebar-link">
+        <router-link to="/dashboard/users" class="sidebar-link">
           <span class="material-symbols-rounded">group</span>
           Kelola User
         </router-link>
-        <router-link to="/vouchers" class="sidebar-link" exact>
+        <router-link to="/dashboard/vouchers" class="sidebar-link" exact>
           <span class="material-symbols-rounded">confirmation_number</span>
           Voucher
         </router-link>
@@ -38,7 +38,7 @@
     <!-- Main Content -->
     <div class="admin-main">
       <header class="admin-topbar">
-        <router-link to="/" class="mobile-brand">
+        <router-link to="/dashboard" class="mobile-brand">
           <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
             <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
           </div>

@@ -2,7 +2,7 @@
   <div class="admin-layout">
     <!-- Sidebar -->
     <aside class="admin-sidebar">
-      <router-link to="/" class="sidebar-brand">
+      <router-link to="/dashboard" class="sidebar-brand">
         <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
           <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
@@ -10,27 +10,27 @@
       </router-link>
 
       <nav class="sidebar-nav">
-        <router-link to="/" class="sidebar-link">
+        <router-link to="/dashboard" class="sidebar-link">
           <span class="material-symbols-rounded">dashboard</span>
           Dashboard
         </router-link>
-        <router-link to="/themes" class="sidebar-link" exact>
+        <router-link to="/dashboard/themes" class="sidebar-link" exact>
           <span class="material-symbols-rounded">palette</span>
           Tema
         </router-link>
-        <router-link v-if="!hasReachedLimit" to="/create" class="sidebar-link">
+        <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="sidebar-link">
           <span class="material-symbols-rounded">add_circle</span>
           Buat Undangan
         </router-link>
-        <router-link v-if="hasTrialInvitation" :to="`/payment?invitation_id=${firstTrialInvitationId}`" class="sidebar-link">
+        <router-link v-if="hasTrialInvitation" :to="`/dashboard/payment?invitation_id=${firstTrialInvitationId}`" class="sidebar-link">
           <span class="material-symbols-rounded">payments</span>
           Pembayaran
         </router-link>
-        <router-link v-if="authStore.isAdmin" to="/users" class="sidebar-link">
+        <router-link v-if="authStore.isAdmin" to="/dashboard/users" class="sidebar-link">
           <span class="material-symbols-rounded">group</span>
           Kelola User
         </router-link>
-        <router-link v-if="authStore.isAdmin" to="/vouchers" class="sidebar-link">
+        <router-link v-if="authStore.isAdmin" to="/dashboard/vouchers" class="sidebar-link">
           <span class="material-symbols-rounded">confirmation_number</span>
           Voucher
         </router-link>
@@ -46,7 +46,7 @@
     <!-- Main Content -->
     <div class="admin-main">
       <header class="admin-topbar">
-        <router-link to="/" class="mobile-brand">
+        <router-link to="/dashboard" class="mobile-brand">
           <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
             <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
           </div>
@@ -55,7 +55,7 @@
 
         <div class="search-bar" style="visibility: hidden;"></div>
         <div class="topbar-actions">
-          <router-link v-if="!hasReachedLimit" to="/create" class="btn btn-primary">
+          <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="btn btn-primary">
             <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
             Buat Undangan Baru
           </router-link>
@@ -137,7 +137,7 @@
 
                 <router-link
                   v-if="!hasReachedLimit"
-                  :to="`/create?theme=${theme.id}`"
+                  :to="`/dashboard/create?theme=${theme.id}`"
                   class="btn btn-primary btn-sm theme-btn theme-btn-use"
                 >
                   <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">brush</span>

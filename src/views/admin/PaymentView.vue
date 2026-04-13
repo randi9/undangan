@@ -2,7 +2,7 @@
   <div class="admin-layout">
     <!-- Sidebar -->
     <aside class="admin-sidebar">
-      <router-link to="/" class="sidebar-brand">
+      <router-link to="/dashboard" class="sidebar-brand">
         <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
           <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
@@ -10,15 +10,15 @@
       </router-link>
 
       <nav class="sidebar-nav">
-        <router-link to="/" class="sidebar-link">
+        <router-link to="/dashboard" class="sidebar-link">
           <span class="material-symbols-rounded">dashboard</span>
           Dashboard
         </router-link>
-        <router-link to="/themes" class="sidebar-link">
+        <router-link to="/dashboard/themes" class="sidebar-link">
           <span class="material-symbols-rounded">palette</span>
           Tema
         </router-link>
-        <router-link to="/payment" class="sidebar-link" exact>
+        <router-link to="/dashboard/payment" class="sidebar-link" exact>
           <span class="material-symbols-rounded">payments</span>
           Pembayaran
         </router-link>
@@ -34,7 +34,7 @@
     <!-- Main Content -->
     <div class="admin-main">
       <header class="admin-topbar">
-        <router-link to="/" class="mobile-brand">
+        <router-link to="/dashboard" class="mobile-brand">
           <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
             <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
           </div>
@@ -43,7 +43,7 @@
 
         <div class="search-bar" style="visibility: hidden;"></div>
         <div class="topbar-actions" style="gap: 12px;">
-          <router-link to="/" class="btn btn-outline">
+          <router-link to="/dashboard" class="btn btn-outline">
             <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">arrow_back</span>
             Kembali ke Dashboard
           </router-link>
@@ -62,7 +62,7 @@
           <Icon icon="ph:credit-card-duotone" class="payment-empty-icon" />
           <h2>Pilih Undangan</h2>
           <p>Silakan pilih undangan yang ingin di-upgrade dari dashboard.</p>
-          <router-link to="/" class="btn btn-primary btn-lg">
+          <router-link to="/dashboard" class="btn btn-primary btn-lg">
             <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">dashboard</span>
             Ke Dashboard
           </router-link>
@@ -76,7 +76,7 @@
             <h2>Undangan Sudah Premium!</h2>
             <p>Undangan Anda sudah dalam status <strong>PAID</strong>. Semua fitur premium sudah aktif tanpa batas akses.</p>
             <div class="payment-actions">
-              <router-link to="/" class="btn btn-primary btn-lg">
+              <router-link to="/dashboard" class="btn btn-primary btn-lg">
                 <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">dashboard</span>
                 Kembali ke Dashboard
               </router-link>

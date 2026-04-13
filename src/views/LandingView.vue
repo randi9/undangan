@@ -16,7 +16,7 @@
           <li><a href="#cara-kerja" @click="mobileMenuOpen = false">Cara Kerja</a></li>
           <li><a href="#testimoni" @click="mobileMenuOpen = false">Testimoni</a></li>
           <li><a href="#harga" @click="mobileMenuOpen = false">Harga</a></li>
-          <li><a href="https://www.mengundanganda.com/login" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</a></li>
+          <li><a href="/login" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</a></li>
         </ul>
       </div>
     </nav>
@@ -37,7 +37,7 @@
           Pilih tema, isi data, dan langsung bagikan, semudah itu.
         </p>
         <div class="lp-hero-actions lp-fade-up lp-delay-3">
-          <a href="https://www.mengundanganda.com/login" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</a>
+          <a href="/login" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</a>
           <a href="#tema" class="lp-btn lp-btn-outline">Lihat Tema</a>
         </div>
       </div>
@@ -81,7 +81,7 @@
             <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Menghemat waktu bolak-balik ke halaman berbeda.</li>
             <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Pengalaman membuat undangan jadi sangat mudah.</li>
           </ul>
-          <a href="https://www.mengundanganda.com/login" class="lp-btn lp-btn-primary lp-showcase-btn">Coba Sekarang</a>
+          <a href="/login" class="lp-btn lp-btn-primary lp-showcase-btn">Coba Sekarang</a>
         </div>
         <div class="lp-showcase-image">
           <div class="lp-mockup-wrapper">
@@ -151,7 +151,7 @@
                 </button>
 
                 <a
-                  :href="`https://www.mengundanganda.com/create?theme=${theme.id}`"
+                  :href="`/dashboard/create?theme=${theme.id}`"
                   class="btn btn-primary btn-sm lp-theme-btn lp-theme-btn-use"
                 >
                   <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">brush</span>
@@ -228,7 +228,7 @@
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Langsung jadi setelah input data</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Live preview editor</li>
             </ul>
-            <a href="https://www.mengundanganda.com/login" class="lp-btn lp-pricing-btn">Mulai Gratis</a>
+            <a href="/login" class="lp-btn lp-pricing-btn">Mulai Gratis</a>
           </div>
 
           <!-- Premium Plan -->
@@ -245,7 +245,7 @@
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> 1 tahun masa aktif</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Unlimited tamu undangan</li>
             </ul>
-            <a href="https://www.mengundanganda.com/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</a>
+            <a href="/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</a>
           </div>
         </div>
       </div>
@@ -257,7 +257,7 @@
       <div class="lp-container lp-cta-content">
         <h2 class="lp-cta-title">Siap Membuat Undangan<br><span>Impian Anda?</span></h2>
         <p class="lp-cta-sub">Mulai sekarang dan buat undangan pernikahan digital yang indah dalam hitungan menit.</p>
-        <a href="https://www.mengundanganda.com/login" class="lp-btn lp-btn-white">Buat Undangan Gratis</a>
+        <a href="/login" class="lp-btn lp-btn-white">Buat Undangan Gratis</a>
       </div>
     </section>
     </main>

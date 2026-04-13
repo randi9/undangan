@@ -2,7 +2,7 @@
   <div class="admin-layout">
     <!-- Sidebar -->
     <aside class="admin-sidebar">
-      <router-link to="/" class="sidebar-brand">
+      <router-link to="/dashboard" class="sidebar-brand">
         <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
           <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
         </div>
@@ -10,27 +10,27 @@
       </router-link>
 
       <nav class="sidebar-nav">
-        <router-link to="/" class="sidebar-link" exact>
+        <router-link to="/dashboard" class="sidebar-link" exact>
           <span class="material-symbols-rounded">dashboard</span>
           Dashboard
         </router-link>
-        <router-link to="/themes" class="sidebar-link">
+        <router-link to="/dashboard/themes" class="sidebar-link">
           <span class="material-symbols-rounded">palette</span>
           Tema
         </router-link>
-        <router-link v-if="!hasReachedLimit" to="/create" class="sidebar-link">
+        <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="sidebar-link">
           <span class="material-symbols-rounded">add_circle</span>
           Buat Undangan
         </router-link>
-        <router-link v-if="hasTrialInvitation" :to="`/payment?invitation_id=${firstTrialInvitationId}`" class="sidebar-link">
+        <router-link v-if="hasTrialInvitation" :to="`/dashboard/payment?invitation_id=${firstTrialInvitationId}`" class="sidebar-link">
           <span class="material-symbols-rounded">payments</span>
           Pembayaran
         </router-link>
-        <router-link v-if="authStore.isAdmin" to="/users" class="sidebar-link">
+        <router-link v-if="authStore.isAdmin" to="/dashboard/users" class="sidebar-link">
           <span class="material-symbols-rounded">group</span>
           Kelola User
         </router-link>
-        <router-link v-if="authStore.isAdmin" to="/vouchers" class="sidebar-link">
+        <router-link v-if="authStore.isAdmin" to="/dashboard/vouchers" class="sidebar-link">
           <span class="material-symbols-rounded">confirmation_number</span>
           Voucher
         </router-link>
@@ -47,7 +47,7 @@
     <!-- Main Content -->
     <div class="admin-main">
       <header class="admin-topbar">
-        <router-link to="/" class="mobile-brand">
+        <router-link to="/dashboard" class="mobile-brand">
           <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
             <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
           </div>
@@ -67,7 +67,7 @@
             <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
             {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
           </div>
-          <router-link v-if="!hasReachedLimit" to="/create" class="btn btn-primary">
+          <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="btn btn-primary">
             <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
             Buat Undangan Baru
           </router-link>
@@ -150,7 +150,7 @@
           <div class="empty-text">
             Mulai buat undangan pernikahan pertama Anda dengan klik tombol di bawah
           </div>
-          <router-link v-if="!hasReachedLimit" to="/create" class="btn btn-primary btn-lg">
+          <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="btn btn-primary btn-lg">
             <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
             Buat Undangan Pertama
           </router-link>
@@ -225,7 +225,7 @@
                 <!-- Upgrade Button for Trial -->
                 <router-link
                   v-if="invitation.payment_status === 'trial'"
-                  :to="`/payment?invitation_id=${invitation.id}`"
+                  :to="`/dashboard/payment?invitation_id=${invitation.id}`"
                   class="btn btn-upgrade btn-sm"
                 >
                   <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bolt</span> Upgrade
@@ -239,7 +239,7 @@
                     <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span> Preview
                   </a>
                   <router-link
-                    :to="`/edit/${invitation.id}`"
+                    :to="`/dashboard/edit/${invitation.id}`"
                     class="btn btn-outline btn-sm"
                   >
                     <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
