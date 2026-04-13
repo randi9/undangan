@@ -1,15 +1,11 @@
-# MengundangAnda - Undangan Pernikahan Digital
-# https://saya.mengundanganda.fun
+# MengundangAnda - Undangan Pernikahan Digital Premium
+# https://mengundanganda.com
 
 User-agent: *
 Allow: /
 Allow: /terms
 Allow: /privacy
 Disallow: /api/
-Disallow: /create
-Disallow: /edit/
-Disallow: /payment
-Disallow: /users
-Disallow: /vouchers
+Disallow: /dashboard/
 
-Sitemap: https://saya.mengundanganda.fun/sitemap.xml
+Sitemap: https://mengundanganda.com/sitemap.xml
