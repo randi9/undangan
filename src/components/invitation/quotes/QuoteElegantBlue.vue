@@ -74,6 +74,7 @@ const sectionRef = ref<HTMLElement | null>(null);
 let ctx: gsap.Context;
 
 onMounted(() => {
+  if (!sectionRef.value) return;
   ctx = gsap.context(() => {
     // Animasi teks masuk
     gsap.from(".quote-anim", {

@@ -1,39 +1,77 @@
 <template>
-  <section v-if="hasDate" class="py-20 px-6 text-center bg-[var(--theme-surface)]">
-    <h2 class="text-3xl md:text-4xl mb-2 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">Menghitung Hari</h2>
-    <div class="flex items-center justify-center gap-4 mb-12 text-[var(--theme-secondary)]">
-      <div class="h-px w-12 bg-[var(--theme-secondary)] opacity-50"></div>
+  <section v-if="hasDate" class="py-20 px-4 md:px-6 text-center bg-[#405C66] overflow-hidden">
+    <!-- Header -->
+    <h2 class="text-3xl md:text-5xl mb-2 text-[#F8F9FA] drop-shadow-sm tracking-widest" :style="{ fontFamily: themeConfig.fontHeading }">Menghitung Hari</h2>
+    <div class="flex items-center justify-center gap-4 mb-16 text-white/50">
+      <div class="h-px w-16 bg-white/30" />
       <span class="text-xl">⏳</span>
-      <div class="h-px w-12 bg-[var(--theme-secondary)] opacity-50"></div>
+      <div class="h-px w-16 bg-white/30" />
     </div>
     
-    <div class="flex justify-center gap-4 md:gap-8 max-w-lg mx-auto">
-      <div class="flex flex-col items-center w-20">
-        <div class="text-4xl md:text-5xl font-bold text-[var(--theme-primary)] mb-2" :style="{ fontFamily: themeConfig.fontHeading }">{{ countdown.days }}</div>
-        <div class="text-xs tracking-widest uppercase text-[var(--theme-text-light)]">Hari</div>
+    <!-- Flip Clock Container -->
+    <div class="flex justify-center gap-3 md:gap-8 max-w-2xl mx-auto">
+      
+      <!-- Days -->
+      <div class="flex flex-col items-center">
+        <div class="flex gap-1 mb-4 shadow-2xl shadow-black/20 rounded-md">
+          <CountdownFlipDigit v-for="(d, idx) in padDigit(countdown.days)" :key="'day-'+idx" :target="d" />
+        </div>
+        <div class="text-[10px] md:text-xs tracking-widest uppercase text-blue-100/70 font-light">Hari</div>
       </div>
-      <div class="flex flex-col items-center w-20">
-        <div class="text-4xl md:text-5xl font-bold text-[var(--theme-primary)] mb-2" :style="{ fontFamily: themeConfig.fontHeading }">{{ countdown.hours }}</div>
-        <div class="text-xs tracking-widest uppercase text-[var(--theme-text-light)]">Jam</div>
+      
+      <!-- Colon Separator -->
+      <div class="flex flex-col items-center justify-start pt-3 md:pt-4">
+        <span class="text-2xl md:text-4xl text-white/40 font-bold">:</span>
       </div>
-      <div class="flex flex-col items-center w-20">
-        <div class="text-4xl md:text-5xl font-bold text-[var(--theme-primary)] mb-2" :style="{ fontFamily: themeConfig.fontHeading }">{{ countdown.minutes }}</div>
-        <div class="text-xs tracking-widest uppercase text-[var(--theme-text-light)]">Menit</div>
+
+      <!-- Hours -->
+      <div class="flex flex-col items-center">
+        <div class="flex gap-1 mb-4 shadow-2xl shadow-black/20 rounded-md">
+          <CountdownFlipDigit v-for="(d, idx) in padDigit(countdown.hours)" :key="'hour-'+idx" :target="d" />
+        </div>
+        <div class="text-[10px] md:text-xs tracking-widest uppercase text-blue-100/70 font-light">Jam</div>
       </div>
-      <div class="flex flex-col items-center w-20">
-        <div class="text-4xl md:text-5xl font-bold text-[var(--theme-primary)] mb-2" :style="{ fontFamily: themeConfig.fontHeading }">{{ countdown.seconds }}</div>
-        <div class="text-xs tracking-widest uppercase text-[var(--theme-text-light)]">Detik</div>
+
+      <div class="flex flex-col items-center justify-start pt-3 md:pt-4">
+        <span class="text-2xl md:text-4xl text-white/40 font-bold">:</span>
       </div>
+
+      <!-- Minutes -->
+      <div class="flex flex-col items-center">
+        <div class="flex gap-1 mb-4 shadow-2xl shadow-black/20 rounded-md">
+          <CountdownFlipDigit v-for="(d, idx) in padDigit(countdown.minutes)" :key="'min-'+idx" :target="d" />
+        </div>
+        <div class="text-[10px] md:text-xs tracking-widest uppercase text-blue-100/70 font-light">Menit</div>
+      </div>
+
+      <div class="flex flex-col items-center justify-start pt-3 md:pt-4">
+        <span class="text-2xl md:text-4xl text-white/40 font-bold">:</span>
+      </div>
+
+      <!-- Seconds -->
+      <div class="flex flex-col items-center">
+        <div class="flex gap-1 mb-4 shadow-2xl shadow-black/20 rounded-md">
+          <CountdownFlipDigit v-for="(d, idx) in padDigit(countdown.seconds)" :key="'sec-'+idx" :target="d" />
+        </div>
+        <div class="text-[10px] md:text-xs tracking-widest uppercase text-blue-100/70 font-light">Detik</div>
+      </div>
+      
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import type { ThemeConfig } from '@/types/theme';
+import CountdownFlipDigit from './CountdownFlipDigit.vue';
 
 const props = defineProps<{
   countdown: { days: number; hours: number; minutes: number; seconds: number };
   themeConfig: ThemeConfig;
   hasDate: boolean;
 }>();
+
+// Ensure double digits (e.g. 5 -> '05') and split into individual character array
+const padDigit = (val: number) => {
+  return val.toString().padStart(2, '0').split('');
+};
 </script>
