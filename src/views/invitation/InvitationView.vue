@@ -5,7 +5,7 @@ import { ref, computed, onMounted, onBeforeUnmount, reactive, watch, nextTick, t
 // On desktop, we render the invitation inside an iframe so vw units work like mobile
 const isInsideIframe = window.self !== window.top;
 const windowWidth = ref(window.innerWidth);
-const isDesktop = computed(() => windowWidth.value > 430 && !isInsideIframe);
+const isDesktop = computed(() => windowWidth.value > 768 && !isInsideIframe);
 
 function onResize() { windowWidth.value = window.innerWidth; }
 if (!isInsideIframe) {
@@ -204,7 +204,7 @@ const themes: Record<string, ThemeConfig> = {
     fontHeading: "'Great Vibes', cursive",
     fontBody: "'Inter', sans-serif",
     overlayGradient: 'linear-gradient(180deg, rgba(74,93,78,0.5) 0%, rgba(74,93,78,0.8) 100%)',
-    coverImage: 'https://media.mengundanganda.fun/tema%20floral/8a5a275c-909d-448b-8d1d-adaa5a7a39f3.webp',
+    coverImage: 'https://media.mengundanganda.com/tema%20floral/8a5a275c-909d-448b-8d1d-adaa5a7a39f3.webp',
   },
   minimalist: {
     name: 'minimalist',
@@ -530,7 +530,7 @@ onBeforeUnmount(() => {
         </span>
         <span class="trial-separator">•</span>
         <span>Upgrade untuk hapus Free Banner & akses penuh</span>
-        <span>Kunjungi <a href="https://mengundanganda.fun" style="color: blue;">mengundanganda.fun</a></span>
+        <span>Kunjungi <a href="https://mengundanganda.com" style="color: blue;">mengundanganda.com</a></span>
       </div>
     </div>
 
@@ -559,7 +559,7 @@ onBeforeUnmount(() => {
               : 'w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
           ]"
         >
-          <img v-if="themeName === 'elegant_blue'" src="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(10).png" alt="Frame" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain -z-10 pointer-events-none" style="max-width: none;" />
+          <img v-if="themeName === 'elegant_blue'" src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(10).png" alt="Frame" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain -z-10 pointer-events-none" style="max-width: none;" />
 
           <p :ref="setHeroTextRef" class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium opacity-0">The Wedding of</p>
           <h1 :ref="setHeroTextRef" class="text-5xl md:text-7xl lg:text-8xl mb-1 opacity-0 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]" :style="{ fontFamily: activeTheme.fontHeading }">

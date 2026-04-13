@@ -3,11 +3,11 @@
     <!-- Navigation -->
     <nav class="legal-nav">
       <div class="legal-nav-inner">
-        <a href="https://saya.mengundanganda.fun" class="legal-logo">
+        <a href="https://saya.mengundanganda.com" class="legal-logo">
           <img src="/images/logo.webp" alt="MengundangAnda Logo" class="legal-logo-img">
           <span>Mengundang<span class="legal-logo-accent">Anda</span></span>
         </a>
-        <a href="https://www.mengundanganda.fun/login" class="legal-nav-cta">Buat Undangan</a>
+        <a href="https://www.mengundanganda.com/login" class="legal-nav-cta">Buat Undangan</a>
       </div>
     </nav>
 
@@ -287,15 +287,15 @@
           <h2>Hubungi Kami</h2>
           <p>Untuk pertanyaan, klarifikasi, atau permintaan terkait Syarat & Ketentuan ini, Anda dapat menghubungi kami melalui:</p>
           <div class="legal-contact-grid">
-            <a href="mailto:halo@mengundanganda.fun" class="legal-contact-card">
+            <a href="mailto:halo@mengundanganda.com" class="legal-contact-card">
               <Icon icon="solar:letter-bold-duotone" class="legal-contact-icon" />
               <span class="legal-contact-label">Email</span>
-              <span class="legal-contact-value">halo@mengundanganda.fun</span>
+              <span class="legal-contact-value">halo@mengundanganda.com</span>
             </a>
-            <a href="https://saya.mengundanganda.fun" class="legal-contact-card">
+            <a href="https://saya.mengundanganda.com" class="legal-contact-card">
               <Icon icon="solar:global-bold-duotone" class="legal-contact-icon" />
               <span class="legal-contact-label">Website</span>
-              <span class="legal-contact-value">saya.mengundanganda.fun</span>
+              <span class="legal-contact-value">saya.mengundanganda.com</span>
             </a>
           </div>
         </section>

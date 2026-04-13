@@ -31,7 +31,7 @@ const defaultOrigins = [
 const allowedOrigins = new Set([...defaultOrigins, ...configuredOrigins]);
 
 // Extract base domains from configured origins for subdomain matching
-// e.g. "https://mengundanganda.fun" -> "mengundanganda.fun"
+// e.g. "https://mengundanganda.com" -> "mengundanganda.com"
 const baseDomains: string[] = [];
 for (const o of configuredOrigins) {
   try {
@@ -46,7 +46,7 @@ function isAllowedOrigin(origin: string): boolean {
   // Exact match
   if (allowedOrigins.has(origin)) return true;
 
-  // Subdomain match (e.g. saya.mengundanganda.fun, slug.mengundanganda.fun)
+  // Subdomain match (e.g. saya.mengundanganda.com, slug.mengundanganda.com)
   try {
     const url = new URL(origin);
     for (const base of baseDomains) {

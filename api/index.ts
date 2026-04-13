@@ -30,13 +30,13 @@ const defaultOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   // Production domains — always allowed
-  "https://mengundanganda.fun",
-  "https://www.mengundanganda.fun",
+  "https://mengundanganda.com",
+  "https://www.mengundanganda.com",
 ];
 const allowedOrigins = new Set([...defaultOrigins, ...configuredOrigins]);
 
 // Extract base domains for subdomain matching
-const baseDomains = ["mengundanganda.fun"];   // always allow *.mengundanganda.fun
+const baseDomains = ["mengundanganda.com"];   // always allow *.mengundanganda.com
 for (const o of configuredOrigins) {
   try {
     const url = new URL(o);
@@ -597,7 +597,7 @@ app.delete("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
         return parsed.pathname.replace(/^\//, '') || null;
       } catch {
         // Fallback: take everything after the last domain slash
-        const match = url.match(/\.fun\/(.+)$/) || url.match(/\.com\/(.+)$/);
+        const match = url.match(/\.com\/(.+)$/) || url.match(/\.com\/(.+)$/);
         return match ? match[1] : url.split('/').pop() || null;
       }
     };
@@ -750,8 +750,8 @@ async function uploadToSupabaseStorage(file: Express.Multer.File, slug?: string)
   await s3Client.send(command);
 
   const publicUrlBase = isMusic 
-    ? process.env.R2_PUBLIC_URL_MUSIC || "https://music.mengundanganda.fun"
-    : process.env.R2_PUBLIC_URL_UPLOADS || "https://media.mengundanganda.fun";
+    ? process.env.R2_PUBLIC_URL_MUSIC || "https://music.mengundanganda.com"
+    : process.env.R2_PUBLIC_URL_UPLOADS || "https://media.mengundanganda.com";
   
   const publicUrl = `${publicUrlBase}/${key}`;
   return { url: publicUrl, filename: key };
@@ -794,7 +794,7 @@ app.delete("/api/upload/file", requireAuth, (req: express.Request, res: express.
       const { url } = req.body;
       if (!url) return res.status(400).json({ error: "No URL provided" });
 
-      const isMusic = url.includes("music.mengundanganda.fun");
+      const isMusic = url.includes("music.mengundanganda.com");
       const bucket = isMusic ? "music" : "uploads";
       
       let key = "";
@@ -802,7 +802,7 @@ app.delete("/api/upload/file", requireAuth, (req: express.Request, res: express.
         const parsed = new URL(url);
         key = parsed.pathname.replace(/^\//, '');
       } catch {
-        const match = url.match(/\.fun\/(.+)$/) || url.match(/\.com\/(.+)$/);
+        const match = url.match(/\.com\/(.+)$/) || url.match(/\.com\/(.+)$/);
         key = match ? match[1] : url.split('/').pop() || "";
       }
 

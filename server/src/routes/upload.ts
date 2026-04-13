@@ -54,8 +54,8 @@ async function uploadBufferToStorage(file: Express.Multer.File, slug?: string) {
   const isMusic = isAudioMime(file.mimetype);
   const bucket = isMusic ? "music" : "uploads";
   const publicUrlBase = isMusic 
-    ? process.env.R2_PUBLIC_URL_MUSIC || "https://music.mengundanganda.fun"
-    : process.env.R2_PUBLIC_URL_UPLOADS || "https://media.mengundanganda.fun";
+    ? process.env.R2_PUBLIC_URL_MUSIC || "https://music.mengundanganda.com"
+    : process.env.R2_PUBLIC_URL_UPLOADS || "https://media.mengundanganda.com";
 
   // Konfigurasi S3 Client untuk R2
   const s3Client = new S3Client({
@@ -156,7 +156,7 @@ router.delete("/file", (req: Request, res: Response) => {
         return;
       }
 
-      const isMusic = url.includes("music.mengundanganda.fun");
+      const isMusic = url.includes("music.mengundanganda.com");
       const bucket = isMusic ? "music" : "uploads";
       
       let key = "";

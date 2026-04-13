@@ -9,12 +9,12 @@
         <defs>
           <pattern id="elegant-damask-pattern" x="0" y="0" width="180" height="180" patternUnits="userSpaceOnUse">
             <!-- Center image -->
-            <image href="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(5).png" x="35" y="35" width="110" height="110" />
+            <image href="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(5).png" x="35" y="35" width="110" height="110" />
             <!-- Corner images (all facing upwards) -->
-            <image href="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(5).png" x="-55" y="-55" width="110" height="110" />
-            <image href="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(5).png" x="125" y="-55" width="110" height="110" />
-            <image href="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(5).png" x="-55" y="125" width="110" height="110" />
-            <image href="https://media.mengundanganda.fun/desain%20web%20elegan%20blue%20(5).png" x="125" y="125" width="110" height="110" />
+            <image href="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(5).png" x="-55" y="-55" width="110" height="110" />
+            <image href="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(5).png" x="125" y="-55" width="110" height="110" />
+            <image href="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(5).png" x="-55" y="125" width="110" height="110" />
+            <image href="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(5).png" x="125" y="125" width="110" height="110" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#elegant-damask-pattern)" />

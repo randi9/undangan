@@ -2,12 +2,12 @@
   <section ref="sectionRef" v-if="hasDate" style="padding-top:40px;" class="py-10 pb-[15%] overflow-hidden relative min-h-[66vh] flex flex-col items-center justify-start px-6 text-center bg-[var(--theme-surface)]">
     
     <!-- Awan Kiri (Muncul sedikit dari kiri, Gerak Pelan Biasa) -->
-    <img src="https://media.mengundanganda.fun/tema%20floral/coundown%20section/7180e6da-fcc2-44b7-b8d4-ffaa3f73b346.webp" 
+    <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/7180e6da-fcc2-44b7-b8d4-ffaa3f73b346.webp" 
          class="absolute z-0 pointer-events-none cloud-sweep-fast" 
          style="top: 2%; left: 0; width: clamp(200px, 40vw, 400px);" />
 
     <!-- Awan Kanan (Start dari tengah agak kanan, Pelan Banget) -->
-    <img src="https://media.mengundanganda.fun/tema%20floral/coundown%20section/9f8283e2-3722-4b71-8eb6-86b67cb8b9ef.webp" 
+    <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/9f8283e2-3722-4b71-8eb6-86b67cb8b9ef.webp" 
          class="absolute z-0 pointer-events-none cloud-sweep-slow" 
          style="top: 8%; left: 0; width: clamp(250px, 45vw, 450px);" />
     <div class="relative z-10 flex flex-col items-center w-full">
@@ -69,13 +69,13 @@
     </div>
     </div>
     
-    <img src="https://media.mengundanganda.fun/tema%20floral/coundown%20section/2bf93382-fff2-4180-8fa5-d91e7ed668be.webp" class="absolute bottom-0 left-0 w-full h-auto pointer-events-none z-0 transform -scale-x-100" alt="Floral Ornament Bottom" />
+    <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/2bf93382-fff2-4180-8fa5-d91e7ed668be.webp" class="absolute bottom-0 left-0 w-full h-auto pointer-events-none z-0 transform -scale-x-100" alt="Floral Ornament Bottom" />
 
     <!-- Grass Assets Overlay -->
     <div v-for="(g, i) in grasses" :key="'grass'+i"
          class="absolute pointer-events-none z-[1]"
          :style="{ left: g.left, bottom: g.bottom, transform: g.flip ? 'scaleX(-1)' : 'none' }">
-         <img src="https://media.mengundanganda.fun/tema%20floral/coundown%20section/fe50069a-9362-4461-b606-1600648e50f1.webp" 
+         <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/fe50069a-9362-4461-b606-1600648e50f1.webp" 
               class="sway-grass drop-shadow-sm" 
               :style="{ width: g.width, animationDuration: g.duration, animationDelay: g.delay }" />
     </div>
@@ -84,7 +84,7 @@
     <div v-for="(d, i) in dandelions" :key="'dandelion'+i"
          class="absolute pointer-events-none z-[2]"
          :style="{ left: d.left, bottom: d.bottom, transform: d.flip ? 'scaleX(-1)' : 'none' }">
-         <img src="https://media.mengundanganda.fun/tema%20floral/coundown%20section/7e196439-ea2b-4325-a844-ebff3113d147.webp" 
+         <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/7e196439-ea2b-4325-a844-ebff3113d147.webp" 
               class="sway-dandelion drop-shadow-sm" 
               :style="{ width: d.width, animationDuration: d.duration, animationDelay: d.delay }" />
     </div>
@@ -101,7 +101,7 @@
            '--tx': seed.tx,
            '--ty': seed.ty
          }">
-      <img src="https://media.mengundanganda.fun/tema%20floral/coundown%20section/ffe221ad-761e-40cf-8a87-5ab68e81c721.webp" 
+      <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/ffe221ad-761e-40cf-8a87-5ab68e81c721.webp" 
            class="w-full h-auto seed-wobble"
            :style="{ animationDuration: seed.wobble }" />
     </div>
