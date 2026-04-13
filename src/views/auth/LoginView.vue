@@ -22,7 +22,7 @@ import { computed } from 'vue'
 
 const route = useRoute()
 const redirectUrl = computed(() => {
-  return typeof route.query.redirect_url === 'string' && route.query.redirect_url ? route.query.redirect_url : '/'
+  return typeof route.query.redirect_url === 'string' && route.query.redirect_url ? route.query.redirect_url : '/dashboard'
 })
 </script>
 
