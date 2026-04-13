@@ -180,7 +180,7 @@ onMounted(() => {
 
   ctx = gsap.context(() => {
     // Corner Ornaments Init
-    const corners = sectionRef.value.querySelectorAll('.couple-png-corner');
+    const corners = sectionRef.value!.querySelectorAll('.couple-png-corner');
     gsap.set(corners, { scale: 1, opacity: 1 });
 
     // 1. Initial robust Absolute positioning inside the GSAP context
