@@ -1,55 +1,58 @@
 <template>
-  <section ref="sectionRef" class="relative py-24 px-4 md:px-8 text-center bg-[#405C66] overflow-hidden min-h-screen flex flex-col items-center justify-center">
+  <section ref="sectionRef" class="relative px-4 md:px-8 text-center overflow-hidden flex flex-col items-center justify-start min-h-[100dvh]" :style="irregularGradientStyle">
     
     <!-- Real Layout (Text + Final position of images) -->
-    <div class="max-w-5xl w-full mx-auto relative z-10 pt-10 pb-10 flex flex-col justify-center">
-      <h2 ref="titleRef" class="text-3xl md:text-5xl mb-2 text-[#F8F9FA] drop-shadow-sm tracking-widest opacity-0 translate-y-4 cursor-default text-center" :style="{ fontFamily: themeConfig.fontHeading }">Mempelai</h2>
-      <div ref="heartRef" class="flex items-center justify-center gap-4 mb-20 text-white/50 opacity-0 translate-y-4">
-        <div class="h-px w-16 bg-white/30" />
-        <span class="text-xl">♥</span>
-        <div class="h-px w-16 bg-white/30" />
+    <div class="max-w-5xl w-full mx-auto relative z-10 flex-1 flex flex-col justify-between">
+      
+      <div>
+        <h2 ref="titleRef" class="text-3xl md:text-5xl mb-2 text-[#1a252c] drop-shadow-sm tracking-widest cursor-default text-center" :style="{ fontFamily: themeConfig.fontHeading }">The Future Mr. & Mrs.</h2>
+        <div ref="heartRef" class="flex items-center justify-center gap-4 text-[#304851]/50 mb-8 md:mb-0">
+          <div class="h-px w-16 bg-[#304851]/30" />
+          <span class="text-xl">♥</span>
+          <div class="h-px w-16 bg-[#304851]/30" />
+        </div>
       </div>
       
       <!-- Groom Row -->
-      <div class="flex items-center justify-between gap-4 md:gap-16 w-full max-w-2xl mx-auto relative mb-12" ref="groomRowRef">
+      <div class="flex items-center justify-between gap-4 md:gap-16 w-full max-w-2xl mx-auto relative" ref="groomRowRef">
         <div class="w-[45%] flex justify-end">
-          <div ref="groomSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-t-[1000px] border-[4px] md:border-[6px] shadow-2xl border-white/10 bg-white/5 border-b-0 relative overflow-hidden">
+          <div ref="groomSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-t-[1000px] shadow-xl bg-[#405C66]/5 relative overflow-hidden">
              <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realGroomImgRef" alt="Groom" />
-             <div v-else class="w-full h-full flex items-center justify-center text-4xl text-white/50 opacity-0" ref="realGroomImgRef">👤</div>
+             <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realGroomImgRef">👤</div>
           </div>
         </div>
-        <div class="w-[55%] flex justify-start text-left pl-4 border-l border-white/20">
+        <div class="w-[55%] flex justify-start text-left pl-4 border-l border-[#405C66]/20">
           <div ref="groomTextRef" class="opacity-0 translate-y-4">
-             <h3 class="text-xl md:text-3xl font-bold mb-2 text-white drop-shadow-sm" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
-             <p v-if="invitation.groom_father || invitation.groom_mother" class="text-xs md:text-base text-blue-100/80 font-light tracking-wide">
+             <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#1a252c]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
+             <p v-if="invitation.groom_father || invitation.groom_mother" class="text-xs md:text-base text-[#304851]/80 font-light tracking-wide">
                Putra dari<br/>
-               <span v-if="invitation.groom_father" class="font-medium text-white/90">Bapak {{ invitation.groom_father }}</span>
+               <span v-if="invitation.groom_father" class="font-medium text-[#1a252c]">Bapak {{ invitation.groom_father }}</span>
                <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
-               <span v-if="invitation.groom_mother" class="font-medium text-white/90">Ibu {{ invitation.groom_mother }}</span>
+               <span v-if="invitation.groom_mother" class="font-medium text-[#1a252c]">Ibu {{ invitation.groom_mother }}</span>
              </p>
           </div>
         </div>
       </div>
 
       <!-- Divider -->
-      <div ref="ampersandRef" class="text-4xl md:text-6xl text-white/30 font-light drop-shadow-sm opacity-0 translate-y-4 mb-12 cursor-default text-center" :style="{ fontFamily: themeConfig.fontHeading }">&amp;</div>
+      <div ref="ampersandRef" class="text-4xl md:text-6xl text-[#405C66]/30 font-light opacity-0 translate-y-4 my-8 md:my-0 cursor-default text-center" :style="{ fontFamily: themeConfig.fontHeading }">&amp;</div>
       
       <!-- Bride Row -->
       <div class="flex items-center justify-between gap-4 md:gap-16 w-full max-w-2xl mx-auto relative flex-row-reverse" ref="brideRowRef">
         <div class="w-[45%] flex justify-start">
-          <div ref="brideSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-b-[1000px] border-[4px] md:border-[6px] shadow-2xl border-white/10 bg-white/5 border-t-0 relative overflow-hidden">
+          <div ref="brideSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-b-[1000px] shadow-xl bg-[#405C66]/5 relative overflow-hidden">
              <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realBrideImgRef" alt="Bride" />
-             <div v-else class="w-full h-full flex items-center justify-center text-4xl text-white/50 opacity-0" ref="realBrideImgRef">👤</div>
+             <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realBrideImgRef">👤</div>
           </div>
         </div>
-        <div class="w-[55%] flex justify-end text-right pr-4 border-r border-white/20">
+        <div class="w-[55%] flex justify-end text-right pr-4 border-r border-[#405C66]/20">
           <div ref="brideTextRef" class="opacity-0 translate-y-4">
-            <h3 class="text-xl md:text-3xl font-bold mb-2 text-white drop-shadow-sm" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
-            <p v-if="invitation.bride_father || invitation.bride_mother" class="text-xs md:text-base text-blue-100/80 font-light tracking-wide">
+            <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#1a252c]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
+            <p v-if="invitation.bride_father || invitation.bride_mother" class="text-xs md:text-base text-[#304851]/80 font-light tracking-wide">
               Putri dari<br/>
-              <span v-if="invitation.bride_father" class="font-medium text-white/90">Bapak {{ invitation.bride_father }}</span>
+              <span v-if="invitation.bride_father" class="font-medium text-[#1a252c]">Bapak {{ invitation.bride_father }}</span>
               <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
-              <span v-if="invitation.bride_mother" class="font-medium text-white/90">Ibu {{ invitation.bride_mother }}</span>
+              <span v-if="invitation.bride_mother" class="font-medium text-[#1a252c]">Ibu {{ invitation.bride_mother }}</span>
             </p>
           </div>
         </div>
@@ -60,21 +63,21 @@
     <div class="absolute inset-0 z-20 pointer-events-none w-full h-full block">
       
       <!-- Unified Cover Photo (Only visible at start, fades out) -->
-      <div ref="coverOvalRef" class="absolute w-[240px] h-[320px] md:w-[320px] md:h-[440px] rounded-[1000px] overflow-hidden border-[4px] md:border-[6px] shadow-2xl border-white/10 bg-[#304851] z-30" style="will-change: transform, opacity">
+      <div ref="coverOvalRef" class="absolute w-[240px] h-[320px] md:w-[320px] md:h-[440px] rounded-[1000px] overflow-hidden shadow-2xl bg-[#304851] z-30" style="will-change: transform, opacity">
          <img v-if="invitation.cover_photo" :src="resolveAssetUrl(invitation.cover_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover" />
          <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-white/50">Tidak ada cover</div>
       </div>
 
       <!-- Groom Half (Top) - Hidden beneath cover initially -->
-      <div ref="animGroomRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-t-[1000px] overflow-hidden border-[4px] md:border-[6px] shadow-2xl border-white/10 bg-white/5 border-b-0 z-20" style="will-change: width, height, transform, top, left">
+      <div ref="animGroomRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-t-[1000px] overflow-hidden shadow-xl bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
          <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover" />
-         <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-5xl bg-white/10 text-white/50">👤</div>
+         <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-5xl bg-[#405C66]/10 text-[#405C66]/50">👤</div>
       </div>
 
       <!-- Bride Half (Bottom) - Hidden beneath cover initially -->
-      <div ref="animBrideRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-b-[1000px] overflow-hidden border-[4px] md:border-[6px] shadow-2xl border-white/10 bg-white/5 border-t-0 z-20" style="will-change: width, height, transform, top, left">
+      <div ref="animBrideRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-b-[1000px] overflow-hidden shadow-xl bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
          <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover" />
-         <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-5xl bg-white/10 text-white/50">👤</div>
+         <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-5xl bg-[#405C66]/10 text-[#405C66]/50">👤</div>
       </div>
     </div>
 
@@ -134,6 +137,18 @@ const getAnimProps = (slot: HTMLElement | null) => {
      width: targetR.width,
      height: targetR.height
    };
+};
+
+// Inline Pastel Blue Gradient (lengkap dengan padding fix)
+const irregularGradientStyle = {
+  backgroundColor: '#fffdf5',
+  padding: '60px 24px 100px 24px', // Atas dikurangi agar teks lebih naik
+  backgroundImage: `
+    radial-gradient(circle at 10% 15%, rgba(168, 208, 230, 0.3) 0%, transparent 60%),
+    radial-gradient(circle at 85% 85%, rgba(168, 208, 230, 0.3) 0%, transparent 65%),
+    radial-gradient(circle at 80% 15%, rgba(168, 208, 230, 0.3) 0%, transparent 60%),
+    radial-gradient(circle at 25% 85%, rgba(168, 208, 230, 0.3) 0%, transparent 55%)
+  `
 };
 
 let ctx: gsap.Context;
@@ -199,7 +214,7 @@ onMounted(() => {
     }, 0.5);
 
     // 4. Fade in Texts
-    tl.to([titleRef.value, heartRef.value, groomTextRef.value, ampersandRef.value, brideTextRef.value], {
+    tl.to([groomTextRef.value, ampersandRef.value, brideTextRef.value], {
       opacity: 1,
       y: 0,
       stagger: 0.1,

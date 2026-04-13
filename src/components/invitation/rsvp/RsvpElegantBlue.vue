@@ -1,64 +1,107 @@
 <template>
-  <section class="py-24 px-6 max-w-3xl mx-auto text-center">
-    <h2 class="text-3xl md:text-5xl mb-2 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">RSVP</h2>
-    <div class="flex items-center justify-center gap-4 mb-8 text-[var(--theme-secondary)]">
-      <div class="h-px w-16 bg-[var(--theme-secondary)] opacity-50"></div>
-      <span class="text-xl">💌</span>
-      <div class="h-px w-16 bg-[var(--theme-secondary)] opacity-50"></div>
-    </div>
-    
-    <p class="text-[var(--theme-text-light)] mb-10 text-sm md:text-base">Kehadiran Anda merupakan kebahagiaan bagi kami</p>
-    
-    <div class="bg-white p-6 md:p-10 rounded-2xl shadow-lg border border-black/5 text-left mb-16">
-      <form @submit.prevent="onSubmit" class="space-y-6">
-        <div>
-          <label class="block text-sm font-semibold mb-2 text-[var(--theme-text)]">Nama Lengkap</label>
-          <input v-model="form.guest_name" type="text" placeholder="Masukkan nama Anda" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-[var(--theme-primary)] focus:ring-2 focus:ring-[var(--theme-primary)]/20 outline-none transition-all" />
-        </div>
-        
-        <div>
-          <label class="block text-sm font-semibold mb-2 text-[var(--theme-text)]">Konfirmasi Kehadiran</label>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <button type="button" @click="form.attendance = 'hadir'" :class="['flex-1 py-3 px-4 rounded-xl border flex items-center justify-center gap-2 transition-all', form.attendance === 'hadir' ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] font-semibold' : 'border-gray-200 text-gray-500 hover:bg-gray-50']">
-              ✅ Hadir
-            </button>
-            <button type="button" @click="form.attendance = 'tidak_hadir'" :class="['flex-1 py-3 px-4 rounded-xl border flex items-center justify-center gap-2 transition-all', form.attendance === 'tidak_hadir' ? 'border-red-500 bg-red-50 text-red-600 font-semibold' : 'border-gray-200 text-gray-500 hover:bg-gray-50']">
-              ❌ Tidak Hadir
-            </button>
+  <section class="rsvp-section">
+    <div class="rsvp-container">
+      
+      <!-- Header -->
+      <h2 class="rsvp-title" :style="{ fontFamily: themeConfig.fontHeading }">RSVP</h2>
+      <div class="rsvp-divider">
+        <div class="divider-line"></div>
+        <span class="divider-icon">💌</span>
+        <div class="divider-line"></div>
+      </div>
+      <p class="rsvp-subtitle">
+        Kehadiran Anda merupakan kebahagiaan bagi kami
+      </p>
+      
+      <!-- Form Card -->
+      <div class="rsvp-card">
+        <form @submit.prevent="onSubmit" class="rsvp-form">
+          <!-- Nama -->
+          <div class="form-group">
+            <label class="input-label">Nama Lengkap</label>
+            <input 
+              v-model="form.guest_name" 
+              type="text" 
+              placeholder="Masukkan nama Anda" 
+              required 
+              class="input-field" 
+            />
           </div>
-        </div>
-        
-        <div v-show="form.attendance === 'hadir'">
-          <label class="block text-sm font-semibold mb-2 text-[var(--theme-text)]">Jumlah Tamu</label>
-          <input v-model.number="form.guest_count" type="number" min="1" max="10" placeholder="1" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-[var(--theme-primary)] focus:ring-2 focus:ring-[var(--theme-primary)]/20 outline-none transition-all" />
-        </div>
-        
-        <div>
-          <label class="block text-sm font-semibold mb-2 text-[var(--theme-text)]">Ucapan &amp; Doa</label>
-          <textarea v-model="form.message" rows="4" placeholder="Tulis doa untuk kedua mempelai" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-[var(--theme-primary)] focus:ring-2 focus:ring-[var(--theme-primary)]/20 outline-none transition-all resize-y"></textarea>
-        </div>
-        
-        <button type="submit" :disabled="submitting" class="w-full py-4 rounded-xl bg-[var(--theme-primary)] text-white font-semibold text-lg hover:bg-opacity-90 disabled:opacity-50 transition-all shadow-md">
-          {{ submitting ? 'Mengirim...' : 'Kirim Ucapan' }}
-        </button>
-      </form>
-    </div>
-    
-    <!-- Wishes Feed -->
-    <div v-if="rsvpMessages.length > 0" class="text-left bg-[var(--theme-surface)] rounded-2xl p-6 md:p-8">
-      <h3 class="text-xl md:text-2xl font-bold mb-6 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">Ucapan ({{ rsvpMessages.length }})</h3>
-      <div class="space-y-4 max-h-96 overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: var(--theme-secondary) transparent;">
-        <div v-for="msg in rsvpMessages" :key="msg.id" class="p-4 bg-white rounded-xl shadow-sm border border-gray-100">
-          <div class="flex justify-between items-start mb-2">
-            <span class="font-bold text-[var(--theme-text)]">{{ msg.guest_name }}</span>
-            <span class="text-xs px-2 py-1 rounded-md" :class="msg.attendance === 'hadir' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
-              {{ msg.attendance === 'hadir' ? 'Akan Hadir' : 'Berhalangan' }}
-              <span v-if="msg.attendance === 'hadir' && msg.guest_count > 1">({{ msg.guest_count }})</span>
-            </span>
+          
+          <!-- Konfirmasi -->
+          <div class="form-group">
+            <label class="input-label">Konfirmasi Kehadiran</label>
+            <div class="attendance-options">
+              <button 
+                type="button" 
+                @click="form.attendance = 'hadir'" 
+                class="attendance-btn"
+                :class="{ 'active-hadir': form.attendance === 'hadir' }"
+              >
+                ✅ Hadir
+              </button>
+              <button 
+                type="button" 
+                @click="form.attendance = 'tidak_hadir'" 
+                class="attendance-btn"
+                :class="{ 'active-absen': form.attendance === 'tidak_hadir' }"
+              >
+                ❌ Tidak Hadir
+              </button>
+            </div>
           </div>
-          <p class="text-sm text-gray-600 leading-relaxed break-words">{{ msg.message }}</p>
+          
+          <!-- Jumlah Tamu (Conditional) -->
+          <div v-show="form.attendance === 'hadir'" class="form-group">
+            <label class="input-label">Jumlah Tamu</label>
+            <input 
+              v-model.number="form.guest_count" 
+              type="number" 
+              min="1" 
+              max="10" 
+              placeholder="1" 
+              class="input-field" 
+            />
+          </div>
+          
+          <!-- Pesan / Doa -->
+          <div class="form-group">
+            <label class="input-label">Ucapan &amp; Doa</label>
+            <textarea 
+              v-model="form.message" 
+              rows="4" 
+              placeholder="Tulis doa untuk kedua mempelai" 
+              class="input-field textarea-field"
+            ></textarea>
+          </div>
+          
+          <!-- Submit -->
+          <button type="submit" :disabled="submitting" class="submit-btn">
+            {{ submitting ? 'Mengirim...' : 'Kirim Ucapan' }}
+          </button>
+        </form>
+      </div>
+      
+      <!-- Wishes Feed Card -->
+      <div v-if="rsvpMessages.length > 0" class="feed-card">
+        <h3 class="feed-title" :style="{ fontFamily: themeConfig.fontHeading }">
+          Ucapan ({{ rsvpMessages.length }})
+        </h3>
+        
+        <div class="feed-list">
+          <div v-for="msg in rsvpMessages" :key="msg.id" class="feed-item">
+            <div class="feed-item-header">
+              <span class="feed-guest-name">{{ msg.guest_name }}</span>
+              <span class="feed-badge" :class="msg.attendance === 'hadir' ? 'badge-hadir' : 'badge-absen'">
+                {{ msg.attendance === 'hadir' ? 'Akan Hadir' : 'Berhalangan' }}
+                <span v-if="msg.attendance === 'hadir' && msg.guest_count > 1">({{ msg.guest_count }})</span>
+              </span>
+            </div>
+            <p class="feed-message">{{ msg.message }}</p>
+          </div>
         </div>
       </div>
+
     </div>
   </section>
 </template>
@@ -89,3 +132,261 @@ function onSubmit() {
   emit('submitRsvp', { ...form });
 }
 </script>
+
+<style scoped>
+.rsvp-section {
+  padding: 100px 0;
+  background-color: #f3f6f8; /* Soft blue-grey background */
+  text-align: center;
+}
+
+.rsvp-container {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header Text */
+.rsvp-title {
+  color: #1a252c;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.rsvp-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.divider-line {
+  height: 1px;
+  width: 48px;
+  background-color: rgba(48,72,81,0.2);
+}
+.divider-icon {
+  font-size: 1.25rem;
+}
+
+.rsvp-subtitle {
+  color: #304851;
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  font-weight: 300;
+  margin-bottom: 48px;
+}
+
+/* Form Card */
+.rsvp-card {
+  background-color: #ffffff;
+  padding: 32px 24px;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.03);
+  text-align: left;
+  margin-bottom: 48px;
+}
+@media (min-width: 768px) {
+  .rsvp-card {
+    padding: 48px 40px;
+  }
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.input-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #304851;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background-color: #fafafa;
+  color: #1a252c;
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.input-field:focus {
+  background-color: #ffffff;
+  border-color: #405C66;
+  box-shadow: 0 0 0 3px rgba(64,92,102,0.1);
+}
+
+.textarea-field {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Attendance Buttons */
+.attendance-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media (min-width: 480px) {
+  .attendance-options {
+    flex-direction: row;
+  }
+}
+
+.attendance-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background-color: #ffffff;
+  color: #64748b;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.attendance-btn:hover {
+  background-color: #f8fafc;
+}
+
+.active-hadir {
+  border-color: #405C66;
+  background-color: rgba(64,92,102,0.05);
+  color: #405C66;
+  font-weight: 700;
+}
+.active-absen {
+  border-color: #ef4444;
+  background-color: rgba(239,68,68,0.05);
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #405C66;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(64,92,102,0.2);
+  margin-top: 16px;
+}
+.submit-btn:hover:not(:disabled) {
+  background-color: #304851;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(64,92,102,0.3);
+}
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Feed Card */
+.feed-card {
+  background-color: #ffffff;
+  padding: 32px 24px;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.03);
+  text-align: left;
+}
+@media (min-width: 768px) {
+  .feed-card {
+    padding: 40px;
+  }
+}
+
+.feed-title {
+  color: #405C66;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 24px;
+  border-bottom: 2px solid rgba(48,72,81,0.05);
+  padding-bottom: 16px;
+}
+
+.feed-list {
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  
+  /* Scrollbar estetik */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(64,92,102,0.3) transparent;
+}
+.feed-list::-webkit-scrollbar {
+  width: 6px;
+}
+.feed-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.feed-list::-webkit-scrollbar-thumb {
+  background-color: rgba(64,92,102,0.3);
+  border-radius: 10px;
+}
+
+.feed-item {
+  background-color: #fafafa;
+  border: 1px solid rgba(0,0,0,0.03);
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.feed-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.feed-guest-name {
+  font-weight: 700;
+  color: #1a252c;
+  font-size: 1.05rem;
+}
+
+.feed-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-hadir {
+  background-color: rgba(16,185,129,0.1);
+  color: #059669;
+}
+.badge-absen {
+  background-color: rgba(239,68,68,0.1);
+  color: #dc2626;
+}
+
+.feed-message {
+  color: #475569;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre-line; /* Handle multiline breaks in text */
+}
+</style>
