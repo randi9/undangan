@@ -1,4 +1,4 @@
-# MengundangAnda - Undangan Pernikahan Digital Premium
+# MengundangAnda: Undangan Digital Pilihan Anda
 # https://mengundanganda.com
 
 User-agent: *
