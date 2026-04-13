@@ -57,7 +57,7 @@
 
       <!-- The Main Oval Container -->
       <div ref="elContainer" class="absolute inset-0 bg-white rounded-[125px] md:rounded-[210px] lg:rounded-[240px] shadow-[0_15px_40px_rgba(0,0,0,0.1)] opacity-0 z-10 flex items-center justify-center border border-white/60 p-6 md:p-10">
-        <blockquote class="w-[70%] max-w-[200px] md:max-w-[300px] lg:max-w-[340px] mx-auto text-[10px] md:text-sm lg:text-base italic font-light text-center text-[var(--theme-secondary)] leading-loose md:leading-relaxed lg:leading-loose tracking-[0.1em] md:tracking-[0.15em] break-words">
+        <blockquote class="w-[70%] max-w-[200px] md:max-w-[300px] lg:max-w-[340px] mx-auto text-[10px] md:text-sm lg:text-base italic font-light text-center text-[var(--theme-secondary)] leading-loose md:leading-relaxed lg:leading-loose tracking-[0.1em] md:tracking-[0.15em] break-words whitespace-pre-line">
            "{{ quote }}"
         </blockquote>
       </div>

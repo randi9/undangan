@@ -11,7 +11,7 @@
     <!-- Bagian Teks Quote (Silakan atur posisinya manual di sini) -->
     <div class="z-10 w-full flex justify-center" style="position: absolute; top: 15%; left: 0%; width: 100%;">
       <div style="width: 85%; max-width: 260px;">
-        <blockquote class="quote-anim italic font-light text-[var(--theme-text)] leading-relaxed tracking-[0.2em] break-words" style="font-size: 0.9rem;">
+        <blockquote class="quote-anim italic font-light text-[var(--theme-text)] leading-relaxed tracking-[0.2em] break-words whitespace-pre-line" style="font-size: 0.9rem;">
            "{{ quote }}"
         </blockquote>
       </div>

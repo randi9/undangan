@@ -34,7 +34,7 @@
              <!-- Title -->
              <h4 class="font-bold text-xl md:text-3xl mb-3" :style="{ fontFamily: themeConfig.fontHeading, color: '#304851' }">{{ story.title }}</h4>
              <!-- Description -->
-             <p class="text-sm md:text-base font-light leading-relaxed" style="color: rgba(64, 92, 102, 0.8);">{{ story.description }}</p>
+             <p class="text-sm md:text-base font-light leading-relaxed whitespace-pre-line" style="color: rgba(64, 92, 102, 0.8);">{{ story.description }}</p>
           </div>
           
         </div>

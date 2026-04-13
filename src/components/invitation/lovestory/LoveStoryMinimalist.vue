@@ -16,7 +16,7 @@
         <div class="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-[var(--theme-secondary)] border-4 border-[var(--theme-surface)] -translate-x-[7px] md:-translate-x-1/2 mt-0.5 md:mt-0 z-10"></div>
         <div class="md:w-1/2 md:pl-12 text-left w-full pl-12 md:pl-0">
           <h4 class="font-bold text-lg text-[var(--theme-primary)] mb-2">{{ story.title }}</h4>
-          <p class="text-sm text-[var(--theme-text-light)] leading-relaxed">{{ story.description }}</p>
+          <p class="text-sm text-[var(--theme-text-light)] leading-relaxed whitespace-pre-line">{{ story.description }}</p>
         </div>
       </div>
     </div>
