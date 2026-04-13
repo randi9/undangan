@@ -11,7 +11,7 @@
     <!-- Bagian Teks Quote (Silakan atur posisinya manual di sini) -->
     <div class="z-10 w-full flex justify-center" style="position: absolute; top: 15%; left: 0%; width: 100%;">
       <div style="width: 85%; max-width: 260px;">
-        <blockquote class="italic font-light text-[var(--theme-text)] leading-relaxed tracking-[0.2em] break-words" style="font-size: 0.9rem;">
+        <blockquote class="quote-anim italic font-light text-[var(--theme-text)] leading-relaxed tracking-[0.2em] break-words" style="font-size: 0.9rem;">
            "{{ quote }}"
         </blockquote>
       </div>
@@ -75,6 +75,18 @@ let ctx: gsap.Context;
 
 onMounted(() => {
   ctx = gsap.context(() => {
+    // Animasi teks masuk
+    gsap.from(".quote-anim", {
+      scrollTrigger: {
+        trigger: sectionRef.value,
+        start: "top 60%", 
+      },
+      y: 30, // Efek fade up sedikit
+      opacity: 0,
+      duration: 2,
+      ease: "power3.out",
+    });
+
     // Animasi masuk saat di-scroll
     gsap.from(".scroll-anim", {
       scrollTrigger: {
