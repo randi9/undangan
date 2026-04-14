@@ -4,7 +4,7 @@
     <div class="absolute inset-0 w-full h-full -z-10 pointer-events-none">
       <img src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(12).png"
            class="absolute inset-0 w-full h-full object-cover"
-           style="-webkit-mask-image: linear-gradient(183deg, transparent 0%, rgba(0,0,0,0.02) 10%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.32) 50%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.78) 80%, rgba(0,0,0,0.92) 90%, black 100%); mask-image: linear-gradient(183deg, transparent 0%, rgba(0,0,0,0.02) 10%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.32) 50%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.78) 80%, rgba(0,0,0,0.92) 90%, black 100%);"
+           style="-webkit-mask-image: linear-gradient(183deg, transparent 0%, transparent 6%, rgba(0,0,0,0.02) 15%, rgba(0,0,0,0.06) 25%, rgba(0,0,0,0.12) 35%, rgba(0,0,0,0.2) 45%, rgba(0,0,0,0.32) 55%, rgba(0,0,0,0.45) 65%, rgba(0,0,0,0.6) 75%, rgba(0,0,0,0.78) 85%, rgba(0,0,0,0.92) 95%, black 100%); mask-image: linear-gradient(183deg, transparent 0%, transparent 6%, rgba(0,0,0,0.02) 15%, rgba(0,0,0,0.06) 25%, rgba(0,0,0,0.12) 35%, rgba(0,0,0,0.2) 45%, rgba(0,0,0,0.32) 55%, rgba(0,0,0,0.45) 65%, rgba(0,0,0,0.6) 75%, rgba(0,0,0,0.78) 85%, rgba(0,0,0,0.92) 95%, black 100%);"
            alt="Background" />
     </div>
 

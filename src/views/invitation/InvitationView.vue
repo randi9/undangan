@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, reactive, watch, nextTick, type Component } from "vue";
+import { DotLottieVue } from '@lottiefiles/dotlottie-vue';
 
 // === DESKTOP IFRAME MODE ===
 // On desktop, we render the invitation inside an iframe so vw units work like mobile
@@ -226,6 +227,8 @@ const store = useInvitationStore();
 const apiBase = import.meta.env.VITE_API_URL || "";
 
 const loading = ref(true);
+const assetsLoaded = ref(false);
+const loadingFadeOut = ref(false);
 const invitation = ref<Invitation | null>(null);
 const lightboxOpen = ref(false);
 const lightboxIndex = ref(0);
@@ -236,6 +239,56 @@ const guestName = ref(route.query.to ? String(route.query.to) : '');
 const isOpened = ref(false);
 const isClosingOverlay = ref(false);
 const isPlaying = ref(false);
+
+// Preload all images/backgrounds used in the invitation
+async function preloadAllAssets() {
+  await nextTick(); // wait for DOM to render
+  await nextTick(); // extra tick for child components
+
+  const urls = new Set<string>();
+
+  // Collect all <img> src attributes
+  document.querySelectorAll('img[src]').forEach(img => {
+    const src = (img as HTMLImageElement).src;
+    if (src && !src.startsWith('data:')) urls.add(src);
+  });
+
+  // Collect background-image URLs from inline styles
+  document.querySelectorAll('[style]').forEach(el => {
+    const style = (el as HTMLElement).style.backgroundImage;
+    if (style) {
+      const match = style.match(/url\(["']?(.*?)["']?\)/);
+      if (match?.[1]) urls.add(match[1]);
+    }
+  });
+
+  // Collect <image> elements inside SVG (damask patterns etc)
+  document.querySelectorAll('image[href]').forEach(img => {
+    const href = img.getAttribute('href');
+    if (href) urls.add(href);
+  });
+
+  // Preload all discovered URLs
+  const promises = Array.from(urls).map(url => {
+    return new Promise<void>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve();
+      img.onerror = () => resolve(); // don't block on broken images
+      img.src = url;
+    });
+  });
+
+  // Also enforce a minimum display time of 2 seconds so animation is visible
+  const minTime = new Promise<void>(r => setTimeout(r, 2000));
+
+  await Promise.all([...promises, minTime]);
+
+  // Trigger fade-out transition
+  loadingFadeOut.value = true;
+  setTimeout(() => {
+    assetsLoaded.value = true;
+  }, 800); // matches CSS transition duration
+}
 
 // Hero oval animation refs
 const heroOval = ref<HTMLElement | null>(null);
@@ -480,6 +533,9 @@ onMounted(async () => {
     rsvpMessages.value = data.rsvps || [];
     updateCountdown();
     countdownTimer = setInterval(updateCountdown, 1000);
+
+    // Start preloading assets after invitation data is ready
+    nextTick(() => preloadAllAssets());
   }
 });
 
@@ -507,8 +563,8 @@ onBeforeUnmount(() => {
   <!-- ========================================= -->
   <!-- MOBILE MODE: Render normally (or inside iframe) -->
   <!-- ========================================= -->
-  <div v-else-if="loading" class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-amber-700"></div>
+  <div v-else-if="loading" class="min-h-screen flex items-center justify-center" style="background: #fffdf5;">
+    <DotLottieVue src="/loading.lottie" background="transparent" :speed="1" style="width: 200px; height: 200px;" autoplay loop />
   </div>
 
   <div v-else-if="!invitation" class="min-h-screen flex flex-col items-center justify-center bg-gray-50 gap-4">
@@ -520,6 +576,13 @@ onBeforeUnmount(() => {
 
   <!-- Main UI Wrapper -->
   <div v-else :style="themeStyles" class="relative bg-[var(--theme-bg)] text-[var(--theme-text)] font-[var(--font-body)] overflow-x-hidden min-h-screen selection:bg-[var(--theme-primary)] selection:text-white pb-32">
+
+    <!-- ASSET LOADING OVERLAY -->
+    <Transition name="loading-fade">
+      <div v-if="!assetsLoaded" :class="['fixed inset-0 z-[200] flex items-center justify-center transition-opacity duration-700', loadingFadeOut ? 'opacity-0' : 'opacity-100']" style="background: #fffdf5;">
+        <DotLottieVue src="/loading.lottie" background="transparent" :speed="1" style="width: 200px; height: 200px;" autoplay loop />
+      </div>
+    </Transition>
 
     <!-- Free INFO BANNER -->
     <div v-if="invitation.is_trial && isOpened" class="trial-banner">
