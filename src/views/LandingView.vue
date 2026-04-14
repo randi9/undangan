@@ -910,13 +910,11 @@ const themesData = [
 
 .lp-hero-bg {
   position: absolute;
-  inset: -20%;
-  background-image: url('https://media.mengundanganda.com/landing-page/e7f421b4-ce9a-4223-a862-802fb6c064d0.webp');
+  inset: 0;
+  background-image: url('/images/hero.webp');
   background-size: cover;
   background-position: center 30%;
   background-repeat: no-repeat;
-  transform: translateY(calc(var(--scroll-y, 0px) * 0.35));
-  will-change: transform;
   z-index: 0;
 }
 
