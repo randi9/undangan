@@ -14,7 +14,7 @@
 
     
     <!-- Flex Layout Layer -->
-    <div class="relative w-full min-h-screen flex flex-col items-center justify-center py-12 md:py-24 px-6 text-center">
+    <div class="relative w-full min-h-[100dvh] flex flex-col items-center justify-center py-12 md:py-24 px-6 text-center">
       
       <!-- Margin bottom palsu (250px) agar komposisi di tengah layar sempurna dan tidak akan menyentuh bagian Footer! -->
       <div class="relative w-[250px] md:w-[420px] lg:w-[480px] max-w-[80vw] aspect-[2/3] mx-auto z-10 flex items-center justify-center mb-[250px] md:mb-[350px]">

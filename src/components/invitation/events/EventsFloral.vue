@@ -1,6 +1,6 @@
 <template>
-  <!-- h-screen digunakan supaya Section murni seukuran 1 layar dan tidak merusak layout GSAP Pin Spacer -->
-  <section v-if="invitation.akad_venue || invitation.resepsi_venue" ref="sectionRef" class="w-full h-screen overflow-hidden relative bg-[var(--theme-surface)]">
+  <!-- h-[100dvh] digunakan supaya Section murni seukuran 1 layar dinamis dan tidak merusak layout GSAP Pin Spacer -->
+  <section v-if="invitation.akad_venue || invitation.resepsi_venue" ref="sectionRef" class="w-full h-[100dvh] overflow-hidden relative bg-[var(--theme-surface)]">
     
     <!-- Background Pemandian Event Utama -->
     <div ref="bgRef" class="absolute inset-0 w-full h-full" style="

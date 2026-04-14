@@ -1,5 +1,5 @@
 <template>
-  <section ref="sectionRef" v-if="quote" class="relative min-h-screen flex items-center justify-center py-20 px-6 text-center z-0 overflow-hidden">
+  <section ref="sectionRef" v-if="quote" class="relative min-h-[100dvh] flex items-center justify-center py-20 px-6 text-center z-0 overflow-hidden">
     <!-- Background Image -->
     <div class="absolute inset-0 w-full h-full -z-10 pointer-events-none">
       <img src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(12).png"

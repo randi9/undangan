@@ -1,5 +1,5 @@
 <template>
-  <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+  <section class="relative min-h-[100dvh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
     <!-- SCENE WRAPPER FOR ZOOM -->
     <div ref="sceneWrapper" class="absolute inset-0 z-0 origin-bottom pointer-events-none will-change-transform">
       <!-- Background — full cover -->

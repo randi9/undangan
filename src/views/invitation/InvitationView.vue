@@ -569,11 +569,11 @@ onBeforeUnmount(() => {
   <!-- ========================================= -->
   <!-- MOBILE MODE: Render normally (or inside iframe) -->
   <!-- ========================================= -->
-  <div v-else-if="loading" class="min-h-screen flex items-center justify-center" style="background: #fffdf5;">
+  <div v-else-if="loading" class="min-h-[100dvh] flex items-center justify-center" style="background: #fffdf5;">
     <DotLottieVue src="/loading.lottie" background="transparent" :speed="1" style="width: 200px; height: 200px;" autoplay loop />
   </div>
 
-  <div v-else-if="!invitation" class="min-h-screen flex flex-col items-center justify-center bg-gray-50 gap-4">
+  <div v-else-if="!invitation" class="min-h-[100dvh] flex flex-col items-center justify-center bg-gray-50 gap-4">
     <div class="text-6xl">💌</div>
     <h2 class="text-2xl font-serif text-amber-800">Undangan Tidak Ditemukan</h2>
     <p class="text-gray-500">Link undangan yang Anda cari tidak tersedia.</p>
@@ -581,7 +581,7 @@ onBeforeUnmount(() => {
   </div>
 
   <!-- Main UI Wrapper -->
-  <div v-else :style="themeStyles" class="relative bg-[var(--theme-bg)] text-[var(--theme-text)] font-[var(--font-body)] overflow-x-hidden min-h-screen selection:bg-[var(--theme-primary)] selection:text-white pb-32">
+  <div v-else :style="themeStyles" class="relative bg-[var(--theme-bg)] text-[var(--theme-text)] font-[var(--font-body)] overflow-x-hidden min-h-[100dvh] selection:bg-[var(--theme-primary)] selection:text-white pb-32">
 
     <!-- ASSET LOADING OVERLAY -->
     <Transition name="loading-fade">
