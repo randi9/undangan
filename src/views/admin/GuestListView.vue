@@ -16,9 +16,58 @@
     </header>
 
     <div class="editor-container" style="max-width: 1000px; margin: 0 auto;">
-      <div v-if="loading" class="loading-state">
-        <div class="spinner"></div>
-        <p>Memuat daftar tamu...</p>
+      <div v-if="loading">
+        <!-- Header Skeleton -->
+        <div class="editor-header-compact" style="margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
+          <div style="flex: 1;">
+            <AppSkeleton height="28px" width="300px" style="margin-bottom: 8px;" />
+            <AppSkeleton height="16px" width="200px" />
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <AppSkeleton height="36px" width="100px" rounded="md" />
+            <AppSkeleton height="36px" width="80px" rounded="md" />
+            <AppSkeleton height="36px" width="90px" rounded="md" />
+          </div>
+        </div>
+
+        <!-- Table Skeleton -->
+        <div class="admin-card" style="padding: 0; overflow: hidden;">
+          <div class="desktop-only-table">
+            <div style="padding: 16px; border-bottom: 1px solid var(--admin-border); display: flex; gap: 16px;">
+              <AppSkeleton height="20px" width="20%" />
+              <AppSkeleton height="20px" width="20%" />
+              <AppSkeleton height="20px" width="15%" />
+              <AppSkeleton height="20px" width="10%" style="margin-left: auto;" />
+            </div>
+            <div v-for="i in 5" :key="`skel-guest-${i}`" style="padding: 16px; border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; gap: 16px;">
+              <AppSkeleton height="20px" width="25%" />
+              <AppSkeleton height="20px" width="20%" />
+              <AppSkeleton height="24px" width="80px" rounded="full" />
+              <div style="margin-left: auto; display: flex; gap: 8px;">
+                <AppSkeleton height="32px" width="32px" rounded="md" />
+                <AppSkeleton height="32px" width="60px" rounded="md" />
+                <AppSkeleton height="32px" width="32px" rounded="md" />
+              </div>
+            </div>
+          </div>
+          
+          <div class="mobile-only-cards" style="padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+            <div v-for="i in 4" :key="`skel-mob-guest-${i}`" style="padding: 16px; background: white; border-radius: 12px; border: 1px solid var(--admin-border); display: flex; flex-direction: column; gap: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div style="display: flex; flex-direction: column; gap: 4px; width: 60%;">
+                  <AppSkeleton height="20px" width="80%" />
+                  <AppSkeleton height="14px" width="60%" />
+                </div>
+                <AppSkeleton height="24px" width="70px" rounded="full" />
+              </div>
+              <div style="display: flex; gap: 8px; width: 100%;">
+                <AppSkeleton height="36px" width="100%" rounded="md" />
+                <AppSkeleton height="36px" width="40px" rounded="md" />
+                <AppSkeleton height="36px" width="40px" rounded="md" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-else-if="invitation">
@@ -212,6 +261,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useInvitationStore } from '@/stores/invitation';
 import type { Invitation, Guest } from '@/types/invitation';
+import AppSkeleton from '@/components/ui/AppSkeleton.vue';
 
 const route = useRoute();
 const store = useInvitationStore();

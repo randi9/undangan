@@ -517,6 +517,7 @@ onMounted(async () => {
           countdownTimer = setInterval(updateCountdown, 1000);
         }
         loading.value = false;
+        assetsLoaded.value = true; // Skip asset preloading overlay in preview mode
       }
     });
     if (window.parent !== window) {

@@ -16,9 +16,75 @@
     </header>
 
     <div class="editor-container" style="max-width: 1000px; margin: 0 auto;">
-      <div v-if="loading" class="loading-state">
-        <div class="spinner"></div>
-        <p>Memuat data...</p>
+      <div v-if="loading">
+        <!-- Header Skeleton -->
+        <div class="editor-header-compact" style="margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
+          <div style="flex: 1;">
+            <AppSkeleton height="28px" width="350px" style="margin-bottom: 8px;" />
+            <AppSkeleton height="16px" width="250px" />
+          </div>
+        </div>
+
+        <!-- STATS CARDS Skeleton -->
+        <div class="stats-overview" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <AppSkeleton v-for="i in 3" :key="`skel-stat-${i}`" height="100px" rounded="xl" />
+        </div>
+        
+        <!-- Progress Bar Skeleton -->
+        <div style="margin-bottom: 32px;">
+          <AppSkeleton height="70px" width="100%" rounded="xl" />
+        </div>
+
+        <!-- Table Skeleton -->
+        <div class="admin-card" style="padding: 0; overflow: hidden;">
+          <div class="desktop-only-table">
+            <div style="padding: 16px; border-bottom: 1px solid var(--admin-border); display: flex; gap: 16px;">
+              <AppSkeleton height="20px" width="20%" />
+              <AppSkeleton height="20px" width="15%" />
+              <AppSkeleton height="20px" width="40%" />
+              <AppSkeleton height="20px" width="10%" style="margin-left: auto;" />
+            </div>
+            <div v-for="i in 4" :key="`skel-wish-${i}`" style="padding: 16px; border-bottom: 1px solid var(--admin-border); display: flex; align-items: flex-start; gap: 16px;">
+              <div style="width: 20%;">
+                <AppSkeleton height="20px" width="80%" style="margin-bottom: 8px;" />
+                <AppSkeleton height="14px" width="60%" />
+              </div>
+              <div style="width: 15%;">
+                <AppSkeleton height="24px" width="80px" rounded="full" />
+              </div>
+              <div style="width: 40%;">
+                <AppSkeleton height="16px" width="90%" style="margin-bottom: 6px;" />
+                <AppSkeleton height="16px" width="70%" />
+              </div>
+              <div style="margin-left: auto; width: 15%; display: flex; gap: 8px; justify-content: flex-end;">
+                <AppSkeleton height="32px" width="32px" rounded="md" />
+                <AppSkeleton height="32px" width="32px" rounded="md" />
+                <AppSkeleton height="32px" width="32px" rounded="md" />
+              </div>
+            </div>
+          </div>
+          
+          <div class="mobile-only-cards" style="padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+            <div v-for="i in 3" :key="`skel-mob-wish-${i}`" class="mobile-guest-card" style="background: white; border-radius: 12px; border: 1px solid var(--admin-border); display: flex; flex-direction: column; box-shadow: 0 1px 2px rgba(0,0,0,0.02); overflow: hidden;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 16px;">
+                <div style="display: flex; flex-direction: column; gap: 4px; width: 60%;">
+                  <AppSkeleton height="20px" width="80%" />
+                  <AppSkeleton height="14px" width="60%" />
+                </div>
+                <AppSkeleton height="24px" width="70px" rounded="full" />
+              </div>
+              <div style="padding: 12px 16px; background: #f8fafc; border-top: 1px solid var(--admin-border); border-bottom: 1px solid var(--admin-border);">
+                <AppSkeleton height="14px" width="100%" style="margin-bottom: 6px;" />
+                <AppSkeleton height="14px" width="80%" />
+              </div>
+              <div style="padding: 12px 16px; display: flex; gap: 8px; width: 100%;">
+                <AppSkeleton height="36px" width="100%" rounded="md" />
+                <AppSkeleton height="36px" width="100%" rounded="md" />
+                <AppSkeleton height="36px" width="40px" rounded="md" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-else-if="invitation">
@@ -187,6 +253,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useInvitationStore } from '@/stores/invitation';
 import type { Invitation, Rsvp } from '@/types/invitation';
+import AppSkeleton from '@/components/ui/AppSkeleton.vue';
 
 const route = useRoute();
 const store = useInvitationStore();

@@ -16,11 +16,41 @@
     </header>
 
     <div class="editor-container">
-      <div v-if="loading" style="text-align: center; padding: 60px 0">
-        <div class="loading-spinner"></div>
-        <p style="margin-top: 12px; color: var(--admin-text-secondary)">
-          Memuat data undangan...
-        </p>
+      <!-- Skeletons while Loading (Editor Form Array) -->
+      <div v-if="loading" class="editor-layout">
+        <div class="editor-form-area" style="width: 100%;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <AppSkeleton height="32px" width="200px" />
+            <AppSkeleton height="32px" width="100px" rounded="full" />
+          </div>
+          
+          <div class="form-section" v-for="i in 3" :key="`skel-sec-${i}`">
+            <AppSkeleton height="24px" width="150px" style="margin-bottom: 8px;" />
+            <AppSkeleton height="14px" width="250px" style="margin-bottom: 24px;" />
+            
+            <AppSkeleton height="16px" width="120px" style="margin-bottom: 8px;" />
+            <AppSkeleton height="42px" width="100%" rounded="md" style="margin-bottom: 16px;" />
+            
+            <div class="split-grid" v-if="i === 2">
+              <div>
+                <AppSkeleton height="20px" width="120px" style="margin-bottom: 16px;" />
+                <AppSkeleton height="160px" width="160px" rounded="lg" style="margin-bottom: 16px; margin: 0 auto; display: block;" />
+                <AppSkeleton height="16px" width="100px" style="margin-bottom: 8px;" />
+                <AppSkeleton height="42px" width="100%" rounded="md" style="margin-bottom: 12px;" />
+                <AppSkeleton height="16px" width="100px" style="margin-bottom: 8px;" />
+                <AppSkeleton height="42px" width="100%" rounded="md" />
+              </div>
+              <div>
+                <AppSkeleton height="20px" width="120px" style="margin-bottom: 16px;" />
+                <AppSkeleton height="160px" width="160px" rounded="lg" style="margin-bottom: 16px; margin: 0 auto; display: block;" />
+                <AppSkeleton height="16px" width="100px" style="margin-bottom: 8px;" />
+                <AppSkeleton height="42px" width="100%" rounded="md" style="margin-bottom: 12px;" />
+                <AppSkeleton height="16px" width="100px" style="margin-bottom: 8px;" />
+                <AppSkeleton height="42px" width="100%" rounded="md" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <template v-else-if="form">
@@ -881,6 +911,7 @@ import type { LoveStoryItem, Photo, BankAccount } from "@/types/invitation";
 import { resolveAssetUrl } from "@/utils/url";
 import { DEFAULT_MUSIC, isDefaultMusicUrl } from "@/config/defaultMusic";
 import { computed } from "vue";
+import AppSkeleton from "@/components/ui/AppSkeleton.vue";
 
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
