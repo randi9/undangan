@@ -4,7 +4,7 @@
     <nav class="lp-nav" :class="{ scrolled: navScrolled || mobileMenuOpen, 'nav-hidden': navHiddenMobile }">
       <div class="lp-container lp-nav-inner">
         <a href="#" class="lp-logo">
-          <img src="/images/logo.webp" alt="MengundangAnda Logo" class="lp-logo-img">
+          <img src="/images/logo.webp" alt="Logo MengundangAnda - Platform Undangan Pernikahan Digital" class="lp-logo-img">
           <span>Mengundang<span class="lp-logo-accent">Anda</span></span>
         </a>
         <button class="lp-nav-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle menu">
@@ -343,7 +343,7 @@
       <div class="lp-container lp-footer-inner">
         <div class="lp-footer-brand">
           <a href="#" class="lp-logo">
-            <img src="/images/logo.webp" alt="MengundangAnda Logo" class="lp-logo-img">
+            <img src="/images/logo.webp" alt="Logo MengundangAnda - Platform Undangan Pernikahan Digital" class="lp-logo-img">
             <span>Mengundang<span class="lp-logo-accent">Anda</span></span>
           </a>
           <p>Platform undangan pernikahan digital premium. Buat, desain, dan bagikan undangan Anda dengan mudah.</p>
@@ -490,10 +490,10 @@ onMounted(() => {
   prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // Dynamic SEO head management
-  document.title = 'MengundangAnda — Buat Undangan Pernikahan Digital Premium dalam 5 Menit'
+  document.title = 'Buat Undangan Pernikahan Digital Premium | 5 Menit Jadi'
   const metaDesc = document.querySelector('meta[name="description"]')
   if (metaDesc) {
-    metaDesc.setAttribute('content', 'Buat undangan pernikahan digital yang elegan dan profesional dalam hitungan menit. Pilih tema premium, isi data, dan langsung bagikan via WhatsApp. Gratis dan mudah digunakan.')
+    metaDesc.setAttribute('content', 'Buat undangan pernikahan digital mewah secara gratis. Puluhan desain premium, fitur lengkap (RSVP, Musik, Maps), dan siap sebar dalam 5 menit.')
   }
 
   window.addEventListener('scroll', handleScroll, { passive: true })
