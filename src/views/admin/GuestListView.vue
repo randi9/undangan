@@ -250,8 +250,8 @@ async function submitBulkGuests() {
   const payload = lines.map(line => {
     const parts = line.split(',');
     return {
-      name: parts[0].trim(),
-      phone_number: parts.length > 1 ? parts[1].trim() : ''
+      name: parts[0]?.trim() || 'Tamu',
+      phone_number: parts.length > 1 ? parts[1]?.trim() : ''
     };
   });
 
