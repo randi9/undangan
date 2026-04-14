@@ -95,6 +95,12 @@ if (subdomain) {
       meta: { title: 'Edit Undangan - MengundangAnda', requiresAuth: true }
     },
     {
+      path: '/dashboard/guests/:id',
+      name: 'guests',
+      component: () => import('@/views/admin/GuestListView.vue'),
+      meta: { title: 'Buku Tamu - MengundangAnda', requiresAuth: true }
+    },
+    {
       path: '/dashboard/users',
       name: 'users',
       component: () => import('@/views/admin/UserManagementView.vue'),

@@ -244,6 +244,12 @@
                   >
                     <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
                   </router-link>
+                  <router-link
+                    :to="`/dashboard/guests/${invitation.id}`"
+                    class="btn btn-primary btn-sm"
+                  >
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">book</span> Buku Tamu
+                  </router-link>
                   <button
                     class="btn btn-danger btn-sm"
                     @click="confirmDelete(invitation)"

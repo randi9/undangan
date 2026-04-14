@@ -28,6 +28,15 @@ export interface Rsvp {
   created_at?: string;
 }
 
+export interface Guest {
+  id?: string;
+  invitation_id?: string;
+  name: string;
+  phone_number?: string;
+  is_sent: boolean;
+  created_at?: string;
+}
+
 export interface Invitation {
   id: string;
   slug: string;

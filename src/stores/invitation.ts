@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Invitation, CreateInvitationPayload } from '@/types/invitation'
+import type { Invitation, CreateInvitationPayload, Guest } from '@/types/invitation'
 import { useAuthStore } from '@/stores/auth'
 
 const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
@@ -221,6 +221,72 @@ export const useInvitationStore = defineStore('invitation', () => {
     }
   }
 
+  // Guests API
+  const guests = ref<Guest[]>([])
+
+  async function fetchGuests(invitationId: string) {
+    loading.value = true
+    try {
+      const res = await fetch(`${API_BASE}/guests/${invitationId}`, {
+        headers: await authHeaders()
+      })
+      if (!res.ok) throw new Error('Failed to fetch guests')
+      guests.value = await safeJson(res)
+      return guests.value
+    } catch (e: any) {
+      console.error(e.message)
+      return []
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function bulkAddGuests(invitationId: string, guestList: { name: string, phone_number?: string }[]) {
+    try {
+      const res = await fetch(`${API_BASE}/guests/${invitationId}/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        body: JSON.stringify({ guests: guestList })
+      })
+      if (!res.ok) throw new Error('Failed to add guests')
+      const data = await safeJson(res)
+      guests.value = [...data, ...guests.value]
+      return data
+    } catch (e: any) {
+      throw e
+    }
+  }
+
+  async function updateGuestStatus(invitationId: string, guestId: string, is_sent: boolean) {
+    try {
+      const res = await fetch(`${API_BASE}/guests/${invitationId}/${guestId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        body: JSON.stringify({ is_sent })
+      })
+      if (!res.ok) throw new Error('Failed to update guest status')
+      const data = await safeJson(res)
+      const idx = guests.value.findIndex(g => g.id === guestId)
+      if (idx >= 0) guests.value[idx] = data
+      return data
+    } catch (e: any) {
+      throw e
+    }
+  }
+
+  async function deleteGuest(invitationId: string, guestId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/guests/${invitationId}/${guestId}`, {
+        method: 'DELETE',
+        headers: await authHeaders()
+      })
+      if (!res.ok) throw new Error('Failed to delete guest')
+      guests.value = guests.value.filter(g => g.id !== guestId)
+    } catch (e: any) {
+      throw e
+    }
+  }
+
   return {
     invitations,
     currentInvitation,
@@ -235,6 +301,11 @@ export const useInvitationStore = defineStore('invitation', () => {
     uploadPhoto,
     uploadMusic,
     uploadPhotos,
-    deleteFile
+    deleteFile,
+    guests,
+    fetchGuests,
+    bulkAddGuests,
+    updateGuestStatus,
+    deleteGuest
   }
 })

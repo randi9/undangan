@@ -6,6 +6,7 @@ import invitationRoutes from "./routes/invitations";
 import uploadRoutes from "./routes/upload";
 import rsvpRoutes from "./routes/rsvp";
 import authRoutes from "./routes/auth";
+import guestsRoutes from "./routes/guests";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -81,6 +82,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/invitations", invitationRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/rsvp", rsvpRoutes);
+app.use("/api/guests", guestsRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {
