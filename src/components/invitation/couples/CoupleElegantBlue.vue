@@ -28,7 +28,7 @@
     <div class="max-w-5xl w-full mx-auto relative z-10 flex-1 flex flex-col justify-between">
       
       <div>
-        <h2 ref="titleRef" class="text-3xl md:text-5xl mb-2 text-[#1a252c] drop-shadow-sm tracking-widest cursor-default text-center" :style="{ fontFamily: themeConfig.fontHeading }">
+        <h2 ref="titleRef" class="text-3xl md:text-5xl mb-2 text-[#304851] drop-shadow-sm tracking-widest cursor-default text-center" :style="{ fontFamily: themeConfig.fontHeading }">
           The Future<br/>Mr. &amp; Mrs.
         </h2>
         <div ref="heartRef" class="flex items-center justify-center gap-4 text-[#304851]/50 mb-8 md:mb-0">
@@ -38,19 +38,58 @@
       <!-- Groom Row -->
       <div class="flex items-center justify-between gap-4 md:gap-16 w-full max-w-2xl mx-auto relative" ref="groomRowRef">
         <div class="w-[45%] flex justify-end">
-          <div ref="groomSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-t-[1000px] shadow-xl bg-[#405C66]/5 relative overflow-hidden">
-             <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realGroomImgRef" alt="Groom" />
-             <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realGroomImgRef">👤</div>
+          <div class="relative">
+            <!-- Butterfly test -->
+            <div ref="butterflyTestRef" class="butterfly-fade absolute flex justify-center items-center opacity-0 pointer-events-none" style="right: -50px; top: -30px; z-index: 20; perspective: 400px;">
+               <div ref="butterflyBodyRef" class="flex items-center" style="transform: rotate(15deg);">
+                 <!-- Left Wing -->
+                 <div class="origin-right wing-left-sync-0" ref="wingLeftRef">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[30px] md:w-[40px] max-w-none object-contain -scale-x-100" />
+                 </div>
+                 <!-- Right Wing -->
+                 <div class="origin-left wing-right-sync-0" ref="wingRightRef">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[30px] md:w-[40px] max-w-none object-contain" />
+                 </div>
+               </div>
+            </div>
+            <!-- Groom Extra 1 -->
+            <div class="butterfly-fade absolute flex justify-center items-center opacity-0 pointer-events-none" style="right: -80px; top: -50px; z-index: 20; perspective: 400px;">
+               <div class="flex items-center" style="transform: rotate(-10deg);">
+                 <div class="origin-right wing-left-sync-1">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[20px] md:w-[25px] max-w-none object-contain -scale-x-100" />
+                 </div>
+                 <div class="origin-left wing-right-sync-1">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[20px] md:w-[25px] max-w-none object-contain" />
+                 </div>
+               </div>
+            </div>
+            <!-- Groom Extra 2 -->
+            <div class="butterfly-fade absolute flex justify-center items-center opacity-0 pointer-events-none" style="right: -110px; top: -20px; z-index: 20; perspective: 400px;">
+               <div class="flex items-center" style="transform: rotate(45deg);">
+                 <div class="origin-right wing-left-sync-2">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[25px] md:w-[30px] max-w-none object-contain -scale-x-100" />
+                 </div>
+                 <div class="origin-left wing-right-sync-2">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[25px] md:w-[30px] max-w-none object-contain" />
+                 </div>
+               </div>
+            </div>
+            
+            <img ref="groomDecoRef" src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(1).png" class="absolute object-contain opacity-0 pointer-events-none" style="min-width: 250px; right: -170px; top: 45%; transform: translateY(-50%); z-index: 5;" />
+            <div ref="groomSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-t-[1000px] shadow-xl bg-[#405C66]/5 relative overflow-hidden z-10">
+               <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realGroomImgRef" alt="Groom" />
+               <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realGroomImgRef">👤</div>
+            </div>
           </div>
         </div>
-        <div class="w-[55%] flex justify-start text-left pl-4 md:pl-8">
+        <div class="w-[55%] flex justify-start text-left pl-4 md:pl-8 relative z-20">
           <div ref="groomTextRef" class="opacity-0 translate-y-4">
-             <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#1a252c]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
+             <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#304851]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
              <p v-if="invitation.groom_father || invitation.groom_mother" class="text-xs md:text-base text-[#304851]/80 font-light tracking-wide">
                Putra dari<br/>
-               <span v-if="invitation.groom_father" class="font-medium text-[#1a252c]">Bapak {{ invitation.groom_father }}</span>
+               <span v-if="invitation.groom_father" class="font-medium text-[#304851]">Bapak {{ invitation.groom_father }}</span>
                <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
-               <span v-if="invitation.groom_mother" class="font-medium text-[#1a252c]">Ibu {{ invitation.groom_mother }}</span>
+               <span v-if="invitation.groom_mother" class="font-medium text-[#304851]">Ibu {{ invitation.groom_mother }}</span>
              </p>
           </div>
         </div>
@@ -62,19 +101,58 @@
       <!-- Bride Row -->
       <div class="flex items-center justify-between gap-4 md:gap-16 w-full max-w-2xl mx-auto relative flex-row-reverse" ref="brideRowRef">
         <div class="w-[45%] flex justify-start">
-          <div ref="brideSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-b-[1000px] shadow-xl bg-[#405C66]/5 relative overflow-hidden">
-             <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realBrideImgRef" alt="Bride" />
-             <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realBrideImgRef">👤</div>
+          <div class="relative">
+            <!-- Bride Butterfly test -->
+            <div ref="brideButterflyTestRef" class="butterfly-fade absolute flex justify-center items-center opacity-0 pointer-events-none" style="left: -30px; top: -30px; z-index: 20; perspective: 400px;">
+               <div ref="brideButterflyBodyRef" class="flex items-center" style="transform: rotate(-25deg);">
+                 <!-- Left Wing -->
+                 <div class="origin-right wing-left-sync-0" ref="brideWingLeftRef">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[30px] md:w-[40px] max-w-none object-contain -scale-x-100" />
+                 </div>
+                 <!-- Right Wing -->
+                 <div class="origin-left wing-right-sync-0" ref="brideWingRightRef">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[30px] md:w-[40px] max-w-none object-contain" />
+                 </div>
+               </div>
+            </div>
+            <!-- Bride Extra 1 -->
+            <div class="butterfly-fade absolute flex justify-center items-center opacity-0 pointer-events-none" style="left: -70px; top: -60px; z-index: 20; perspective: 400px;">
+               <div class="flex items-center" style="transform: rotate(15deg);">
+                 <div class="origin-right wing-left-sync-1">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[20px] md:w-[25px] max-w-none object-contain -scale-x-100" />
+                 </div>
+                 <div class="origin-left wing-right-sync-1">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[20px] md:w-[25px] max-w-none object-contain" />
+                 </div>
+               </div>
+            </div>
+            <!-- Bride Extra 2 -->
+            <div class="butterfly-fade absolute flex justify-center items-center opacity-0 pointer-events-none" style="left: -110px; top: -10px; z-index: 20; perspective: 400px;">
+               <div class="flex items-center" style="transform: rotate(-45deg);">
+                 <div class="origin-right wing-left-sync-2">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[25px] md:w-[30px] max-w-none object-contain -scale-x-100" />
+                 </div>
+                 <div class="origin-left wing-right-sync-2">
+                   <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(7).png" class="w-[25px] md:w-[30px] max-w-none object-contain" />
+                 </div>
+               </div>
+            </div>
+
+            <img ref="brideDecoRef" src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(2).png" class="absolute object-contain opacity-0 pointer-events-none" style="min-width: 250px; left: -150px; top: 50%; transform: translateY(-50%); z-index: 5;" />
+            <div ref="brideSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-b-[1000px] shadow-xl bg-[#405C66]/5 relative overflow-hidden z-10">
+               <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realBrideImgRef" alt="Bride" />
+               <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realBrideImgRef">👤</div>
+            </div>
           </div>
         </div>
-        <div class="w-[55%] flex justify-end text-right pr-4 md:pr-8">
+        <div class="w-[55%] flex justify-end text-right pr-4 md:pr-8 relative z-20">
           <div ref="brideTextRef" class="opacity-0 translate-y-4">
-            <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#1a252c]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
+            <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#304851]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
             <p v-if="invitation.bride_father || invitation.bride_mother" class="text-xs md:text-base text-[#304851]/80 font-light tracking-wide">
               Putri dari<br/>
-              <span v-if="invitation.bride_father" class="font-medium text-[#1a252c]">Bapak {{ invitation.bride_father }}</span>
+              <span v-if="invitation.bride_father" class="font-medium text-[#304851]">Bapak {{ invitation.bride_father }}</span>
               <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
-              <span v-if="invitation.bride_mother" class="font-medium text-[#1a252c]">Ibu {{ invitation.bride_mother }}</span>
+              <span v-if="invitation.bride_mother" class="font-medium text-[#304851]">Ibu {{ invitation.bride_mother }}</span>
             </p>
           </div>
         </div>
@@ -126,10 +204,20 @@ const props = defineProps<{
 const sectionRef = ref<HTMLElement | null>(null);
 const titleRef = ref<HTMLElement | null>(null);
 const heartRef = ref<HTMLElement | null>(null);
+const butterflyTestRef = ref<HTMLElement | null>(null);
+const butterflyBodyRef = ref<HTMLElement | null>(null);
+const wingLeftRef = ref<HTMLElement | null>(null);
+const wingRightRef = ref<HTMLElement | null>(null);
 const groomSlotRef = ref<HTMLElement | null>(null);
+const groomDecoRef = ref<HTMLElement | null>(null);
 const groomTextRef = ref<HTMLElement | null>(null);
 const ampersandRef = ref<HTMLElement | null>(null);
 const brideSlotRef = ref<HTMLElement | null>(null);
+const brideDecoRef = ref<HTMLElement | null>(null);
+const brideButterflyTestRef = ref<HTMLElement | null>(null);
+const brideButterflyBodyRef = ref<HTMLElement | null>(null);
+const brideWingLeftRef = ref<HTMLElement | null>(null);
+const brideWingRightRef = ref<HTMLElement | null>(null);
 const brideTextRef = ref<HTMLElement | null>(null);
 
 const coverOvalRef = ref<HTMLElement | null>(null);
@@ -196,6 +284,21 @@ onMounted(() => {
       ScrollTrigger.refresh();
     }, 100);
 
+    // Continuous Butterfly Animations (Synchronized varying flaps)
+    const flapConfigs = [
+      { speed: 0.12, deg: 65, delay: 0 },
+      { speed: 0.10, deg: 55, delay: 0.05 },
+      { speed: 0.14, deg: 70, delay: 0.02 }
+    ];
+    
+    flapConfigs.forEach((c, i) => {
+      const leftTargets = i === 0 ? [wingLeftRef.value, brideWingLeftRef.value, ...Array.from(sectionRef.value?.querySelectorAll(`.wing-left-sync-${i}`) || [])] : Array.from(sectionRef.value?.querySelectorAll(`.wing-left-sync-${i}`) || []);
+      const rightTargets = i === 0 ? [wingRightRef.value, brideWingRightRef.value, ...Array.from(sectionRef.value?.querySelectorAll(`.wing-right-sync-${i}`) || [])] : Array.from(sectionRef.value?.querySelectorAll(`.wing-right-sync-${i}`) || []);
+      
+      if (leftTargets.length) gsap.to(leftTargets.filter(Boolean), { rotateY: c.deg, duration: c.speed, ease: "sine.inOut", yoyo: true, repeat: -1, delay: c.delay });
+      if (rightTargets.length) gsap.to(rightTargets.filter(Boolean), { rotateY: -c.deg, duration: c.speed, ease: "sine.inOut", yoyo: true, repeat: -1, delay: c.delay });
+    });
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
@@ -259,6 +362,14 @@ onMounted(() => {
     // 5. Swap to Real Static elements when done
     tl.set([groomSlotRef.value, brideSlotRef.value, realGroomImgRef.value, realBrideImgRef.value].filter(Boolean), { opacity: 1 }, 2.0);
     tl.set([animGroomRef.value, animBrideRef.value, coverOvalRef.value].filter(Boolean), { opacity: 0 }, 2.0);
+
+    // 6. Fade in decorations right after photo is placed
+    const extraButterflies = sectionRef.value ? Array.from(sectionRef.value.querySelectorAll('.butterfly-fade')) : [];
+    tl.to([groomDecoRef.value, brideDecoRef.value, butterflyTestRef.value, brideButterflyTestRef.value, ...extraButterflies].filter(Boolean), {
+      opacity: 1,
+      duration: 1,
+      ease: "power2.out"
+    }, 2.0);
 
   }, sectionRef.value);
 });
