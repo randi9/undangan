@@ -98,6 +98,10 @@
               </span>
             </div>
             <p class="feed-message">{{ msg.message }}</p>
+            <div v-if="msg.reply_text" class="feed-reply">
+              <div class="feed-reply-header">Balasan Mempelai</div>
+              <p class="feed-reply-text">{{ msg.reply_text }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -388,5 +392,28 @@ function onSubmit() {
   font-size: 0.95rem;
   line-height: 1.6;
   white-space: pre-line; /* Handle multiline breaks in text */
+}
+
+.feed-reply {
+  margin-top: 12px;
+  background-color: rgba(64,92,102,0.05);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border-left: 3px solid #405C66;
+}
+.feed-reply-header {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: #405C66;
+  margin-bottom: 4px;
+}
+.feed-reply-text {
+  font-size: 0.9rem;
+  color: #475569;
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
 }
 </style>

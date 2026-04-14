@@ -616,7 +616,7 @@ onBeforeUnmount(() => {
 
       <!-- RSVP (Dynamic per theme) -->
       <component :is="activeRsvp"
-        :rsvp-messages="rsvpMessages"
+        :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"
         :theme-config="activeTheme"
         :submitting="rsvpSubmitting"
         @submit-rsvp="handleSubmitRsvp"
