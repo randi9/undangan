@@ -25,6 +25,8 @@ export interface Rsvp {
   attendance: "hadir" | "tidak_hadir";
   guest_count: number;
   message: string;
+  is_hidden?: boolean;
+  reply_text?: string;
   created_at?: string;
 }
 

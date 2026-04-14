@@ -372,6 +372,48 @@ app.get("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
   }
 });
 
+// GET STATS (protected)
+app.get("/api/invitations/:id/stats", requireAuth, async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    
+    // Validate ownership
+    const { data: inv, error: invError } = await supabase.from("invitations").select("owner_id, view_count").eq("id", id).single();
+    if (invError || !inv) return res.status(404).json({ error: "Invitation not found" });
+    if (req.user!.role !== "admin" && inv.owner_id !== req.user!.id) {
+      return res.status(403).json({ error: "Akses ditolak." });
+    }
+
+    // Get RSVPs
+    const { data: rsvps, error: rsvpError } = await supabase.from("rsvps").select("attendance, guest_count").eq("invitation_id", id);
+    if (rsvpError) throw rsvpError;
+
+    const totalRsvps = rsvps?.length || 0;
+    const hadirData = rsvps?.filter(r => r.attendance === "hadir") || [];
+    const notHadirData = rsvps?.filter(r => r.attendance === "tidak_hadir") || [];
+    const raguData = rsvps?.filter(r => r.attendance === "ragu") || []; // just in case 'ragu' is added
+    
+    let totalPax = 0;
+    for (const r of hadirData) {
+      totalPax += (r.guest_count || 1);
+    }
+
+    res.json({
+      pageViews: inv.view_count || 0,
+      totalRsvps,
+      totalPax,
+      attendanceStats: {
+        hadir: hadirData.length,
+        tidak_hadir: notHadirData.length,
+        ragu: raguData.length
+      }
+    });
+
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Failed to fetch stats" });
+  }
+});
+
 // CREATE (protected + limit check)
 app.post("/api/invitations", requireAuth, async (req: any, res: any) => {
   try {
@@ -695,6 +737,47 @@ app.post("/api/rsvp", async (req: any, res: any) => {
     res.status(201).json(data);
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Failed to submit RSVP" });
+  }
+});
+
+app.put("/api/rsvp/:id", requireAuth, async (req: any, res: any) => {
+  try {
+    const { is_hidden, reply_text } = req.body;
+    const { id } = req.params;
+
+    // Optional: check ownership by joining invitations
+    
+    // We update fields that are provided
+    const updateData: any = {};
+    if (is_hidden !== undefined) updateData.is_hidden = is_hidden;
+    if (reply_text !== undefined) updateData.reply_text = reply_text;
+
+    const { data, error } = await supabase
+      .from("rsvps")
+      .update(updateData)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Failed to update RSVP" });
+  }
+});
+
+app.delete("/api/rsvp/:id", requireAuth, async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const { error } = await supabase
+      .from("rsvps")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+    res.json({ message: "RSVP/Wish deleted" });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Failed to delete RSVP" });
   }
 });
 

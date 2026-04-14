@@ -287,6 +287,47 @@ export const useInvitationStore = defineStore('invitation', () => {
     }
   }
 
+  // --- RSVP/Wishes Management ---
+  async function updateRsvp(rsvpId: string, payload: { is_hidden?: boolean; reply_text?: string }) {
+    try {
+      const res = await fetch(`${API_BASE}/rsvp/${rsvpId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        body: JSON.stringify(payload)
+      })
+      if (!res.ok) throw new Error('Failed to update RSVP')
+      return await safeJson(res)
+    } catch (e: any) {
+      throw e
+    }
+  }
+
+  async function deleteRsvp(rsvpId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/rsvp/${rsvpId}`, {
+        method: 'DELETE',
+        headers: await authHeaders()
+      })
+      if (!res.ok) throw new Error('Failed to delete RSVP')
+    } catch (e: any) {
+      throw e
+    }
+  }
+
+  // --- Stats ---
+  async function fetchStats(invitationId: string) {
+    try {
+      const res = await fetch(`${API_BASE}/invitations/${invitationId}/stats`, {
+        headers: await authHeaders()
+      })
+      if (!res.ok) throw new Error('Failed to fetch stats')
+      return await safeJson(res)
+    } catch (e: any) {
+      console.error(e)
+      return null
+    }
+  }
+
   return {
     invitations,
     currentInvitation,
@@ -306,6 +347,9 @@ export const useInvitationStore = defineStore('invitation', () => {
     fetchGuests,
     bulkAddGuests,
     updateGuestStatus,
-    deleteGuest
+    deleteGuest,
+    updateRsvp,
+    deleteRsvp,
+    fetchStats
   }
 })

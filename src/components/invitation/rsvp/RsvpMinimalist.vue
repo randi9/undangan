@@ -55,7 +55,11 @@
               <span v-if="msg.attendance === 'hadir' && msg.guest_count > 1">({{ msg.guest_count }})</span>
             </span>
           </div>
-          <p class="text-sm text-gray-600 leading-relaxed break-words">{{ msg.message }}</p>
+          <p class="text-sm text-gray-600 leading-relaxed break-words whitespace-pre-wrap">{{ msg.message }}</p>
+          <div v-if="msg.reply_text" class="mt-3 bg-gray-50 p-3 rounded-lg border-l-2 border-[var(--theme-primary)]">
+            <div class="text-[0.65rem] uppercase tracking-wider font-bold text-[var(--theme-primary)] mb-1">Balasan Mempelai</div>
+            <p class="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{{ msg.reply_text }}</p>
+          </div>
         </div>
       </div>
     </div>

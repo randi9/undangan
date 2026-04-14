@@ -81,8 +81,13 @@
       </header>
 
       <div class="admin-container">
+        <!-- Stats Skeleton Mode -->
+        <div v-if="store.loading" class="stats-grid">
+          <AppSkeleton v-for="i in 4" :key="`stat-skel-${i}`" height="90px" rounded="2xl" />
+        </div>
+
         <!-- Stats -->
-        <div class="stats-grid">
+        <div v-else class="stats-grid">
           <div class="stat-card blue">
             <div class="stat-header">
               <div class="stat-icon-glow">
@@ -98,6 +103,20 @@
             </div>
           </div>
           <div class="stat-card pink">
+            <div class="stat-header">
+              <div class="stat-icon-glow">
+                <Icon icon="ph:eye-duotone" />
+              </div>
+            </div>
+            <div class="stat-body">
+              <div class="stat-value">{{ totalViews }}</div>
+              <div class="stat-label">Total Dilihat</div>
+            </div>
+            <div class="stat-deco">
+              <Icon icon="ph:eye-duotone" />
+            </div>
+          </div>
+          <div class="stat-card purple">
             <div class="stat-header">
               <div class="stat-icon-glow">
                 <Icon icon="ph:image-square-duotone" />
@@ -135,10 +154,9 @@
           </div>
         </div>
 
-        <!-- Loading -->
-        <div v-if="store.loading" style="text-align:center;padding:60px 0">
-          <div class="loading-spinner"></div>
-          <p style="margin-top:12px;color:var(--admin-text-secondary)">Memuat data...</p>
+        <!-- Invitation Skeletons -->
+        <div v-if="store.loading" class="invitation-grid">
+          <AppSkeleton v-for="i in 3" :key="`inv-skel-${i}`" height="300px" rounded="2xl" />
         </div>
 
         <!-- Empty State -->
@@ -248,7 +266,13 @@
                     :to="`/dashboard/guests/${invitation.id}`"
                     class="btn btn-primary btn-sm"
                   >
-                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">book</span> Buku Tamu
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">group</span> Tamu
+                  </router-link>
+                  <router-link
+                    :to="`/dashboard/wishes/${invitation.id}`"
+                    class="btn btn-outline btn-sm"
+                  >
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">forum</span> Ucapan
                   </router-link>
                   <button
                     class="btn btn-danger btn-sm"
@@ -303,6 +327,7 @@ import type { Invitation } from "@/types/invitation";
 import { UserButton } from "@clerk/vue";
 import { Icon } from "@iconify/vue";
 import { resolveAssetUrl } from "@/utils/url";
+import AppSkeleton from "@/components/ui/AppSkeleton.vue";
 
 const router = useRouter();
 const store = useInvitationStore();
@@ -346,6 +371,10 @@ const totalPhotos = computed(() =>
 
 const totalRsvps = computed(() =>
   invitations.value.reduce((sum, i) => sum + (i.rsvp_count || 0), 0),
+);
+
+const totalViews = computed(() =>
+  invitations.value.reduce((sum, i) => sum + (i.view_count || 0), 0),
 );
 
 function formatDate(dateStr?: string) {

@@ -522,6 +522,7 @@ onMounted(async () => {
           }
         }
         loading.value = false;
+        assetsLoaded.value = true; // Skip asset preloading overlay in preview mode
       }
     });
     if (window.parent !== window) {
@@ -684,7 +685,7 @@ onBeforeUnmount(() => {
 
       <!-- RSVP (Dynamic per theme) -->
       <component :is="activeRsvp"
-        :rsvp-messages="rsvpMessages"
+        :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"
         :theme-config="activeTheme"
         :submitting="rsvpSubmitting"
         @submit-rsvp="handleSubmitRsvp"

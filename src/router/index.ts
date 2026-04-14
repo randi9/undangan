@@ -101,6 +101,12 @@ if (subdomain) {
       meta: { title: 'Buku Tamu - MengundangAnda', requiresAuth: true }
     },
     {
+      path: '/dashboard/wishes/:id',
+      name: 'wishes',
+      component: () => import('@/views/admin/WishesManageView.vue'),
+      meta: { title: 'Kelola Ucapan - MengundangAnda', requiresAuth: true }
+    },
+    {
       path: '/dashboard/users',
       name: 'users',
       component: () => import('@/views/admin/UserManagementView.vue'),

@@ -165,7 +165,11 @@
                   </div>
                 </div>
               </div>
-              <p style="font-size: 14px; color: #4b5563; line-height: 1.6; margin: 12px 0 0 0; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.03);">{{ msg.message }}</p>
+              <p style="font-size: 14px; color: #4b5563; line-height: 1.6; margin: 12px 0 0 0; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.03); white-space: pre-wrap;">{{ msg.message }}</p>
+              <div v-if="msg.reply_text" style="background-color: rgba(33, 85, 46, 0.05); padding: 12px 16px; border-radius: 12px; margin-top: 12px; border-left: 3px solid var(--theme-primary);">
+                <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; color: var(--theme-primary); margin-bottom: 4px;">Balasan Mempelai</div>
+                <p style="font-size: 13px; color: #4b5563; margin: 0; line-height: 1.5; white-space: pre-wrap;">{{ msg.reply_text }}</p>
+              </div>
             </div>
           </div>
         </div>
