@@ -21,10 +21,10 @@ function parseEventTime(timeStr: string | undefined | null): {
   const rangeMatch = timeStr.match(/(\d{1,2})[.:](\d{2})\s*[-–]\s*(\d{1,2})[.:](\d{2})/);
   if (rangeMatch) {
     return {
-      startHour: parseInt(rangeMatch[1]),
-      startMinute: parseInt(rangeMatch[2]),
-      endHour: parseInt(rangeMatch[3]),
-      endMinute: parseInt(rangeMatch[4]),
+      startHour: parseInt(rangeMatch[1]!),
+      startMinute: parseInt(rangeMatch[2]!),
+      endHour: parseInt(rangeMatch[3]!),
+      endMinute: parseInt(rangeMatch[4]!),
     };
   }
 
@@ -32,8 +32,8 @@ function parseEventTime(timeStr: string | undefined | null): {
   const singleMatch = timeStr.match(/(\d{1,2})[.:](\d{2})/);
   if (singleMatch) {
     return {
-      startHour: parseInt(singleMatch[1]),
-      startMinute: parseInt(singleMatch[2]),
+      startHour: parseInt(singleMatch[1]!),
+      startMinute: parseInt(singleMatch[2]!),
       endHour: null,
       endMinute: null,
     };
@@ -116,7 +116,7 @@ export function generateGoogleCalendarUrl(params: CalendarEventParams): string {
     // All-day end date harus +1 hari (exclusive end)
     const d = new Date(date);
     d.setDate(d.getDate() + 1);
-    const endDay = formatGCalAllDay(d.toISOString().split('T')[0]);
+    const endDay = formatGCalAllDay(d.toISOString());
     query.set('dates', `${startDay}/${endDay}`);
   }
 
