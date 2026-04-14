@@ -31,6 +31,10 @@
             <p class="admin-page-subtitle">Kelola tamu dan bagikan undangan via WA</p>
           </div>
           <div class="action-buttons-group" style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm action-btn" @click="openMessageModal">
+              <span class="material-symbols-rounded" style="font-size: 16px;">edit_note</span>
+              Edit Pesan WA
+            </button>
             <button class="btn btn-outline btn-sm action-btn" @click="showBulkModal = true">
               <span class="material-symbols-rounded" style="font-size: 16px;">playlist_add</span>
               Massal
@@ -167,6 +171,35 @@
       </div>
     </div>
 
+    <!-- Modal Edit Pesan WA -->
+    <div v-if="showMessageModal" class="modal-overlay" @click.self="showMessageModal = false">
+      <div class="modal-content responsive-modal">
+        <h3 style="margin-top: 0; margin-bottom: 8px; font-size: 18px; color: var(--admin-primary)">Edit Pesan WhatsApp</h3>
+        <p style="font-size: 13px; color: var(--admin-text-secondary); margin-bottom: 12px;">
+          Sesuaikan template tulisan yang dikirimkan ke WhatsApp secara bawaan. Gunakan kode variabel berikut agar diganti otomatis oleh sistem:
+        </p>
+        <div style="background:var(--admin-surface); padding:10px 12px; border-radius:6px; font-size:12px; font-family:monospace; margin-bottom: 16px; color: #475569;">
+          <strong>[Nama Tamu]</strong> - Nama tamu yang akan diundang<br/>
+          <strong>[Pria]</strong> - Panggilan mempelai pria<br/>
+          <strong>[Wanita]</strong> - Panggilan mempelai wanita<br/>
+          <strong>[Link]</strong> - URL tautan undangan
+        </div>
+        <form @submit.prevent="saveWAMessage">
+          <div class="form-group" style="margin-bottom: 24px;">
+            <textarea v-model="waMessageInput" class="form-input wa-textarea" placeholder="Tuliskan template pesan WA Anda..."></textarea>
+          </div>
+          <div class="modal-actions-container">
+            <button type="button" class="btn btn-outline" @click="showMessageModal = false">Batal</button>
+            <button type="button" class="btn btn-outline reset-btn" @click="resetWAMessage">Reset Default</button>
+            <button type="submit" class="btn btn-primary submit-btn" :disabled="savingMessage">
+              <span v-if="savingMessage" class="spinner" style="width:14px;height:14px;border-width:2px;margin:0 8px 0 0"></span>
+              Simpan Pesan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- Toast Notification -->
     <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
       {{ toast.message }}
@@ -191,9 +224,15 @@ const guests = computed(() => store.guests);
 
 const showSingleModal = ref(false);
 const showBulkModal = ref(false);
+const showMessageModal = ref(false);
 
 const singleForm = ref({ name: '', phone: '' });
 const bulkText = ref('');
+const waMessageInput = ref('');
+const savingMessage = ref(false);
+
+const defaultWAMessage = `Kepada Yth.\nBapak/Ibu/Saudara/i *[Nama Tamu]*\n\nTanpa mengurangi rasa hormat, kami bermaksud mengundang Anda untuk hadir pada acara pernikahan kami:\n\n*[Pria] & [Wanita]*\n\nBerikut adalah link undangan detail acara kami:\n[Link]\n\nMerupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.\n\nTerima kasih.`;
+
 const toast = ref<{ type: string; message: string } | null>(null);
 
 const apiBase = import.meta.env.VITE_API_URL || '';
@@ -212,6 +251,30 @@ async function loadData() {
 function showToast(type: 'success' | 'error', message: string) {
   toast.value = { type, message };
   setTimeout(() => { toast.value = null; }, 3000);
+}
+
+function openMessageModal() {
+  waMessageInput.value = invitation.value?.wa_message || defaultWAMessage;
+  showMessageModal.value = true;
+}
+
+function resetWAMessage() {
+  waMessageInput.value = defaultWAMessage;
+}
+
+async function saveWAMessage() {
+  if (!invitation.value) return;
+  savingMessage.value = true;
+  try {
+    const data = await store.updateInvitation(invitationId, { wa_message: waMessageInput.value });
+    invitation.value.wa_message = data.wa_message;
+    showMessageModal.value = false;
+    showToast('success', 'Template pesan WA berhasil disimpan!');
+  } catch (err: any) {
+    showToast('error', err.message || 'Gagal menyimpan pesan WA');
+  } finally {
+    savingMessage.value = false;
+  }
 }
 
 function getInvitationUrl(slug: string) {
@@ -240,7 +303,12 @@ function getShareUrl(guestName: string) {
 
 function generateWhatsAppMessage(guestName: string, link: string) {
   if (!invitation.value) return '';
-  return `Kepada Yth.\nBapak/Ibu/Saudara/i *${guestName}*\n\nTanpa mengurangi rasa hormat, kami bermaksud mengundang Anda untuk hadir pada acara pernikahan kami:\n\n*${invitation.value.groom_name} & ${invitation.value.bride_name}*\n\nBerikut adalah link undangan detail acara kami:\n${link}\n\nMerupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.\n\nTerima kasih.`;
+  let template = invitation.value.wa_message || defaultWAMessage;
+  template = template.replace(/\[Nama Tamu\]/g, guestName);
+  template = template.replace(/\[Pria\]/g, invitation.value.groom_name);
+  template = template.replace(/\[Wanita\]/g, invitation.value.bride_name);
+  template = template.replace(/\[Link\]/g, link);
+  return template;
 }
 
 async function copyLink(guest: Guest) {
@@ -444,12 +512,67 @@ async function handleDelete(guestId: string) {
 .action-wa-btn { background: #25D366; border-color: #25D366; padding: 6px 16px; }
 .action-icon-btn span, .action-wa-btn span { font-size: 16px; }
 
+/* Desktop Modal Defaults */
+.responsive-modal {
+  max-width: 600px;
+  padding: 24px;
+  border-radius: 12px;
+  background: white;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-actions-container {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+.reset-btn {
+  margin-right: auto;
+}
+.wa-textarea {
+  width: 100%;
+  border: 1px solid var(--admin-border);
+  padding: 12px;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: sans-serif;
+  font-size: 14px;
+  min-height: 200px;
+}
+
 @media (max-width: 640px) {
   .editor-container { padding: 16px; }
   .simple-topbar { padding: 0 16px; }
   .simple-topbar-brand span { display: none; }
   .action-buttons-group { width: 100%; margin-top: 8px; }
   .action-btn { flex: 1; justify-content: center; }
+
+  /* Responsive Modal Overrides */
+  .responsive-modal {
+    padding: 16px;
+    width: 90%;
+  }
+  .modal-actions-container {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+  .modal-actions-container .btn {
+    width: auto;
+    flex: 1;
+    margin-right: 0;
+    justify-content: center;
+    padding: 8px 4px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .reset-btn {
+    margin: 0;
+  }
+  .wa-textarea {
+    min-height: 250px;
+  }
 
   /* Tukar tampilan table dan card */
   .desktop-only-table { display: none; }
