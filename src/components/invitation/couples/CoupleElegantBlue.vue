@@ -1,15 +1,37 @@
 <template>
   <section ref="sectionRef" class="relative px-4 md:px-8 text-center overflow-hidden flex flex-col items-center justify-start min-h-[100dvh]" :style="irregularGradientStyle">
     
+    <!-- PNG Corner Ornaments -->
+    <div class="absolute inset-0 z-[15] pointer-events-none overflow-hidden">
+      <!-- Top Right (Base) -->
+      <div class="couple-png-corner absolute top-0 right-0 origin-top-right opacity-0" style="transform: scale(0);">
+        <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue.png" class="w-[180px] md:w-[300px] object-contain" />
+      </div>
+      
+      <!-- Top Left (Flipped horizontally) -->
+      <div class="couple-png-corner absolute top-0 left-0 origin-top-left opacity-0" style="transform: scale(0);">
+        <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue.png" class="w-[180px] md:w-[300px] object-contain -scale-x-100" />
+      </div>
+      
+      <!-- Bottom Right (Flipped vertically) -->
+      <div class="couple-png-corner absolute bottom-[-5px] right-0 origin-bottom-right opacity-0" style="transform: scale(0);">
+        <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue.png" class="w-[180px] md:w-[300px] object-contain -scale-y-100" />
+      </div>
+      
+      <!-- Bottom Left (Flipped both) -->
+      <div class="couple-png-corner absolute bottom-[-5px] left-0 origin-bottom-left opacity-0" style="transform: scale(0);">
+        <img src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue.png" class="w-[180px] md:w-[300px] object-contain -scale-x-100 -scale-y-100" />
+      </div>
+    </div>
+
     <!-- Real Layout (Text + Final position of images) -->
     <div class="max-w-5xl w-full mx-auto relative z-10 flex-1 flex flex-col justify-between">
       
       <div>
-        <h2 ref="titleRef" class="text-3xl md:text-5xl mb-2 text-[#1a252c] drop-shadow-sm tracking-widest cursor-default text-center" :style="{ fontFamily: themeConfig.fontHeading }">The Future Mr. & Mrs.</h2>
+        <h2 ref="titleRef" class="text-3xl md:text-5xl mb-2 text-[#1a252c] drop-shadow-sm tracking-widest cursor-default text-center" :style="{ fontFamily: themeConfig.fontHeading }">
+          The Future<br/>Mr. &amp; Mrs.
+        </h2>
         <div ref="heartRef" class="flex items-center justify-center gap-4 text-[#304851]/50 mb-8 md:mb-0">
-          <div class="h-px w-16 bg-[#304851]/30" />
-          <span class="text-xl">♥</span>
-          <div class="h-px w-16 bg-[#304851]/30" />
         </div>
       </div>
       
@@ -21,7 +43,7 @@
              <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realGroomImgRef">👤</div>
           </div>
         </div>
-        <div class="w-[55%] flex justify-start text-left pl-4 border-l border-[#405C66]/20">
+        <div class="w-[55%] flex justify-start text-left pl-4 md:pl-8">
           <div ref="groomTextRef" class="opacity-0 translate-y-4">
              <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#1a252c]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
              <p v-if="invitation.groom_father || invitation.groom_mother" class="text-xs md:text-base text-[#304851]/80 font-light tracking-wide">
@@ -45,7 +67,7 @@
              <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realBrideImgRef">👤</div>
           </div>
         </div>
-        <div class="w-[55%] flex justify-end text-right pr-4 border-r border-[#405C66]/20">
+        <div class="w-[55%] flex justify-end text-right pr-4 md:pr-8">
           <div ref="brideTextRef" class="opacity-0 translate-y-4">
             <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#1a252c]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
             <p v-if="invitation.bride_father || invitation.bride_mother" class="text-xs md:text-base text-[#304851]/80 font-light tracking-wide">
@@ -157,10 +179,14 @@ onMounted(() => {
   if (!sectionRef.value) return;
 
   ctx = gsap.context(() => {
+    // Corner Ornaments Init
+    const corners = sectionRef.value!.querySelectorAll('.couple-png-corner');
+    gsap.set(corners, { scale: 1, opacity: 1 });
+
     // 1. Initial robust Absolute positioning inside the GSAP context
-    gsap.set(coverOvalRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -50, x: 0, y: 0 });
-    gsap.set(animGroomRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -100, x: 0, y: 0 });
-    gsap.set(animBrideRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: 0, x: 0, y: 0 });
+    gsap.set(coverOvalRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 1, opacity: 1 });
+    gsap.set(animGroomRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -100, x: 0, y: 0, opacity: 1 });
+    gsap.set(animBrideRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: 0, x: 0, y: 0, opacity: 1 });
     
     // Explicitly hide slots dynamically as a fallback
     gsap.set([groomSlotRef.value, brideSlotRef.value], { opacity: 0 });
@@ -181,16 +207,24 @@ onMounted(() => {
       }
     });
 
-    // 2. Fade out the unified cover
+    // 2. Animate Corner Ornaments (Menyusut perlahan sejalan dengan bergeraknya oval)
+    tl.to(corners, {
+      scale: 0,
+      opacity: 0,
+      duration: 1.5,
+      ease: "power2.inOut"
+    }, 0.5);
+
+    // 3. Fade out the unified cover (Memudar elegan tanpa scale down)
     if (coverOvalRef.value) {
       tl.to(coverOvalRef.value, {
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut"
-      });
+      }, 0);
     }
 
-    // 3. Size shift and position to exact slots
+    // 4. Size shift and position to exact slots
     tl.to(animGroomRef.value, {
       x: () => getAnimProps(groomSlotRef.value).x,
       y: () => getAnimProps(groomSlotRef.value).y,
