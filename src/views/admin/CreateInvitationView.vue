@@ -692,25 +692,57 @@
         <div class="form-section">
           <h3 class="form-section-title"><Icon icon="lucide:music" style="color: var(--admin-primary);" /> Musik Latar</h3>
           <p class="form-section-subtitle">
-            Pilih lagu yang akan berputar otomatis saat undangan dibuka
+            Lagu yang berputar otomatis saat undangan dibuka
           </p>
           <div class="helper-tip">
             <Icon icon="lucide:info" class="helper-tip-icon" />
-            <span>Upload file lagu favorit (MP3/M4A). Lagu akan otomatis diputar saat tamu membuka undangan. Bagian ini opsional.</span>
+            <span>Setiap tema sudah memiliki musik default. Kamu bisa menggantinya dengan upload lagu sendiri, atau biarkan musik default yang bermain.</span>
           </div>
           <div class="form-group">
-            <div class="photo-upload-zone" style="padding: 24px;" @click="musicFileInput?.click()">
-              <div v-if="form.music_url" style="width: 100%; text-align: center;">
-                <Icon icon="lucide:headphones" class="upload-icon" style="color: var(--admin-primary);" />
-                <div class="upload-text" style="color: var(--admin-primary); margin-bottom: 12px; word-break: break-all;">Lagu Terpilih</div>
-                <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 40px; margin-bottom: 16px;"></audio>
-                <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic">Hapus Lagu</button>
+            <!-- Musik Default Aktif -->
+            <div v-if="form.music_url && isCurrentMusicDefault" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 20px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <Icon icon="ph:music-notes-simple-fill" style="color: var(--admin-primary); font-size: 20px;" />
+                <div>
+                  <div style="font-size: 13px; color: var(--admin-text-secondary);">Musik Default Tema</div>
+                  <strong style="font-size: 14px;">{{ currentDefaultMusicLabel }}</strong>
+                </div>
               </div>
-              <div v-else>
-                <Icon icon="lucide:music-4" class="upload-icon" style="color: var(--admin-text-secondary);" />
-                <div class="upload-text">Upload File Audio</div>
-                <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 20MB</div>
+              <audio controls :src="form.music_url" style="width: 100%; height: 40px; margin-bottom: 12px;"></audio>
+              <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
+                <Icon icon="lucide:upload" style="font-size: 14px;" /> Ganti dengan Lagu Sendiri
+              </button>
+            </div>
+            <!-- Musik Custom (Upload User) -->
+            <div v-else-if="form.music_url" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 20px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <Icon icon="lucide:headphones" style="color: var(--admin-primary); font-size: 20px;" />
+                <div>
+                  <div style="font-size: 13px; color: var(--admin-text-secondary);">Lagu Custom</div>
+                  <strong style="font-size: 14px;">Lagu Terpilih</strong>
+                </div>
               </div>
+              <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 40px; margin-bottom: 12px;"></audio>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
+                  <Icon icon="lucide:upload" style="font-size: 14px;" /> Ganti Lagu
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" @click.stop="restoreDefaultMusic" style="font-size: 13px;">
+                  <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Kembalikan ke Default
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic" style="font-size: 13px;">
+                  Hapus Lagu
+                </button>
+              </div>
+            </div>
+            <!-- Tidak Ada Musik -->
+            <div v-else class="photo-upload-zone" style="padding: 24px;" @click="musicFileInput?.click()">
+              <Icon icon="lucide:music-4" class="upload-icon" style="color: var(--admin-text-secondary);" />
+              <div class="upload-text">Upload File Audio</div>
+              <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 20MB</div>
+              <button type="button" class="btn btn-outline btn-sm" style="margin-top: 12px; font-size: 13px;" @click.stop="restoreDefaultMusic">
+                <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Gunakan Musik Default
+              </button>
             </div>
             <input
               ref="musicFileInput"
@@ -1105,6 +1137,8 @@ import { useRouter, useRoute } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import type { LoveStoryItem, Photo, BankAccount } from "@/types/invitation";
 import { resolveAssetUrl } from "@/utils/url";
+import { DEFAULT_MUSIC, isDefaultMusicUrl } from "@/config/defaultMusic";
+import { computed } from "vue";
 
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -1123,8 +1157,13 @@ const themeGalleryDefaults: Record<string, 'carousel' | 'masonry'> = {
 };
 
 function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue") {
+  const oldTheme = form.theme;
   form.theme = themeId;
   form.gallery_type = themeGalleryDefaults[themeId] || 'carousel';
+  // Auto-ganti musik ke default tema baru jika masih pakai default tema lama atau belum ada musik
+  if (!form.music_url || (DEFAULT_MUSIC[oldTheme] && form.music_url === DEFAULT_MUSIC[oldTheme].url)) {
+    form.music_url = DEFAULT_MUSIC[themeId]?.url || "";
+  }
   showThemeModal.value = false;
 }
 const apiBase = import.meta.env.VITE_API_URL || "";
@@ -1182,7 +1221,7 @@ const form = reactive({
   love_story: [] as LoveStoryItem[],
   quote: "",
   banks: [] as BankAccount[],
-  music_url: "",
+  music_url: DEFAULT_MUSIC[(route.query.theme as string) || 'elegant']?.url || "",
   gallery_type: themeGalleryDefaults[(route.query.theme as string) || 'elegant'] || 'carousel' as 'carousel' | 'masonry',
   photos: [] as Photo[],
 });
@@ -1302,10 +1341,29 @@ async function handleMusicUpload(event: Event) {
 
 async function removeMusic() {
   if (form.music_url) {
-    await store.deleteFile(form.music_url).catch(() => {});
+    // Jangan hapus file R2 jika ini adalah musik default
+    if (!isDefaultMusicUrl(form.music_url)) {
+      await store.deleteFile(form.music_url).catch(() => {});
+    }
     form.music_url = "";
   }
 }
+
+function restoreDefaultMusic() {
+  const defaultEntry = DEFAULT_MUSIC[form.theme];
+  if (defaultEntry) {
+    form.music_url = defaultEntry.url;
+  }
+}
+
+const isCurrentMusicDefault = computed(() => {
+  return isDefaultMusicUrl(form.music_url);
+});
+
+const currentDefaultMusicLabel = computed(() => {
+  const entry = Object.values(DEFAULT_MUSIC).find((e) => e.url === form.music_url);
+  return entry?.label || 'Musik Default';
+});
 
 async function removeCoverPhoto() {
   if (form.cover_photo) {
