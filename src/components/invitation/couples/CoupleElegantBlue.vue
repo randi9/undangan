@@ -76,7 +76,7 @@
             </div>
             
             <img ref="groomDecoRef" src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(1).png" class="absolute object-contain opacity-0 pointer-events-none" style="min-width: 250px; right: -170px; top: 45%; transform: translateY(-50%); z-index: 5;" />
-            <div ref="groomSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-t-[1000px] shadow-xl bg-[#405C66]/5 relative overflow-hidden z-10">
+            <div ref="groomSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-t-[1000px] shadow-[0_15px_40px_rgba(48,72,81,0.25)] bg-[#405C66]/5 relative overflow-hidden z-10">
                <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realGroomImgRef" alt="Groom" />
                <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realGroomImgRef">👤</div>
             </div>
@@ -139,7 +139,7 @@
             </div>
 
             <img ref="brideDecoRef" src="https://media.mengundanganda.com/tema%20elegant%20blue/couple%20section/asset%20elegan%20blue%20(2).png" class="absolute object-contain opacity-0 pointer-events-none" style="min-width: 250px; left: -150px; top: 50%; transform: translateY(-50%); z-index: 5;" />
-            <div ref="brideSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-b-[1000px] shadow-xl bg-[#405C66]/5 relative overflow-hidden z-10">
+            <div ref="brideSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-b-[1000px] shadow-[0_15px_40px_rgba(48,72,81,0.25)] bg-[#405C66]/5 relative overflow-hidden z-10">
                <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realBrideImgRef" alt="Bride" />
                <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realBrideImgRef">👤</div>
             </div>
@@ -163,19 +163,19 @@
     <div class="absolute inset-0 z-20 pointer-events-none w-full h-full block">
       
       <!-- Unified Cover Photo (Only visible at start, fades out) -->
-      <div ref="coverOvalRef" class="absolute w-[240px] h-[320px] md:w-[320px] md:h-[440px] rounded-[1000px] overflow-hidden shadow-2xl bg-[#304851] z-30" style="will-change: transform, opacity">
+      <div ref="coverOvalRef" class="absolute w-[240px] h-[320px] md:w-[320px] md:h-[440px] rounded-[1000px] overflow-hidden shadow-[0_20px_50px_rgba(48,72,81,0.3)] bg-[#304851] z-30" style="will-change: transform, opacity">
          <img v-if="invitation.cover_photo" :src="resolveAssetUrl(invitation.cover_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover" />
          <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-white/50">Tidak ada cover</div>
       </div>
 
       <!-- Groom Half (Top) - Hidden beneath cover initially -->
-      <div ref="animGroomRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-t-[1000px] overflow-hidden shadow-xl bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
+      <div ref="animGroomRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-t-[1000px] overflow-hidden shadow-[0_15px_40px_rgba(48,72,81,0.25)] bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
          <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover" />
          <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-5xl bg-[#405C66]/10 text-[#405C66]/50">👤</div>
       </div>
 
       <!-- Bride Half (Bottom) - Hidden beneath cover initially -->
-      <div ref="animBrideRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-b-[1000px] overflow-hidden shadow-xl bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
+      <div ref="animBrideRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-b-[1000px] overflow-hidden shadow-[0_15px_40px_rgba(48,72,81,0.25)] bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
          <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover" />
          <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-5xl bg-[#405C66]/10 text-[#405C66]/50">👤</div>
       </div>
