@@ -34,26 +34,19 @@
         <div class="lp-orb lp-orb-4"></div>
       </div>
       <div class="lp-container lp-hero-content">
-        <p class="lp-hero-kicker lp-fade-up">Siap dalam hitungan menit, bukan hari</p>
+        <p class="lp-hero-kicker lp-fade-up">Bikin Undangan Terasa Lebih Mudah</p>
         <h1 class="lp-hero-title lp-fade-up lp-delay-1">
-          Undangan Pernikahan Anda,<br>
-          <span class="lp-hero-script">Kapanpun. Tanpa Menunggu.</span>
+          Undangan Pernikahan Mewah,<br>
+          <span class="lp-hero-script">Langsung Jadi Dalam 5 Menit.</span>
         </h1>
         <p class="lp-hero-sub lp-fade-up lp-delay-2">
-          Tidak perlu antri desainer. Tidak perlu menunggu berhari-hari.<br>
-          Pilih tema, isi data, dan langsung bagikan, semudah itu.
+          Tinggalkan cara lama yang memakan waktu dan biaya mahal.<br>
+          Cukup pilih tema premium, lengkapi detail acara, dan bagikan seketika.
         </p>
         <div class="lp-hero-actions lp-fade-up lp-delay-3">
-          <a href="/login" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</a>
-          <a href="#tema" class="lp-btn lp-btn-outline">Lihat Tema</a>
+          <a href="/login" class="lp-btn lp-btn-primary">Mulai Buat Undangan</a>
+          <a href="#tema" class="lp-btn lp-btn-outline">Jelajahi Tema Dulu</a>
         </div>
-      </div>
-      <!-- Scroll Indicator -->
-      <div class="lp-scroll-indicator lp-fade-up lp-delay-3" aria-hidden="true">
-        <div class="lp-scroll-mouse">
-          <div class="lp-scroll-wheel"></div>
-        </div>
-        <span>Scroll</span>
       </div>
     </section>
 
@@ -78,9 +71,9 @@
     <section id="fitur" class="lp-section lp-section-alt" aria-label="Fitur Unggulan">
       <div class="lp-container">
         <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">Kenapa MengundangAnda?</p>
-          <h2 class="lp-section-title">Undangan Cetak itu Mahal, Lama, dan Ribet.</h2>
-          <p class="lp-section-sub">Kami hadir supaya Anda bisa fokus ke momen bahagia — bukan repot ngurusin undangan.</p>
+          <p class="lp-section-kicker">Mengapa Pilih Kami?</p>
+          <h2 class="lp-section-title">Jangan Habiskan Budget Untuk Undangan Sekali Pakai.</h2>
+          <p class="lp-section-sub">Fokus saja pada momen bahagia Anda. Urusan undangan, biar kami yang bereskan dengan cara yang lebih berkelas, hemat, dan praktis.</p>
         </div>
         <div class="lp-features-list">
           <div
@@ -110,17 +103,17 @@
     <section id="live-preview" class="lp-section" aria-label="Live Preview Editor">
       <div class="lp-container lp-showcase-split">
         <div class="lp-showcase-content lp-reveal">
-          <p class="lp-section-kicker">Live Preview Editor</p>
-          <h2 class="lp-section-title">Edit Bebas, Lihat Hasil Langsung.</h2>
+          <p class="lp-section-kicker">Bebas Revisi Sepuasnya</p>
+          <h2 class="lp-section-title">Lihat Perubahan Real-time. Tanpa Butuh Desainer.</h2>
           <p class="lp-section-sub">
-            Ucapkan selamat tinggal pada menebak-nebak! Sistem <b>Live Preview</b> kami memastikan setiap detail acara dan perubahan teks yang Anda simpan akan langsung tercermin di undangan.
+            Ganti font, sesuaikan warna, atau ubah lokasi acara dan lihat hasilnya detik itu juga. Anda memegang kendali penuh atas tampilan undangan dari layar hp Anda.
           </p>
           <ul class="lp-showcase-list">
-            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Desain lebih presisi dan sesuai ekspektasi.</li>
-            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Menghemat waktu bolak-balik ke halaman berbeda.</li>
-            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Pengalaman membuat undangan jadi sangat mudah.</li>
+            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Tidak perlu lagi membayar biaya revisi.</li>
+            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Bebas khawatir salah ketik atau info yang kurang akurat.</li>
+            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Mudah digunakan, bahkan jika Anda bukan orang teknis.</li>
           </ul>
-          <a href="/login" class="lp-btn lp-btn-primary lp-showcase-btn">Coba Sekarang</a>
+          <a href="/login" class="lp-btn lp-btn-primary lp-showcase-btn">Coba Live Editor Sekarang</a>
         </div>
         <div class="lp-showcase-image lp-reveal" style="transition-delay: 200ms;">
           <div class="lp-mockup-wrapper">
@@ -139,9 +132,9 @@
     <section id="tema" class="lp-section lp-section-alt" aria-label="Koleksi Tema">
       <div class="lp-container">
         <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">Koleksi Tema</p>
-          <h2 class="lp-section-title">Pilih Tema Favorit Anda</h2>
-          <p class="lp-section-sub">Tiga pilihan desain yang dirancang dengan keindahan dan keanggunan</p>
+          <p class="lp-section-kicker">Koleksi Desain Premium</p>
+          <h2 class="lp-section-title">Visual Indah yang Mencerminkan Kisah Anda</h2>
+          <p class="lp-section-sub">Setiap desain dirancang khusus oleh desainer profesional untuk membuat tamu undangan Anda terkesan dari pandangan pertama.</p>
         </div>
         <div class="lp-themes-carousel">
           <div class="lp-theme-card lp-reveal" v-for="(theme, i) in themesData" :key="theme.id" :style="{ '--card-accent': theme.color, transitionDelay: `${i * 120}ms` }">
@@ -217,9 +210,9 @@
     <section id="cara-kerja" class="lp-section" aria-label="Cara Kerja">
       <div class="lp-container">
         <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">Mudah &amp; Cepat</p>
-          <h2 class="lp-section-title">Cara Membuatnya</h2>
-          <p class="lp-section-sub">Tiga langkah sederhana untuk undangan impian Anda</p>
+          <p class="lp-section-kicker">Hanya Dalam 3 Langkah</p>
+          <h2 class="lp-section-title">Pelaksanaannya Semudah Mengupdate Medsos</h2>
+          <p class="lp-section-sub">Sama sekali tidak butuh keahlian desain. Siapa pun bisa merancang undangan digital eksklusif ini.</p>
         </div>
         <div class="lp-steps-grid">
           <div class="lp-step lp-reveal" v-for="(step, i) in steps" :key="step.title" :style="{ transitionDelay: `${i * 150}ms` }">
@@ -281,9 +274,9 @@
     <section id="harga" class="lp-section" aria-label="Harga">
       <div class="lp-container">
         <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">Harga</p>
-          <h2 class="lp-section-title">Pilihan Paket Anda</h2>
-          <p class="lp-section-sub">Harga transparan dan terjangkau. Mulai gratis sekarang, upgrade kapan saja untuk fitur maksimal.</p>
+          <p class="lp-section-kicker">Investasi Cerdas</p>
+          <h2 class="lp-section-title">Harga Transparan. Tanpa Biaya Tersembunyi.</h2>
+          <p class="lp-section-sub">Buktikan sendiri secara gratis. Jauh lebih hemat daripada pengeluaran untuk ribuan lembar undangan cetak.</p>
         </div>
         <div class="lp-pricing-grid">
           <!-- Free Plan -->
@@ -338,9 +331,9 @@
           <Icon icon="solar:heart-bold" style="font-size: 20px; color: rgba(147,197,253,0.6);" />
           <svg width="60" height="2" viewBox="0 0 60 2"><rect width="60" height="2" rx="1" fill="rgba(255,255,255,0.3)"/></svg>
         </div>
-        <h2 class="lp-cta-title">Siap Membuat Undangan<br><span>Impian Anda?</span></h2>
-        <p class="lp-cta-sub">Mulai sekarang dan buat undangan pernikahan digital yang indah dalam hitungan menit.</p>
-        <a href="/login" class="lp-btn lp-btn-white lp-cta-btn">Buat Undangan Gratis</a>
+        <h2 class="lp-cta-title">Siap Memukau Tamu<br><span>Undangan Anda?</span></h2>
+        <p class="lp-cta-sub">Bergabung dengan ratusan pasangan yang sudah berhasil menghemat jutaan rupiah tanpa mengorbankan estetika.</p>
+        <a href="/login" class="lp-btn lp-btn-white lp-cta-btn">Buat Undangan Gratis Sekarang</a>
       </div>
     </section>
     </main>
@@ -549,18 +542,18 @@ function updateLpIframeScale() {
 }
 
 const features = [
-  { icon: 'solar:stopwatch-bold-duotone', title: 'Selesai dalam 5 Menit', desc: 'Buat undangan digital cantik tanpa perlu skill desain. Cepat, mudah, langsung jadi.' },
-  { icon: 'solar:wallet-money-bold-duotone', title: 'Hemat Jutaan Rupiah', desc: 'Tidak perlu cetak fisik yang mahal. Undangan digital jauh lebih hemat dan praktis.' },
-  { icon: 'solar:smartphone-2-bold-duotone', title: 'Langsung Kirim via WhatsApp', desc: 'Cukup salin link dan bagikan ke semua tamu lewat WhatsApp atau media sosial.' },
-  { icon: 'solar:map-point-wave-bold-duotone', title: 'Musik, Peta, RSVP — Lengkap', desc: 'Fitur lengkap: background musik, Google Maps, dan konfirmasi kehadiran otomatis.' },
-  { icon: 'solar:pallete-2-bold-duotone', title: 'Desain Profesional, Tanpa Skill Desain', desc: 'Tema dirancang oleh desainer. Tinggal pilih, isi data, langsung tampil profesional.' },
-  { icon: 'solar:shield-check-bold-duotone', title: 'Aman & Bisa Diedit Kapan Saja', desc: 'Data Anda aman. Edit undangan kapanpun tanpa batasan, perubahan langsung tampil.' },
+  { icon: 'solar:stopwatch-bold-duotone', title: 'Siap Sebar Dalam 5 Menit', desc: 'Lupakan proses revisi berhari-hari dengan vendor. Isi form, dan undangan siap di-share.' },
+  { icon: 'solar:wallet-money-bold-duotone', title: 'Hemat Budget Hingga 90%', desc: 'Coret biaya cetak dari anggaran Anda. Simpan dana untuk kebutuhan lain yang lebih krusial.' },
+  { icon: 'solar:smartphone-2-bold-duotone', title: 'Sebar Cepat via WhatsApp', desc: 'Sekali klik, jangkau ratusan tamu di mana saja secara instan. Tanpa repot keliling rumah.' },
+  { icon: 'solar:map-point-wave-bold-duotone', title: 'Pengalaman Tamu Terbaik', desc: 'Manjakan tamu dengan navigasi lokasi presisi tinggi, musik romantis, dan sistem RSVP otomatis.' },
+  { icon: 'solar:pallete-2-bold-duotone', title: 'Standar Visual Profesional', desc: 'Setiap elemen didesain oleh ahlinya. Undangan terlihat mahal tanpa harus membayar mahal.' },
+  { icon: 'solar:shield-check-bold-duotone', title: 'Kendali Penuh di Tangan Anda', desc: 'Ada perubahan mendadak? Tenang, Anda bisa update lokasi atau tanggal kapan pun tanpa batas.' },
 ]
 
 const steps = [
-  { title: 'Pilih Tema', desc: 'Jelajahi koleksi tema premium kami dan pilih yang paling sesuai dengan kepribadian Anda.', icon: 'solar:pallete-2-bold-duotone' },
-  { title: 'Isi Data', desc: 'Masukkan data pernikahan seperti nama, tanggal, lokasi, dan detail acara lainnya.', icon: 'solar:pen-new-square-bold-duotone' },
-  { title: 'Bagikan', desc: 'Undangan Anda langsung online! Bagikan link unik ke semua tamu yang Anda undang.', icon: 'solar:share-bold-duotone' },
+  { title: 'Pilih Desain', desc: 'Temukan tema visual yang paling serasi dengan konsep dan nuansa pernikahan Anda.', icon: 'solar:pallete-2-bold-duotone' },
+  { title: 'Lengkapi Cerita', desc: 'Masukkan detail acara, cerita cinta, galeri foto, dan peta lokasi ke dalam form yang simpel.', icon: 'solar:pen-new-square-bold-duotone' },
+  { title: 'Langsung Sebarkan', desc: 'Salin link undangan unik Anda dan sebarkan ke kerabat serta sahabat dalam satu ketukan.', icon: 'solar:share-bold-duotone' },
 ]
 
 const testimonials = [
@@ -1052,49 +1045,6 @@ const themesData = [
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-}
-
-/* --- Scroll Indicator --- */
-.lp-scroll-indicator {
-  position: absolute;
-  bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.lp-scroll-mouse {
-  width: 24px;
-  height: 38px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  position: relative;
-}
-
-.lp-scroll-wheel {
-  width: 4px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 2px;
-  position: absolute;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: scrollWheel 2s ease-in-out infinite;
-}
-
-@keyframes scrollWheel {
-  0%, 100% { opacity: 1; transform: translateX(-50%) translateY(0); }
-  50% { opacity: 0.3; transform: translateX(-50%) translateY(12px); }
 }
 
 /* --- Fade-up animation --- */
@@ -2199,10 +2149,6 @@ const themesData = [
     height: 44px;
   }
 
-  .lp-scroll-indicator {
-    bottom: 20px;
-  }
-
   .lp-wave-divider svg {
     height: 32px;
   }
@@ -2227,7 +2173,6 @@ const themesData = [
 /* --- Accessibility: Reduced Motion --- */
 @media (prefers-reduced-motion: reduce) {
   .lp-orb,
-  .lp-scroll-wheel,
   .lp-pricing-shimmer,
   .lp-cta-bg,
   .lp-cta-btn,
