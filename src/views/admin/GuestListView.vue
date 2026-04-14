@@ -22,22 +22,22 @@
       </div>
 
       <div v-else-if="invitation">
-        <div class="editor-header-compact" style="margin-bottom: 24px;">
-          <div>
-            <h1 class="admin-page-title" style="margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+        <div class="editor-header-compact" style="margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
+          <div style="flex: 1; min-width: 250px;">
+            <h1 class="admin-page-title" style="margin-bottom: 4px; display: flex; align-items: center; gap: 8px; font-size: 20px;">
               <span class="material-symbols-rounded" style="color: var(--admin-primary)">book</span>
               Buku Tamu: {{ invitation.groom_name }} & {{ invitation.bride_name }}
             </h1>
-            <p class="admin-page-subtitle">Kelola daftar tamu dan bagikan undangan via WhatsApp</p>
+            <p class="admin-page-subtitle">Kelola tamu dan bagikan undangan via WA</p>
           </div>
-          <div style="display: flex; gap: 12px;">
-            <button class="btn btn-outline btn-sm" @click="showBulkModal = true">
+          <div class="action-buttons-group" style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm action-btn" @click="showBulkModal = true">
               <span class="material-symbols-rounded" style="font-size: 16px;">playlist_add</span>
-              Tambah Tamu Massal
+              Massal
             </button>
-            <button class="btn btn-primary btn-sm" @click="showSingleModal = true">
+            <button class="btn btn-primary btn-sm action-btn" @click="showSingleModal = true">
               <span class="material-symbols-rounded" style="font-size: 16px;">person_add</span>
-              Tambah Tamu
+              Tambah
             </button>
           </div>
         </div>
@@ -50,43 +50,45 @@
             <p>Klik tombol "Tambah Tamu" di atas untuk mulai membuat daftar tamu.</p>
           </div>
           
-          <table v-else class="admin-table" style="width: 100%; border-collapse: collapse;">
-            <thead>
-              <tr style="background: var(--admin-surface); border-bottom: 1px solid var(--admin-border); text-align: left;">
-                <th style="padding: 16px;">Nama Tamu</th>
-                <th style="padding: 16px;">No. WhatsApp</th>
-                <th style="padding: 16px;">Status</th>
-                <th style="padding: 16px; text-align: right;">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="guest in guests" :key="guest.id || guest.name" style="border-bottom: 1px solid var(--admin-border);">
-                <td style="padding: 16px; font-weight: 500; color: var(--admin-text);">{{ guest.name }}</td>
-                <td style="padding: 16px; color: var(--admin-text-secondary);">{{ guest.phone_number || '-' }}</td>
-                <td style="padding: 16px;">
-                  <span v-if="guest.is_sent" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #dcfce7; color: #166534; border-radius: 999px; font-size: 12px; font-weight: 600;">
-                    <span class="material-symbols-rounded" style="font-size: 14px;">check_circle</span> Terkirim
-                  </span>
-                  <span v-else style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #f1f5f9; color: #475569; border-radius: 999px; font-size: 12px; font-weight: 600;">
-                    <span class="material-symbols-rounded" style="font-size: 14px;">pending</span> Belum
-                  </span>
-                </td>
-                <td style="padding: 16px; text-align: right;">
-                  <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                    <button class="btn btn-outline btn-sm" @click="copyLink(guest)" title="Copy Link Saja">
-                      <span class="material-symbols-rounded" style="font-size: 16px;">content_copy</span>
-                    </button>
-                    <button class="btn btn-primary btn-sm" style="background: #25D366; border-color: #25D366;" @click="sendWhatsApp(guest)">
-                      <span class="material-symbols-rounded" style="font-size: 16px;">send</span> Kirim WA
-                    </button>
-                    <button class="btn btn-danger btn-sm" @click="handleDelete(guest.id!)" title="Hapus">
-                      <span class="material-symbols-rounded" style="font-size: 16px;">delete</span>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-else class="table-responsive">
+            <table class="admin-table" style="width: 100%; border-collapse: collapse; min-width: 600px;">
+              <thead>
+                <tr style="background: var(--admin-surface); border-bottom: 1px solid var(--admin-border); text-align: left;">
+                  <th style="padding: 16px;">Nama Tamu</th>
+                  <th style="padding: 16px;">No. WhatsApp</th>
+                  <th style="padding: 16px;">Status</th>
+                  <th style="padding: 16px; text-align: right;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="guest in guests" :key="guest.id || guest.name" style="border-bottom: 1px solid var(--admin-border);">
+                  <td style="padding: 16px; font-weight: 500; color: var(--admin-text);">{{ guest.name }}</td>
+                  <td style="padding: 16px; color: var(--admin-text-secondary);">{{ guest.phone_number || '-' }}</td>
+                  <td style="padding: 16px;">
+                    <span v-if="guest.is_sent" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #dcfce7; color: #166534; border-radius: 999px; font-size: 12px; font-weight: 600;">
+                      <span class="material-symbols-rounded" style="font-size: 14px;">check_circle</span> Terkirim
+                    </span>
+                    <span v-else style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #f1f5f9; color: #475569; border-radius: 999px; font-size: 12px; font-weight: 600;">
+                      <span class="material-symbols-rounded" style="font-size: 14px;">pending</span> Belum
+                    </span>
+                  </td>
+                  <td style="padding: 16px; text-align: right;">
+                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                      <button class="btn btn-outline btn-sm" @click="copyLink(guest)" title="Copy Link" style="padding: 6px 10px;">
+                        <span class="material-symbols-rounded" style="font-size: 16px;">content_copy</span>
+                      </button>
+                      <button class="btn btn-primary btn-sm" style="background: #25D366; border-color: #25D366; padding: 6px 16px;" @click="sendWhatsApp(guest)">
+                        <span class="material-symbols-rounded" style="font-size: 16px;">send</span> WA
+                      </button>
+                      <button class="btn btn-danger btn-sm" @click="handleDelete(guest.id!)" title="Hapus" style="padding: 6px 10px;">
+                        <span class="material-symbols-rounded" style="font-size: 16px;">delete</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -366,5 +368,31 @@ async function handleDelete(guestId: string) {
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 16px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .editor-container {
+    padding: 16px;
+  }
+  .simple-topbar {
+    padding: 0 16px;
+  }
+  .simple-topbar-brand span {
+    display: none;
+  }
+  .action-buttons-group {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .action-btn {
+    flex: 1;
+    justify-content: center;
+  }
 }
 </style>
