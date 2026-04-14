@@ -443,7 +443,7 @@ const themesData = [
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
     bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
-    sampleUrl: 'https://ayang-aku.mengundanganda.com',
+    sampleUrl: 'https://aku-ayang.mengundanganda.com',
     icon: 'solar:leaf-bold-duotone',
   },
   {
