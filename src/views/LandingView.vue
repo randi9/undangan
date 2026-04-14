@@ -4,7 +4,7 @@
     <nav class="lp-nav" :class="{ scrolled: navScrolled || mobileMenuOpen, 'nav-hidden': navHiddenMobile }">
       <div class="lp-container lp-nav-inner">
         <a href="#" class="lp-logo">
-          <img src="/images/logo.webp" alt="MengundangAnda Logo" class="lp-logo-img">
+          <img src="/images/logo.webp" alt="Logo MengundangAnda - Platform Undangan Pernikahan Digital" class="lp-logo-img">
           <span>Mengundang<span class="lp-logo-accent">Anda</span></span>
         </a>
         <button class="lp-nav-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle menu">
@@ -26,19 +26,26 @@
     <section class="lp-hero" aria-label="Hero">
       <div class="lp-hero-bg"></div>
       <div class="lp-hero-overlay"></div>
+      <!-- Floating Orbs -->
+      <div class="lp-hero-orbs" aria-hidden="true">
+        <div class="lp-orb lp-orb-1"></div>
+        <div class="lp-orb lp-orb-2"></div>
+        <div class="lp-orb lp-orb-3"></div>
+        <div class="lp-orb lp-orb-4"></div>
+      </div>
       <div class="lp-container lp-hero-content">
-        <p class="lp-hero-kicker lp-fade-up">Siap dalam hitungan menit, bukan hari</p>
+        <p class="lp-hero-kicker lp-fade-up">Bikin Undangan Terasa Lebih Mudah</p>
         <h1 class="lp-hero-title lp-fade-up lp-delay-1">
-          Undangan Pernikahan Anda,<br>
-          <span class="lp-hero-script">Kapanpun. Tanpa Menunggu.</span>
+          Undangan Pernikahan Mewah,<br>
+          <span class="lp-hero-script">Langsung Jadi Dalam 5 Menit.</span>
         </h1>
         <p class="lp-hero-sub lp-fade-up lp-delay-2">
-          Tidak perlu antri desainer. Tidak perlu menunggu berhari-hari.<br>
-          Pilih tema, isi data, dan langsung bagikan, semudah itu.
+          Tinggalkan cara lama yang memakan waktu dan biaya mahal.<br>
+          Cukup pilih tema premium, lengkapi detail acara, dan bagikan seketika.
         </p>
         <div class="lp-hero-actions lp-fade-up lp-delay-3">
-          <a href="/login" class="lp-btn lp-btn-primary">Buat Undangan Sekarang</a>
-          <a href="#tema" class="lp-btn lp-btn-outline">Lihat Tema</a>
+          <a href="/login" class="lp-btn lp-btn-primary">Mulai Buat Undangan</a>
+          <a href="#tema" class="lp-btn lp-btn-outline">Jelajahi Tema Dulu</a>
         </div>
       </div>
     </section>
@@ -48,42 +55,67 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
     </button>
 
+    <!-- Social Proof Stats -->
+    <section class="lp-stats" aria-label="Statistik" ref="statsRef">
+      <div class="lp-container lp-stats-inner">
+        <div class="lp-stat-item" v-for="stat in stats" :key="stat.label">
+          <div class="lp-stat-number">
+            <span class="lp-stat-value">{{ stat.displayed }}</span><span class="lp-stat-suffix">{{ stat.suffix }}</span>
+          </div>
+          <div class="lp-stat-label">{{ stat.label }}</div>
+        </div>
+      </div>
+    </section>
+
     <!-- Fitur Section -->
     <section id="fitur" class="lp-section lp-section-alt" aria-label="Fitur Unggulan">
       <div class="lp-container">
-        <div class="lp-section-header">
-          <p class="lp-section-kicker">Kenapa MengundangAnda?</p>
-          <h2 class="lp-section-title">Undangan Cetak itu Mahal, Lama, dan Ribet.</h2>
-          <p class="lp-section-sub">Kami hadir supaya Anda bisa fokus ke momen bahagia — bukan repot ngurusin undangan.</p>
+        <div class="lp-section-header lp-reveal">
+          <p class="lp-section-kicker">Mengapa Pilih Kami?</p>
+          <h2 class="lp-section-title">Jangan Habiskan Budget Untuk Undangan Sekali Pakai.</h2>
+          <p class="lp-section-sub">Fokus saja pada momen bahagia Anda. Urusan undangan, biar kami yang bereskan dengan cara yang lebih berkelas, hemat, dan praktis.</p>
         </div>
-        <div class="lp-features-grid">
-          <div class="lp-feature-card" v-for="(feature, i) in features" :key="feature.title" ref="featureCardsRef" :style="{ transitionDelay: `${i * 100}ms` }">
+        <div class="lp-features-list">
+          <div
+            class="lp-feature-item lp-reveal"
+            v-for="(feature, i) in features"
+            :key="feature.title"
+            :style="{ transitionDelay: `${i * 100}ms` }"
+          >
             <div class="lp-feature-icon-wrapper">
               <Icon :icon="feature.icon" class="lp-feature-icon" />
             </div>
-            <h3>{{ feature.title }}</h3>
+            <div class="lp-feature-text">
+              <h3>{{ feature.title }}</h3>
+              <p>{{ feature.desc }}</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- Wave Divider -->
+    <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" /></svg>
+    </div>
+
     <!-- Live Preview Showcase Section -->
     <section id="live-preview" class="lp-section" aria-label="Live Preview Editor">
       <div class="lp-container lp-showcase-split">
-        <div class="lp-showcase-content">
-          <p class="lp-section-kicker">Live Preview Editor</p>
-          <h2 class="lp-section-title">Edit Bebas, Lihat Hasil Langsung.</h2>
+        <div class="lp-showcase-content lp-reveal">
+          <p class="lp-section-kicker">Bebas Revisi Sepuasnya</p>
+          <h2 class="lp-section-title">Lihat Perubahan Real-time. Tanpa Butuh Desainer.</h2>
           <p class="lp-section-sub">
-            Ucapkan selamat tinggal pada menebak-nebak! Sistem <b>Live Preview</b> kami memastikan setiap detail acara dan perubahan teks yang Anda simpan akan langsung tercermin di undangan.
+            Ganti font, sesuaikan warna, atau ubah lokasi acara dan lihat hasilnya detik itu juga. Anda memegang kendali penuh atas tampilan undangan dari layar hp Anda.
           </p>
           <ul class="lp-showcase-list">
-            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Desain lebih presisi dan sesuai ekspektasi.</li>
-            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Menghemat waktu bolak-balik ke halaman berbeda.</li>
-            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Pengalaman membuat undangan jadi sangat mudah.</li>
+            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Tidak perlu lagi membayar biaya revisi.</li>
+            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Bebas khawatir salah ketik atau info yang kurang akurat.</li>
+            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Mudah digunakan, bahkan jika Anda bukan orang teknis.</li>
           </ul>
-          <a href="/login" class="lp-btn lp-btn-primary lp-showcase-btn">Coba Sekarang</a>
+          <a href="/login" class="lp-btn lp-btn-primary lp-showcase-btn">Coba Live Editor Sekarang</a>
         </div>
-        <div class="lp-showcase-image">
+        <div class="lp-showcase-image lp-reveal" style="transition-delay: 200ms;">
           <div class="lp-mockup-wrapper">
              <img src="https://media.mengundanganda.com/landing-page/Screenshot%202026-04-03%20191057.webp" alt="Tampilan fitur Live Preview Editor undangan pernikahan digital MengundangAnda" class="lp-mockup-img" loading="lazy" />
           </div>
@@ -91,16 +123,21 @@
       </div>
     </section>
 
+    <!-- Wave Divider -->
+    <div class="lp-wave-divider lp-wave-white-to-alt" aria-hidden="true">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,60 C360,0 1080,100 1440,40 L1440,100 L0,100 Z" /></svg>
+    </div>
+
     <!-- Tema Section -->
     <section id="tema" class="lp-section lp-section-alt" aria-label="Koleksi Tema">
       <div class="lp-container">
-        <div class="lp-section-header">
-          <p class="lp-section-kicker">Koleksi Tema</p>
-          <h2 class="lp-section-title">Pilih Tema Favorit Anda</h2>
-          <p class="lp-section-sub">Tiga pilihan desain yang dirancang dengan keindahan dan keanggunan</p>
+        <div class="lp-section-header lp-reveal">
+          <p class="lp-section-kicker">Koleksi Desain Premium</p>
+          <h2 class="lp-section-title">Visual Indah yang Mencerminkan Kisah Anda</h2>
+          <p class="lp-section-sub">Setiap desain dirancang khusus oleh desainer profesional untuk membuat tamu undangan Anda terkesan dari pandangan pertama.</p>
         </div>
         <div class="lp-themes-carousel">
-          <div class="lp-theme-card" v-for="theme in themesData" :key="theme.id" :style="{ '--card-accent': theme.color }">
+          <div class="lp-theme-card lp-reveal" v-for="(theme, i) in themesData" :key="theme.id" :style="{ '--card-accent': theme.color, transitionDelay: `${i * 120}ms` }">
             <div class="lp-theme-preview">
               <div class="lp-theme-device-frame">
                 <div class="lp-theme-device-notch"></div>
@@ -164,17 +201,27 @@
       </div>
     </section>
 
+    <!-- Wave Divider -->
+    <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" /></svg>
+    </div>
+
     <!-- Cara Kerja Section -->
     <section id="cara-kerja" class="lp-section" aria-label="Cara Kerja">
       <div class="lp-container">
-        <div class="lp-section-header">
-          <p class="lp-section-kicker">Mudah &amp; Cepat</p>
-          <h2 class="lp-section-title">Cara Membuatnya</h2>
-          <p class="lp-section-sub">Tiga langkah sederhana untuk undangan impian Anda</p>
+        <div class="lp-section-header lp-reveal">
+          <p class="lp-section-kicker">Hanya Dalam 3 Langkah</p>
+          <h2 class="lp-section-title">Pelaksanaannya Semudah Mengupdate Medsos</h2>
+          <p class="lp-section-sub">Sama sekali tidak butuh keahlian desain. Siapa pun bisa merancang undangan digital eksklusif ini.</p>
         </div>
         <div class="lp-steps-grid">
-          <div class="lp-step" v-for="(step, i) in steps" :key="step.title">
-            <div class="lp-step-number">{{ i + 1 }}</div>
+          <div class="lp-step lp-reveal" v-for="(step, i) in steps" :key="step.title" :style="{ transitionDelay: `${i * 150}ms` }">
+            <div class="lp-step-number-wrapper">
+              <div class="lp-step-number">{{ i + 1 }}</div>
+            </div>
+            <div class="lp-step-icon-circle">
+              <Icon :icon="step.icon" class="lp-step-icon-svg" />
+            </div>
             <h3>{{ step.title }}</h3>
             <p>{{ step.desc }}</p>
           </div>
@@ -182,19 +229,32 @@
       </div>
     </section>
 
+    <!-- Wave Divider -->
+    <div class="lp-wave-divider lp-wave-white-to-alt" aria-hidden="true">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,60 C360,0 1080,100 1440,40 L1440,100 L0,100 Z" /></svg>
+    </div>
+
     <!-- Testimoni Section -->
     <section id="testimoni" class="lp-section lp-section-alt" aria-label="Testimoni Pengguna">
       <div class="lp-container">
-        <div class="lp-section-header">
+        <div class="lp-section-header lp-reveal">
           <p class="lp-section-kicker">Apa Kata Mereka</p>
           <h2 class="lp-section-title">Testimoni Pengguna</h2>
         </div>
         <div class="lp-testimonials-grid">
-          <div class="lp-testimonial" v-for="t in testimonials" :key="t.name">
-            <div class="lp-testimonial-stars">★★★★★</div>
+          <div class="lp-testimonial lp-reveal" v-for="(t, i) in testimonials" :key="t.name" :style="{ transitionDelay: `${i * 100}ms` }">
+            <!-- Decorative quote mark -->
+            <div class="lp-testimonial-quote-mark" aria-hidden="true">
+              <svg width="40" height="32" viewBox="0 0 40 32" fill="currentColor" opacity="0.08"><path d="M0 20.8C0 27.2 4.48 32 10.08 32c4.8 0 8.32-3.52 8.32-8 0-4.16-3.2-7.36-7.04-7.36-1.28 0-2.24.32-2.88.64.32-5.12 3.84-10.56 9.28-14.08L14.4 0C5.44 4.8 0 12.16 0 20.8zm21.76 0C21.76 27.2 26.24 32 31.84 32c4.8 0 8.16-3.52 8.16-8 0-4.16-3.04-7.36-7.04-7.36-1.28 0-2.24.32-2.88.64.32-5.12 3.84-10.56 9.28-14.08L36.16 0c-8.96 4.8-14.4 12.16-14.4 20.8z"/></svg>
+            </div>
+            <div class="lp-testimonial-stars" aria-label="Rating 5 bintang">
+              <Icon icon="solar:star-bold" v-for="n in 5" :key="n" class="lp-star-icon" />
+            </div>
             <p class="lp-testimonial-text">"{{ t.text }}"</p>
             <div class="lp-testimonial-author">
-              <div class="lp-testimonial-avatar">{{ t.avatar }}</div>
+              <div class="lp-testimonial-avatar">
+                <Icon :icon="t.avatarIcon" class="lp-avatar-svg" />
+              </div>
               <div>
                 <div class="lp-testimonial-name">{{ t.name }}</div>
                 <div class="lp-testimonial-role">{{ t.role }}</div>
@@ -205,17 +265,22 @@
       </div>
     </section>
 
+    <!-- Wave Divider -->
+    <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
+      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" /></svg>
+    </div>
+
     <!-- Pricing Section -->
     <section id="harga" class="lp-section" aria-label="Harga">
       <div class="lp-container">
-        <div class="lp-section-header">
-          <p class="lp-section-kicker">Harga</p>
-          <h2 class="lp-section-title">Pilihan Paket Anda</h2>
-          <p class="lp-section-sub">Harga transparan dan terjangkau. Mulai gratis sekarang, upgrade kapan saja untuk fitur maksimal.</p>
+        <div class="lp-section-header lp-reveal">
+          <p class="lp-section-kicker">Investasi Cerdas</p>
+          <h2 class="lp-section-title">Harga Transparan. Tanpa Biaya Tersembunyi.</h2>
+          <p class="lp-section-sub">Buktikan sendiri secara gratis. Jauh lebih hemat daripada pengeluaran untuk ribuan lembar undangan cetak.</p>
         </div>
         <div class="lp-pricing-grid">
           <!-- Free Plan -->
-          <div class="lp-pricing-card">
+          <div class="lp-pricing-card lp-reveal">
             <div class="lp-pricing-header">
               <h3>Free</h3>
               <div class="lp-pricing-price">Gratis</div>
@@ -232,8 +297,9 @@
           </div>
 
           <!-- Premium Plan -->
-          <div class="lp-pricing-card lp-pricing-premium">
+          <div class="lp-pricing-card lp-pricing-premium lp-reveal" style="transition-delay: 120ms;">
             <div class="lp-premium-badge">PALING POPULER</div>
+            <div class="lp-pricing-shimmer" aria-hidden="true"></div>
             <div class="lp-pricing-header">
               <h3>Premium</h3>
               <div class="lp-pricing-price">Rp 50.000</div>
@@ -254,10 +320,20 @@
     <!-- CTA Section -->
     <section id="cta" class="lp-cta" aria-label="Ajakan Membuat Undangan">
       <div class="lp-cta-bg"></div>
-      <div class="lp-container lp-cta-content">
-        <h2 class="lp-cta-title">Siap Membuat Undangan<br><span>Impian Anda?</span></h2>
-        <p class="lp-cta-sub">Mulai sekarang dan buat undangan pernikahan digital yang indah dalam hitungan menit.</p>
-        <a href="/login" class="lp-btn lp-btn-white">Buat Undangan Gratis</a>
+      <!-- Floating Orbs for CTA -->
+      <div class="lp-cta-orbs" aria-hidden="true">
+        <div class="lp-orb lp-orb-cta-1"></div>
+        <div class="lp-orb lp-orb-cta-2"></div>
+      </div>
+      <div class="lp-container lp-cta-content lp-reveal">
+        <div class="lp-cta-ornament" aria-hidden="true">
+          <svg width="60" height="2" viewBox="0 0 60 2"><rect width="60" height="2" rx="1" fill="rgba(255,255,255,0.3)"/></svg>
+          <Icon icon="solar:heart-bold" style="font-size: 20px; color: rgba(147,197,253,0.6);" />
+          <svg width="60" height="2" viewBox="0 0 60 2"><rect width="60" height="2" rx="1" fill="rgba(255,255,255,0.3)"/></svg>
+        </div>
+        <h2 class="lp-cta-title">Siap Memukau Tamu<br><span>Undangan Anda?</span></h2>
+        <p class="lp-cta-sub">Bergabung dengan ratusan pasangan yang sudah berhasil menghemat jutaan rupiah tanpa mengorbankan estetika.</p>
+        <a href="/login" class="lp-btn lp-btn-white lp-cta-btn">Buat Undangan Gratis Sekarang</a>
       </div>
     </section>
     </main>
@@ -267,7 +343,7 @@
       <div class="lp-container lp-footer-inner">
         <div class="lp-footer-brand">
           <a href="#" class="lp-logo">
-            <img src="/images/logo.webp" alt="MengundangAnda Logo" class="lp-logo-img">
+            <img src="/images/logo.webp" alt="Logo MengundangAnda - Platform Undangan Pernikahan Digital" class="lp-logo-img">
             <span>Mengundang<span class="lp-logo-accent">Anda</span></span>
           </a>
           <p>Platform undangan pernikahan digital premium. Buat, desain, dan bagikan undangan Anda dengan mudah.</p>
@@ -307,7 +383,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
 
 const navScrolled = ref(false)
@@ -315,7 +391,8 @@ const mobileMenuOpen = ref(false)
 const navHiddenMobile = ref(false)
 const showBackToTop = ref(false)
 const scrollY = ref(0)
-const featureCardsRef = ref<HTMLElement[]>([])
+const statsRef = ref<HTMLElement | null>(null)
+const prefersReducedMotion = ref(false)
 
 function isMobile() {
   return window.innerWidth <= 768
@@ -344,31 +421,89 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
+// ---- Stats Counter Animation ----
+const stats = reactive([
+  { target: 500, displayed: 0, suffix: '+', label: 'Undangan Dibuat' },
+  { target: 1200, displayed: 0, suffix: '+', label: 'Tamu Diundang' },
+  { target: 99, displayed: 0, suffix: '%', label: 'Pengguna Puas' },
+])
+let statsAnimated = false
+
+function animateCounters() {
+  if (statsAnimated || prefersReducedMotion.value) {
+    // If reduced motion, just set final values immediately
+    stats.forEach(s => { s.displayed = s.target })
+    statsAnimated = true
+    return
+  }
+  statsAnimated = true
+  const duration = 1800
+  const startTime = performance.now()
+
+  function tick(now: number) {
+    const elapsed = now - startTime
+    const progress = Math.min(elapsed / duration, 1)
+    // Ease out cubic
+    const ease = 1 - Math.pow(1 - progress, 3)
+    stats.forEach(s => {
+      s.displayed = Math.round(s.target * ease)
+    })
+    if (progress < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+
+// ---- Scroll-triggered reveal animation ----
+let revealObserver: IntersectionObserver | null = null
+
+function setupRevealObserver() {
+  revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('lp-revealed')
+      }
+    })
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
+
+  document.querySelectorAll('.lp-reveal').forEach(el => {
+    revealObserver!.observe(el)
+  })
+}
+
+// ---- Stats IntersectionObserver ----
+let statsObserver: IntersectionObserver | null = null
+
+function setupStatsObserver() {
+  if (!statsRef.value) return
+  statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !statsAnimated) {
+        animateCounters()
+      }
+    })
+  }, { threshold: 0.3 })
+  statsObserver.observe(statsRef.value)
+}
+
 onMounted(() => {
+  // Check for reduced motion preference
+  prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   // Dynamic SEO head management
-  document.title = 'MengundangAnda — Buat Undangan Pernikahan Digital Premium dalam 5 Menit'
+  document.title = 'Buat Undangan Pernikahan Digital Premium | 5 Menit Jadi'
   const metaDesc = document.querySelector('meta[name="description"]')
   if (metaDesc) {
-    metaDesc.setAttribute('content', 'Buat undangan pernikahan digital yang elegan dan profesional dalam hitungan menit. Pilih tema premium, isi data, dan langsung bagikan via WhatsApp. Gratis dan mudah digunakan.')
+    metaDesc.setAttribute('content', 'Buat undangan pernikahan digital mewah secara gratis. Puluhan desain premium, fitur lengkap (RSVP, Musik, Maps), dan siap sebar dalam 5 menit.')
   }
 
   window.addEventListener('scroll', handleScroll, { passive: true })
 
-  // Animate feature cards on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view')
-      }
-    })
-  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' })
-
-  featureCardsRef.value.forEach(card => {
-    if (card) observer.observe(card)
-  })
-
-  // Init iframe scaling
+  // Setup scroll-triggered reveal animations
   nextTick(() => {
+    setupRevealObserver()
+    setupStatsObserver()
+
+    // Init iframe scaling
     updateLpIframeScale()
     if (lpScreenRefs.length > 0) {
       const el = lpScreenRefs[0];
@@ -383,6 +518,8 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
   lpResizeObserver?.disconnect()
+  revealObserver?.disconnect()
+  statsObserver?.disconnect()
 })
 
 // Dynamic iframe scaling for theme previews
@@ -405,24 +542,24 @@ function updateLpIframeScale() {
 }
 
 const features = [
-  { icon: 'solar:stopwatch-bold-duotone', title: 'Selesai dalam 5 Menit' },
-  { icon: 'solar:wallet-money-bold-duotone', title: 'Hemat Jutaan Rupiah' },
-  { icon: 'solar:smartphone-2-bold-duotone', title: 'Langsung Kirim via WhatsApp' },
-  { icon: 'solar:map-point-wave-bold-duotone', title: 'Musik, Peta, RSVP — Lengkap' },
-  { icon: 'solar:pallete-2-bold-duotone', title: 'Desain Profesional, Tanpa Skill Desain' },
-  { icon: 'solar:shield-check-bold-duotone', title: 'Aman & Bisa Diedit Kapan Saja' },
+  { icon: 'solar:stopwatch-bold-duotone', title: 'Siap Sebar Dalam 5 Menit', desc: 'Lupakan proses revisi berhari-hari dengan vendor. Isi form, dan undangan siap di-share.' },
+  { icon: 'solar:wallet-money-bold-duotone', title: 'Hemat Budget Hingga 90%', desc: 'Coret biaya cetak dari anggaran Anda. Simpan dana untuk kebutuhan lain yang lebih krusial.' },
+  { icon: 'solar:smartphone-2-bold-duotone', title: 'Sebar Cepat via WhatsApp', desc: 'Sekali klik, jangkau ratusan tamu di mana saja secara instan. Tanpa repot keliling rumah.' },
+  { icon: 'solar:map-point-wave-bold-duotone', title: 'Pengalaman Tamu Terbaik', desc: 'Manjakan tamu dengan navigasi lokasi presisi tinggi, musik romantis, dan sistem RSVP otomatis.' },
+  { icon: 'solar:pallete-2-bold-duotone', title: 'Standar Visual Profesional', desc: 'Setiap elemen didesain oleh ahlinya. Undangan terlihat mahal tanpa harus membayar mahal.' },
+  { icon: 'solar:shield-check-bold-duotone', title: 'Kendali Penuh di Tangan Anda', desc: 'Ada perubahan mendadak? Tenang, Anda bisa update lokasi atau tanggal kapan pun tanpa batas.' },
 ]
 
 const steps = [
-  { title: 'Pilih Tema', desc: 'Jelajahi koleksi tema premium kami dan pilih yang paling sesuai dengan kepribadian Anda.' },
-  { title: 'Isi Data', desc: 'Masukkan data pernikahan seperti nama, tanggal, lokasi, dan detail acara lainnya.' },
-  { title: 'Bagikan', desc: 'Undangan Anda langsung online! Bagikan link unik ke semua tamu yang Anda undang.' },
+  { title: 'Pilih Desain', desc: 'Temukan tema visual yang paling serasi dengan konsep dan nuansa pernikahan Anda.', icon: 'solar:pallete-2-bold-duotone' },
+  { title: 'Lengkapi Cerita', desc: 'Masukkan detail acara, cerita cinta, galeri foto, dan peta lokasi ke dalam form yang simpel.', icon: 'solar:pen-new-square-bold-duotone' },
+  { title: 'Langsung Sebarkan', desc: 'Salin link undangan unik Anda dan sebarkan ke kerabat serta sahabat dalam satu ketukan.', icon: 'solar:share-bold-duotone' },
 ]
 
 const testimonials = [
-  { avatar: '👰', name: 'Aisyah & Rizky', role: 'Menikah November 2025', text: 'Awalnya cuma iseng coba, eh ternyata hasilnya bagus banget. Temen-temen pada nanya bikin undangannya dimana, hehe. Prosesnya gampang, tinggal isi data terus langsung jadi.' },
-  { avatar: '💑', name: 'Dewi & Arif', role: 'Menikah Januari 2026', text: 'Suka banget sama fitur petanya, jadi tamu ga perlu nanya-nanya lagi lokasi nikahan. Musiknya juga bikin undangan kerasa lebih hidup. Worth it sih menurutku.' },
-  { avatar: '💍', name: 'Sarah & Budi', role: 'Menikah Maret 2026', text: 'Sempet mikir mau cetak undangan, tapi setelah coba ini langsung berubah pikiran. Hemat banget dan hasilnya malah lebih cantik. Tema floral-nya beneran elegan!' },
+  { avatarIcon: 'solar:user-heart-bold-duotone', name: 'Aisyah & Rizky', role: 'Menikah November 2025', text: 'Awalnya cuma iseng coba, eh ternyata hasilnya bagus banget. Temen-temen pada nanya bikin undangannya dimana, hehe. Prosesnya gampang, tinggal isi data terus langsung jadi.' },
+  { avatarIcon: 'solar:users-group-two-rounded-bold-duotone', name: 'Dewi & Arif', role: 'Menikah Januari 2026', text: 'Suka banget sama fitur petanya, jadi tamu ga perlu nanya-nanya lagi lokasi nikahan. Musiknya juga bikin undangan kerasa lebih hidup. Worth it sih menurutku.' },
+  { avatarIcon: 'solar:heart-bold-duotone', name: 'Sarah & Budi', role: 'Menikah Maret 2026', text: 'Sempet mikir mau cetak undangan, tapi setelah coba ini langsung berubah pikiran. Hemat banget dan hasilnya malah lebih cantik. Tema floral-nya beneran elegan!' },
 ]
 
 const themesData = [
@@ -443,7 +580,7 @@ const themesData = [
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
     bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
-    sampleUrl: 'https://ayang-aku.mengundanganda.com',
+    sampleUrl: 'https://aku-ayang.mengundanganda.com',
     icon: 'solar:leaf-bold-duotone',
   },
   {
@@ -462,6 +599,7 @@ const themesData = [
 <style scoped>
 /* ========================================
    Landing Page — Blue & White Premium Theme
+   UI/UX Upgraded Edition
    ======================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap');
@@ -508,6 +646,7 @@ const themesData = [
 .lp-section {
   padding: 100px 0;
   background: var(--lp-bg);
+  position: relative;
 }
 
 .lp-section-alt {
@@ -526,7 +665,7 @@ const themesData = [
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--lp-accent);
+  color: var(--lp-accent-hover);
   margin-bottom: 12px;
 }
 
@@ -543,6 +682,17 @@ const themesData = [
   font-size: 16px;
   color: var(--lp-text-light);
   line-height: 1.7;
+}
+
+/* --- Scroll-triggered Reveal Animation --- */
+.lp-reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lp-reveal.lp-revealed {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* --- Buttons --- */
@@ -563,14 +713,14 @@ const themesData = [
 }
 
 .lp-btn-primary {
-  background: var(--lp-accent);
+  background: var(--lp-accent-hover);
   color: #fff;
-  border-color: var(--lp-accent);
+  border-color: var(--lp-accent-hover);
   box-shadow: 0 4px 24px rgba(59, 130, 246, 0.35);
 }
 .lp-btn-primary:hover {
-  background: var(--lp-accent-hover);
-  border-color: var(--lp-accent-hover);
+  background: #1d4ed8;
+  border-color: #1d4ed8;
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(59, 130, 246, 0.45);
 }
@@ -678,6 +828,7 @@ const themesData = [
   padding: 8px 16px;
   border-radius: 20px;
   transition: var(--lp-transition);
+  cursor: pointer;
 }
 
 .lp-nav.scrolled .lp-nav-links a {
@@ -690,17 +841,17 @@ const themesData = [
 }
 
 .lp-nav.scrolled .lp-nav-links a:hover {
-  color: var(--lp-accent);
+  color: var(--lp-accent-hover);
   background: var(--lp-accent-light);
 }
 
 .lp-nav-cta {
-  background: var(--lp-accent) !important;
+  background: var(--lp-accent-hover) !important;
   color: #fff !important;
   padding: 10px 24px !important;
 }
 .lp-nav-cta:hover {
-  background: var(--lp-accent-hover) !important;
+  background: #1d4ed8 !important;
   box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
 }
 
@@ -752,31 +903,103 @@ const themesData = [
 
 .lp-hero-bg {
   position: absolute;
-  inset: -20%;
-  background-image: url('https://media.mengundanganda.com/landing-page/e7f421b4-ce9a-4223-a862-802fb6c064d0.webp');
+  inset: 0;
+  background-image: url('/images/hero.webp');
   background-size: cover;
   background-position: center 30%;
   background-repeat: no-repeat;
-  transform: translateY(calc(var(--scroll-y, 0px) * 0.35));
-  will-change: transform;
   z-index: 0;
 }
 
 .lp-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(15, 23, 42, 0.55) 0%,
-    rgba(30, 58, 138, 0.5) 40%,
-    rgba(30, 64, 175, 0.65) 100%
-  );
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(147, 197, 253, 0.12) 0%, transparent 50%),
+    linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.6) 0%,
+      rgba(30, 58, 138, 0.55) 40%,
+      rgba(30, 64, 175, 0.7) 100%
+    );
   z-index: 1;
+}
+
+/* --- Floating Orbs --- */
+.lp-hero-orbs,
+.lp-cta-orbs {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.lp-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.35;
+  will-change: transform;
+}
+
+.lp-orb-1 {
+  width: 300px; height: 300px;
+  background: rgba(59, 130, 246, 0.4);
+  top: 10%; left: -5%;
+  animation: orbFloat1 12s ease-in-out infinite;
+}
+.lp-orb-2 {
+  width: 200px; height: 200px;
+  background: rgba(147, 197, 253, 0.35);
+  top: 60%; right: -3%;
+  animation: orbFloat2 15s ease-in-out infinite;
+}
+.lp-orb-3 {
+  width: 150px; height: 150px;
+  background: rgba(96, 165, 250, 0.3);
+  bottom: 15%; left: 30%;
+  animation: orbFloat3 10s ease-in-out infinite;
+}
+.lp-orb-4 {
+  width: 100px; height: 100px;
+  background: rgba(191, 219, 254, 0.4);
+  top: 25%; right: 20%;
+  animation: orbFloat1 18s ease-in-out infinite reverse;
+}
+
+.lp-orb-cta-1 {
+  width: 250px; height: 250px;
+  background: rgba(59, 130, 246, 0.3);
+  top: -10%; right: -5%;
+  animation: orbFloat2 14s ease-in-out infinite;
+}
+.lp-orb-cta-2 {
+  width: 180px; height: 180px;
+  background: rgba(147, 197, 253, 0.25);
+  bottom: -5%; left: 10%;
+  animation: orbFloat3 11s ease-in-out infinite;
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-40px, 30px) scale(1.08); }
+  66% { transform: translate(25px, -25px) scale(0.92); }
+}
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(35px, -30px) scale(1.1); }
 }
 
 .lp-hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .lp-hero-kicker {
@@ -837,88 +1060,151 @@ const themesData = [
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- Features --- */
-.lp-features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+/* --- Social Proof Stats --- */
+.lp-stats {
+  background: linear-gradient(135deg, var(--lp-primary-deep) 0%, var(--lp-navy-mid) 100%);
+  padding: 0;
+  position: relative;
+  z-index: 5;
 }
 
-.lp-feature-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--lp-border);
-  border-radius: var(--lp-radius-xl);
-  padding: 40px 32px;
+.lp-stats-inner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+.lp-stat-item {
   text-align: center;
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 36px 24px;
   position: relative;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(40px);
 }
-.lp-feature-card.in-view {
-  opacity: 1;
-  transform: translateY(0);
-}
-.lp-feature-card::before {
+.lp-stat-item:not(:last-child)::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
+  right: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.lp-stat-number {
+  font-family: var(--lp-font-serif);
+  font-size: clamp(32px, 4vw, 44px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.lp-stat-suffix {
+  color: var(--lp-accent);
+}
+
+.lp-stat-label {
+  font-family: var(--lp-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* --- Wave Dividers --- */
+.lp-wave-divider {
+  line-height: 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+.lp-wave-divider svg {
   width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top right, var(--lp-accent-light) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
+  height: 50px;
+  display: block;
 }
-.lp-feature-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.08);
-  border-color: rgba(59, 130, 246, 0.3);
-  background: rgba(255, 255, 255, 0.95);
+
+.lp-wave-alt-to-white svg path {
+  fill: var(--lp-bg);
 }
-.lp-feature-card:hover::before {
-  opacity: 1;
+.lp-wave-alt-to-white {
+  background: var(--lp-bg-alt);
+}
+
+.lp-wave-white-to-alt svg path {
+  fill: var(--lp-bg-alt);
+}
+.lp-wave-white-to-alt {
+  background: var(--lp-bg);
+}
+
+/* --- Feature List Layout --- */
+.lp-features-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px 48px;
+}
+
+.lp-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid transparent;
+  border-radius: var(--lp-radius-lg);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+}
+.lp-feature-item:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
+  transform: translateX(8px);
 }
 
 .lp-feature-icon-wrapper {
-  width: 76px;
-  height: 76px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.02));
-  border-radius: 20px;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  background: var(--lp-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
-  color: var(--lp-accent);
-  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.1);
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+  color: var(--lp-accent-hover);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1), inset 0 0 0 1px rgba(59, 130, 246, 0.05);
+  transition: all 0.4s ease;
 }
-.lp-feature-card:hover .lp-feature-icon-wrapper {
-  transform: scale(1.1) rotate(5deg);
-  background: var(--lp-accent);
+.lp-feature-item:hover .lp-feature-icon-wrapper {
+  background: var(--lp-accent-hover);
   color: #fff;
-  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.25);
+  transform: rotate(-10deg) scale(1.05);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
 }
+
 .lp-feature-icon {
-  font-size: 38px;
+  font-size: 28px;
 }
 
-.lp-feature-card h3 {
+.lp-feature-text {
+  flex: 1;
+}
+
+.lp-feature-text h3 {
   font-family: var(--lp-font-serif);
-  font-size: 19px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   color: var(--lp-primary);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+  text-align: left;
 }
 
-.lp-feature-card p {
-  font-size: 14px;
+.lp-feature-text p {
+  font-size: 15px;
   color: var(--lp-text-light);
-  line-height: 1.7;
+  line-height: 1.6;
+  margin: 0;
+  text-align: left;
 }
 
 /* --- Live Preview Showcase --- */
@@ -975,9 +1261,17 @@ const themesData = [
   max-width: 580px;
   border-radius: var(--lp-radius-xl);
   overflow: hidden;
-  box-shadow: 0 32px 64px rgba(15, 23, 42, 0.12);
-  border: 1px solid var(--lp-border);
+  box-shadow:
+    0 32px 64px rgba(15, 23, 42, 0.12),
+    0 0 0 1px var(--lp-border);
   background: #fdfdfd;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+}
+.lp-mockup-wrapper:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow:
+    0 40px 80px rgba(15, 23, 42, 0.16),
+    0 0 0 1px rgba(59, 130, 246, 0.2);
 }
 
 .lp-mockup-img {
@@ -1029,11 +1323,12 @@ const themesData = [
   overflow: hidden;
   background: #fff;
   border: 1px solid var(--lp-border);
-  transition: var(--lp-transition);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
 }
 .lp-theme-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 16px 50px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15), 0 0 0 1px var(--lp-accent);
   border-color: var(--lp-accent);
 }
 
@@ -1149,6 +1444,7 @@ const themesData = [
   white-space: nowrap;
   font-size: 13px !important;
   padding: 8px 12px !important;
+  cursor: pointer;
 }
 
 .lp-theme-btn-use {
@@ -1170,12 +1466,11 @@ const themesData = [
 .lp-steps-grid::before {
   content: '';
   position: absolute;
-  top: 24px; /* Center of the number circle (48px / 2) */
+  top: 24px;
   left: 16%;
   right: 16%;
   height: 2px;
-  background: rgba(59, 130, 246, 0.2); /* Dashed or light base line */
-  border-top: 2px dashed rgba(59, 130, 246, 0.4);
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.3), transparent);
   z-index: 0;
 }
 
@@ -1191,11 +1486,17 @@ const themesData = [
   right: -25px;
   width: 10px;
   height: 10px;
-  border-right: 2px solid var(--lp-accent);
-  border-bottom: 2px solid var(--lp-accent);
+  border-right: 2px solid var(--lp-accent-hover);
+  border-bottom: 2px solid var(--lp-accent-hover);
   transform: rotate(-45deg);
   z-index: 2;
   border-radius: 2px;
+}
+
+.lp-step-number-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
 }
 
 .lp-step-number {
@@ -1206,11 +1507,31 @@ const themesData = [
   height: 48px;
   line-height: 48px;
   border-radius: 50%;
-  background: var(--lp-accent);
+  background: linear-gradient(135deg, var(--lp-accent-hover), #60a5fa);
   color: #fff;
-  margin: 0 auto 16px;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3), 0 0 0 8px var(--lp-bg-alt); /* Fake stroke to cut the timeline */
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3), 0 0 0 8px var(--lp-bg);
+  position: relative;
+  z-index: 1;
+}
 
+.lp-step-icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--lp-accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease;
+}
+.lp-step:hover .lp-step-icon-circle {
+  transform: scale(1.1) rotate(-5deg);
+  background: rgba(59, 130, 246, 0.15);
+}
+.lp-step-icon-svg {
+  font-size: 28px;
+  color: var(--lp-accent-hover);
 }
 
 .lp-step-icon {
@@ -1242,23 +1563,38 @@ const themesData = [
 }
 
 .lp-testimonial {
-  background: var(--lp-bg-alt);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--lp-border);
-  border-radius: var(--lp-radius-lg);
-  padding: 32px;
-  transition: var(--lp-transition);
+  border-radius: var(--lp-radius-xl);
+  padding: 36px 32px 32px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
 .lp-testimonial:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.1);
-  border-color: var(--lp-accent);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.lp-testimonial-quote-mark {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  color: var(--lp-accent-hover);
+  pointer-events: none;
 }
 
 .lp-testimonial-stars {
-  color: #f59e0b;
-  font-size: 16px;
-  letter-spacing: 2px;
+  display: flex;
+  gap: 3px;
   margin-bottom: 16px;
+}
+.lp-star-icon {
+  font-size: 18px;
+  color: #f59e0b;
 }
 
 .lp-testimonial-text {
@@ -1276,15 +1612,19 @@ const themesData = [
 }
 
 .lp-testimonial-avatar {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--lp-accent-light);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
   border: 2px solid rgba(59, 130, 246, 0.15);
+  flex-shrink: 0;
+}
+.lp-avatar-svg {
+  font-size: 26px;
+  color: var(--lp-accent-hover);
 }
 
 .lp-testimonial-name {
@@ -1317,7 +1657,7 @@ const themesData = [
   position: relative;
   display: flex;
   flex-direction: column;
-  transition: var(--lp-transition);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .lp-pricing-card:hover {
   transform: translateY(-6px);
@@ -1326,14 +1666,14 @@ const themesData = [
 }
 
 .lp-pricing-premium {
-  border: 2px solid var(--lp-accent);
+  border: 2px solid var(--lp-accent-hover);
   box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15);
   transform: scale(1.03);
 }
 .lp-pricing-premium:hover {
   transform: scale(1.05) translateY(-6px);
-  box-shadow: 0 20px 48px rgba(59, 130, 246, 0.25);
-  border-color: var(--lp-accent);
+  box-shadow: 0 24px 60px rgba(59, 130, 246, 0.25);
+  border-color: var(--lp-accent-hover);
 }
 
 .lp-premium-badge {
@@ -1341,14 +1681,47 @@ const themesData = [
   top: -14px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(90deg, var(--lp-accent), #93c5fd);
+  background: linear-gradient(90deg, var(--lp-accent-hover), #60a5fa);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
-  padding: 6px 16px;
+  padding: 6px 20px;
   border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+  animation: badgePulse 3s ease-in-out infinite;
+  z-index: 2;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4); }
+  50% { box-shadow: 0 4px 24px rgba(59, 130, 246, 0.6), 0 0 0 4px rgba(59, 130, 246, 0.1); }
+}
+
+/* Shimmer effect on premium card */
+.lp-pricing-shimmer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--lp-radius-xl);
+  pointer-events: none;
+  z-index: 1;
+}
+.lp-pricing-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
 }
 
 .lp-pricing-header {
@@ -1356,6 +1729,8 @@ const themesData = [
   margin-bottom: 32px;
   padding-bottom: 24px;
   border-bottom: 1px solid var(--lp-border);
+  position: relative;
+  z-index: 2;
 }
 .lp-pricing-header h3 {
   font-size: 20px;
@@ -1364,7 +1739,7 @@ const themesData = [
   font-weight: 600;
 }
 .lp-pricing-premium .lp-pricing-header h3 {
-  color: var(--lp-accent);
+  color: var(--lp-accent-hover);
 }
 .lp-pricing-price {
   font-family: var(--lp-font-serif);
@@ -1383,6 +1758,8 @@ const themesData = [
   padding: 0;
   margin: 0 0 40px;
   flex: 1;
+  position: relative;
+  z-index: 2;
 }
 .lp-pricing-features li {
   display: flex;
@@ -1394,14 +1771,16 @@ const themesData = [
 }
 .check-icon {
   font-size: 22px;
-  color: #cbd5e1;
+  color: #94a3b8;
 }
 .check-icon.accent {
-  color: var(--lp-accent);
+  color: var(--lp-accent-hover);
 }
 
 .lp-pricing-btn {
   width: 100%;
+  position: relative;
+  z-index: 2;
 }
 .lp-pricing-card:not(.lp-pricing-premium) .lp-pricing-btn {
   border-color: rgba(30, 58, 95, 0.2);
@@ -1427,6 +1806,8 @@ const themesData = [
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #1e40af 100%);
+  background-size: 200% 200%;
+  animation: ctaGradient 8s ease infinite;
   z-index: 0;
 }
 .lp-cta-bg::before {
@@ -1439,9 +1820,22 @@ const themesData = [
   background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
 }
 
+@keyframes ctaGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 .lp-cta-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
+}
+
+.lp-cta-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 28px;
 }
 
 .lp-cta-title {
@@ -1465,6 +1859,16 @@ const themesData = [
   max-width: 500px;
   margin: 0 auto 40px;
   line-height: 1.7;
+}
+
+.lp-cta-btn {
+  position: relative;
+  animation: ctaBtnGlow 3s ease-in-out infinite;
+}
+
+@keyframes ctaBtnGlow {
+  0%, 100% { box-shadow: 0 4px 24px rgba(255,255,255,0.15); }
+  50% { box-shadow: 0 4px 36px rgba(255,255,255,0.3), 0 0 0 4px rgba(255,255,255,0.05); }
 }
 
 /* --- Footer --- */
@@ -1510,9 +1914,11 @@ const themesData = [
   text-decoration: none;
   padding: 4px 0;
   transition: var(--lp-transition);
+  cursor: pointer;
 }
 .lp-footer-links a:hover {
   color: #60a5fa;
+  padding-left: 4px;
 }
 
 .lp-footer-bottom {
@@ -1540,6 +1946,7 @@ const themesData = [
   color: rgba(255,255,255,0.35);
   text-decoration: none;
   transition: color 0.2s ease;
+  cursor: pointer;
 }
 .lp-footer-bottom-links a:hover {
   color: #60a5fa;
@@ -1559,7 +1966,7 @@ const themesData = [
   height: 48px;
   border-radius: 50%;
   border: none;
-  background: var(--lp-accent);
+  background: var(--lp-accent-hover);
   color: #fff;
   cursor: pointer;
   display: flex;
@@ -1577,18 +1984,18 @@ const themesData = [
   transform: translateY(0) scale(1);
 }
 .lp-back-to-top:hover {
-  background: var(--lp-accent-hover);
+  background: #1d4ed8;
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 8px 28px rgba(59, 130, 246, 0.5);
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
-  .lp-features-grid {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+  .lp-features-list {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+    margin: 0 auto;
+    gap: 20px;
   }
   
   .lp-testimonials-grid {
@@ -1634,6 +2041,16 @@ const themesData = [
   .lp-footer-inner {
     grid-template-columns: 1fr;
     gap: 32px;
+  }
+
+  .lp-stats-inner {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .lp-stat-item {
+    padding: 28px 12px;
+  }
+  .lp-stat-number {
+    font-size: clamp(24px, 5vw, 36px);
   }
 }
 
@@ -1692,29 +2109,29 @@ const themesData = [
   }
   .lp-nav-links a:hover {
     background: rgba(59, 130, 246, 0.08) !important;
-    color: var(--lp-accent) !important;
+    color: var(--lp-accent-hover) !important;
   }
   .lp-nav-links a.lp-nav-cta {
     margin-top: 12px;
     padding: 16px 20px !important;
     text-align: center;
     color: #ffffff !important;
-    background: var(--lp-accent) !important;
+    background: var(--lp-accent-hover) !important;
     border-radius: var(--lp-radius-lg) !important;
     font-weight: 600 !important;
     letter-spacing: 0.5px;
     box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
   }
   .lp-nav-links a.lp-nav-cta:hover {
-    background: var(--lp-accent-hover) !important;
+    background: #1d4ed8 !important;
     box-shadow: 0 10px 28px rgba(59, 130, 246, 0.4);
     color: #ffffff !important;
   }
 
   .lp-section { padding: 72px 0; }
 
-  .lp-features-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .lp-features-list {
+    grid-template-columns: 1fr;
   }
 
   .lp-testimonials-grid {
@@ -1725,15 +2142,66 @@ const themesData = [
     background-position: center center;
   }
 
-  .lp-theme-preview {
-    height: 400px;
-  }
-
   .lp-back-to-top {
     bottom: 24px;
     right: 20px;
     width: 44px;
     height: 44px;
+  }
+
+  .lp-wave-divider svg {
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp-features-grid {
+    grid-template-columns: 1fr;
+  }
+  .lp-stats-inner {
+    grid-template-columns: 1fr;
+  }
+  .lp-stat-item:not(:last-child)::after {
+    right: 25%;
+    top: auto;
+    bottom: 0;
+    width: 50%;
+    height: 1px;
+  }
+}
+
+/* --- Accessibility: Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .lp-orb,
+  .lp-pricing-shimmer,
+  .lp-cta-bg,
+  .lp-cta-btn,
+  .lp-premium-badge {
+    animation: none !important;
+  }
+
+  .lp-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .lp-fade-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .lp-hero-bg {
+    transform: none !important;
+  }
+
+  .lp-feature-card,
+  .lp-testimonial,
+  .lp-pricing-card,
+  .lp-theme-card,
+  .lp-mockup-wrapper {
+    transition: none;
   }
 }
 </style>
