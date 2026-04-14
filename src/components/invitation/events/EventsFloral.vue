@@ -40,14 +40,24 @@
             <p v-if="invitation.akad_venue" class="font-semibold text-sm" style="margin-top:6px;">{{ invitation.akad_venue }}</p>
             <p v-if="invitation.akad_address" class="text-[10px] italic md:text-xs font-light opacity-90" style="margin-top:2px; margin-bottom:0px; line-height: 1.2;">{{ invitation.akad_address }}</p>
           </div>
-          <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" 
-             style="display: inline-block; margin-top: 12px; padding: 6px 20px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
-             onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
-             onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
-             onmousedown="this.style.transform='scale(0.95)';"
-             onmouseup="this.style.transform='scale(1)';">
-            Buka Maps
-          </a>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 12px;">
+            <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" 
+               style="display: inline-flex; align-items: center; justify-content: center; padding: 6px 20px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
+               onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
+               onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
+               onmousedown="this.style.transform='scale(0.95)';"
+               onmouseup="this.style.transform='scale(1)';">
+              <Icon icon="ph:map-trifold-bold" style="font-size: 14px; margin-right: 6px;" /> Buka Maps
+            </a>
+            <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" 
+               style="display: inline-flex; align-items: center; justify-content: center; padding: 6px 20px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
+               onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
+               onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
+               onmousedown="this.style.transform='scale(0.95)';"
+               onmouseup="this.style.transform='scale(1)';">
+              <Icon icon="ph:calendar-plus-bold" style="font-size: 14px; margin-right: 6px;" /> Ingatkan
+            </a>
+          </div>
         </div>
 
         <!-- TAB 2: INFORMASI RESEPSI PESTA -->
@@ -60,14 +70,24 @@
             <p v-if="invitation.resepsi_venue" class="font-semibold text-sm" style="margin-top:6px;">{{ invitation.resepsi_venue }}</p>
             <p v-if="invitation.resepsi_address" class="text-[10px] italic md:text-xs font-light opacity-90" style="margin-top:2px; margin-bottom:0px; line-height: 1.2;">{{ invitation.resepsi_address }}</p>
           </div>
-          <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank"
-             style="display: inline-block; margin-top: 12px; padding: 6px 20px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
-             onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
-             onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
-             onmousedown="this.style.transform='scale(0.95)';"
-             onmouseup="this.style.transform='scale(1)';">
-            Buka Maps
-          </a>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 12px;">
+            <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank"
+               style="display: inline-flex; align-items: center; justify-content: center; padding: 6px 20px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
+               onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
+               onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
+               onmousedown="this.style.transform='scale(0.95)';"
+               onmouseup="this.style.transform='scale(1)';">
+              <Icon icon="ph:map-trifold-bold" style="font-size: 14px; margin-right: 6px;" /> Buka Maps
+            </a>
+            <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank"
+               style="display: inline-flex; align-items: center; justify-content: center; padding: 6px 20px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: white; background-color: transparent; border: 1.5px solid white; box-shadow: 0px 4px 6px rgba(0,0,0,0.2); transition: all 0.2s ease; cursor: pointer; text-decoration: none;"
+               onmouseenter="this.style.backgroundColor='white'; this.style.color='black';"
+               onmouseleave="this.style.backgroundColor='transparent'; this.style.color='white'; this.style.transform='scale(1)';"
+               onmousedown="this.style.transform='scale(0.95)';"
+               onmouseup="this.style.transform='scale(1)';">
+              <Icon icon="ph:calendar-plus-bold" style="font-size: 14px; margin-right: 6px;" /> Ingatkan
+            </a>
+          </div>
         </div>
 
       </div>
@@ -81,13 +101,37 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation } from '@/types/invitation';
+import { generateGoogleCalendarUrl } from '@/utils/calendar';
+import { Icon } from '@iconify/vue';
 
 gsap.registerPlugin(ScrollTrigger);
 
-defineProps<{
+const props = defineProps<{
   invitation: Invitation;
   themeConfig: ThemeConfig;
 }>();
+
+function getAkadCalendarUrl() {
+  return generateGoogleCalendarUrl({
+    title: `Akad Nikah ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+    date: props.invitation.akad_date!,
+    time: props.invitation.akad_time,
+    venue: props.invitation.akad_venue,
+    address: props.invitation.akad_address,
+    description: `Undangan Pernikahan ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+  });
+}
+
+function getResepsiCalendarUrl() {
+  return generateGoogleCalendarUrl({
+    title: `Resepsi ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+    date: props.invitation.resepsi_date!,
+    time: props.invitation.resepsi_time,
+    venue: props.invitation.resepsi_venue,
+    address: props.invitation.resepsi_address,
+    description: `Undangan Pernikahan ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+  });
+}
 
 function formatDateLong(dateStr: string) {
   if (!dateStr) return '';
