@@ -50,8 +50,9 @@
             <p>Klik tombol "Tambah Tamu" di atas untuk mulai membuat daftar tamu.</p>
           </div>
           
-          <div v-else class="table-responsive">
-            <table class="admin-table" style="width: 100%; border-collapse: collapse; min-width: 600px;">
+          <!-- Desktop view: Table -->
+          <div class="desktop-only-table">
+            <table class="admin-table" style="width: 100%; border-collapse: collapse;">
               <thead>
                 <tr style="background: var(--admin-surface); border-bottom: 1px solid var(--admin-border); text-align: left;">
                   <th style="padding: 16px;">Nama Tamu</th>
@@ -65,29 +66,62 @@
                   <td style="padding: 16px; font-weight: 500; color: var(--admin-text);">{{ guest.name }}</td>
                   <td style="padding: 16px; color: var(--admin-text-secondary);">{{ guest.phone_number || '-' }}</td>
                   <td style="padding: 16px;">
-                    <span v-if="guest.is_sent" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #dcfce7; color: #166534; border-radius: 999px; font-size: 12px; font-weight: 600;">
+                    <span v-if="guest.is_sent" class="badge badge-success">
                       <span class="material-symbols-rounded" style="font-size: 14px;">check_circle</span> Terkirim
                     </span>
-                    <span v-else style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #f1f5f9; color: #475569; border-radius: 999px; font-size: 12px; font-weight: 600;">
+                    <span v-else class="badge badge-pending">
                       <span class="material-symbols-rounded" style="font-size: 14px;">pending</span> Belum
                     </span>
                   </td>
                   <td style="padding: 16px; text-align: right;">
                     <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                      <button class="btn btn-outline btn-sm" @click="copyLink(guest)" title="Copy Link" style="padding: 6px 10px;">
-                        <span class="material-symbols-rounded" style="font-size: 16px;">content_copy</span>
+                      <button class="btn btn-outline btn-sm action-icon-btn" @click="copyLink(guest)" title="Copy Link">
+                        <span class="material-symbols-rounded">content_copy</span>
                       </button>
-                      <button class="btn btn-primary btn-sm" style="background: #25D366; border-color: #25D366; padding: 6px 16px;" @click="sendWhatsApp(guest)">
-                        <span class="material-symbols-rounded" style="font-size: 16px;">send</span> WA
+                      <button class="btn btn-primary btn-sm action-wa-btn" @click="sendWhatsApp(guest)">
+                        <span class="material-symbols-rounded">send</span> WA
                       </button>
-                      <button class="btn btn-danger btn-sm" @click="handleDelete(guest.id!)" title="Hapus" style="padding: 6px 10px;">
-                        <span class="material-symbols-rounded" style="font-size: 16px;">delete</span>
+                      <button class="btn btn-danger btn-sm action-icon-btn" @click="handleDelete(guest.id!)" title="Hapus">
+                        <span class="material-symbols-rounded">delete</span>
                       </button>
                     </div>
                   </td>
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <!-- Mobile view: Cards -->
+          <div class="mobile-only-cards">
+            <div v-for="guest in guests" :key="guest.id || guest.name" class="mobile-guest-card">
+              <div class="mgc-header">
+                <div class="mgc-info">
+                  <h4 class="mgc-name">{{ guest.name }}</h4>
+                  <p class="mgc-phone">{{ guest.phone_number || 'Tidak ada nomor WA' }}</p>
+                </div>
+                <div class="mgc-status">
+                  <span v-if="guest.is_sent" class="badge badge-success">
+                    <span class="material-symbols-rounded" style="font-size: 14px;">check_circle</span> Terkirim
+                  </span>
+                  <span v-else class="badge badge-pending">
+                    <span class="material-symbols-rounded" style="font-size: 14px;">pending</span> Belum
+                  </span>
+                </div>
+              </div>
+              <div class="mgc-actions">
+                <button class="btn btn-primary btn-sm" style="flex: 1; background: #25D366; border-color: #25D366; justify-content: center;" @click="sendWhatsApp(guest)">
+                  <span class="material-symbols-rounded" style="font-size: 16px;">send</span> Kirim WA
+                </button>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn btn-outline btn-sm" style="padding: 6px 12px;" @click="copyLink(guest)" title="Copy Link">
+                    <span class="material-symbols-rounded" style="font-size: 18px;">content_copy</span>
+                  </button>
+                  <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" @click="handleDelete(guest.id!)" title="Hapus">
+                    <span class="material-symbols-rounded" style="font-size: 18px;">delete</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -180,10 +214,26 @@ function showToast(type: 'success' | 'error', message: string) {
   setTimeout(() => { toast.value = null; }, 3000);
 }
 
+function getInvitationUrl(slug: string) {
+  const host = window.location.hostname;
+  const port = window.location.port ? `:${window.location.port}` : "";
+  const protocol = window.location.protocol;
+
+  if (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host.endsWith(".vercel.app")
+  ) {
+    return `${protocol}//${host}${port}/invitation/${slug}`;
+  }
+  const mainDomain = host.replace("www.", "").replace("admin.", "");
+  return `${protocol}//${slug}.${mainDomain}${port}`;
+}
+
 function getShareUrl(guestName: string) {
   if (!invitation.value) return '';
-  const baseUrl = window.location.origin;
-  const url = new URL(`/${invitation.value.slug}`, baseUrl);
+  const baseUrl = getInvitationUrl(invitation.value.slug);
+  const url = new URL(baseUrl);
   url.searchParams.set('to', guestName);
   return url.toString();
 }
@@ -370,29 +420,79 @@ async function handleDelete(guestId: string) {
   margin-bottom: 16px;
 }
 
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+.mobile-only-cards {
+  display: none;
 }
 
+.desktop-only-table {
+  display: block;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-success { background: #dcfce7; color: #166534; }
+.badge-pending { background: #f1f5f9; color: #475569; }
+
+.action-icon-btn { padding: 6px 10px; }
+.action-wa-btn { background: #25D366; border-color: #25D366; padding: 6px 16px; }
+.action-icon-btn span, .action-wa-btn span { font-size: 16px; }
+
 @media (max-width: 640px) {
-  .editor-container {
+  .editor-container { padding: 16px; }
+  .simple-topbar { padding: 0 16px; }
+  .simple-topbar-brand span { display: none; }
+  .action-buttons-group { width: 100%; margin-top: 8px; }
+  .action-btn { flex: 1; justify-content: center; }
+
+  /* Tukar tampilan table dan card */
+  .desktop-only-table { display: none; }
+  .mobile-only-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     padding: 16px;
+    background: var(--admin-bg);
   }
-  .simple-topbar {
-    padding: 0 16px;
+
+  /* Desain Kartu Mobile */
+  .mobile-guest-card {
+    background: white;
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
   }
-  .simple-topbar-brand span {
-    display: none;
+  .mgc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
   }
-  .action-buttons-group {
+  .mgc-name {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--admin-text);
+  }
+  .mgc-phone {
+    margin: 0;
+    font-size: 13px;
+    color: var(--admin-text-secondary);
+  }
+  .mgc-actions {
+    display: flex;
+    gap: 8px;
     width: 100%;
-    margin-top: 8px;
-  }
-  .action-btn {
-    flex: 1;
-    justify-content: center;
   }
 }
 </style>
