@@ -312,8 +312,8 @@ onMounted(() => {
 
     // 2. Animate Corner Ornaments (Menyusut perlahan sejalan dengan bergeraknya oval)
     tl.to(corners, {
-      scale: 0,
-      opacity: 0,
+      scale: 0.6,
+      opacity: 1,
       duration: 1.5,
       ease: "power2.inOut"
     }, 0.5);
