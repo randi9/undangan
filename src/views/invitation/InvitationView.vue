@@ -515,6 +515,11 @@ onMounted(async () => {
           updateCountdown();
           if (countdownTimer) clearInterval(countdownTimer);
           countdownTimer = setInterval(updateCountdown, 1000);
+
+          // Initiate asset preloading only on the first preview load
+          if (!assetsLoaded.value) {
+            nextTick(() => preloadAllAssets());
+          }
         }
         loading.value = false;
       }
