@@ -1,38 +1,40 @@
 <template>
   <div 
-    class="relative flex-shrink-0 font-bold text-white shadow-xl rounded-md bg-[#1F2F37]"
+    class="relative flex-shrink-0 font-bold text-[#405C66] rounded-md"
     :class="[sizeClass]"
-    style="perspective: 500px;"
+    style="perspective: 500px; background-color: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);"
   >
     
     <!-- Static Top (Next Value) -->
-    <div class="absolute top-0 left-0 w-full h-1/2 overflow-hidden rounded-t-md brightness-90 bg-black/10 z-0">
+    <div class="absolute top-0 left-0 w-full h-1/2 overflow-hidden rounded-t-md brightness-90 bg-black/5 z-0">
        <div class="absolute inset-x-0 top-0 h-[200%] flex items-center justify-center leading-none">{{ nextValue }}</div>
     </div>
     
     <!-- Static Bottom (Current Value) -->
-    <div class="absolute bottom-0 left-0 w-full h-1/2 overflow-hidden rounded-b-md bg-[#253942] z-0">
+    <div class="absolute bottom-0 left-0 w-full h-1/2 overflow-hidden rounded-b-md z-0" style="background-color: rgba(255, 255, 255, 0.05);">
        <div class="absolute inset-x-0 bottom-0 h-[200%] flex items-center justify-center leading-none">{{ currentValue }}</div>
     </div>
 
     <!-- Flipping Top Flap (Current Value going down) -->
     <div 
-      class="absolute top-0 left-0 w-full h-1/2 overflow-hidden origin-bottom rounded-t-md bg-[#253942] z-10"
+      class="absolute top-0 left-0 w-full h-1/2 overflow-hidden origin-bottom rounded-t-md z-10"
       :class="{ 'flip-top': isFlipping }"
+      style="background-color: rgba(255, 255, 255, 0.25); border-bottom: 1px solid rgba(255, 255, 255, 0.3);"
     >
        <div class="absolute inset-x-0 top-0 h-[200%] flex items-center justify-center leading-none">{{ currentValue }}</div>
     </div>
 
     <!-- Flipping Bottom Flap (Next Value coming down) -->
     <div 
-      class="absolute bottom-0 left-0 w-full h-1/2 overflow-hidden origin-top rounded-b-md bg-[#253942] z-20"
+      class="absolute bottom-0 left-0 w-full h-1/2 overflow-hidden origin-top rounded-b-md z-20"
       :class="isFlipping ? 'flip-bottom' : 'hidden'"
+      style="background-color: rgba(255, 255, 255, 0.25); border-top: 1px solid rgba(255, 255, 255, 0.3);"
     >
        <div class="absolute inset-x-0 bottom-0 h-[200%] flex items-center justify-center leading-none">{{ nextValue }}</div>
     </div>
 
     <!-- Sangat tipis garis semu pembatas -->
-    <div class="absolute top-1/2 left-0 right-0 border-t border-black/30 z-30 pointer-events-none shadow-[0_1px_0_rgba(255,255,255,0.05)]"></div>
+    <div class="absolute top-1/2 left-0 right-0 border-t border-black/10 z-30 pointer-events-none shadow-[0_1px_0_rgba(0,0,0,0.05)]"></div>
 
   </div>
 </template>
