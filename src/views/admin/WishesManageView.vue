@@ -169,7 +169,7 @@
                       <button class="btn btn-outline btn-sm action-icon-btn" @click="openReplyModal(rsvp)" title="Balas">
                         <span class="material-symbols-rounded">reply</span>
                       </button>
-                      <button class="btn btn-danger btn-sm action-icon-btn" @click="handleDelete(rsvp.id!)" title="Hapus">
+                      <button class="btn btn-danger btn-sm action-icon-btn" @click="handleDelete(rsvp)" title="Hapus">
                         <span class="material-symbols-rounded">delete</span>
                       </button>
                     </div>
@@ -208,7 +208,7 @@
                   <button class="btn btn-outline btn-sm" style="flex: 1; justify-content: center;" @click="openReplyModal(rsvp)">
                     <span class="material-symbols-rounded" style="font-size: 18px;">reply</span> Balas
                   </button>
-                  <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" @click="handleDelete(rsvp.id!)">
+                  <button class="btn btn-danger btn-sm" style="padding: 6px 12px;" @click="handleDelete(rsvp)">
                     <span class="material-symbols-rounded" style="font-size: 18px;">delete</span>
                   </button>
                 </div>
@@ -241,6 +241,23 @@
       </div>
     </div>
 
+    <!-- Modal Hapus Ucapan -->
+    <div v-if="deleteTarget" class="modal-overlay" @click.self="deleteTarget = null">
+      <div class="modal-content">
+        <div class="modal-title">
+          <span class="material-symbols-rounded" style="font-size:24px;color:var(--admin-danger, #ef4444);vertical-align:-4px">warning</span>
+          Hapus Ucapan?
+        </div>
+        <div class="modal-text">
+          Ucapan dari <strong>{{ deleteTarget.guest_name }}</strong> akan dihapus secara permanen. Data kehadiran dan statistik juga akan terpengaruh.
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" @click="deleteTarget = null">Batal</button>
+          <button class="btn btn-danger" @click="confirmDelete">Ya, Hapus</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast Notification -->
     <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
       {{ toast.message }}
@@ -268,6 +285,7 @@ const stats = ref<any>(null);
 const showReplyModal = ref(false);
 const activeRsvp = ref<Rsvp | null>(null);
 const replyFormText = ref('');
+const deleteTarget = ref<Rsvp | null>(null);
 
 const toast = ref<{ type: string; message: string } | null>(null);
 
@@ -362,16 +380,21 @@ async function toggleVisibility(rsvp: Rsvp) {
   }
 }
 
-async function handleDelete(rsvpId: string) {
-  if (!confirm('Hapus ucapan/RSVP ini secara permanen? Data guest count dan konfirmasi kehadiran akan ikut terhapus dari statistik.')) return;
+function handleDelete(rsvp: Rsvp) {
+  deleteTarget.value = rsvp;
+}
+
+async function confirmDelete() {
+  if (!deleteTarget.value?.id) return;
   try {
-    await store.deleteRsvp(rsvpId);
-    rsvps.value = rsvps.value.filter(r => r.id !== rsvpId);
-    // Reload stats
+    await store.deleteRsvp(deleteTarget.value.id);
+    rsvps.value = rsvps.value.filter(r => r.id !== deleteTarget.value!.id);
     stats.value = await store.fetchStats(invitationId);
     showToast('success', 'Ucapan dihapus permanen');
   } catch (err) {
     showToast('error', 'Gagal menghapus ucapan');
+  } finally {
+    deleteTarget.value = null;
   }
 }
 </script>

@@ -16,6 +16,7 @@
           <li><a href="#cara-kerja" @click="mobileMenuOpen = false">Cara Kerja</a></li>
           <li><a href="#testimoni" @click="mobileMenuOpen = false">Testimoni</a></li>
           <li><a href="#harga" @click="mobileMenuOpen = false">Harga</a></li>
+          <li><a href="#faq" @click="mobileMenuOpen = false">FAQ</a></li>
           <li><a href="/login" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</a></li>
         </ul>
       </div>
@@ -317,6 +318,41 @@
       </div>
     </section>
 
+    <!-- FAQ Section -->
+    <section id="faq" class="lp-faq" aria-label="Pertanyaan yang Sering Diajukan">
+      <div class="lp-container">
+        <div class="lp-section-header lp-reveal">
+          <p class="lp-section-kicker">FAQ</p>
+          <h2 class="lp-section-title">Pertanyaan yang Sering Diajukan</h2>
+          <p class="lp-section-sub">Semua yang perlu Anda ketahui tentang MengundangAnda</p>
+        </div>
+        <div class="lp-faq-grid">
+          <div 
+            v-for="(faq, idx) in faqList" 
+            :key="idx" 
+            class="lp-faq-item lp-reveal"
+            :style="{ transitionDelay: (idx * 60) + 'ms' }"
+          >
+            <button 
+              class="lp-faq-question" 
+              @click="faqOpen === idx ? faqOpen = -1 : faqOpen = idx"
+              :aria-expanded="faqOpen === idx"
+            >
+              <span>{{ faq.q }}</span>
+              <span class="lp-faq-icon" :class="{ open: faqOpen === idx }">
+                <Icon icon="solar:alt-arrow-down-linear" />
+              </span>
+            </button>
+            <Transition name="faq-slide">
+              <div v-if="faqOpen === idx" class="lp-faq-answer">
+                <p>{{ faq.a }}</p>
+              </div>
+            </Transition>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- CTA Section -->
     <section id="cta" class="lp-cta" aria-label="Ajakan Membuat Undangan">
       <div class="lp-cta-bg"></div>
@@ -355,6 +391,7 @@
           <a href="#cara-kerja">Cara Kerja</a>
           <a href="#testimoni">Testimoni</a>
           <a href="#harga">Harga</a>
+          <a href="#faq">FAQ</a>
         </div>
         <div class="lp-footer-links">
           <h4>Kontak</h4>
@@ -393,6 +430,30 @@ const showBackToTop = ref(false)
 const scrollY = ref(0)
 const statsRef = ref<HTMLElement | null>(null)
 const prefersReducedMotion = ref(false)
+const faqOpen = ref(-1)
+
+const faqList = [
+  {
+    q: 'Apa itu MengundangAnda?',
+    a: 'MengundangAnda adalah platform pembuatan undangan pernikahan digital premium yang memungkinkan Anda membuat undangan elegan dalam hitungan menit. Pilih dari berbagai tema mewah, lengkapi data acara, dan langsung bagikan ke tamu melalui WhatsApp.'
+  },
+  {
+    q: 'Bagaimana cara membuat undangan digital di MengundangAnda?',
+    a: 'Cukup 3 langkah: (1) Daftar akun gratis, (2) Pilih tema dan isi detail acara pernikahan Anda, (3) Bagikan link undangan ke tamu via WhatsApp. Seluruh proses bisa selesai dalam 5 menit.'
+  },
+  {
+    q: 'Apakah bisa membuat undangan pernikahan digital secara gratis?',
+    a: 'Ya! MengundangAnda menyediakan paket Free yang mencakup semua fitur utama: pilihan tema premium, RSVP, musik latar, countdown, galeri foto, dan live preview. Paket Free aktif selama 2 hari dengan 20x akses link.'
+  },
+  {
+    q: 'Berapa harga paket premium MengundangAnda?',
+    a: 'Paket Premium hanya Rp 50.000 (sekali bayar) dengan fitur: unlimited akses link, masa aktif 1 tahun, unlimited tamu undangan, dan tanpa watermark.'
+  },
+  {
+    q: 'Fitur apa saja yang tersedia di MengundangAnda?',
+    a: 'Fitur lengkap meliputi: 4+ tema premium (Elegant Gold, Floral, Minimalist, Elegant Blue), RSVP & buku tamu, musik latar otomatis, countdown timer, galeri foto prewedding, love story timeline, amplop digital, peta lokasi Google Maps, dan kirim undangan via WhatsApp.'
+  },
+]
 
 function isMobile() {
   return window.innerWidth <= 768
@@ -490,10 +551,10 @@ onMounted(() => {
   prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // Dynamic SEO head management
-  document.title = 'Buat Undangan Pernikahan Digital Premium | 5 Menit Jadi'
+  document.title = 'MengundangAnda — Buat Undangan Pernikahan Digital Premium | Mengundang Anda'
   const metaDesc = document.querySelector('meta[name="description"]')
   if (metaDesc) {
-    metaDesc.setAttribute('content', 'Buat undangan pernikahan digital mewah secara gratis. Puluhan desain premium, fitur lengkap (RSVP, Musik, Maps), dan siap sebar dalam 5 menit.')
+    metaDesc.setAttribute('content', 'MengundangAnda — Platform undangan pernikahan digital premium. Buat desain mewah gratis dalam 5 menit. RSVP, Musik, Maps, dan kirim via WhatsApp. Mengundang Anda dengan elegan.')
   }
 
   window.addEventListener('scroll', handleScroll, { passive: true })
@@ -2203,5 +2264,99 @@ const themesData = [
   .lp-mockup-wrapper {
     transition: none;
   }
+}
+
+/* ===== FAQ SECTION ===== */
+.lp-faq {
+  padding: 100px 0;
+  background: #f8fafc;
+  position: relative;
+}
+.lp-faq-grid {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lp-faq-item {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e8ecf1;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.lp-faq-item:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.08);
+}
+.lp-faq-question {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.5;
+  transition: color 0.2s;
+}
+.lp-faq-question:hover {
+  color: #2563eb;
+}
+.lp-faq-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #f1f5f9;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 18px;
+  color: #64748b;
+  transition: transform 0.35s ease, background 0.3s, color 0.3s;
+}
+.lp-faq-icon.open {
+  transform: rotate(180deg);
+  background: #2563eb;
+  color: white;
+}
+.lp-faq-answer {
+  padding: 0 24px 20px;
+}
+.lp-faq-answer p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #475569;
+}
+
+/* FAQ slide transition */
+.faq-slide-enter-active {
+  animation: faqSlideDown 0.35s ease;
+}
+.faq-slide-leave-active {
+  animation: faqSlideDown 0.25s ease reverse;
+}
+@keyframes faqSlideDown {
+  from { opacity: 0; max-height: 0; padding-bottom: 0; }
+  to { opacity: 1; max-height: 300px; padding-bottom: 20px; }
+}
+
+@media (max-width: 768px) {
+  .lp-faq { padding: 64px 0; }
+  .lp-faq-question {
+    padding: 16px 18px;
+    font-size: 14.5px;
+  }
+  .lp-faq-answer { padding: 0 18px 16px; }
+  .lp-faq-answer p { font-size: 13.5px; }
 }
 </style>
