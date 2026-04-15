@@ -2,8 +2,8 @@
   <section v-if="hasDate" class="relative w-full min-h-[66dvh] flex flex-col justify-start items-center px-4 md:px-6 text-center overflow-hidden bg-cover bg-center" style="background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.7)), url('https://media.mengundanganda.com/elegant_blue/counter%20section/sashkeh_13981e70-5a12-4fee-afd6-933ade9180f5.webp')">
     <img src="https://media.mengundanganda.com/elegant_blue/counter%20section/sashkeh_4975839d-8e5c-4226-a1da-b47f64878474.webp" alt="decoration" class="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 pointer-events-none z-0 mix-blend-multiply opacity-90" />
     <!-- Header -->
-    <h2 class="relative z-10 text-3xl md:text-5xl mb-1 text-[#F8F9FA] tracking-widest" :style="{ fontFamily: themeConfig.fontHeading, marginTop: '15%', textShadow: '1px 2px 2px rgba(0, 0, 0, 0.4)' }">Menghitung Hari</h2>
-    <p class="relative z-10 text-sm md:text-base text-[#F8F9FA] tracking-widest font-light mb-8" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);">menuju momen bahagia kami</p>
+    <h2 class="relative z-10 text-3xl md:text-5xl mb-1 text-[#F8F9FA] tracking-widest" :style="{ fontFamily: themeConfig.fontHeading, marginTop: '15%', marginBottom:'10px', textShadow: '1px 2px 2px rgba(0, 0, 0, 0.4)' }">Menghitung Hari</h2>
+    <p class="relative z-10 text-sm md:text-base text-[#F8F9FA] tracking-widest font-light mb-8" style="text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.6); margin-bottom: 10px;">menuju momen bahagia kami</p>
     
     <!-- Flip Clock Container -->
     <div class="relative z-10 flex justify-center gap-3 md:gap-8 max-w-2xl mx-auto">
@@ -56,8 +56,8 @@
     </div>
 
     <!-- Calendar Reminder Button -->
-    <a v-if="invitation && (invitation.akad_date || invitation.resepsi_date)" :href="getCalendarUrl()" target="_blank" class="relative z-10 inline-flex items-center gap-2 rounded-full font-medium transition-colors shadow-md hover:bg-white" style="background-color: rgba(255, 255, 255, 0.85); border: 1px solid rgba(255,255,255,0.9); backdrop-filter: blur(8px); color: #405C66; margin-top: 6%; padding: 10px 24px; font-size: 14px; text-decoration: none;">
-      <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4" /> Ingatkan Saya
+    <a v-if="invitation && (invitation.akad_date || invitation.resepsi_date)" :href="getCalendarUrl()" target="_blank" class="relative z-10 inline-flex items-center gap-2 rounded-full font-medium transition-all shadow-md hover:shadow-lg" style="background-color: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); color: #405C66; margin-top: 6%; padding: 12px 32px; font-size: 15px; text-decoration: none;">
+      <Icon icon="ph:calendar-plus-duotone" class="w-5 h-5" /> Ingatkan Saya
     </a>
   </section>
 </template>
