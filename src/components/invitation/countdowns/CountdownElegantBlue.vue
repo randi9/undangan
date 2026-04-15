@@ -1,8 +1,8 @@
 <template>
-  <section v-if="hasDate" class="relative w-full aspect-square px-4 md:px-6 flex flex-col justify-start items-center text-center overflow-hidden bg-cover bg-center" style="background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.7)), url('https://media.mengundanganda.com/elegant_blue/counter%20section/sashkeh_13981e70-5a12-4fee-afd6-933ade9180f5.webp')">
+  <section v-if="hasDate" class="relative w-full min-h-[66dvh] flex flex-col justify-start items-center px-4 md:px-6 text-center overflow-hidden bg-cover bg-center" style="background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.7)), url('https://media.mengundanganda.com/elegant_blue/counter%20section/sashkeh_13981e70-5a12-4fee-afd6-933ade9180f5.webp')">
     <img src="https://media.mengundanganda.com/elegant_blue/counter%20section/sashkeh_4975839d-8e5c-4226-a1da-b47f64878474.webp" alt="decoration" class="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 pointer-events-none z-0 mix-blend-multiply opacity-90" />
     <!-- Header -->
-    <h2 class="relative z-10 text-3xl md:text-5xl mb-1 text-[#F8F9FA] tracking-widest" :style="{ fontFamily: themeConfig.fontHeading, marginTop: '5%', textShadow: '1px 2px 2px rgba(0, 0, 0, 0.4)' }">Menghitung Hari</h2>
+    <h2 class="relative z-10 text-3xl md:text-5xl mb-1 text-[#F8F9FA] tracking-widest" :style="{ fontFamily: themeConfig.fontHeading, marginTop: '15%', textShadow: '1px 2px 2px rgba(0, 0, 0, 0.4)' }">Menghitung Hari</h2>
     <p class="relative z-10 text-sm md:text-base text-[#F8F9FA] tracking-widest font-light mb-8" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);">menuju momen bahagia kami</p>
     
     <!-- Flip Clock Container -->
@@ -54,21 +54,49 @@
       </div>
       
     </div>
+
+    <!-- Calendar Reminder Button -->
+    <a v-if="invitation && (invitation.akad_date || invitation.resepsi_date)" :href="getCalendarUrl()" target="_blank" class="relative z-10 inline-flex items-center gap-2 rounded-full font-medium transition-colors shadow-md hover:bg-white" style="background-color: rgba(255, 255, 255, 0.85); border: 1px solid rgba(255,255,255,0.9); backdrop-filter: blur(8px); color: #405C66; margin-top: 6%; padding: 10px 24px; font-size: 14px; text-decoration: none;">
+      <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4" /> Ingatkan Saya
+    </a>
   </section>
 </template>
 
 <script setup lang="ts">
 import type { ThemeConfig } from '@/types/theme';
+import type { Invitation } from '@/types/invitation';
+import { generateGoogleCalendarUrl } from '@/utils/calendar';
+import { Icon } from '@iconify/vue';
 import CountdownFlipDigit from './CountdownFlipDigit.vue';
 
 const props = defineProps<{
   countdown: { days: number; hours: number; minutes: number; seconds: number };
   themeConfig: ThemeConfig;
   hasDate: boolean;
+  invitation?: Invitation;
 }>();
 
 // Ensure double digits (e.g. 5 -> '05') and split into individual character array
 const padDigit = (val: number) => {
   return val.toString().padStart(2, '0').split('');
 };
+
+function getCalendarUrl() {
+  if (!props.invitation) return '#';
+  const dateStr = props.invitation.akad_date || props.invitation.resepsi_date;
+  const timeStr = props.invitation.akad_date ? props.invitation.akad_time : props.invitation.resepsi_time;
+  const venue = props.invitation.akad_date ? props.invitation.akad_venue : props.invitation.resepsi_venue;
+  const address = props.invitation.akad_date ? props.invitation.akad_address : props.invitation.resepsi_address;
+  
+  if (!dateStr) return '#';
+
+  return generateGoogleCalendarUrl({
+    title: `Pernikahan ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+    date: dateStr,
+    time: timeStr,
+    venue: venue,
+    address: address,
+    description: `Undangan Pernikahan ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+  });
+}
 </script>
