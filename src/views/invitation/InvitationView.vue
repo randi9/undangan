@@ -441,11 +441,7 @@ function updateCountdown() {
   
   if (!dateStr) return;
 
-<<<<<<< HEAD
   // Extract parseable time from free-text (e.g. "08:00 - 10:00 WIB" → "08:00")
-=======
-  // Extract parseable time from free-text (e.g. "08:00 - 10:00 WIB" ΓåÆ "08:00")
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
   const safeTime = parseTimeStr(timeStr);
   const targetDateStr = dateStr.includes('T') ? dateStr : `${dateStr}T${safeTime}`;
   
@@ -498,11 +494,7 @@ async function handleSubmitRsvp(form: { guest_name: string; attendance: 'hadir' 
 const currentUrl = computed(() => window.location.href);
 
 onMounted(async () => {
-<<<<<<< HEAD
   // On desktop, we only render the iframe shell — skip all data loading
-=======
-  // On desktop, we only render the iframe shell ΓÇö skip all data loading
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
   if (isDesktop.value) return;
 
   // Hide scrollbar when inside iframe (desktop phone frame)
@@ -523,14 +515,11 @@ onMounted(async () => {
           updateCountdown();
           if (countdownTimer) clearInterval(countdownTimer);
           countdownTimer = setInterval(updateCountdown, 1000);
-<<<<<<< HEAD
 
           // Initiate asset preloading only on the first preview load
           if (!assetsLoaded.value) {
             nextTick(() => preloadAllAssets());
           }
-=======
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
         }
         loading.value = false;
         assetsLoaded.value = true; // Skip asset preloading overlay in preview mode
@@ -580,7 +569,6 @@ onBeforeUnmount(() => {
   <!-- ========================================= -->
   <!-- MOBILE MODE: Render normally (or inside iframe) -->
   <!-- ========================================= -->
-<<<<<<< HEAD
   <div v-else-if="loading" class="min-h-[100dvh] flex items-center justify-center" style="background: #fffdf5;">
     <DotLottieVue src="/loading.lottie" background="transparent" :speed="1" style="width: 200px; height: 200px;" autoplay loop />
   </div>
@@ -594,21 +582,6 @@ onBeforeUnmount(() => {
 
   <!-- Main UI Wrapper -->
   <div v-else :style="themeStyles" class="relative bg-[var(--theme-bg)] text-[var(--theme-text)] font-[var(--font-body)] overflow-x-hidden min-h-[100dvh] selection:bg-[var(--theme-primary)] selection:text-white pb-32">
-=======
-  <div v-else-if="loading" class="min-h-screen flex items-center justify-center" style="background: #fffdf5;">
-    <DotLottieVue src="/loading.lottie" background="transparent" :speed="1" style="width: 200px; height: 200px;" autoplay loop />
-  </div>
-
-  <div v-else-if="!invitation" class="min-h-screen flex flex-col items-center justify-center bg-gray-50 gap-4">
-    <div class="text-6xl">≡ƒÆî</div>
-    <h2 class="text-2xl font-serif text-amber-800">Undangan Tidak Ditemukan</h2>
-    <p class="text-gray-500">Link undangan yang Anda cari tidak tersedia.</p>
-    <router-link to="/" class="mt-2 px-6 py-2 border border-amber-600 text-amber-700 rounded-full hover:bg-amber-50 transition">ΓåÉ Kembali</router-link>
-  </div>
-
-  <!-- Main UI Wrapper -->
-  <div v-else :style="themeStyles" class="relative bg-[var(--theme-bg)] text-[var(--theme-text)] font-[var(--font-body)] overflow-x-hidden min-h-screen selection:bg-[var(--theme-primary)] selection:text-white pb-32">
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
 
     <!-- ASSET LOADING OVERLAY -->
     <Transition name="loading-fade">
@@ -620,19 +593,11 @@ onBeforeUnmount(() => {
     <!-- Free INFO BANNER -->
     <div v-if="invitation.is_trial && isOpened" class="trial-banner">
       <div class="trial-banner-content">
-<<<<<<< HEAD
         <span class="trial-badge">⏱️ Free</span>
         <span v-if="invitation.views_remaining !== null && invitation.views_remaining !== undefined">
           Sisa {{ invitation.views_remaining }} akses
         </span>
         <span class="trial-separator">•</span>
-=======
-        <span class="trial-badge">ΓÅ▒∩╕Å Free</span>
-        <span v-if="invitation.views_remaining !== null && invitation.views_remaining !== undefined">
-          Sisa {{ invitation.views_remaining }} akses
-        </span>
-        <span class="trial-separator">ΓÇó</span>
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
         <span>Upgrade untuk hapus Free Banner & akses penuh</span>
         <span>Kunjungi <a href="https://mengundanganda.com" style="color: blue;">mengundanganda.com</a></span>
       </div>
@@ -655,11 +620,7 @@ onBeforeUnmount(() => {
     <div v-if="isOpened" class="animate-fade-in">
       
       <!-- HERO (Dynamic per theme) -->
-<<<<<<< HEAD
       <component :is="activeHero" :overlay-gradient="activeTheme.overlayGradient">
-=======
-      <component :is="activeHero" :overlay-gradient="activeTheme.overlayGradient" :theme-config="activeTheme">
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
         <div ref="heroOval" :class="[
             'flex flex-col gap-4 items-center justify-center mx-auto opacity-0 p-6 md:p-10 text-center relative z-10',
             themeName !== 'elegant_blue' 
@@ -698,10 +659,7 @@ onBeforeUnmount(() => {
         :countdown="countdown"
         :theme-config="activeTheme"
         :has-date="hasEventDate"
-<<<<<<< HEAD
         :invitation="invitation"
-=======
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
       />
 
       <!-- EVENTS (Dynamic per theme) -->
@@ -748,17 +706,10 @@ onBeforeUnmount(() => {
 
       <!-- LIGHTBOX -->
       <div v-if="lightboxOpen && invitation.photos" class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm" @click="lightboxOpen = false">
-<<<<<<< HEAD
         <button class="absolute top-6 right-6 w-12 h-12 bg-white/10 rounded-full text-white text-2xl hover:bg-white/20 transition-colors flex items-center justify-center" @click.stop="lightboxOpen = false">×</button>
         <button v-if="lightboxIndex > 0" class="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 rounded-full text-white text-2xl hover:bg-white/20 flex items-center justify-center transition-colors" @click.stop="lightboxIndex--">‹</button>
         <img v-if="currentPhotoUrl" :src="currentPhotoUrl" alt="Gallery preview" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" @click.stop />
         <button v-if="invitation.photos && lightboxIndex < invitation.photos.length - 1" class="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 rounded-full text-white text-2xl hover:bg-white/20 flex items-center justify-center transition-colors" @click.stop="lightboxIndex++">›</button>
-=======
-        <button class="absolute top-6 right-6 w-12 h-12 bg-white/10 rounded-full text-white text-2xl hover:bg-white/20 transition-colors flex items-center justify-center" @click.stop="lightboxOpen = false">├ù</button>
-        <button v-if="lightboxIndex > 0" class="absolute left-4 md:left-10 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 rounded-full text-white text-2xl hover:bg-white/20 flex items-center justify-center transition-colors" @click.stop="lightboxIndex--">ΓÇ╣</button>
-        <img v-if="currentPhotoUrl" :src="currentPhotoUrl" alt="Gallery preview" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" @click.stop />
-        <button v-if="invitation.photos && lightboxIndex < invitation.photos.length - 1" class="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 rounded-full text-white text-2xl hover:bg-white/20 flex items-center justify-center transition-colors" @click.stop="lightboxIndex++">ΓÇ║</button>
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
       </div>
     </div>
 
@@ -879,8 +830,4 @@ onBeforeUnmount(() => {
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
 }
-<<<<<<< HEAD
 </style>
-=======
-</style>
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61

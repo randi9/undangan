@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 <template>
-=======
-﻿<template>
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
   <section v-if="invitation.akad_venue || invitation.resepsi_venue" class="py-24 px-6 max-w-5xl mx-auto text-center">
     <div v-if="invitation.groom_name && invitation.bride_name" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: -0.25rem;">
       <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '3rem', color: 'var(--theme-primary)', transform: 'rotate(-5deg)', textShadow: '1px 1px 2px rgba(0,0,0,0.05)' }">{{ invitation.groom_name.charAt(0).toUpperCase() }}</span>
@@ -41,12 +37,9 @@
           <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[var(--theme-secondary)] text-[var(--theme-primary)] font-medium text-sm hover:bg-[var(--theme-secondary)] hover:text-white transition-colors">
             <Icon icon="ph:map-trifold-duotone" class="w-5 h-5" /> Buka Maps
           </a>
-<<<<<<< HEAD
-=======
           <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[var(--theme-secondary)] text-[var(--theme-primary)] font-medium text-sm hover:bg-[var(--theme-secondary)] hover:text-white transition-colors">
             <Icon icon="ph:calendar-plus-duotone" class="w-5 h-5" /> Ingatkan Saya
           </a>
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
         </div>
       </div>
       
@@ -74,12 +67,9 @@
           <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[var(--theme-secondary)] text-[var(--theme-primary)] font-medium text-sm hover:bg-[var(--theme-secondary)] hover:text-white transition-colors">
             <Icon icon="ph:map-trifold-duotone" class="w-5 h-5" /> Buka Maps
           </a>
-<<<<<<< HEAD
-=======
           <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[var(--theme-secondary)] text-[var(--theme-primary)] font-medium text-sm hover:bg-[var(--theme-secondary)] hover:text-white transition-colors">
             <Icon icon="ph:calendar-plus-duotone" class="w-5 h-5" /> Ingatkan Saya
           </a>
->>>>>>> 19d0ed031155c76783350794b2d1cd93d0549d61
         </div>
       </div>
     </div>
