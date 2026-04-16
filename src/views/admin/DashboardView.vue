@@ -30,6 +30,10 @@
           <span class="material-symbols-rounded">group</span>
           Kelola User
         </router-link>
+        <router-link v-if="authStore.isAdmin" to="/dashboard/music" class="sidebar-link">
+          <span class="material-symbols-rounded">library_music</span>
+          Pustaka Lagu
+        </router-link>
         <router-link v-if="authStore.isAdmin" to="/dashboard/vouchers" class="sidebar-link">
           <span class="material-symbols-rounded">confirmation_number</span>
           Voucher

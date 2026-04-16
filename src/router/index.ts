@@ -123,6 +123,16 @@ if (subdomain) {
       },
     },
     {
+      path: "/dashboard/music",
+      name: "music",
+      component: () => import("@/views/admin/MusicLibraryAdminView.vue"),
+      meta: {
+        title: "Kelola Pustaka Lagu - MengundangAnda",
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
+    },
+    {
       path: "/dashboard/vouchers",
       name: "vouchers",
       component: () => import("@/views/admin/VoucherManageView.vue"),

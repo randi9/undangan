@@ -742,7 +742,10 @@
               </div>
               <audio controls :src="form.music_url" style="width: 100%; height: 40px; margin-bottom: 12px;"></audio>
               <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
-                <Icon icon="lucide:upload" style="font-size: 14px;" /> Ganti dengan Lagu Sendiri
+                <Icon icon="lucide:upload" style="font-size: 14px;" /> Upload Lagu
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" @click.stop="openMusicLibrary" style="font-size: 13px; margin-left:8px;">
+                <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
               </button>
             </div>
             <!-- Musik Custom (Upload User) -->
@@ -757,13 +760,16 @@
               <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 40px; margin-bottom: 12px;"></audio>
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
-                  <Icon icon="lucide:upload" style="font-size: 14px;" /> Ganti Lagu
+                  <Icon icon="lucide:upload" style="font-size: 14px;" /> Upload Lagu
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" @click.stop="openMusicLibrary" style="font-size: 13px;">
+                  <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
                 </button>
                 <button type="button" class="btn btn-outline btn-sm" @click.stop="restoreDefaultMusic" style="font-size: 13px;">
-                  <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Kembalikan ke Default
+                  <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Lagu Default
                 </button>
                 <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic" style="font-size: 13px;">
-                  Hapus Lagu
+                  Hapus
                 </button>
               </div>
             </div>
@@ -772,9 +778,14 @@
               <Icon icon="lucide:music-4" class="upload-icon" style="color: var(--admin-text-secondary);" />
               <div class="upload-text">Upload File Audio</div>
               <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 20MB</div>
-              <button type="button" class="btn btn-outline btn-sm" style="margin-top: 12px; font-size: 13px;" @click.stop="restoreDefaultMusic">
-                <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Gunakan Musik Default
-              </button>
+              <div style="display: flex; justify-content: center; gap: 8px; margin-top: 12px;">
+                <button type="button" class="btn btn-outline btn-sm" style="font-size: 13px;" @click.stop="restoreDefaultMusic">
+                  <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Lagu Default
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" style="font-size: 13px;" @click.stop="openMusicLibrary">
+                  <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
+                </button>
+              </div>
             </div>
             <input
               ref="musicFileInput"
@@ -893,6 +904,58 @@
             </div>
             <div class="edit-theme-label">Elegant Blue</div>
             <div v-if="form.theme === 'elegant_blue'" class="edit-theme-active-badge">Aktif</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Pustaka Lagu -->
+    <div v-if="showMusicModal" class="modal-overlay" @click.self="showMusicModal = false">
+      <div class="modal-content" style="max-width: 600px; width: 90%; max-height: 85vh; display: flex; flex-direction: column;">
+        <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:library_music" style="color: var(--admin-primary)" /> Pustaka Lagu</span>
+          <button type="button" class="btn btn-outline btn-sm" @click="showMusicModal = false" style="border: none; padding: 4px;">
+            <Icon icon="lucide:x" style="font-size: 20px;" />
+          </button>
+        </div>
+        
+        <div style="margin-bottom: 16px;">
+          <input type="text" v-model="searchMusicQuery" placeholder="Cari judul lagu atau artis..." style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--admin-border); background: var(--admin-surface); font-size: 14px; outline: none; box-sizing: border-box;" />
+        </div>
+        
+        <div v-if="musicLibraryLoading" style="text-align: center; padding: 40px 0;">
+          <div class="loading-spinner"></div>
+          <div style="margin-top:12px; color:var(--admin-text-secondary); font-size:14px;">Memuat pustaka lagu...</div>
+        </div>
+        <div v-else-if="musicLibrary.length === 0" style="text-align: center; padding: 40px 0; color:var(--admin-text-secondary); font-size:14px;">
+          Belum ada pustaka lagu yang tersedia.
+        </div>
+        <div v-else-if="filteredMusicLibrary.length === 0" style="text-align: center; padding: 40px 0; color:var(--admin-text-secondary); font-size:14px;">
+          Lagu tidak ditemukan.
+        </div>
+        <div v-else style="flex: 1; overflow-y: auto; padding-right: 8px; display: flex; flex-direction: column; gap: 12px; text-align: left;">
+          <div 
+            v-for="music in filteredMusicLibrary" 
+            :key="music.id" 
+            style="border: 1px solid var(--admin-border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--admin-surface);"
+          >
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+              <div style="text-align: left; word-break: break-word;">
+                <div style="font-weight: 600; font-size: 15px; color: var(--admin-text); line-height: 1.3;">{{ music.title }}</div>
+                <div style="font-size: 13px; color: var(--admin-text-secondary); margin-top: 2px;">{{ music.artist || 'Unknown Artist' }}</div>
+              </div>
+              <button 
+                type="button" 
+                class="btn btn-primary btn-sm" 
+                @click="selectMusicFromLibrary(music)"
+                style="padding: 6px 12px; font-size: 12px;"
+              >
+                Gunakan
+              </button>
+            </div>
+            <audio controls preload="none" style="width: 100%; height: 36px;">
+              <source :src="music.url" type="audio/mpeg" />
+            </audio>
           </div>
         </div>
       </div>
@@ -1170,7 +1233,14 @@ import { useInvitationStore } from "@/stores/invitation";
 import type { LoveStoryItem, Photo, BankAccount } from "@/types/invitation";
 import { resolveAssetUrl } from "@/utils/url";
 import { DEFAULT_MUSIC, isDefaultMusicUrl } from "@/config/defaultMusic";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
+
+interface MusicItem {
+  id: string;
+  title: string;
+  artist: string;
+  url: string;
+}
 
 const MAX_FILE_SIZE_MB = 20;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -1219,6 +1289,45 @@ const previewIframe = ref<HTMLIFrameElement>();
 const mobilePreviewIframe = ref<HTMLIFrameElement>();
 const showMobilePreview = ref(false);
 const showGuide = ref(localStorage.getItem('hideCreateGuide') !== 'true');
+
+// Music Library State
+const showMusicModal = ref(false);
+const musicLibrary = ref<MusicItem[]>([]);
+const musicLibraryLoading = ref(false);
+const searchMusicQuery = ref("");
+
+const filteredMusicLibrary = computed(() => {
+  const q = searchMusicQuery.value.toLowerCase().trim();
+  if (!q) return musicLibrary.value;
+  return musicLibrary.value.filter(m => 
+    m.title.toLowerCase().includes(q) || 
+    (m.artist && m.artist.toLowerCase().includes(q))
+  );
+});
+
+async function openMusicLibrary() {
+  showMusicModal.value = true;
+  searchMusicQuery.value = "";
+  if (musicLibrary.value.length === 0) {
+    musicLibraryLoading.value = true;
+    try {
+      const res = await fetch(`${apiBase}/api/music`);
+      if (res.ok) {
+        musicLibrary.value = await res.json();
+      }
+    } catch (err) {
+      console.error("Gagal mengambil pustaka lagu", err);
+    } finally {
+      musicLibraryLoading.value = false;
+    }
+  }
+}
+
+function selectMusicFromLibrary(music: MusicItem) {
+  form.music_url = music.url;
+  showMusicModal.value = false;
+  showToast("success", "Musik latar berhasil diganti");
+}
 
 function dismissGuide() {
   showGuide.value = false;
@@ -1546,7 +1655,7 @@ function showToast(type: string, message: string) {
 }
 
 // Watch form changes to sync with Preview Iframe
-import { watch, onMounted } from "vue";
+import { watch } from "vue";
 watch(
   form,
   (newVal) => {
