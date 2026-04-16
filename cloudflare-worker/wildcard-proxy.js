@@ -1,9 +1,9 @@
 /**
  * Cloudflare Worker — Wildcard Subdomain Proxy
- * 
+ *
  * Menangkap traffic untuk *.mengundanganda.com dan mem-proxy ke
  * Vercel deployment utama (www.mengundanganda.com).
- * 
+ *
  * Cara kerja:
  *   1. User buka slug.mengundanganda.com
  *   2. Cloudflare intercept (karena * A record Proxied)
@@ -12,138 +12,482 @@
  *   5. Vue Router detect subdomain → render undangan
  */
 
-const BASE_DOMAIN = 'mengundanganda.com';
+const BASE_DOMAIN = "mengundanganda.com";
 
 // Vercel primary domain (yang tidak redirect)
 // Di Vercel: mengundanganda.com → 307 → www.mengundanganda.com
 // Jadi kita harus fetch dari www langsung agar tidak kena redirect loop
-const ORIGIN_HOST = 'www.mengundanganda.com';
+const ORIGIN_HOST = "www.mengundanganda.com";
 
 // Subdomain yang TIDAK boleh di-proxy oleh Worker ini
-const EXCLUDED_SUBDOMAINS = [
-  'www',
-  'media',    // R2 bucket uploads
-  'music',    // R2 bucket music
-  'accounts', // Clerk auth
-  'clerk',    // Clerk API
-  'clkmail',  // Clerk email
+const EXCLUDED_SUBDOMAINS = new Set([
+  "www",
+  "media", // R2 bucket uploads
+  "music", // R2 bucket music
+  "accounts", // Clerk auth
+  "clerk", // Clerk API
+  "clkmail", // Clerk email
+]);
+
+// ===============================
+// Edge security hardening
+// ===============================
+const RATE_LIMIT_RULES = [
+  // Sensitive write endpoints (strict)
+  {
+    name: "auth-write",
+    methods: ["POST", "PUT", "PATCH", "DELETE"],
+    pathRegex: /^\/api\/auth(?:\/|$)/,
+    limit: 20,
+    windowSec: 60,
+  },
+  {
+    name: "upload-write",
+    methods: ["POST", "PUT", "PATCH", "DELETE"],
+    pathRegex: /^\/api\/upload(?:\/|$)/,
+    limit: 12,
+    windowSec: 60,
+  },
+  {
+    name: "payment-write",
+    methods: ["POST", "PUT", "PATCH", "DELETE"],
+    pathRegex: /^\/api\/payment(?:\/|$)/,
+    limit: 20,
+    windowSec: 60,
+  },
+  // RSVP dibuat lebih longgar untuk traffic event (mis. share ke grup WA)
+  // keyMode 'ip+invitation' mengurangi false-positive saat banyak event aktif
+  {
+    name: "rsvp-write",
+    methods: ["POST"],
+    pathRegex: /^\/api\/rsvp(?:\/|$)/,
+    limit: 180,
+    windowSec: 60,
+    keyMode: "ip+invitation",
+  },
+
+  // General API fallback
+  {
+    name: "api-write",
+    methods: ["POST", "PUT", "PATCH", "DELETE"],
+    pathRegex: /^\/api\//,
+    limit: 60,
+    windowSec: 60,
+  },
+  {
+    name: "api-read",
+    methods: ["GET"],
+    pathRegex: /^\/api\//,
+    limit: 240,
+    windowSec: 60,
+  },
 ];
 
+const memoryRateStore = new Map();
+
+function getClientIp(request) {
+  const cfIp = request.headers.get("cf-connecting-ip");
+  if (cfIp) return cfIp;
+
+  const xff = request.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0]?.trim() || "unknown";
+
+  return "unknown";
+}
+
+function getBotSignals(request) {
+  const botManagement = request.cf?.botManagement;
+  const score =
+    typeof botManagement?.score === "number" ? botManagement.score : null;
+  const verifiedBot = botManagement?.verifiedBot === true;
+  return { score, verifiedBot };
+}
+
+function getRateRule(pathname, method) {
+  for (const rule of RATE_LIMIT_RULES) {
+    if (rule.methods.includes(method) && rule.pathRegex.test(pathname)) {
+      return rule;
+    }
+  }
+  return null;
+}
+
+function getWindowBucket(windowSec) {
+  return Math.floor(Date.now() / 1000 / windowSec);
+}
+
+function getRetryAfter(windowSec) {
+  const now = Math.floor(Date.now() / 1000);
+  return windowSec - (now % windowSec);
+}
+
+async function checkRateLimitKV(env, key, limit, windowSec) {
+  if (!env?.RATE_LIMIT_KV) return null;
+
+  const bucket = getWindowBucket(windowSec);
+  const storageKey = `${key}:${bucket}`;
+  const currentRaw = await env.RATE_LIMIT_KV.get(storageKey);
+  const current = Number.parseInt(currentRaw || "0", 10) || 0;
+
+  if (current >= limit) {
+    return {
+      allowed: false,
+      remaining: 0,
+      retryAfter: getRetryAfter(windowSec),
+    };
+  }
+
+  await env.RATE_LIMIT_KV.put(storageKey, String(current + 1), {
+    expirationTtl: windowSec + 5,
+  });
+
+  return {
+    allowed: true,
+    remaining: Math.max(0, limit - (current + 1)),
+    retryAfter: getRetryAfter(windowSec),
+  };
+}
+
+function checkRateLimitMemory(key, limit, windowSec) {
+  const bucket = getWindowBucket(windowSec);
+  const storageKey = `${key}:${bucket}`;
+  const now = Date.now();
+  const expiresAt = now + windowSec * 1000 + 5000;
+
+  const currentRecord = memoryRateStore.get(storageKey);
+  const current = currentRecord?.count || 0;
+
+  if (current >= limit) {
+    return {
+      allowed: false,
+      remaining: 0,
+      retryAfter: getRetryAfter(windowSec),
+    };
+  }
+
+  memoryRateStore.set(storageKey, {
+    count: current + 1,
+    expiresAt,
+  });
+
+  // best-effort cleanup to prevent unbounded memory growth
+  for (const [k, v] of memoryRateStore.entries()) {
+    if (v.expiresAt <= now) {
+      memoryRateStore.delete(k);
+    }
+  }
+
+  return {
+    allowed: true,
+    remaining: Math.max(0, limit - (current + 1)),
+    retryAfter: getRetryAfter(windowSec),
+  };
+}
+
+async function enforceRateLimit(request, env, pathname) {
+  if (request.method === "OPTIONS") {
+    return { allowed: true, remaining: null, retryAfter: null };
+  }
+
+  const rule = getRateRule(pathname, request.method);
+  if (!rule) {
+    return { allowed: true, remaining: null, retryAfter: null };
+  }
+
+  const ip = getClientIp(request);
+  const keySubject = await resolveRateLimitSubject(rule, request, pathname);
+  const key = `rl:${rule.name}:${ip}:${keySubject}`;
+
+  const kvResult = await checkRateLimitKV(env, key, rule.limit, rule.windowSec);
+  if (kvResult) return kvResult;
+
+  return checkRateLimitMemory(key, rule.limit, rule.windowSec);
+}
+
+async function resolveRateLimitSubject(rule, request, pathname) {
+  if (
+    rule.keyMode === "ip+invitation" &&
+    request.method === "POST" &&
+    pathname.startsWith("/api/rsvp")
+  ) {
+    const invitationId = await extractInvitationIdFromRsvpRequest(request);
+    return `inv:${invitationId}`;
+  }
+
+  return "global";
+}
+
+async function extractInvitationIdFromRsvpRequest(request) {
+  try {
+    const contentType = request.headers.get("content-type") || "";
+    const cloned = request.clone();
+
+    if (contentType.includes("application/json")) {
+      const body = await cloned.json();
+      return String(body?.invitation_id || body?.invitationId || "unknown");
+    }
+
+    if (contentType.includes("application/x-www-form-urlencoded")) {
+      const text = await cloned.text();
+      const params = new URLSearchParams(text);
+      return (
+        params.get("invitation_id") || params.get("invitationId") || "unknown"
+      );
+    }
+
+    if (contentType.includes("multipart/form-data")) {
+      const form = await cloned.formData();
+      return String(
+        form.get("invitation_id") || form.get("invitationId") || "unknown",
+      );
+    }
+  } catch {
+    // ignore parse error, fallback below
+  }
+
+  return "unknown";
+}
+
+function isSuspiciousApiBot(request, pathname) {
+  if (!pathname.startsWith("/api/")) return false;
+
+  const method = request.method;
+  if (!["POST", "PUT", "PATCH", "DELETE"].includes(method)) return false;
+
+  const { score, verifiedBot } = getBotSignals(request);
+  if (verifiedBot) return false;
+
+  // If bot score is available, use it as primary signal
+  if (score !== null) {
+    return score <= 5;
+  }
+
+  // Fallback heuristic when Bot Management signal is unavailable
+  const ua = (request.headers.get("user-agent") || "").toLowerCase();
+  const looksLikeBot =
+    /(bot|crawler|spider|curl|python|wget|httpclient|scrapy)/.test(ua);
+  return looksLikeBot;
+}
+
+function jsonError(status, body, extraHeaders = {}) {
+  const headers = new Headers({
+    "Content-Type": "application/json; charset=utf-8",
+    ...extraHeaders,
+  });
+
+  return new Response(JSON.stringify(body), { status, headers });
+}
+
+function shouldHandleWildcardProxy(hostname) {
+  return hostname.endsWith(`.${BASE_DOMAIN}`);
+}
+
+function extractSubdomain(hostname) {
+  return hostname.replace(`.${BASE_DOMAIN}`, "");
+}
+
+function shouldBypassSubdomain(subdomain) {
+  return EXCLUDED_SUBDOMAINS.has(subdomain) || subdomain.includes(".");
+}
+
+function createOriginRequest(request, originUrl, hostname, subdomain) {
+  const newHeaders = new Headers(request.headers);
+  newHeaders.set("Host", ORIGIN_HOST);
+  newHeaders.set("X-Forwarded-Host", hostname);
+  newHeaders.set("X-Original-Subdomain", subdomain);
+
+  return new Request(originUrl.toString(), {
+    method: request.method,
+    headers: newHeaders,
+    body: request.body,
+    redirect: "manual",
+  });
+}
+
+function rewriteRedirectToSubdomain(response, originUrl, hostname) {
+  if (response.status < 300 || response.status >= 400) {
+    return null;
+  }
+
+  const location = response.headers.get("Location");
+  if (!location) {
+    return null;
+  }
+
+  try {
+    const locUrl = new URL(location, originUrl);
+    if (locUrl.hostname === BASE_DOMAIN || locUrl.hostname === ORIGIN_HOST) {
+      locUrl.hostname = hostname;
+      const redirectHeaders = new Headers(response.headers);
+      redirectHeaders.set("Location", locUrl.toString());
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: redirectHeaders,
+      });
+    }
+  } catch {
+    // URL parsing gagal, gunakan response original
+  }
+
+  return null;
+}
+
+async function buildDynamicSeoMeta(subdomain) {
+  let isChanged = false;
+  let dynTitle = "Undangan Pernikahan";
+  let dynDesc = "Kami mengundang Anda untuk hadir di acara pernikahan kami.";
+  let dynImg = "https://media.mengundanganda.com/landing-page/og-image.webp";
+
+  try {
+    const apiUrl = `https://${ORIGIN_HOST}/api/invitations/slug/${subdomain}?preview=true`;
+    const apiRes = await fetch(apiUrl);
+    if (apiRes.ok) {
+      const data = await apiRes.json();
+      if (data.groom_name && data.bride_name) {
+        dynTitle = `Undangan Pernikahan ${data.groom_name} & ${data.bride_name}`;
+        isChanged = true;
+      }
+      if (data.quote) {
+        dynDesc = data.quote.substring(0, 150);
+      }
+      if (data.cover_photo) {
+        dynImg = data.cover_photo;
+      }
+    }
+  } catch (err) {
+    console.warn("[Worker SEO] Failed building dynamic meta:", err);
+  }
+
+  return { isChanged, dynTitle, dynDesc, dynImg };
+}
+
+async function applyDynamicSeo(response, hostname, subdomain) {
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("text/html") || response.status !== 200) {
+    return response;
+  }
+
+  const { isChanged, dynTitle, dynDesc, dynImg } =
+    await buildDynamicSeoMeta(subdomain);
+  if (!isChanged) {
+    return response;
+  }
+
+  class MetaRewriter {
+    element(element) {
+      const tagName = element.tagName;
+      const name = element.getAttribute("name");
+      const prop = element.getAttribute("property");
+
+      if (tagName === "title") {
+        element.setInnerContent(dynTitle);
+      } else if (
+        name === "description" ||
+        prop === "og:description" ||
+        name === "twitter:description"
+      ) {
+        element.setAttribute("content", dynDesc);
+      } else if (prop === "og:title" || name === "twitter:title") {
+        element.setAttribute("content", dynTitle);
+      } else if (prop === "og:image" || name === "twitter:image") {
+        element.setAttribute("content", dynImg);
+      } else if (prop === "og:url" || name === "twitter:url") {
+        element.setAttribute("content", `https://${hostname}/`);
+      }
+    }
+  }
+
+  const rewriter = new HTMLRewriter()
+    .on("title", new MetaRewriter())
+    .on("meta", new MetaRewriter());
+
+  return rewriter.transform(response);
+}
+
+async function applySecurityChecks(request, env, pathname) {
+  if (isSuspiciousApiBot(request, pathname)) {
+    return jsonError(403, {
+      error: "Forbidden",
+      message: "Automated traffic blocked by edge security policy.",
+    });
+  }
+
+  const rateResult = await enforceRateLimit(request, env, pathname);
+  if (!rateResult.allowed) {
+    return jsonError(
+      429,
+      {
+        error: "Too Many Requests",
+        message: "Rate limit exceeded. Please retry later.",
+      },
+      {
+        "Retry-After": String(rateResult.retryAfter ?? 60),
+        "X-RateLimit-Remaining": String(rateResult.remaining ?? 0),
+      },
+    );
+  }
+
+  return null;
+}
+
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     const hostname = url.hostname;
 
     // Hanya handle subdomain dari base domain
-    if (!hostname.endsWith(`.${BASE_DOMAIN}`)) {
+    if (!shouldHandleWildcardProxy(hostname)) {
       return fetch(request);
     }
 
     // Ambil subdomain (e.g., "romi-juli" dari "romi-juli.mengundanganda.com")
-    const subdomain = hostname.replace(`.${BASE_DOMAIN}`, '');
+    const subdomain = extractSubdomain(hostname);
 
     // Skip subdomain yang punya record DNS sendiri
-    if (EXCLUDED_SUBDOMAINS.includes(subdomain) || subdomain.includes('.')) {
+    if (shouldBypassSubdomain(subdomain)) {
       return fetch(request);
+    }
+
+    // ===============================
+    // Bot + rate-limit protection
+    // ===============================
+    const securityResponse = await applySecurityChecks(
+      request,
+      env,
+      url.pathname,
+    );
+    if (securityResponse) {
+      return securityResponse;
     }
 
     // Proxy ke Vercel — fetch dari www (primary domain di Vercel)
     const originUrl = new URL(url);
     originUrl.hostname = ORIGIN_HOST;
 
-    const newHeaders = new Headers(request.headers);
-    newHeaders.set('Host', ORIGIN_HOST);
-    newHeaders.set('X-Forwarded-Host', hostname);
-    newHeaders.set('X-Original-Subdomain', subdomain);
-
-    const originRequest = new Request(originUrl.toString(), {
-      method: request.method,
-      headers: newHeaders,
-      body: request.body,
-      redirect: 'manual',
-    });
+    const originRequest = createOriginRequest(
+      request,
+      originUrl,
+      hostname,
+      subdomain,
+    );
 
     const response = await fetch(originRequest);
 
     // Handle redirect — rewrite Location header agar tetap di subdomain
-    if (response.status >= 300 && response.status < 400) {
-      const location = response.headers.get('Location');
-      if (location) {
-        try {
-          const locUrl = new URL(location, originUrl);
-          // Rewrite jika redirect mengarah ke domain utama atau www
-          if (locUrl.hostname === BASE_DOMAIN || locUrl.hostname === ORIGIN_HOST) {
-            locUrl.hostname = hostname;
-            const redirectHeaders = new Headers(response.headers);
-            redirectHeaders.set('Location', locUrl.toString());
-            return new Response(response.body, {
-              status: response.status,
-              statusText: response.statusText,
-              headers: redirectHeaders,
-            });
-          }
-        } catch {
-          // URL parsing gagal, return response as-is
-        }
-      }
+    const redirectResponse = rewriteRedirectToSubdomain(
+      response,
+      originUrl,
+      hostname,
+    );
+    if (redirectResponse) {
+      return redirectResponse;
     }
 
     // ===== SEO DYNAMIC META TAGS INJECTION =====
-    const contentType = response.headers.get('content-type') || '';
-    if (contentType.includes('text/html') && response.status === 200) {
-      let isChanged = false;
-      let dynTitle = 'Undangan Pernikahan';
-      let dynDesc = 'Kami mengundang Anda untuk hadir di acara pernikahan kami.';
-      let dynImg = 'https://media.mengundanganda.com/landing-page/og-image.webp';
-      
-      try {
-        // Fetch data from API (using origin host so we don't loop)
-        const apiUrl = `https://${ORIGIN_HOST}/api/invitations/slug/${subdomain}?preview=true`;
-        const apiRes = await fetch(apiUrl);
-        if (apiRes.ok) {
-          const data = await apiRes.json();
-          if (data.groom_name && data.bride_name) {
-            dynTitle = `Undangan Pernikahan ${data.groom_name} & ${data.bride_name}`;
-            isChanged = true;
-          }
-          if (data.quote) {
-            dynDesc = data.quote.substring(0, 150);
-          }
-          if (data.cover_photo) {
-            dynImg = data.cover_photo;
-          }
-        }
-      } catch (err) {
-        // Ignore API failures, it will just use default tags
-      }
-
-      if (isChanged) {
-        class MetaRewriter {
-          element(element) {
-            const tagName = element.tagName;
-            const name = element.getAttribute('name');
-            const prop = element.getAttribute('property');
-            
-            if (tagName === 'title') {
-              element.setInnerContent(dynTitle);
-            } else if (name === 'description' || prop === 'og:description' || name === 'twitter:description') {
-              element.setAttribute('content', dynDesc);
-            } else if (prop === 'og:title' || name === 'twitter:title') {
-              element.setAttribute('content', dynTitle);
-            } else if (prop === 'og:image' || name === 'twitter:image') {
-              element.setAttribute('content', dynImg);
-            } else if (prop === 'og:url' || name === 'twitter:url') {
-              element.setAttribute('content', `https://${hostname}/`);
-            }
-          }
-        }
-
-        const rewriter = new HTMLRewriter()
-          .on('title', new MetaRewriter())
-          .on('meta', new MetaRewriter());
-
-        return rewriter.transform(response);
-      }
+    const seoResponse = await applyDynamicSeo(response, hostname, subdomain);
+    if (seoResponse !== response) {
+      return seoResponse;
     }
 
     // Return response dari Vercel
