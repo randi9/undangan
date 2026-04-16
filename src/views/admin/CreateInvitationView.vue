@@ -517,6 +517,29 @@
               {{ index + 1 }}
             </div>
             <div class="story-fields">
+              <!-- Photo Upload -->
+              <div style="margin-bottom: 8px;">
+                <div v-if="story.photo" style="position: relative; display: inline-block;">
+                  <img :src="resolveAssetUrl(story.photo, apiBase)" alt="Foto story" style="width: 100%; max-height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--admin-border);" />
+                  <button
+                    type="button"
+                    title="Hapus foto"
+                    style="position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; background: #ef4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"
+                    @click.stop="removeLoveStoryPhoto(index)"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <button
+                  v-else
+                  type="button"
+                  class="btn btn-outline btn-sm"
+                  style="font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 4px;"
+                  @click.stop="triggerLoveStoryPhotoUpload(index)"
+                >
+                  <Icon icon="lucide:image-plus" style="font-size: 14px;" /> Tambah Foto
+                </button>
+              </div>
               <input
                 v-model="story.date"
                 class="form-input"
@@ -542,6 +565,15 @@
               ×
             </button>
           </div>
+
+          <!-- Hidden file input for love story photos -->
+          <input
+            ref="loveStoryPhotoInput"
+            type="file"
+            accept="image/*"
+            hidden
+            @change="handleLoveStoryPhotoUpload"
+          />
 
           <button type="button" class="btn btn-outline" @click="addLoveStory">
             + Tambah Cerita
@@ -1458,11 +1490,52 @@ async function removeGalleryPhoto(index: number) {
 }
 
 function addLoveStory() {
-  form.love_story.push({ date: "", title: "", description: "" });
+  form.love_story.push({ date: "", title: "", description: "", photo: "" });
 }
 
 function removeLoveStory(index: number) {
   form.love_story.splice(index, 1);
+}
+
+// --- Love Story Photo Upload ---
+const loveStoryPhotoInput = ref<HTMLInputElement>();
+let loveStoryPhotoTargetIndex = -1;
+
+function triggerLoveStoryPhotoUpload(index: number) {
+  loveStoryPhotoTargetIndex = index;
+  loveStoryPhotoInput.value?.click();
+}
+
+async function handleLoveStoryPhotoUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file || loveStoryPhotoTargetIndex < 0) return;
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
+    input.value = "";
+    return;
+  }
+  try {
+    const url = await store.uploadPhoto(file, form.slug || undefined);
+    const story = form.love_story[loveStoryPhotoTargetIndex];
+    if (story) {
+      if (story.photo) {
+        await store.deleteFile(story.photo).catch(() => {});
+      }
+      story.photo = url;
+    }
+  } catch {
+    showToast("error", "Gagal upload foto love story");
+  }
+  input.value = "";
+  loveStoryPhotoTargetIndex = -1;
+}
+
+async function removeLoveStoryPhoto(index: number) {
+  const story = form.love_story[index];
+  if (!story?.photo) return;
+  await store.deleteFile(story.photo).catch(() => {});
+  story.photo = '';
 }
 
 function showToast(type: string, message: string) {

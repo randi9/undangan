@@ -2,6 +2,7 @@ export interface LoveStoryItem {
   date: string;
   title: string;
   description: string;
+  photo?: string;
 }
 
 export interface BankAccount {
