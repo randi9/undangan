@@ -1,8 +1,8 @@
 <template>
-  <section ref="sectionRef" v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full h-[100dvh] flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#eaf1f8]">
+  <section ref="sectionRef" v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full min-h-[100dvh] flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#eaf1f8]">
     
     <!-- 1. The Envelope & Paper Container -->
-    <div ref="envelopeWrapper" class="relative w-[75vw] max-w-[360px] aspect-[4/5] flex flex-col items-center justify-center origin-[50%_88%] will-change-transform" style="transform: scale(20);">
+    <div ref="envelopeWrapper" class="relative w-[75vw] max-w-[360px] aspect-[4/5] flex flex-col items-center justify-center origin-[50%_88%] will-change-transform" style="transform: scale(5);">
       
       <!-- Envelope Back Flap & Inside Pocket -->
       <svg class="absolute inset-0 w-full h-full z-10 pointer-events-none drop-shadow-xl" viewBox="0 0 1000 1250" preserveAspectRatio="none">
@@ -65,17 +65,14 @@
       </div>
 
       <!-- Envelope Front Pockets SVG -->
-      <svg class="absolute inset-0 w-full h-full z-30 pointer-events-none" viewBox="0 0 1000 1250" preserveAspectRatio="none">
-        <filter id="envelopeShadow" x="-10%" y="-10%" width="120%" height="120%">
-          <feDropShadow dx="0" dy="-4" stdDeviation="4" flood-color="#000" flood-opacity="0.30" />
-        </filter>
+      <svg class="absolute inset-0 w-full h-full z-30 pointer-events-none drop-shadow-[0_-4px_8px_rgba(0,0,0,0.3)]" viewBox="0 0 1000 1250" preserveAspectRatio="none">
         <g>
           <!-- Left side flap -->
           <polygon points="0,650 450,1000 0,1250" fill="#063158" stroke="#063158" stroke-width="2.5" stroke-linejoin="round" />
           <!-- Right side flap -->
           <polygon points="1000,650 550,1000 1000,1250" fill="#063158" stroke="#063158" stroke-width="2.5" stroke-linejoin="round" />
           <!-- Bottom side flap -->
-          <polygon points="0,1250 500,900 1000,1250" fill="#073a69" stroke="#073a69" stroke-width="2.5" stroke-linejoin="round" filter="url(#envelopeShadow)" />
+          <polygon points="0,1250 500,900 1000,1250" fill="#073a69" stroke="#073a69" stroke-width="2.5" stroke-linejoin="round" />
         </g>
       </svg>
     </div>
@@ -140,7 +137,7 @@ onMounted(() => {
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=350%', // Realigned endpoint to end pin after resepsi
+        end: '+=200%', // Decreased from 350% so events fly by snappier/faster
         pin: true,
         scrub: 1, 
         anticipatePin: 1,
@@ -148,7 +145,7 @@ onMounted(() => {
     });
 
     // --- Initial States ---
-    tl.set(envelopeWrapper.value, { scale: 20, opacity: 1 });
+    tl.set(envelopeWrapper.value, { scale: 5, opacity: 1 });
     tl.set(introLayer.value, { opacity: 1 });
     tl.set(introContent.value, { opacity: 1 });
     tl.set(paper.value, { y: '0%', scale: 1, zIndex: 20 });
@@ -176,54 +173,49 @@ onMounted(() => {
 
     tl.to({}, { duration: 0.2 }); // hold
 
-    // --- PHASE 2: Paper Extracts & Zooms (Akad) ---
-    // Extract further out of pocket
+    // --- PHASE 2: Paper Extracts & Zooms & Appears (Synchronous) ---
+    tl.addLabel('phase2');
     tl.to(paper.value, {
       y: '-20%', 
       duration: 0.8,
       ease: 'power1.inOut',
-    })
-    // Pop Z-index over front flap
-    .set(paper.value, { zIndex: 50 }) 
-    // Zoom slightly closer but push downwards visually because tall paper center is higher than screen center
+    }, 'phase2')
+    .set(paper.value, { zIndex: 50 }, 'phase2+=0.2')
     .to(paper.value, {
       scale: paperZoomScale,
       y: '-5%', 
       boxShadow: '0 15px 30px -10px rgba(0,0,0,0.2)',
       duration: 1,
       ease: 'power2.inOut',
-    })
-    // Fade in Akad
+    }, 'phase2')
     .to(akadInfo.value, { 
       opacity: 1,
       y: 0,
-      duration: 0.8,
-      ease: 'power1.inOut',
-    }, "-=0.6");
+      duration: 0.6,
+      ease: 'power1.out',
+    }, 'phase2+=0.4');
 
     tl.set(akadInfo.value, { pointerEvents: 'auto' });
-    tl.to({}, { duration: 1.5 }); // Hold 
+    tl.to({}, { duration: 0.4 }); // Short reading buffer
     tl.set(akadInfo.value, { pointerEvents: 'none' });
 
-    // --- PHASE 3: Akad to Resepsi ---
+    // --- PHASE 3: Akad to Resepsi (Crossfade) ---
+    tl.addLabel('phase3');
     tl.to(akadInfo.value, {
       opacity: 0,
       y: -15, 
-      duration: 0.6,
-      ease: 'power1.in',
-    })
-    .set(resepsiInfo.value, { pointerEvents: 'auto' })
+      duration: 0.5,
+      ease: 'power1.inOut',
+    }, 'phase3')
+    .set(resepsiInfo.value, { pointerEvents: 'auto' }, 'phase3')
     .to(resepsiInfo.value, {
       opacity: 1,
       y: 0, 
-      duration: 0.6,
+      duration: 0.5,
       ease: 'power1.out',
-    });
+    }, 'phase3+=0.2');
 
-    tl.to({}, { duration: 1.5 }); // Hold
-
-    // Resepsi finishes reading, and then unpin directly!
-    tl.to({}, { duration: 0.2 });
+    tl.to({}, { duration: 0.2 }); // Quick unpin buffer
 
   }, sectionRef.value!);
 });

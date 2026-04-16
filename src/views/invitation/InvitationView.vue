@@ -287,6 +287,7 @@ async function preloadAllAssets() {
   loadingFadeOut.value = true;
   setTimeout(() => {
     assetsLoaded.value = true;
+    setTimeout(() => ScrollTrigger.refresh(), 50); // Refresh GSAP heights after loading screen goes away to prevent pin jumpers
   }, 800); // matches CSS transition duration
 }
 
