@@ -1,5 +1,6 @@
 <template>
-  <section ref="sectionRef" class="relative px-4 md:px-8 text-center overflow-hidden flex flex-col items-center justify-start min-h-[100dvh]" style="background-color: #f8f9f9; padding: 60px 24px 100px 24px;">
+  <section style="background-color: #f8f9f9; width: 100%;">
+    <div ref="sectionRef" class="relative px-4 md:px-8 text-center overflow-hidden flex flex-col items-center justify-start min-h-[100dvh]" style="padding: 60px 24px 100px 24px;">
     
     <!-- Textured Paper Background Overlay -->
     <div class="absolute inset-0 z-0 pointer-events-none mix-blend-multiply opacity-[0.15]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E');"></div>
@@ -115,7 +116,7 @@
          <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-5xl bg-[#405C66]/10 text-[#405C66]/50">👤</div>
       </div>
     </div>
-
+    </div>
   </section>
 </template>
 

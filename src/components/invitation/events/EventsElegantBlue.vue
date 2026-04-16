@@ -1,8 +1,9 @@
 <template>
-  <section ref="sectionRef" v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full min-h-[100dvh] flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#eaf1f8]">
-    
-    <!-- 1. The Envelope & Paper Container -->
-    <div ref="envelopeWrapper" class="relative w-[75vw] max-w-[360px] aspect-[4/5] flex flex-col items-center justify-center origin-[50%_88%] will-change-transform" style="transform: scale(5);">
+  <section v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full bg-[#eaf1f8]">
+    <div ref="sectionRef" class="w-full min-h-[100dvh] flex flex-col items-center justify-center text-center relative overflow-hidden">
+      
+      <!-- 1. The Envelope & Paper Container -->
+      <div ref="envelopeWrapper" class="relative z-10 w-[75vw] max-w-[360px] aspect-[4/5] flex flex-col items-center justify-center origin-[50%_88%] will-change-transform" style="transform: scale(5);">
       
       <!-- Envelope Back Flap & Inside Pocket -->
       <svg class="absolute inset-0 w-full h-full z-10 pointer-events-none drop-shadow-xl" viewBox="0 0 1000 1250" preserveAspectRatio="none">
@@ -96,6 +97,8 @@
         </div>
       </div>
     </div>
+  <!-- Close inner wrapper -->
+  </div>
   </section>
 </template>
 
