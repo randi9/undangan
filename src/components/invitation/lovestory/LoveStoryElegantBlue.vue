@@ -23,15 +23,20 @@
           </div>
 
           <!-- Content Container (Semua Teks berada di Kanan Poin dengan padding pasti!) -->
-          <div class="flex-1 text-left rounded-2xl" style="margin-left: 56px; margin-right: 24px; padding: 24px; background-color: rgba(255,255,255,0.98); box-shadow: 0 10px 30px rgba(48,72,81,0.08); border: 1px solid rgba(255,253,245,1);">
-             <!-- Date Badge -->
-             <div class="inline-block rounded-full tracking-widest uppercase font-bold" style="padding: 6px 20px; background-color: #405C66; color: #fffdf5; font-size: 0.75rem; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(64,92,102,0.2);">
-                {{ story.date }}
+          <div class="flex-1 text-left rounded-2xl overflow-hidden" style="margin-left: 56px; margin-right: 24px; background-color: rgba(255,255,255,0.98); box-shadow: 0 10px 30px rgba(48,72,81,0.08); border: 1px solid rgba(255,253,245,1);">
+             <!-- Photo -->
+             <img v-if="story.photo" :src="resolveAssetUrl(story.photo, apiBase)" :alt="story.title" 
+                  class="w-full object-cover" style="max-height: 200px;" />
+             <div style="padding: 24px;">
+               <!-- Date Badge -->
+               <div class="inline-block rounded-full tracking-widest uppercase font-bold" style="padding: 6px 20px; background-color: #405C66; color: #fffdf5; font-size: 0.75rem; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(64,92,102,0.2);">
+                 {{ story.date }}
+               </div>
+               <!-- Title -->
+               <h4 class="font-bold text-2xl md:text-3xl mb-4" :style="{ fontFamily: themeConfig.fontHeading, color: '#304851' }">{{ story.title }}</h4>
+               <!-- Description -->
+               <p class="text-sm md:text-base font-light leading-relaxed whitespace-pre-line" style="color: rgba(64, 92, 102, 0.85);">{{ story.description }}</p>
              </div>
-             <!-- Title -->
-             <h4 class="font-bold text-2xl md:text-3xl mb-4" :style="{ fontFamily: themeConfig.fontHeading, color: '#304851' }">{{ story.title }}</h4>
-             <!-- Description -->
-             <p class="text-sm md:text-base font-light leading-relaxed whitespace-pre-line" style="color: rgba(64, 92, 102, 0.85);">{{ story.description }}</p>
           </div>
           
         </div>
@@ -46,12 +51,14 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import type { LoveStoryItem } from '@/types/invitation';
+import { resolveAssetUrl } from '@/utils/url';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const props = defineProps<{
   stories: LoveStoryItem[];
   themeConfig: ThemeConfig;
+  apiBase: string;
 }>();
 
 const sectionRef = ref<HTMLElement | null>(null);

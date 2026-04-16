@@ -672,6 +672,7 @@ onBeforeUnmount(() => {
       <component :is="activeLoveStory"
         :stories="loveStory"
         :theme-config="activeTheme"
+        :api-base="apiBase"
       />
 
       <!-- GALLERY (Dynamic per theme) -->
