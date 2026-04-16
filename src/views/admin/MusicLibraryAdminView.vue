@@ -24,7 +24,7 @@
           </p>
         </div>
         <button class="btn btn-primary btn-lg" @click="openCreateModal">
-          ➕ Tambah Lagu
+          <Icon icon="lucide:plus" style="margin-right:4px; font-size:18px;" /> Tambah Lagu
         </button>
       </div>
 
@@ -40,39 +40,74 @@
       </div>
 
       <!-- Music Table -->
-      <div v-else class="users-table-wrapper">
-        <table class="users-table">
-          <thead>
-            <tr>
-              <th>Judul Lagu</th>
-              <th>Artis</th>
-              <th>Preview Audio</th>
-              <th>Action / Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="musics.length === 0">
-              <td colspan="4" style="text-align: center; padding: 24px; color: var(--admin-text-secondary);">
-                Belum ada lagu di pustaka.
-              </td>
-            </tr>
-            <tr v-for="music in musics" :key="music.id">
-              <td><strong>{{ music.title }}</strong></td>
-              <td>{{ music.artist || '-' }}</td>
-              <td>
-                <audio controls preload="none" style="height: 32px; width: 220px;">
-                  <source :src="music.url" type="audio/mpeg" />
-                </audio>
-              </td>
-              <td>
-                <div class="action-btns">
-                  <button class="btn btn-outline btn-sm" @click="openEditModal(music)">✏️ Edit</button>
-                  <button class="btn btn-danger btn-sm" @click="confirmDelete(music)">🗑 Hapus</button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div v-else class="admin-card" style="padding: 0; overflow: hidden; border: 1px solid var(--admin-border); border-radius: 12px; background: var(--admin-surface-solid);">
+        <!-- Desktop Table -->
+        <div class="desktop-only-table" style="overflow-x: auto;">
+          <table class="users-table">
+            <thead>
+              <tr>
+                <th>Judul Lagu</th>
+                <th>Artis</th>
+                <th>Preview Audio</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="musics.length === 0">
+                <td colspan="4" style="text-align: center; padding: 32px; color: var(--admin-text-secondary);">
+                  <Icon icon="lucide:music" style="font-size: 32px; opacity: 0.5; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;" />
+                  Belum ada lagu di pustaka.
+                </td>
+              </tr>
+              <tr v-for="music in musics" :key="music.id">
+                <td><strong>{{ music.title }}</strong></td>
+                <td>{{ music.artist || '-' }}</td>
+                <td>
+                  <audio controls preload="none" style="height: 32px; width: 220px;">
+                    <source :src="music.url" type="audio/mpeg" />
+                  </audio>
+                </td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn btn-outline btn-sm action-icon-btn" @click="openEditModal(music)">
+                      <Icon icon="lucide:edit" /> Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm action-icon-btn" @click="confirmDelete(music)">
+                      <Icon icon="lucide:trash-2" /> Hapus
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mobile-only-cards">
+          <div v-if="musics.length === 0" style="text-align: center; padding: 32px; color: var(--admin-text-secondary);">
+            <Icon icon="lucide:music" style="font-size: 32px; opacity: 0.5; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;" />
+            Belum ada lagu di pustaka.
+          </div>
+          <div v-for="music in musics" :key="music.id" class="mobile-guest-card">
+            <div class="mgc-header" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+              <h4 class="mgc-name">{{ music.title }}</h4>
+              <p class="mgc-phone">Artis: {{ music.artist || '-' }}</p>
+            </div>
+            <div style="margin: 8px 0;">
+              <audio controls preload="none" style="height: 36px; width: 100%;">
+                <source :src="music.url" type="audio/mpeg" />
+              </audio>
+            </div>
+            <div class="mgc-actions">
+              <button class="btn btn-outline btn-sm" style="flex: 1; justify-content: center;" @click="openEditModal(music)">
+                <Icon icon="lucide:edit" style="margin-right:2px; font-size:16px;" /> Edit
+              </button>
+              <button class="btn btn-danger btn-sm" style="flex: 1; justify-content: center;" @click="confirmDelete(music)">
+                <Icon icon="lucide:trash-2" style="margin-right:2px; font-size:16px;" /> Hapus
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -133,6 +168,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { Icon } from '@iconify/vue';
 
 const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
 
@@ -276,12 +312,6 @@ onMounted(() => {
 
 <style scoped>
 /* Resusing the exact styles from UserManagementView for consistency */
-.users-table-wrapper {
-  overflow-x: auto;
-  border-radius: 12px;
-  border: 1px solid var(--admin-border);
-  background: var(--admin-surface-solid);
-}
 .users-table {
   width: 100%;
   border-collapse: collapse;
@@ -306,7 +336,12 @@ onMounted(() => {
 }
 .action-btns {
   display: flex;
-  gap: 6px;
+  gap: 8px;
+}
+.action-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 .error-banner {
   background: rgba(239, 68, 68, 0.08);
@@ -353,11 +388,57 @@ onMounted(() => {
   font-size: 13px;
   text-align: center;
 }
+
+/* Visibility Control */
+.mobile-only-cards {
+  display: none;
+}
+.desktop-only-table {
+  display: block;
+}
+
 @media (max-width: 768px) {
-  .users-table th,
-  .users-table td {
-    padding: 10px 12px;
+  /* Tukar tampilan table dan card */
+  .desktop-only-table { display: none; }
+  .mobile-only-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: var(--admin-bg);
+  }
+
+  /* Desain Kartu Mobile */
+  .mobile-guest-card {
+    background: white;
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .mgc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .mgc-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--admin-text);
+  }
+  .mgc-phone {
+    margin: 0;
     font-size: 13px;
+    color: var(--admin-text-secondary);
+  }
+  .mgc-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
   }
 }
 </style>
