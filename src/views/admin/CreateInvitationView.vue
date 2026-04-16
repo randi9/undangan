@@ -701,7 +701,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label">No. Rekening</label>
-                <input v-model="bank.bank_account" class="form-input" placeholder="1234567890" />
+                <input v-model="bank.bank_account" class="form-input" placeholder="1234567890" maxlength="20" />
               </div>
               <div class="form-group full-width">
                 <label class="form-label">Atas Nama</label>
