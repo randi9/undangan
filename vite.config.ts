@@ -22,4 +22,21 @@ export default defineConfig({
       '/api': 'http://localhost:3000',
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('@vue')) return 'vendor-vue';
+            if (id.includes('@supabase')) return 'vendor-supabase';
+            if (id.includes('gsap')) return 'vendor-gsap';
+            if (id.includes('@iconify')) return 'vendor-icons';
+            if (id.includes('@clerk')) return 'vendor-clerk';
+            return 'vendor-core';
+          }
+        }
+      }
+    }
+  }
 })
