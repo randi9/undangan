@@ -1,9 +1,8 @@
 <template>
-  <section v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full bg-[#eaf1f8]">
-    <div ref="sectionRef" class="w-full min-h-[100dvh] flex flex-col items-center justify-center text-center relative overflow-hidden">
-      
-      <!-- 1. The Envelope & Paper Container -->
-      <div ref="envelopeWrapper" class="relative z-10 w-[75vw] max-w-[360px] aspect-[4/5] flex flex-col items-center justify-center origin-[50%_88%] will-change-transform" style="transform: scale(5);">
+  <section ref="sectionRef" v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full min-h-[100dvh] flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#eaf1f8]">
+    
+    <!-- 1. The Envelope & Paper Container -->
+    <div ref="envelopeWrapper" class="relative w-[75vw] max-w-[360px] aspect-[4/5] flex flex-col items-center justify-center origin-[50%_88%] will-change-transform" style="transform: scale(1);">
       
       <!-- Envelope Back Flap & Inside Pocket -->
       <svg class="absolute inset-0 w-full h-full z-10 pointer-events-none drop-shadow-xl" viewBox="0 0 1000 1250" preserveAspectRatio="none">
@@ -97,8 +96,6 @@
         </div>
       </div>
     </div>
-  <!-- Close inner wrapper -->
-  </div>
   </section>
 </template>
 
@@ -136,27 +133,39 @@ onMounted(() => {
     // Zoom slightly increased based on user request ("agak gedein dikiiiit aja")
     const paperZoomScale = mql.matches ? 1.1 : 1.3; 
 
+    // Set initial states via GSAP (not inline CSS) so GSAP owns the full lifecycle
+    gsap.set(envelopeWrapper.value, { scale: 5, opacity: 1 });
+    gsap.set(introLayer.value, { opacity: 1 });
+    gsap.set(introContent.value, { opacity: 1 });
+    gsap.set(paper.value, { y: '0%', scale: 1, zIndex: 20 });
+    gsap.set(akadInfo.value, { opacity: 0, y: 15 });
+    gsap.set(resepsiInfo.value, { opacity: 0, y: 15 });
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=200%', // Decreased from 350% so events fly by snappier/faster
+        end: '+=200%',
         pin: true,
         scrub: 1, 
         anticipatePin: 1,
+        onLeave: () => {
+          // Force clean final state when unpin completes
+          gsap.set(envelopeWrapper.value, { scale: 1, opacity: 1 });
+          gsap.set(introLayer.value, { opacity: 0 });
+          gsap.set(introContent.value, { opacity: 0 });
+          gsap.set(paper.value, { y: '0%', scale: 1, zIndex: 50, clearProps: 'boxShadow' });
+          gsap.set(resepsiInfo.value, { opacity: 1, y: 0, pointerEvents: 'auto' });
+          gsap.set(akadInfo.value, { opacity: 0, pointerEvents: 'none' });
+        },
+        onEnterBack: () => {
+          // Re-enable scrub control when scrolling back
+          gsap.set(resepsiInfo.value, { pointerEvents: 'none' });
+        },
       }
     });
 
-    // --- Initial States ---
-    tl.set(envelopeWrapper.value, { scale: 5, opacity: 1 });
-    tl.set(introLayer.value, { opacity: 1 });
-    tl.set(introContent.value, { opacity: 1 });
-    tl.set(paper.value, { y: '0%', scale: 1, zIndex: 20 });
-    tl.set(akadInfo.value, { opacity: 0 });
-    tl.set(resepsiInfo.value, { opacity: 0 });
-
     // --- PHASE 1: Fade out Frame -> Zoom out Envelope ---
-    // Make 1A and 1B almost simultaneous to compress into a single scrolling stroke
     tl.to(introContent.value, {
       opacity: 0,
       duration: 0.6,
@@ -218,7 +227,17 @@ onMounted(() => {
       ease: 'power1.out',
     }, 'phase3+=0.2');
 
-    tl.to({}, { duration: 0.2 }); // Quick unpin buffer
+    // --- PHASE 4: Settle to resting state (prevents jump on unpin) ---
+    tl.addLabel('phase4');
+    tl.to(paper.value, {
+      scale: 1,
+      y: '0%',
+      boxShadow: '0 -2px 8px rgba(0,0,0,0.1)',
+      duration: 0.5,
+      ease: 'power1.inOut',
+    }, 'phase4');
+
+    tl.to({}, { duration: 0.1 }); // tiny buffer before unpin
 
   }, sectionRef.value!);
 });
