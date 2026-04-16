@@ -140,7 +140,7 @@ function onSubmit() {
 <style scoped>
 .rsvp-section {
   padding: 100px 0;
-  background-color: #f3f6f8; /* Soft blue-grey background */
+  background-color: #f8f9f9;
   text-align: center;
 }
 

@@ -42,7 +42,7 @@ defineEmits<{
 .gallery-section {
   width: 100%;
   padding: 100px 0;
-  background-color: #fffdf5; /* White-bone theme */
+  background-color: #f8f9f9;
   position: relative;
   overflow: hidden;
 }
