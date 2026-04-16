@@ -47,7 +47,7 @@
             
             <!-- Middle Row: Account Number and Action Button -->
             <div class="card-middle-row z-10 w-full flex flex-col justify-center text-left">
-              <div class="flex items-center justify-start gap-4 w-full">
+              <div class="flex items-center justify-between gap-3 w-full">
                 <span class="account-number block truncate">{{ bank.bank_account }}</span>
                 <button @click.stop="copyAccount(index)" title="Salin Nomor" class="copy-btn shrink-0">
                   <Icon :icon="copiedIndex === index ? 'lucide:check-circle-2' : 'lucide:copy'" class="text-icon" />
