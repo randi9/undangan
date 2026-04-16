@@ -23,6 +23,7 @@
               v-model="form.guest_name" 
               type="text" 
               placeholder="Masukkan nama Anda" 
+              maxlength="50"
               required 
               class="input-field" 
             />
@@ -71,6 +72,7 @@
               v-model="form.message" 
               rows="4" 
               placeholder="Tulis doa untuk kedua mempelai" 
+              maxlength="300"
               class="input-field textarea-field"
             ></textarea>
           </div>
@@ -358,8 +360,10 @@ function onSubmit() {
 
 .feed-guest-name {
   font-weight: 700;
-  color: #1a252c;
+  color: #ACCDE7;
   font-size: 1.05rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .feed-badge {
@@ -384,6 +388,8 @@ function onSubmit() {
   font-size: 0.95rem;
   line-height: 1.6;
   white-space: pre-line; /* Handle multiline breaks in text */
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .feed-reply {
@@ -407,5 +413,7 @@ function onSubmit() {
   margin: 0;
   line-height: 1.5;
   white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 </style>
