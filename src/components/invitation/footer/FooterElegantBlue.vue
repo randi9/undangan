@@ -1,8 +1,5 @@
 <template>
-  <footer style="padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background-color: #ffffff;">
-    
-    <!-- Background Gradient -->
-    <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(to bottom, #ACCDE7, #ffffff); z-index: 0;"></div>
+  <footer style="margin-top: -1px; padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background: linear-gradient(to bottom, #ACCDE7, #ffffff);" class="text-white">
     
     <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin-top: 20px;">
       <p style="font-size: clamp(34px, 8vw, 48px); margin-bottom: 16px; color: #304851; font-weight: 600; letter-spacing: 0.02em; margin-top: 0;" :style="{ fontFamily: themeConfig.fontHeading }">

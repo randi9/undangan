@@ -4,13 +4,12 @@
     <h2 class="gift-title" :style="{ fontFamily: themeConfig.fontHeading }">Wedding Gift</h2>
     <div class="gift-divider">
       <div class="gift-line"></div>
-      <span class="gift-icon text-xl">🎁</span>
+      <div class="w-1.5 h-1.5 rotate-45 bg-[#304851]/40 mx-2"></div>
       <div class="gift-line"></div>
     </div>
     
     <p class="gift-desc px-4">
-      Doa restu Anda merupakan karunia yang sangat berarti bagi kami.<br />
-      Namun, apabila Anda ingin memberikan tanda kasih, kami menyediakan amplop digital di bawah ini.
+      Kehadiran dan doa restu Anda adalah hadiah terindah. Bagi Anda yang ingin memberikan tanda kasih, dapat melalui rekening berikut:
     </p>
 
     <!-- Cards Wrapper -->
@@ -201,17 +200,16 @@ function copyAccount(index: number) {
 <style scoped>
 .gift-section {
   padding: 96px 0px;
-  background-color: #405C66;
+  background: linear-gradient(to bottom, #ffffff, #ACCDE7);
   text-align: center;
   overflow: hidden;
 }
 
 .gift-title {
-  color: #fffdf5;
+  color: #304851;
   font-size: clamp(1.875rem, 5vw, 3rem);
   margin-bottom: 8px;
   letter-spacing: 0.1em;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .gift-divider {
@@ -220,20 +218,19 @@ function copyAccount(index: number) {
   justify-content: center;
   gap: 16px;
   margin-bottom: 32px;
-  color: rgba(255, 253, 245, 0.5);
 }
 .gift-line {
   height: 1px;
   width: 64px;
-  background-color: rgba(255, 253, 245, 0.3);
+  background-color: rgba(48, 72, 81, 0.2);
 }
 
 .gift-desc {
   max-width: 36rem;
   margin: 0 auto 64px auto;
-  color: rgba(255, 253, 245, 0.8);
+  color: #405C66;
   font-size: clamp(0.875rem, 3vw, 1rem);
-  font-weight: 300;
+  font-weight: 500;
   line-height: 1.6;
 }
 
