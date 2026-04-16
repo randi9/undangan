@@ -325,8 +325,11 @@ function animateHeroOval() {
 watch(isOpened, (val) => {
   if (val) {
     heroTextItems.value = [];
+    ScrollTrigger.config({ ignoreMobileResize: true });
     nextTick(() => {
       animateHeroOval();
+      setTimeout(() => ScrollTrigger.refresh(true), 150);
+      setTimeout(() => ScrollTrigger.refresh(true), 600);
     });
   }
 });

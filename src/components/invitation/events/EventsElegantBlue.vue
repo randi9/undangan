@@ -1,5 +1,5 @@
 <template>
-  <section ref="sectionRef" v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full min-h-[100dvh] flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#eaf1f8]">
+  <section ref="sectionRef" v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full min-h-[100vh] flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#eaf1f8]">
     
     <!-- 1. The Envelope & Paper Container -->
     <div ref="envelopeWrapper" class="relative w-[75vw] max-w-[360px] aspect-[4/5] flex flex-col items-center justify-center origin-[50%_88%] will-change-transform" style="transform: scale(1);">
@@ -148,13 +148,13 @@ onMounted(() => {
         end: '+=200%',
         pin: true,
         scrub: 1, 
-        anticipatePin: 1,
+        invalidateOnRefresh: true,
         onLeave: () => {
-          // Force clean final state when unpin completes
           gsap.set(envelopeWrapper.value, { scale: 1, opacity: 1 });
           gsap.set(introLayer.value, { opacity: 0 });
           gsap.set(introContent.value, { opacity: 0 });
-          gsap.set(paper.value, { y: '0%', scale: 1, zIndex: 50, clearProps: 'boxShadow' });
+          // Keep paper scaled up and positioned out so no empty space appears above it
+          gsap.set(paper.value, { y: '-5%', scale: paperZoomScale, zIndex: 50, clearProps: 'boxShadow' });
           gsap.set(resepsiInfo.value, { opacity: 1, y: 0, pointerEvents: 'auto' });
           gsap.set(akadInfo.value, { opacity: 0, pointerEvents: 'none' });
         },
@@ -226,16 +226,6 @@ onMounted(() => {
       duration: 0.5,
       ease: 'power1.out',
     }, 'phase3+=0.2');
-
-    // --- PHASE 4: Settle to resting state (prevents jump on unpin) ---
-    tl.addLabel('phase4');
-    tl.to(paper.value, {
-      scale: 1,
-      y: '0%',
-      boxShadow: '0 -2px 8px rgba(0,0,0,0.1)',
-      duration: 0.5,
-      ease: 'power1.inOut',
-    }, 'phase4');
 
     tl.to({}, { duration: 0.1 }); // tiny buffer before unpin
 

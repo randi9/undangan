@@ -1,5 +1,5 @@
 <template>
-  <section v-if="hasDate" class="relative w-full min-h-[66dvh] flex flex-col justify-start items-center px-4 md:px-6 text-center overflow-hidden bg-cover bg-center" style="background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.7)), url('https://media.mengundanganda.com/elegant_blue/counter%20section/sashkeh_13981e70-5a12-4fee-afd6-933ade9180f5.webp')">
+  <section v-if="hasDate" class="relative w-full min-h-[66vh] flex flex-col justify-start items-center px-4 md:px-6 text-center overflow-hidden bg-cover bg-center" style="background-image: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.7)), url('https://media.mengundanganda.com/elegant_blue/counter%20section/sashkeh_13981e70-5a12-4fee-afd6-933ade9180f5.webp')">
     <img src="https://media.mengundanganda.com/elegant_blue/counter%20section/sashkeh_4975839d-8e5c-4226-a1da-b47f64878474.webp" alt="decoration" class="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 pointer-events-none z-0 mix-blend-multiply opacity-90" />
     <!-- Header -->
     <h2 class="relative z-10 text-3xl md:text-5xl mb-1 text-[#F8F9FA] tracking-widest" :style="{ fontFamily: themeConfig.fontHeading, marginTop: '15%', marginBottom:'10px', textShadow: '1px 2px 2px rgba(0, 0, 0, 0.4)' }">Menghitung Hari</h2>

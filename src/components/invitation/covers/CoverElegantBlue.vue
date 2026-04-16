@@ -8,7 +8,7 @@
   >
     <!-- Background Image -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex justify-center items-center">
-      <img src="https://media.mengundanganda.com/Gemini_Generated_Image_y984ky984ky984ky.png" alt="Floral Background" style="height: 100%; width: auto; min-width: 100%; object-fit: cover; opacity: 0.7;" />
+      <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_a18ff182-db38-4b9c-b0b4-95c217a01b47.webp" alt="Floral Background" style="height: 100%; width: auto; min-width: 100%; object-fit: cover; opacity: 0.7;" />
       <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.25);"></div>
     </div>
 
@@ -24,7 +24,7 @@
       
       <!-- Bingkai Image (Tengah) -->
       <div v-if="coverImage" style="position: relative; width: 260px; height: 260px; display: flex; align-items: center; justify-content: center; margin-top: auto; margin-bottom: auto; z-index: 10;">
-        <img src="https://media.mengundanganda.com/desain%20web%20elegan%20blue%20(3).png" alt="Frame" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2;" />
+        <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_bc0c2c01-2fff-42ae-a363-827fbe4ecd00.webp" alt="Frame" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2;" />
         <img :src="coverImage" alt="Cover" style="width: 70%; height: 70%; object-fit: cover; border-radius: 50%; z-index: 1;" />
       </div>
 

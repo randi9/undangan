@@ -1,5 +1,5 @@
 <template>
-  <section ref="sectionRef" class="relative px-4 md:px-8 text-center overflow-hidden flex flex-col items-center justify-start min-h-[100dvh]" style="background-color: #f8f9f9; padding: 60px 24px 100px 24px;">
+  <section ref="sectionRef" class="relative px-4 md:px-8 text-center overflow-hidden flex flex-col items-center justify-start min-h-[100vh]" style="background-color: #f8f9f9; padding: 60px 24px 100px 24px;">
     
     <!-- Textured Paper Background Overlay -->
     <div class="absolute inset-0 z-0 pointer-events-none mix-blend-multiply opacity-[0.15]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E');"></div>
@@ -196,10 +196,7 @@ onMounted(() => {
     // Explicitly hide slots dynamically as a fallback
     gsap.set([groomSlotRef.value, brideSlotRef.value], { opacity: 0 });
 
-    // Force ScrollTrigger to refresh bounds after layout computations
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
+
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -265,12 +262,12 @@ onMounted(() => {
     tl.set([groomSlotRef.value, brideSlotRef.value, realGroomImgRef.value, realBrideImgRef.value].filter(Boolean), { opacity: 1 }, 2.0);
     tl.set([animGroomRef.value, animBrideRef.value, coverOvalRef.value].filter(Boolean), { opacity: 0 }, 2.0);
 
-    // 6. Fade in decorations right after photo is placed
+    // 6. Fade in decorations right as the pictures lock into their grids
     tl.to([groomDecoRef.value, brideDecoRef.value].filter(Boolean), {
       opacity: 1,
-      duration: 1,
+      duration: 0.3,
       ease: "power2.out"
-    }, 2.0);
+    }, 1.8);
 
   }, sectionRef.value);
 });
