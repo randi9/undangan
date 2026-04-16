@@ -6,7 +6,7 @@
       <h2 class="rsvp-title" :style="{ fontFamily: themeConfig.fontHeading }">RSVP</h2>
       <div class="rsvp-divider">
         <div class="divider-line"></div>
-        <span class="divider-icon">💌</span>
+        <div class="w-1.5 h-1.5 rotate-45 bg-[#304851]/40 mx-2"></div>
         <div class="divider-line"></div>
       </div>
       <p class="rsvp-subtitle">
@@ -38,7 +38,7 @@
                 class="attendance-btn"
                 :class="{ 'active-hadir': form.attendance === 'hadir' }"
               >
-                ✅ Hadir
+                Hadir
               </button>
               <button 
                 type="button" 
@@ -46,7 +46,7 @@
                 class="attendance-btn"
                 :class="{ 'active-absen': form.attendance === 'tidak_hadir' }"
               >
-                ❌ Tidak Hadir
+                Tidak Hadir
               </button>
             </div>
           </div>
@@ -153,7 +153,7 @@ function onSubmit() {
 /* Header Text */
 .rsvp-title {
   color: #1a252c;
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   margin-bottom: 8px;
   letter-spacing: 0.05em;
 }
@@ -170,22 +170,19 @@ function onSubmit() {
   width: 48px;
   background-color: rgba(48,72,81,0.2);
 }
-.divider-icon {
-  font-size: 1.25rem;
-}
 
 .rsvp-subtitle {
   color: #304851;
-  font-size: clamp(0.9rem, 3vw, 1.1rem);
-  font-weight: 300;
-  margin-bottom: 48px;
+  font-size: clamp(0.85rem, 3vw, 1rem);
+  font-weight: 400;
+  margin-bottom: 32px;
 }
 
 /* Form Card */
 .rsvp-card {
   background-color: #ffffff;
-  padding: 32px 24px;
-  border-radius: 24px;
+  padding: 24px 20px;
+  border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.05);
   border: 1px solid rgba(0,0,0,0.03);
   text-align: left;
@@ -193,33 +190,33 @@ function onSubmit() {
 }
 @media (min-width: 768px) {
   .rsvp-card {
-    padding: 48px 40px;
+    padding: 32px 32px;
   }
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .input-label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #304851;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .input-field {
   width: 100%;
-  padding: 14px 16px;
-  border-radius: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
   border: 1px solid rgba(0,0,0,0.1);
   background-color: #fafafa;
   color: #1a252c;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.9rem;
   outline: none;
   transition: all 0.2s ease;
 }
@@ -231,25 +228,20 @@ function onSubmit() {
 
 .textarea-field {
   resize: vertical;
-  min-height: 100px;
+  min-height: 80px;
 }
 
 /* Attendance Buttons */
 .attendance-options {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-@media (min-width: 480px) {
-  .attendance-options {
-    flex-direction: row;
-  }
+  flex-direction: row;
+  gap: 8px;
 }
 
 .attendance-btn {
   flex: 1;
-  padding: 14px;
-  border-radius: 12px;
+  padding: 12px 8px;
+  border-radius: 10px;
   border: 1px solid rgba(0,0,0,0.1);
   background-color: #ffffff;
   color: #64748b;
