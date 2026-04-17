@@ -502,23 +502,23 @@
                 </div>
                 <div class="form-group">
                   <label class="form-label">Waktu (Mulai - Selesai)</label>
-                  <div style="display: flex; gap: 6px; align-items: center;">
-                    <input
-                      v-model="akadStart"
-                      type="time"
-                      class="form-input"
-                      style="flex: 1; min-width: 0; padding-left: 8px; padding-right: 4px;"
-                      @keydown.enter.prevent
-                    />
-                    <span style="color: var(--admin-text-secondary); font-weight: 500;">-</span>
-                    <input
-                      v-model="akadEnd"
-                      type="time"
-                      class="form-input"
-                      style="flex: 1; min-width: 0; padding-left: 8px; padding-right: 4px;"
-                      @keydown.enter.prevent
-                    />
-                    <select v-model="akadZone" class="form-input" style="width: 72px; flex-shrink: 0; padding-left: 6px; padding-right: 6px;">
+                  <div class="time-input-group">
+                    <div class="time-range-row">
+                      <input
+                        v-model="akadStart"
+                        type="time"
+                        class="form-input"
+                        @keydown.enter.prevent
+                      />
+                      <span class="time-separator">-</span>
+                      <input
+                        v-model="akadEnd"
+                        type="time"
+                        class="form-input"
+                        @keydown.enter.prevent
+                      />
+                    </div>
+                    <select v-model="akadZone" class="form-input time-zone-select">
                       <option value="WIB">WIB</option>
                       <option value="WITA">WITA</option>
                       <option value="WIT">WIT</option>
@@ -584,23 +584,23 @@
                 </div>
                 <div class="form-group">
                   <label class="form-label">Waktu (Mulai - Selesai)</label>
-                  <div style="display: flex; gap: 6px; align-items: center;">
-                    <input
-                      v-model="resepsiStart"
-                      type="time"
-                      class="form-input"
-                      style="flex: 1; min-width: 0; padding-left: 8px; padding-right: 4px;"
-                      @keydown.enter.prevent
-                    />
-                    <span style="color: var(--admin-text-secondary); font-weight: 500;">-</span>
-                    <input
-                      v-model="resepsiEnd"
-                      type="time"
-                      class="form-input"
-                      style="flex: 1; min-width: 0; padding-left: 8px; padding-right: 4px;"
-                      @keydown.enter.prevent
-                    />
-                    <select v-model="resepsiZone" class="form-input" style="width: 72px; flex-shrink: 0; padding-left: 6px; padding-right: 6px;">
+                  <div class="time-input-group">
+                    <div class="time-range-row">
+                      <input
+                        v-model="resepsiStart"
+                        type="time"
+                        class="form-input"
+                        @keydown.enter.prevent
+                      />
+                      <span class="time-separator">-</span>
+                      <input
+                        v-model="resepsiEnd"
+                        type="time"
+                        class="form-input"
+                        @keydown.enter.prevent
+                      />
+                    </div>
+                    <select v-model="resepsiZone" class="form-input time-zone-select">
                       <option value="WIB">WIB</option>
                       <option value="WITA">WITA</option>
                       <option value="WIT">WIT</option>
@@ -1482,6 +1482,45 @@
   color: #dc2626;
   font-weight: 500;
   animation: fadeIn 0.3s ease;
+}
+
+/* Responsive Time Input */
+.time-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.time-range-row {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  align-items: center;
+}
+.time-range-row .form-input {
+  flex: 1;
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 4px;
+}
+.time-separator {
+  color: var(--admin-text-secondary);
+  font-weight: 500;
+}
+.time-zone-select {
+  width: 84px;
+  flex-shrink: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+@media (max-width: 480px) {
+  .time-input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .time-zone-select {
+    width: 100%;
+  }
 }
 </style>
 
