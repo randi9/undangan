@@ -1491,13 +1491,15 @@
   align-items: center;
 }
 .time-range-row {
-  display: flex;
-  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 8px;
   align-items: center;
+  width: 100%;
+  flex: 1;
 }
 .time-range-row .form-input {
-  flex: 1;
+  width: 100%;
   min-width: 0;
   padding-left: 8px;
   padding-right: 4px;
