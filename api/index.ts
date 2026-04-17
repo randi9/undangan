@@ -136,6 +136,71 @@ app.delete("/api/auth/users/:id", requireAuth, requireAdmin, deleteUserHandler);
 app.get("/api/auth/users/:id/invitations", requireAuth, requireAdmin, getUserInvitationsHandler);
 
 // =============================================================
+//  MUSIC LIBRARY
+// =============================================================
+
+app.get("/api/music", async (req: any, res: any) => {
+  try {
+    const { data, error } = await supabase
+      .from("music_library")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal mengambil Pustaka Lagu" });
+  }
+});
+
+app.post("/api/music", requireAuth, requireAdmin, async (req: any, res: any) => {
+  try {
+    const { title, artist, url } = req.body;
+    if (!title || !url) return res.status(400).json({ error: "Judul dan URL wajib diisi" });
+    
+    const { data, error } = await supabase
+      .from("music_library")
+      .insert([{ title, artist, url, created_at: new Date().toISOString() }])
+      .select()
+      .single();
+      
+    if (error) throw error;
+    res.status(201).json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal menambahkan lagu" });
+  }
+});
+
+app.put("/api/music/:id", requireAuth, requireAdmin, async (req: any, res: any) => {
+  try {
+    const { title, artist, url } = req.body;
+    const { id } = req.params;
+    
+    const { data, error } = await supabase
+      .from("music_library")
+      .update({ title, artist, url })
+      .eq("id", id)
+      .select()
+      .single();
+      
+    if (error) throw error;
+    res.json(data);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal mengubah lagu" });
+  }
+});
+
+app.delete("/api/music/:id", requireAuth, requireAdmin, async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    const { error } = await supabase.from("music_library").delete().eq("id", id);
+    if (error) throw error;
+    res.json({ message: "Lagu dihapus" });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || "Gagal menghapus lagu" });
+  }
+});
+
+// =============================================================
 //  INVITATIONS
 // =============================================================
 

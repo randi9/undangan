@@ -62,7 +62,7 @@
               <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:pencil" style="color: var(--admin-primary);" /> Edit Undangan</span>
               <button 
                 class="btn btn-outline btn-sm mobile-only" 
-                @click="showMobilePreview = true"
+                @click="previewPanel?.openMobilePreview()"
                 style="border-radius: 20px; font-weight: 600;"
               >
                 👀 Preview
@@ -73,7 +73,55 @@
             </p>
 
             <form @submit.prevent="handleSubmit">
-          <!-- Theme Selector -->
+
+            <!-- Wizard Stepper -->
+            <div class="wizard-stepper">
+              <template v-for="(step, i) in wizard.steps" :key="step.id">
+                <div
+                  class="wizard-step"
+                  :class="{ active: i === wizard.currentStepIndex.value, completed: i < wizard.currentStepIndex.value }"
+                  @click="wizard.goToStep(i)"
+                >
+                  <div class="wizard-step-number">
+                    <Icon v-if="i < wizard.currentStepIndex.value" icon="lucide:check" style="font-size: 14px;" />
+                    <span v-else>{{ i + 1 }}</span>
+                  </div>
+                  <span class="wizard-step-label">{{ step.label }}</span>
+                </div>
+                <div
+                  v-if="i < wizard.steps.length - 1"
+                  class="wizard-step-connector"
+                  :class="{ completed: i < wizard.currentStepIndex.value }"
+                />
+              </template>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="wizard-progress">
+              <div class="wizard-progress-bar" :style="{ width: wizard.progress.value + '%' }" />
+            </div>
+
+            <!-- Validation Errors Banner -->
+            <Transition name="fade">
+              <div v-if="wizard.showStepErrors.value && wizard.stepErrors.value.length > 0" class="wizard-errors">
+                <div class="wizard-errors-header">
+                  <span style="display: flex; align-items: center; gap: 6px;">
+                    <Icon icon="lucide:alert-circle" style="font-size: 16px;" />
+                    Lengkapi field berikut sebelum lanjut:
+                  </span>
+                  <button type="button" class="wizard-errors-close" @click="wizard.dismissErrors()">
+                    <Icon icon="lucide:x" style="font-size: 14px;" />
+                  </button>
+                </div>
+                <ul class="wizard-errors-list">
+                  <li v-for="(err, i) in wizard.stepErrors.value" :key="i">{{ err }}</li>
+                </ul>
+              </div>
+            </Transition>
+
+            <!-- Step 1: Tema & URL -->
+            <div v-show="wizard.currentStepIndex.value === 0" class="wizard-step-content">
+           <!-- Theme Selector -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:palette" style="color: var(--admin-primary);" /> Tema Undangan</h3>
             
@@ -93,7 +141,7 @@
             <h3 class="form-section-title"><Icon icon="lucide:link" style="color: var(--admin-primary);" /> URL Undangan</h3>
             <p class="form-section-subtitle">Slug unik untuk alamat undangan</p>
             <div class="form-group">
-              <label class="form-label">Slug (URL)</label>
+              <label class="form-label">Slug (URL) <span class="text-error" style="color: #dc2626;">*</span></label>
               <div style="position: relative;">
                 <input
                   v-model="form.slug"
@@ -101,6 +149,7 @@
                   :class="{ 'input-error': slugStatus === 'taken', 'input-success': slugStatus === 'available' }"
                   placeholder="contoh: andi-sarah"
                   required
+                  maxlength="50"
                   pattern="[a-z0-9-]+"
                   title="Hanya huruf kecil, angka, dan tanda hubung"
                   @input="handleSlugInput"
@@ -133,19 +182,39 @@
                   </button>
                 </div>
               </div>
-              <small v-else-if="slugStatus === 'available'" style="color: #10b981; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px;">
-                <Icon icon="lucide:check" /> Link tersedia!
+              <small v-else-if="slugStatus === 'available'" style="color: #10b981; font-size: 13px; font-weight: 500; display: flex; align-items: flex-start; gap: 6px; margin-top: 6px;">
+                <Icon icon="lucide:check" style="flex-shrink: 0; margin-top: 2px;" /> 
+                <span style="word-break: break-word; line-height: 1.4;"><strong>{{ form.slug }}</strong>.mengundanganda.com tersedia!</span>
               </small>
-              <small v-else style="color: var(--admin-text-secondary); font-size: 12px; margin-top: 4px; display: block;">
-                Undangan akan bisa diakses di: <strong>{{ form.slug || "slug-anda" }}.mengundanganda.com</strong>
+              <small v-else style="color: var(--admin-text-secondary); font-size: 12px; margin-top: 6px; display: block; line-height: 1.4;">
+                Undangan akan bisa diakses di: <strong style="word-break: break-word;">{{ form.slug || "slug-anda" }}.mengundanganda.com</strong>
               </small>
             </div>
           </div>
 
+            <!-- Wizard Nav Step 1 -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <router-link to="/dashboard" class="btn btn-outline">Batal</router-link>
+              </div>
+              <div class="wizard-nav-right">
+                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
+                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
+                </button>
+              </div>
+            </div>
+            </div>
+
+            <!-- Step 2: Data Mempelai -->
+            <div v-show="wizard.currentStepIndex.value === 1" class="wizard-step-content">
           <!-- Couple Info -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:users" style="color: var(--admin-primary);" /> Informasi Pasangan</h3>
             <p class="form-section-subtitle">Data mempelai pria dan wanita</p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Hanya <strong>Nama Panggilan & Nama Lengkap</strong> yang wajib. Data orang tua dan foto opsional, namun akan terlihat lebih berkesan jika diisi lengkap.</span>
+            </div>
 
             <div class="split-grid">
               <div>
@@ -192,24 +261,25 @@
                   "
                 >
                   <div class="form-group">
-                    <label class="form-label">Nama Panggilan *</label>
+                    <label class="form-label">Nama Panggilan <span class="text-error" style="color: #dc2626;">*</span></label>
                     <input
                       v-model="form.groom_name"
                       class="form-input"
                       required
+                      maxlength="20"
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Nama Lengkap</label>
-                    <input v-model="form.groom_full_name" class="form-input" />
+                    <label class="form-label">Nama Lengkap <span class="text-error" style="color: #dc2626;">*</span></label>
+                    <input v-model="form.groom_full_name" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">Putra dari Bapak</label>
-                    <input v-model="form.groom_father" class="form-input" />
+                    <input v-model="form.groom_father" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">dan Ibu</label>
-                    <input v-model="form.groom_mother" class="form-input" />
+                    <input v-model="form.groom_mother" class="form-input" maxlength="60" />
                   </div>
                 </div>
               </div>
@@ -258,24 +328,25 @@
                   "
                 >
                   <div class="form-group">
-                    <label class="form-label">Nama Panggilan *</label>
+                    <label class="form-label">Nama Panggilan <span class="text-error" style="color: #dc2626;">*</span></label>
                     <input
                       v-model="form.bride_name"
                       class="form-input"
                       required
+                      maxlength="20"
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Nama Lengkap</label>
-                    <input v-model="form.bride_full_name" class="form-input" />
+                    <label class="form-label">Nama Lengkap <span class="text-error" style="color: #dc2626;">*</span></label>
+                    <input v-model="form.bride_full_name" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">Putri dari Bapak</label>
-                    <input v-model="form.bride_father" class="form-input" />
+                    <input v-model="form.bride_father" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">dan Ibu</label>
-                    <input v-model="form.bride_mother" class="form-input" />
+                    <input v-model="form.bride_mother" class="form-input" maxlength="60" />
                   </div>
                 </div>
               </div>
@@ -288,6 +359,10 @@
             <p class="form-section-subtitle">
               Foto utama yang ditampilkan di halaman depan undangan
             </p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Gunakan foto <strong>portrait</strong> (tegak) untuk hasil terbaik. Foto prewedding sangat direkomendasikan!</span>
+            </div>
             <div
               class="photo-upload-zone"
               @click="($refs.coverPhotoInput as HTMLInputElement).click()"
@@ -322,12 +397,33 @@
             />
           </div>
 
+            <!-- Wizard Nav Step 2 -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
+                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
+                </button>
+              </div>
+              <div class="wizard-nav-right">
+                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
+                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
+                </button>
+              </div>
+            </div>
+            </div>
+
+            <!-- Step 3: Detail Acara -->
+            <div v-show="wizard.currentStepIndex.value === 2" class="wizard-step-content">
           <!-- Event Details -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:calendar-days" style="color: var(--admin-primary);" /> Detail Acara</h3>
             <p class="form-section-subtitle">
               Informasi waktu dan tempat acara
             </p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Jadwal <strong>Akad Nikah wajib diisi</strong> (Tanggal, Waktu Mulai, Tempat, Alamat). Jadwal Resepsi sepenuhnya opsional.</span>
+            </div>
 
             <div class="split-grid">
               <div
@@ -345,7 +441,7 @@
                 </h4>
                 <div style="display: flex; flex-direction: column; gap: 12px">
                   <div class="form-group">
-                    <label class="form-label">Tanggal</label>
+                    <label class="form-label">Tanggal <span class="text-error" style="color: #dc2626;">*</span></label>
                     <input
                       v-model="form.akad_date"
                       type="date"
@@ -353,24 +449,49 @@
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Waktu</label>
-                    <input v-model="form.akad_time" class="form-input" />
+                    <label class="form-label">Waktu (Mulai <span class="text-error" style="color: #dc2626;">*</span> - Selesai)</label>
+                    <div class="time-input-group">
+                      <div class="time-range-row">
+                        <input
+                          v-model="akadStart"
+                          type="time"
+                          class="form-input"
+                          @keydown.enter.prevent
+                        />
+                        <span class="time-separator">-</span>
+                        <input
+                          v-model="akadEnd"
+                          type="time"
+                          class="form-input"
+                          @keydown.enter.prevent
+                        />
+                      </div>
+                      <select v-model="akadZone" class="form-input time-zone-select">
+                        <option value="WIB">WIB</option>
+                        <option value="WITA">WITA</option>
+                        <option value="WIT">WIT</option>
+                      </select>
+                    </div>
+                    <p v-if="akadStart && akadEnd && akadStart >= akadEnd" class="time-error-hint">
+                      <Icon icon="lucide:alert-circle" style="font-size: 13px; flex-shrink: 0;" /> Waktu selesai harus lebih dari waktu mulai
+                    </p>
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Tempat</label>
-                    <input v-model="form.akad_venue" class="form-input" />
+                    <label class="form-label">Tempat <span class="text-error" style="color: #dc2626;">*</span></label>
+                    <input v-model="form.akad_venue" class="form-input" maxlength="100" />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Alamat</label>
+                    <label class="form-label">Alamat <span class="text-error" style="color: #dc2626;">*</span></label>
                     <textarea
                       v-model="form.akad_address"
                       class="form-input"
                       rows="2"
+                      maxlength="200"
                     ></textarea>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Link Google Maps</label>
-                    <input v-model="form.akad_map_url" class="form-input" />
+                    <input v-model="form.akad_map_url" class="form-input" maxlength="500" />
                   </div>
                 </div>
               </div>
@@ -398,12 +519,36 @@
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Waktu</label>
-                    <input v-model="form.resepsi_time" class="form-input" />
+                    <label class="form-label">Waktu (Mulai - Selesai)</label>
+                    <div class="time-input-group">
+                      <div class="time-range-row">
+                        <input
+                          v-model="resepsiStart"
+                          type="time"
+                          class="form-input"
+                          @keydown.enter.prevent
+                        />
+                        <span class="time-separator">-</span>
+                        <input
+                          v-model="resepsiEnd"
+                          type="time"
+                          class="form-input"
+                          @keydown.enter.prevent
+                        />
+                      </div>
+                      <select v-model="resepsiZone" class="form-input time-zone-select">
+                        <option value="WIB">WIB</option>
+                        <option value="WITA">WITA</option>
+                        <option value="WIT">WIT</option>
+                      </select>
+                    </div>
+                    <p v-if="resepsiStart && resepsiEnd && resepsiStart >= resepsiEnd" class="time-error-hint">
+                      <Icon icon="lucide:alert-circle" style="font-size: 13px; flex-shrink: 0;" /> Waktu selesai harus lebih dari waktu mulai
+                    </p>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Tempat</label>
-                    <input v-model="form.resepsi_venue" class="form-input" />
+                    <input v-model="form.resepsi_venue" class="form-input" maxlength="100" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">Alamat</label>
@@ -411,23 +556,45 @@
                       v-model="form.resepsi_address"
                       class="form-input"
                       rows="2"
+                      maxlength="200"
                     ></textarea>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Link Google Maps</label>
-                    <input v-model="form.resepsi_map_url" class="form-input" />
+                    <input v-model="form.resepsi_map_url" class="form-input" maxlength="500" />
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
+            <!-- Wizard Nav Step 3 -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
+                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
+                </button>
+              </div>
+              <div class="wizard-nav-right">
+                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
+                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
+                </button>
+              </div>
+            </div>
+            </div>
+
+            <!-- Step 4: Konten -->
+            <div v-show="wizard.currentStepIndex.value === 3" class="wizard-step-content">
           <!-- Love Story -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:heart" style="color: var(--admin-primary);" /> Love Story</h3>
             <p class="form-section-subtitle">
-              Ceritakan perjalanan cinta kalian
+              Ceritakan perjalanan cinta kalian (opsional)
             </p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Klik <strong>"+ Tambah Cerita"</strong> untuk menambahkan momen, misalnya: "2020 — Pertama Bertemu", "2023 — Lamaran". Bagian ini opsional.</span>
+            </div>
 
             <div
               v-for="(story, index) in form.love_story"
@@ -465,17 +632,20 @@
                   v-model="story.date"
                   class="form-input"
                   placeholder="Tahun/Tanggal"
+                  maxlength="20"
                 />
                 <input
                   v-model="story.title"
                   class="form-input"
                   placeholder="Judul"
+                  maxlength="50"
                 />
                 <textarea
                   v-model="story.description"
                   class="form-input"
                   placeholder="Ceritakan momen ini..."
                   rows="2"
+                  maxlength="300"
                 ></textarea>
               </div>
               <button
@@ -513,6 +683,10 @@
             <p class="form-section-subtitle">
               Upload foto-foto prewedding atau momen spesial
             </p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Bisa upload banyak foto sekaligus. Pilih mode <strong>Carousel</strong> (slideshow) atau <strong>Masonry</strong> (grid bertumpuk). Bagian ini opsional.</span>
+            </div>
 
             <!-- Gallery Type Selector -->
             <div class="gallery-type-selector">
@@ -573,20 +747,46 @@
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:quote" style="color: var(--admin-primary);" /> Kutipan / Ayat</h3>
             <p class="form-section-subtitle">Kutipan atau ayat yang ditampilkan di undangan</p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Contoh: Kutipan dari film, puisi, atau kitab suci (Ar-Rum ayat 21). Kosongkan jika tidak diperlukan.</span>
+            </div>
             <div class="form-group">
               <label class="form-label">Kutipan / Ayat</label>
               <textarea
                 v-model="form.quote"
                 class="form-input"
                 rows="3"
+                maxlength="500"
               ></textarea>
             </div>
           </div>
 
+            <!-- Wizard Nav Step 4 -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
+                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
+                </button>
+              </div>
+              <div class="wizard-nav-right">
+                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
+                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
+                </button>
+              </div>
+            </div>
+            </div>
+
+            <!-- Step 5: Lainnya -->
+            <div v-show="wizard.currentStepIndex.value === 4" class="wizard-step-content">
           <!-- Bank Accounts (Gift) -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:wallet" style="color: var(--admin-primary);" /> Informasi Bank (Gift)</h3>
-            <p class="form-section-subtitle">Rekening untuk amplop digital. Bisa lebih dari satu.</p>
+            <p class="form-section-subtitle">Rekening untuk amplop digital. Bisa lebih dari satu. (opsional)</p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Tamu bisa mengirim hadiah uang digital. Klik <strong>"+ Tambah Rekening"</strong> lalu isi nama bank, nomor rekening, dan atas nama. Maksimal 2 rekening.</span>
+            </div>
 
             <div
               v-for="(bank, index) in form.banks"
@@ -607,7 +807,7 @@
               <div class="form-grid">
                 <div class="form-group">
                   <label class="form-label">Nama Bank</label>
-                  <input v-model="bank.bank_name" class="form-input" placeholder="BCA" />
+                  <input v-model="bank.bank_name" class="form-input" placeholder="BCA" maxlength="50" />
                 </div>
                 <div class="form-group">
                   <label class="form-label">No. Rekening</label>
@@ -615,7 +815,7 @@
                 </div>
                 <div class="form-group full-width">
                   <label class="form-label">Atas Nama</label>
-                  <input v-model="bank.bank_holder" class="form-input" placeholder="Ahmad Andi Pratama" />
+                  <input v-model="bank.bank_holder" class="form-input" placeholder="Ahmad Andi Pratama" maxlength="60" />
                 </div>
               </div>
             </div>
@@ -633,6 +833,10 @@
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:music" style="color: var(--admin-primary);" /> Musik Latar</h3>
             <p class="form-section-subtitle">Lagu yang berputar otomatis saat undangan dibuka</p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Setiap tema sudah memiliki musik default. Kamu bisa menggantinya dengan upload lagu sendiri, music default, atau dari pustaka lagu.</span>
+            </div>
             <div class="form-group">
               <!-- Musik Default Aktif -->
               <div v-if="form.music_url && isCurrentMusicDefault" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 20px;">
@@ -644,9 +848,17 @@
                   </div>
                 </div>
                 <audio controls :src="form.music_url" style="width: 100%; height: 40px; margin-bottom: 12px;"></audio>
-                <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
-                  <Icon icon="lucide:upload" style="font-size: 14px;" /> Ganti dengan Lagu Sendiri
-                </button>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
+                    <Icon icon="lucide:upload" style="font-size: 14px;" /> Upload Lagu
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm" @click.stop="openMusicLibrary" style="font-size: 13px;">
+                    <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic" style="font-size: 13px;">
+                    <Icon icon="lucide:volume-x" style="font-size: 14px;" /> Tanpa Lagu
+                  </button>
+                </div>
               </div>
               <!-- Musik Custom (Upload User) -->
               <div v-else-if="form.music_url" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 20px;">
@@ -660,13 +872,16 @@
                 <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 40px; margin-bottom: 12px;"></audio>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
-                    <Icon icon="lucide:upload" style="font-size: 14px;" /> Ganti Lagu
+                    <Icon icon="lucide:upload" style="font-size: 14px;" /> Upload Lagu
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm" @click.stop="openMusicLibrary" style="font-size: 13px;">
+                    <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
                   </button>
                   <button type="button" class="btn btn-outline btn-sm" @click.stop="restoreDefaultMusic" style="font-size: 13px;">
-                    <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Kembalikan ke Default
+                    <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Lagu Default
                   </button>
                   <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic" style="font-size: 13px;">
-                    Hapus Lagu
+                    Hapus
                   </button>
                 </div>
               </div>
@@ -675,9 +890,14 @@
                 <Icon icon="lucide:music-4" class="upload-icon" style="color: var(--admin-text-secondary);" />
                 <div class="upload-text">Upload File Audio</div>
                 <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 20MB</div>
-                <button type="button" class="btn btn-outline btn-sm" style="margin-top: 12px; font-size: 13px;" @click.stop="restoreDefaultMusic">
-                  <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Gunakan Musik Default
-                </button>
+                <div style="display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-outline btn-sm" style="font-size: 13px;" @click.stop="restoreDefaultMusic">
+                    <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Lagu Default
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm" style="font-size: 13px;" @click.stop="openMusicLibrary">
+                    <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
+                  </button>
+                </div>
               </div>
               <input
                 ref="musicFileInput"
@@ -689,73 +909,86 @@
             </div>
           </div>
 
-          <!-- Submit -->
-          <div
-            style="
-              display: flex;
-              gap: 12px;
-              justify-content: flex-end;
-              margin-top: 24px;
-            "
-          >
-            <router-link to="/dashboard" class="btn btn-outline btn-lg"
-              >Batal</router-link
-            >
-            <button
-              type="submit"
-              class="btn btn-primary btn-lg"
-              :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'"
-            >
-              <span
-                v-if="submitting"
-                class="loading-spinner"
-                style="margin-right: 8px"
-              ></span>
-              <span v-if="!submitting" style="margin-right: 8px; vertical-align: -3px;"><Icon icon="lucide:save" /></span>
-              {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
-            </button>
-          </div>
+            <!-- Wizard Nav Step 5 (Final) -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
+                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
+                </button>
+              </div>
+              <div class="wizard-nav-right">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg"
+                  :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'"
+                >
+                  <span v-if="submitting" class="loading-spinner" style="margin-right: 8px"></span>
+                  <span v-if="!submitting" style="margin-right: 8px; vertical-align: -3px;"><Icon icon="lucide:save" /></span>
+                  {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
+                </button>
+              </div>
+            </div>
+            </div>
             </form>
           </div>
 
-          <!-- Area Kanan: Live Preview (Desktop) -->
-          <div class="editor-preview-area">
-            <!-- Iframe Live Preview -->
-            <iframe 
-              ref="previewIframe" 
-              class="editor-preview-iframe"
-              :src="`/invitation/preview`"
-              title="Live Preview"
-            ></iframe>
+          <!-- Live Preview Panel Component -->
+          <LivePreviewPanel ref="previewPanel" :form="form" />
+        </div>
+
+        <!-- Modal Pustaka Lagu -->
+        <div v-if="showMusicModal" class="modal-overlay" @click.self="showMusicModal = false">
+          <div class="modal-content" style="max-width: 600px; width: 90%; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+              <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:library_music" style="color: var(--admin-primary)" /> Pustaka Lagu</span>
+              <button type="button" class="btn btn-outline btn-sm" @click="showMusicModal = false" style="border: none; padding: 4px;">
+                <Icon icon="lucide:x" style="font-size: 20px;" />
+              </button>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+              <input type="text" v-model="searchMusicQuery" placeholder="Cari judul lagu atau artis..." style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--admin-border); background: var(--admin-surface); font-size: 14px; outline: none; box-sizing: border-box;" />
+            </div>
+            
+            <div v-if="musicLibraryLoading" style="text-align: center; padding: 40px 0;">
+              <div class="loading-spinner"></div>
+              <div style="margin-top:12px; color:var(--admin-text-secondary); font-size:14px;">Memuat pustaka lagu...</div>
+            </div>
+            <div v-else-if="musicLibrary.length === 0" style="text-align: center; padding: 40px 0; color:var(--admin-text-secondary); font-size:14px;">
+              Belum ada pustaka lagu yang tersedia.
+            </div>
+            <div v-else-if="filteredMusicLibrary.length === 0" style="text-align: center; padding: 40px 0; color:var(--admin-text-secondary); font-size:14px;">
+              Lagu tidak ditemukan.
+            </div>
+            <div v-else style="flex: 1; overflow-y: auto; padding-right: 8px; display: flex; flex-direction: column; gap: 12px; text-align: left;">
+              <div 
+                v-for="music in filteredMusicLibrary" 
+                :key="music.id" 
+                style="border: 1px solid var(--admin-border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--admin-surface);"
+              >
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+                  <div style="text-align: left; word-break: break-word;">
+                    <div style="font-weight: 600; font-size: 15px; color: var(--admin-text); line-height: 1.3;">{{ music.title }}</div>
+                    <div style="font-size: 13px; color: var(--admin-text-secondary); margin-top: 2px;">{{ music.artist || 'Unknown Artist' }}</div>
+                  </div>
+                  <button 
+                    type="button" 
+                    class="btn btn-primary btn-sm" 
+                    @click="selectMusicFromLibrary(music)"
+                    style="padding: 6px 12px; font-size: 12px;"
+                  >
+                    Gunakan
+                  </button>
+                </div>
+                <audio controls preload="none" style="width: 100%; height: 36px;">
+                  <source :src="music.url" type="audio/mpeg" />
+                </audio>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Tombol FAB Mobile Preview -->
-        <button class="mobile-preview-fab" @click="showMobilePreview = true">
-          <Icon icon="lucide:eye" style="font-size: 20px;" /> Lihat Preview
-        </button>
 
-        <!-- Modal Fullscreen Mobile Preview -->
-        <div v-if="showMobilePreview" class="mobile-preview-modal block">
-          <div class="mobile-preview-header">
-            <span style="display: flex; align-items: center; gap: 8px;">
-              <span class="material-symbols-rounded" style="color: var(--admin-primary); font-size: 20px;">visibility</span>
-              Live Preview
-            </span>
-            <button class="btn btn-outline btn-sm" @click="showMobilePreview = false" style="border: none; padding: 4px;">
-              <span class="material-symbols-rounded">close</span>
-            </button>
-          </div>
-          <div style="flex: 1; height: calc(100vh - 60px);">
-            <!-- Gunakan iframe yang sama secara logic, ditaruh penuh -->
-            <iframe 
-              ref="mobilePreviewIframe" 
-              class="editor-preview-iframe"
-              :src="`/invitation/preview`"
-              title="Live Preview Mobile"
-            ></iframe>
-          </div>
-        </div>
         <!-- Modal Pilih Tema -->
     <div v-if="showThemeModal" class="modal-overlay" @click.self="showThemeModal = false">
       <div class="modal-content" style="max-width: 800px; width: 90%;">
@@ -932,429 +1165,332 @@
   align-items: center;
   gap: 6px;
 }
+
+/* ===== Wizard Validation Errors ===== */
+.wizard-errors {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  animation: shakeX 0.4s ease;
+}
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.wizard-errors-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #dc2626;
+  margin-bottom: 8px;
+}
+.wizard-errors-close {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  transition: all 0.2s;
+  opacity: 0.6;
+}
+.wizard-errors-close:hover {
+  opacity: 1;
+  background: rgba(220, 38, 38, 0.1);
+}
+.wizard-errors-list {
+  margin: 0;
+  padding: 0 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.wizard-errors-list li {
+  font-size: 13px;
+  color: #b91c1c;
+  line-height: 1.5;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+/* ===== Helper Tips ===== */
+.helper-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #3b82f6;
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  line-height: 1.5;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.helper-tip-icon {
+  color: #3b82f6;
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.helper-tip strong {
+  color: #334155;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.time-error-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 6px 0 0;
+  padding: 0;
+  font-size: 12.5px;
+  color: #dc2626;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Responsive Time Input */
+.time-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.time-range-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+}
+.time-range-row .form-input {
+  width: 100%;
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 4px;
+}
+.time-separator {
+  color: var(--admin-text-secondary);
+  font-weight: 500;
+}
+.time-zone-select {
+  width: 84px;
+  flex-shrink: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+@media (max-width: 480px) {
+  .time-input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .time-zone-select {
+    width: 100%;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 </style>
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { ref, reactive, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
-import type { LoveStoryItem, Photo, BankAccount } from "@/types/invitation";
 import { resolveAssetUrl } from "@/utils/url";
-import { DEFAULT_MUSIC, isDefaultMusicUrl } from "@/config/defaultMusic";
-import { computed } from "vue";
+import { THEME_REGISTRY, THEME_LIST, getThemeGalleryDefault } from "@/config/themes";
+import { DEFAULT_MUSIC } from "@/config/defaultMusic";
 import AppSkeleton from "@/components/ui/AppSkeleton.vue";
 
-const MAX_FILE_SIZE_MB = 20;
-const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+// Shared composables
+import { useInvitationForm } from "@/composables/useInvitationForm";
+import { useSlugValidation } from "@/composables/useSlugValidation";
+import { usePhotoUpload } from "@/composables/usePhotoUpload";
+import { useMusicManager } from "@/composables/useMusicManager";
+import { useFormWizard } from "@/composables/useFormWizard";
+import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
 
 const route = useRoute();
 const router = useRouter();
 const store = useInvitationStore();
 const apiBase = import.meta.env.VITE_API_URL || "";
 
-const showThemeModal = ref(false);
+// --- Step Validator ---
+function validateStep(stepIndex: number): string[] {
+  const errors: string[] = []
+  switch (stepIndex) {
+    case 0: // Tema & URL
+      if (!form.slug || !form.slug.trim()) errors.push('URL Undangan (slug) wajib diisi')
+      if (slugStatus.value === 'taken') errors.push('URL sudah dipakai, pilih yang lain')
+      break
+    case 1: // Mempelai
+      if (!form.groom_name || !form.groom_name.trim()) errors.push('Nama panggilan mempelai pria wajib diisi')
+      if (!form.bride_name || !form.bride_name.trim()) errors.push('Nama panggilan mempelai wanita wajib diisi')
+      break
+    case 2: // Acara
+      if (akadStart.value && akadEnd.value && akadStart.value >= akadEnd.value) {
+        errors.push('Waktu selesai Akad Nikah tidak boleh lebih awal atau sama dengan waktu mulai')
+      }
+      if (resepsiStart.value && resepsiEnd.value && resepsiStart.value >= resepsiEnd.value) {
+        errors.push('Waktu selesai Resepsi tidak boleh lebih awal atau sama dengan waktu mulai')
+      }
+      break
+  }
+  return errors
+}
 
-const themeGalleryDefaults: Record<string, 'carousel' | 'masonry'> = {
-  floral: 'carousel',
-  elegant: 'masonry',
-  minimalist: 'masonry',
-  elegant_blue: 'masonry',
-};
+// --- Time Parsing (Jam & Zona Waktu) ---
+function parseTimeStr(timeStr: string) {
+  if (!timeStr) return { start: '', end: '', zone: 'WIB' };
+  const match = timeStr.match(/^(\d{2}:\d{2})(?:\s*-\s*(\d{2}:\d{2}))?\s*(WIB|WITA|WIT)?$/i);
+  if (match) {
+    return { start: match[1] || '', end: match[2] || '', zone: match[3]?.toUpperCase() || 'WIB' };
+  }
+  return { start: '', end: '', zone: 'WIB' };
+}
+function buildTimeStr(start: string, end: string, zone: string) {
+  if (!start && !end) return ''; // if both empty, clear it
+  return `${start || '00:00'}${end ? ' - ' + end : ''} ${zone}`;
+}
+
+const akadStart = computed({
+  get: () => parseTimeStr(form.akad_time).start,
+  set: (val) => form.akad_time = buildTimeStr(val, parseTimeStr(form.akad_time).end, parseTimeStr(form.akad_time).zone)
+});
+const akadEnd = computed({
+  get: () => parseTimeStr(form.akad_time).end,
+  set: (val) => form.akad_time = buildTimeStr(parseTimeStr(form.akad_time).start, val, parseTimeStr(form.akad_time).zone)
+});
+const akadZone = computed({
+  get: () => parseTimeStr(form.akad_time).zone,
+  set: (val) => form.akad_time = buildTimeStr(parseTimeStr(form.akad_time).start, parseTimeStr(form.akad_time).end, val)
+});
+
+const resepsiStart = computed({
+  get: () => parseTimeStr(form.resepsi_time).start,
+  set: (val) => form.resepsi_time = buildTimeStr(val, parseTimeStr(form.resepsi_time).end, parseTimeStr(form.resepsi_time).zone)
+});
+const resepsiEnd = computed({
+  get: () => parseTimeStr(form.resepsi_time).end,
+  set: (val) => form.resepsi_time = buildTimeStr(parseTimeStr(form.resepsi_time).start, val, parseTimeStr(form.resepsi_time).zone)
+});
+const resepsiZone = computed({
+  get: () => parseTimeStr(form.resepsi_time).zone,
+  set: (val) => form.resepsi_time = buildTimeStr(parseTimeStr(form.resepsi_time).start, parseTimeStr(form.resepsi_time).end, val)
+});
+
+// --- Wizard ---
+const wizard = useFormWizard([
+  { id: 'theme', label: 'Tema & URL', icon: 'lucide:palette' },
+  { id: 'couple', label: 'Mempelai', icon: 'lucide:users' },
+  { id: 'event', label: 'Acara', icon: 'lucide:calendar-days' },
+  { id: 'content', label: 'Konten', icon: 'lucide:image' },
+  { id: 'extras', label: 'Finalisasi', icon: 'lucide:sparkles' },
+], validateStep);
+
+const loading = ref(true);
+
+// --- Form State ---
+const {
+  form, submitting, toast, showToast,
+  populateForm, getSubmitPayload,
+  addLoveStory, removeLoveStory,
+} = useInvitationForm();
+
+// --- Slug Validation (with excludeId for edit mode) ---
+const slugRef = computed({
+  get: () => form.slug,
+  set: (v) => { form.slug = v },
+});
+const excludeId = computed(() => route.params.id as string | undefined);
+const { slugStatus, slugSuggestions, handleSlugInput, applySuggestion } = useSlugValidation(slugRef, excludeId);
+
+// --- Photo Upload ---
+const {
+  coverDragover, galleryDragover,
+  groomPhotoInput, bridePhotoInput, coverPhotoInput, loveStoryPhotoInput,
+  triggerUpload, handleSingleUpload, handleCoverDrop,
+  removeCoverPhoto, removeGroomPhoto, removeBridePhoto,
+  handleGalleryUpload, handleGalleryDrop, removeGalleryPhoto,
+  triggerLoveStoryPhotoUpload, handleLoveStoryPhotoUpload, removeLoveStoryPhoto,
+} = usePhotoUpload(form, showToast);
+
+// --- Music Manager ---
+const {
+  showMusicModal, musicLibrary, musicLibraryLoading,
+  searchMusicQuery, filteredMusicLibrary, musicFileInput,
+  openMusicLibrary, selectMusicFromLibrary,
+  handleMusicUpload, removeMusic, restoreDefaultMusic,
+  isCurrentMusicDefault, currentDefaultMusicLabel,
+} = useMusicManager(form, showToast);
+
+// --- Preview Sync ---
+const previewPanel = ref<InstanceType<typeof LivePreviewPanel> | null>(null);
+
+// --- Theme Selection ---
+const showThemeModal = ref(false);
+const themeList = THEME_LIST;
 
 function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue") {
-  if (form) {
-    const oldTheme = form.theme;
-    form.theme = themeId;
-    form.gallery_type = themeGalleryDefaults[themeId] || 'carousel';
-    // Auto-ganti musik ke default tema baru jika masih pakai default tema lama atau belum ada musik
-    if (!form.music_url || (DEFAULT_MUSIC[oldTheme] && form.music_url === DEFAULT_MUSIC[oldTheme].url)) {
-      form.music_url = DEFAULT_MUSIC[themeId]?.url || "";
-    }
+  const oldTheme = form.theme;
+  form.theme = themeId;
+  form.gallery_type = getThemeGalleryDefault(themeId);
+  if (!form.music_url || (DEFAULT_MUSIC[oldTheme] && form.music_url === DEFAULT_MUSIC[oldTheme].url)) {
+    form.music_url = DEFAULT_MUSIC[themeId]?.url || "";
   }
   showThemeModal.value = false;
 }
 
-const loading = ref(true);
-const submitting = ref(false);
-const toast = ref<{ type: string; message: string } | null>(null);
-const musicFileInput = ref<HTMLInputElement>();
-
-const slugStatus = ref<"idle" | "loading" | "available" | "taken">("idle");
-const slugSuggestions = ref<string[]>([]);
-let slugCheckTimeout: ReturnType<typeof setTimeout> | null = null;
-
-// Preview Refs & State
-const previewIframe = ref<HTMLIFrameElement>();
-const mobilePreviewIframe = ref<HTMLIFrameElement>();
-const showMobilePreview = ref(false);
-
-const form = reactive({
-  slug: "",
-  theme: "elegant" as "elegant" | "minimalist" | "floral" | "elegant_blue",
-  groom_name: "",
-  bride_name: "",
-  groom_full_name: "",
-  bride_full_name: "",
-  groom_father: "",
-  groom_mother: "",
-  bride_father: "",
-  bride_mother: "",
-  groom_photo: "",
-  bride_photo: "",
-  cover_photo: "",
-  akad_date: "",
-  akad_time: "",
-  akad_venue: "",
-  akad_address: "",
-  akad_map_url: "",
-  resepsi_date: "",
-  resepsi_time: "",
-  resepsi_venue: "",
-  resepsi_address: "",
-  resepsi_map_url: "",
-  love_story: [] as LoveStoryItem[],
-  quote: "",
-  banks: [] as BankAccount[],
-  music_url: "",
-  gallery_type: 'carousel' as 'carousel' | 'masonry',
-  photos: [] as Photo[],
-});
-
+// --- Helper ---
 function getPhotoUrl(url: string) {
   return resolveAssetUrl(url, apiBase);
 }
 
-function normalizeLoveStory(value: unknown): LoveStoryItem[] {
-  if (!value) return [];
-  if (Array.isArray(value)) return value as LoveStoryItem[];
-  if (typeof value === "string") {
-    try {
-      const parsed = JSON.parse(value);
-      return Array.isArray(parsed) ? (parsed as LoveStoryItem[]) : [];
-    } catch {
-      return [];
-    }
-  }
-  return [];
-}
-
-function handleSlugInput() {
-  form.slug = form.slug
-    .toLowerCase()
-    .replace(/[^a-z0-9-]/g, "-")
-    .replace(/-+/g, "-");
-
-  slugSuggestions.value = [];
-
-  if (!form.slug) {
-    slugStatus.value = "idle";
-    return;
-  }
-
-  slugStatus.value = "loading";
-  
-  if (slugCheckTimeout) clearTimeout(slugCheckTimeout);
-  slugCheckTimeout = setTimeout(async () => {
-    try {
-      const excludeId = route.params.id;
-      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
-      const res = await fetch(`${API_BASE}/invitations/check-slug/${form.slug}?exclude_id=${excludeId}`);
-      const data = await res.json();
-      
-      if (res.ok) {
-        slugStatus.value = data.available ? "available" : "taken";
-        if (!data.available && data.suggestions) {
-          slugSuggestions.value = data.suggestions;
-        }
-      } else {
-        slugStatus.value = "idle";
-      }
-    } catch {
-      slugStatus.value = "idle";
-    }
-  }, 500);
-}
-
-function applySuggestion(suggestion: string) {
-  form.slug = suggestion;
-  slugSuggestions.value = [];
-  slugStatus.value = "loading";
-  setTimeout(async () => {
-    try {
-      const excludeId = route.params.id;
-      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
-      const res = await fetch(`${API_BASE}/invitations/check-slug/${form.slug}?exclude_id=${excludeId}`);
-      const data = await res.json();
-      if (res.ok) {
-        slugStatus.value = data.available ? "available" : "taken";
-        if (!data.available && data.suggestions) {
-          slugSuggestions.value = data.suggestions;
-        }
-      }
-    } catch {
-      slugStatus.value = "idle";
-    }
-  }, 100);
-}
-
-async function handleSingleUpload(
-  event: Event,
-  field: "groom_photo" | "bride_photo" | "cover_photo",
-) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file) return;
-  if (file.size > MAX_FILE_SIZE_BYTES) {
-    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
-    input.value = "";
-    return;
-  }
-  try {
-    const oldUrl = form[field];
-    const newUrl = await store.uploadPhoto(file, form.slug || undefined);
-    if (oldUrl) {
-      await store.deleteFile(oldUrl).catch(() => {});
-    }
-    form[field] = newUrl;
-  } catch {
-    showToast("error", "Gagal upload foto");
-  }
-  input.value = "";
-}
-
-// --- Love Story Photo Upload ---
-const loveStoryPhotoInput = ref<HTMLInputElement>();
-let loveStoryPhotoTargetIndex = -1;
-
-function triggerLoveStoryPhotoUpload(index: number) {
-  loveStoryPhotoTargetIndex = index;
-  loveStoryPhotoInput.value?.click();
-}
-
-async function handleLoveStoryPhotoUpload(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file || loveStoryPhotoTargetIndex < 0) return;
-  if (file.size > MAX_FILE_SIZE_BYTES) {
-    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
-    input.value = "";
-    return;
-  }
-  try {
-    const url = await store.uploadPhoto(file, form.slug || undefined);
-    const story = form.love_story[loveStoryPhotoTargetIndex];
-    if (story) {
-      if (story.photo) {
-        await store.deleteFile(story.photo).catch(() => {});
-      }
-      story.photo = url;
-    }
-  } catch {
-    showToast("error", "Gagal upload foto love story");
-  }
-  input.value = "";
-  loveStoryPhotoTargetIndex = -1;
-}
-
-async function removeLoveStoryPhoto(index: number) {
-  const story = form.love_story[index];
-  if (!story?.photo) return;
-  await store.deleteFile(story.photo).catch(() => {});
-  story.photo = '';
-}
-
-async function handleGalleryUpload(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const files = Array.from(input.files || []);
-  if (files.length === 0) return;
-  const oversized = files.filter(f => f.size > MAX_FILE_SIZE_BYTES);
-  if (oversized.length > 0) {
-    showToast("error", `${oversized.length} file melebihi batas ${MAX_FILE_SIZE_MB}MB dan dilewati.`);
-  }
-  const validFiles = files.filter(f => f.size <= MAX_FILE_SIZE_BYTES);
-  if (validFiles.length === 0) {
-    input.value = "";
-    return;
-  }
-  try {
-    const results = await store.uploadPhotos(validFiles, form.slug || undefined);
-    results.forEach((r) => {
-      form.photos.push({ url: r.url, caption: "" });
-    });
-  } catch {
-    showToast("error", "Gagal upload foto");
-  }
-  input.value = "";
-}
-
-async function handleMusicUpload(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file) return;
-  if (file.size > MAX_FILE_SIZE_BYTES) {
-    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
-    input.value = "";
-    return;
-  }
-  try {
-    const url = await store.uploadMusic(file, form.slug || undefined);
-    if (form.music_url) {
-      await store.deleteFile(form.music_url).catch(() => {});
-    }
-    form.music_url = url;
-    showToast("success", "Musik berhasil diupload");
-  } catch {
-    showToast("error", "Gagal upload musik");
-  }
-  input.value = "";
-}
-
-async function removeMusic() {
-  if (form.music_url) {
-    // Jangan hapus file R2 jika ini adalah musik default
-    if (!isDefaultMusicUrl(form.music_url)) {
-      await store.deleteFile(form.music_url).catch(() => {});
-    }
-    form.music_url = "";
-  }
-}
-
-function restoreDefaultMusic() {
-  const defaultEntry = DEFAULT_MUSIC[form.theme];
-  if (defaultEntry) {
-    form.music_url = defaultEntry.url;
-  }
-}
-
-const isCurrentMusicDefault = computed(() => {
-  return isDefaultMusicUrl(form.music_url);
-});
-
-const currentDefaultMusicLabel = computed(() => {
-  const entry = Object.values(DEFAULT_MUSIC).find((e) => e.url === form.music_url);
-  return entry?.label || 'Musik Default';
-});
-
-async function removeCoverPhoto() {
-  if (form.cover_photo) {
-    await store.deleteFile(form.cover_photo).catch(() => {});
-    form.cover_photo = "";
-  }
-}
-
-async function removeGroomPhoto() {
-  if (form.groom_photo) {
-    await store.deleteFile(form.groom_photo).catch(() => {});
-    form.groom_photo = "";
-  }
-}
-
-async function removeBridePhoto() {
-  if (form.bride_photo) {
-    await store.deleteFile(form.bride_photo).catch(() => {});
-    form.bride_photo = "";
-  }
-}
-
-async function removeGalleryPhoto(index: number) {
-  const photo = form.photos[index];
-  if (photo && photo.url) {
-    await store.deleteFile(photo.url).catch(() => {});
-  }
-  form.photos.splice(index, 1);
-}
-
-function showToast(type: string, message: string) {
-  toast.value = { type, message };
-  setTimeout(() => {
-    toast.value = null;
-  }, 3000);
-}
-
-// Watch form changes to sync with Preview Iframe
-import { watch } from "vue";
-watch(
-  form,
-  (newVal) => {
-    const payload = {
-      type: "LIVE_PREVIEW",
-      data: {
-        ...newVal,
-        love_story: newVal.love_story.filter((s) => s.title || s.date),
-      }
-    };
-    const cleanPayload = JSON.parse(JSON.stringify(payload));
-    if (previewIframe.value?.contentWindow) {
-      previewIframe.value.contentWindow.postMessage(cleanPayload, "*");
-    }
-    if (mobilePreviewIframe.value?.contentWindow) {
-      mobilePreviewIframe.value.contentWindow.postMessage(cleanPayload, "*");
-    }
-  },
-  { deep: true }
-);
-
-// Listener for PREVIEW_READY from iframe
-onMounted(() => {
-  window.addEventListener("message", (event) => {
-    if (event.data?.type === "PREVIEW_READY") {
-      const payload = {
-        type: "LIVE_PREVIEW",
-        data: {
-          ...form,
-          love_story: form.love_story.filter((s) => s.title || s.date),
-        }
-      };
-      const cleanPayload = JSON.parse(JSON.stringify(payload));
-      if (previewIframe.value?.contentWindow) {
-        previewIframe.value.contentWindow.postMessage(cleanPayload, "*");
-      }
-      if (mobilePreviewIframe.value?.contentWindow) {
-        mobilePreviewIframe.value.contentWindow.postMessage(cleanPayload, "*");
-      }
-    }
-  });
-});
-
+// --- Submit ---
 async function handleSubmit() {
+  // Validate ALL wizard steps before submitting
+  for (let i = 0; i < wizard.steps.length; i++) {
+    const errors = validateStep(i)
+    if (errors.length > 0) {
+      wizard.goToStepDirect(i)
+      wizard.stepErrors.value = errors
+      wizard.showStepErrors.value = true
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      showToast("error", errors[0] || "Terdapat error pada form")
+      return
+    }
+  }
+
   submitting.value = true;
   try {
     const id = route.params.id as string;
-    await store.updateInvitation(id, {
-      slug: form.slug,
-      theme: form.theme,
-      groom_name: form.groom_name,
-      bride_name: form.bride_name,
-      groom_full_name: form.groom_full_name,
-      bride_full_name: form.bride_full_name,
-      groom_father: form.groom_father,
-      groom_mother: form.groom_mother,
-      bride_father: form.bride_father,
-      bride_mother: form.bride_mother,
-      groom_photo: form.groom_photo,
-      bride_photo: form.bride_photo,
-      cover_photo: form.cover_photo,
-      akad_date: form.akad_date,
-      akad_time: form.akad_time,
-      akad_venue: form.akad_venue,
-      akad_address: form.akad_address,
-      akad_map_url: form.akad_map_url,
-      resepsi_date: form.resepsi_date,
-      resepsi_time: form.resepsi_time,
-      resepsi_venue: form.resepsi_venue,
-      resepsi_address: form.resepsi_address,
-      resepsi_map_url: form.resepsi_map_url,
-      love_story: form.love_story.filter((s) => s.title || s.date),
-      quote: form.quote,
-      bank_name: form.banks[0]?.bank_name || "",
-      bank_account: form.banks[0]?.bank_account || "",
-      bank_holder: form.banks[0]?.bank_holder || "",
-      banks: form.banks.filter((b) => b.bank_name || b.bank_account),
-      music_url: form.music_url,
-      gallery_type: form.gallery_type,
-      photos: form.photos,
-    });
+    await store.updateInvitation(id, getSubmitPayload());
     showToast("success", "Undangan berhasil diperbarui! 🎉");
     setTimeout(() => router.push("/dashboard"), 1500);
   } catch (e: any) {
@@ -1364,46 +1500,12 @@ async function handleSubmit() {
   }
 }
 
+// --- Load Data ---
 onMounted(async () => {
   const id = route.params.id as string;
   const data = await store.fetchInvitationById(id);
   if (data) {
-    form.slug = data.slug || "";
-    form.theme = data.theme || "elegant";
-    form.groom_name = data.groom_name || "";
-    form.bride_name = data.bride_name || "";
-    form.groom_full_name = data.groom_full_name || "";
-    form.bride_full_name = data.bride_full_name || "";
-    form.groom_father = data.groom_father || "";
-    form.groom_mother = data.groom_mother || "";
-    form.bride_father = data.bride_father || "";
-    form.bride_mother = data.bride_mother || "";
-    form.groom_photo = data.groom_photo || "";
-    form.bride_photo = data.bride_photo || "";
-    form.cover_photo = data.cover_photo || "";
-    form.akad_date = data.akad_date || "";
-    form.akad_time = data.akad_time || "";
-    form.akad_venue = data.akad_venue || "";
-    form.akad_address = data.akad_address || "";
-    form.akad_map_url = data.akad_map_url || "";
-    form.resepsi_date = data.resepsi_date || "";
-    form.resepsi_time = data.resepsi_time || "";
-    form.resepsi_venue = data.resepsi_venue || "";
-    form.resepsi_address = data.resepsi_address || "";
-    form.resepsi_map_url = data.resepsi_map_url || "";
-    form.love_story = normalizeLoveStory(data.love_story);
-    form.quote = data.quote || "";
-    // Load banks: prefer banks array, fallback to legacy single fields
-    if (data.banks && Array.isArray(data.banks) && data.banks.length > 0) {
-      form.banks = data.banks;
-    } else if (data.bank_name) {
-      form.banks = [{ bank_name: data.bank_name, bank_account: data.bank_account || "", bank_holder: data.bank_holder || "" }];
-    } else {
-      form.banks = [];
-    }
-    form.music_url = data.music_url || "";
-    form.gallery_type = data.gallery_type || themeGalleryDefaults[data.theme || 'elegant'] || 'carousel';
-    form.photos = data.photos || [];
+    populateForm(data);
   }
   loading.value = false;
 });

@@ -1,86 +1,31 @@
 <template>
-  <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <router-link to="/dashboard" class="sidebar-brand">
-        <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
-          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-        </div>
-        <div class="sidebar-brand-text">Mengundang<span>Anda</span></div>
-      </router-link>
-
-      <nav class="sidebar-nav">
-        <router-link to="/dashboard" class="sidebar-link" exact>
-          <span class="material-symbols-rounded">dashboard</span>
-          Dashboard
-        </router-link>
-        <router-link to="/dashboard/themes" class="sidebar-link">
-          <span class="material-symbols-rounded">palette</span>
-          Tema
-        </router-link>
-        <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="sidebar-link">
-          <span class="material-symbols-rounded">add_circle</span>
-          Buat Undangan
-        </router-link>
-        <router-link v-if="hasTrialInvitation" :to="`/dashboard/payment?invitation_id=${firstTrialInvitationId}`" class="sidebar-link">
-          <span class="material-symbols-rounded">payments</span>
-          Pembayaran
-        </router-link>
-        <router-link v-if="authStore.isAdmin" to="/dashboard/users" class="sidebar-link">
-          <span class="material-symbols-rounded">group</span>
-          Kelola User
-        </router-link>
-        <router-link v-if="authStore.isAdmin" to="/dashboard/vouchers" class="sidebar-link">
-          <span class="material-symbols-rounded">confirmation_number</span>
-          Voucher
-        </router-link>
-        <!-- Mobile logout is handled natively by UserButton popover -->
-      </nav>
-
-      <div class="sidebar-footer" style="padding: 1rem 0; border-top: 1px solid #e1e8f0; margin-top: auto;">
-        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-          <UserButton showName />
-        </div>
+  <AdminLayout>
+    <template #search>
+      <div v-if="authStore.isAdmin || (authStore.user?.max_invitations ?? 0) > 1" class="search-bar">
+        <span class="material-symbols-rounded" style="font-size:20px">search</span>
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Cari undangan berdasarkan nama..."
+        />
       </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="admin-main">
-      <header class="admin-topbar">
-        <router-link to="/dashboard" class="mobile-brand">
-          <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
-            <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-          </div>
-          <div class="sidebar-brand-text" style="font-size:16px;">Mengundang<span>Anda</span></div>
-        </router-link>
-
-        <div v-if="authStore.isAdmin || (authStore.user?.max_invitations ?? 0) > 1" class="search-bar">
-          <span class="material-symbols-rounded" style="font-size:20px">search</span>
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Cari undangan berdasarkan nama..."
-          />
-        </div>
-        <div class="topbar-actions">
-          <div v-if="authStore.user && !authStore.isAdmin && !hasReachedLimit && (authStore.user.max_invitations ?? 0) > 1" class="invitation-limit-info">
-            <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
-            {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
-          </div>
-          <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="btn btn-primary">
-            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
-            Buat Undangan Baru
-          </router-link>
-          <div v-else-if="hasReachedLimit" class="limit-reached-block">
-            <button class="btn btn-primary btn-disabled" disabled>
-              <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">block</span>
-              Buat Undangan Baru
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div class="admin-container">
+    </template>
+    <template #actions>
+      <div v-if="authStore.user && !authStore.isAdmin && !hasReachedLimit && (authStore.user.max_invitations ?? 0) > 1" class="invitation-limit-info">
+        <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
+        {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
+      </div>
+      <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="btn btn-primary">
+        <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
+        Buat Undangan Baru
+      </router-link>
+      <div v-else-if="hasReachedLimit" class="limit-reached-block">
+        <button class="btn btn-primary btn-disabled" disabled>
+          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">block</span>
+          Buat Undangan Baru
+        </button>
+      </div>
+    </template>
         <!-- Stats Skeleton Mode -->
         <div v-if="store.loading" class="stats-grid">
           <AppSkeleton v-for="i in 4" :key="`stat-skel-${i}`" height="90px" rounded="2xl" />
@@ -285,9 +230,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
     <!-- Delete Modal -->
     <div
       v-if="deleteTarget"
@@ -315,7 +257,7 @@
     <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
       {{ toast.message }}
     </div>
-  </div>
+  </AdminLayout>
 </template>
 
 <script setup lang="ts">
@@ -324,10 +266,10 @@ import { useRouter } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
 import type { Invitation } from "@/types/invitation";
-import { UserButton } from "@clerk/vue";
 import { Icon } from "@iconify/vue";
 import { resolveAssetUrl } from "@/utils/url";
 import AppSkeleton from "@/components/ui/AppSkeleton.vue";
+import AdminLayout from "@/components/admin/AdminLayout.vue";
 
 const router = useRouter();
 const store = useInvitationStore();

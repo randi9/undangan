@@ -1,51 +1,8 @@
 <template>
-  <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <router-link to="/dashboard" class="sidebar-brand">
-        <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
-          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-        </div>
-        <div class="sidebar-brand-text">Mengundang<span>Anda</span></div>
-      </router-link>
-
-      <nav class="sidebar-nav">
-        <router-link to="/dashboard" class="sidebar-link">
-          <span class="material-symbols-rounded">dashboard</span>
-          Dashboard
-        </router-link>
-        <router-link to="/dashboard/themes" class="sidebar-link">
-          <span class="material-symbols-rounded">palette</span>
-          Tema
-        </router-link>
-        <router-link to="/dashboard/users" class="sidebar-link">
-          <span class="material-symbols-rounded">group</span>
-          Kelola User
-        </router-link>
-        <router-link to="/dashboard/vouchers" class="sidebar-link" exact>
-          <span class="material-symbols-rounded">confirmation_number</span>
-          Voucher
-        </router-link>
-      </nav>
-
-      <div class="sidebar-footer" style="padding: 1rem 0; border-top: 1px solid #e1e8f0; margin-top: auto;">
-        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-          <UserButton showName />
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="admin-main">
-      <header class="admin-topbar">
-        <router-link to="/dashboard" class="mobile-brand">
-          <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
-            <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-          </div>
-          <div class="sidebar-brand-text" style="font-size:16px;">Mengundang<span>Anda</span></div>
-        </router-link>
-
-        <div class="search-bar">
+  <AdminLayout>
+    <template #search>
+      <div style="display: flex; gap: 12px; flex: 1; align-items: center; max-width: 500px;">
+        <div class="search-bar" style="flex: 1; margin: 0; max-width: none;">
           <span class="material-symbols-rounded" style="font-size:20px">search</span>
           <input
             v-model="searchQuery"
@@ -53,15 +10,19 @@
             placeholder="Cari kode voucher..."
           />
         </div>
-        <div class="topbar-actions">
-          <button class="btn btn-primary" @click="showGenerateModal = true">
-            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">add</span>
-            Generate Voucher
-          </button>
-        </div>
-      </header>
-
-      <div class="admin-container">
+        <select v-model="filterStatus" style="padding: 11px 14px; border-radius: 8px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text); outline: none; font-size: 14px; font-family: inherit;">
+          <option value="all">Semua</option>
+          <option value="active">Belum</option>
+          <option value="redeemed">Terpakai</option>
+        </select>
+      </div>
+    </template>
+    <template #actions>
+      <button class="btn btn-primary" @click="showGenerateModal = true">
+        <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">add</span>
+        Generate Voucher
+      </button>
+    </template>
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -109,13 +70,14 @@
           </div>
 
           <div v-if="filteredVouchers.length === 0" class="empty-state">
-            <div class="empty-icon">🎟️</div>
+            <div class="empty-icon"><Icon icon="lucide:ticket" style="font-size: 48px; opacity: 0.5;" /></div>
             <div class="empty-title">Belum ada voucher</div>
             <div class="empty-text">Klik "Generate Voucher" untuk membuat kode voucher baru.</div>
           </div>
 
-          <div v-else class="voucher-table-wrapper">
-            <table class="voucher-table">
+          <div v-else class="voucher-container">
+            <div class="desktop-only-table voucher-table-wrapper">
+              <table class="voucher-table">
               <thead>
                 <tr>
                   <th>Kode</th>
@@ -164,9 +126,44 @@
               </tbody>
             </table>
           </div>
+
+          <!-- Mobile Cards -->
+          <div class="mobile-only-cards">
+            <div v-for="v in filteredVouchers" :key="v.id" class="mobile-guest-card">
+              <div class="mgc-header">
+                <div class="mgc-info">
+                  <div class="voucher-code-cell" style="margin-bottom: 8px;">
+                    <code class="voucher-code-text">{{ v.code }}</code>
+                    <button class="btn-copy" @click="copyCode(v.code)" :title="'Salin ' + v.code">
+                      <span class="material-symbols-rounded" style="font-size:16px">content_copy</span>
+                    </button>
+                  </div>
+                  <div class="text-sm">Catatan: {{ v.note || '—' }}</div>
+                  <div class="text-sm">Tgl Buat: {{ formatDate(v.created_at) }}</div>
+                  <div v-if="v.redeemed_at" class="text-sm">
+                    Digunakan: {{ formatDate(v.redeemed_at) }}
+                  </div>
+                </div>
+                <div class="mgc-status">
+                  <span :class="['v-badge', `v-badge-${v.status}`]">
+                    {{ v.status === 'active' ? 'Aktif' : v.status === 'redeemed' ? 'Terpakai' : 'Expired' }}
+                  </span>
+                </div>
+              </div>
+              <div class="mgc-actions">
+                <button
+                  v-if="v.status === 'active'"
+                  class="btn btn-sm btn-danger"
+                  style="width: 100%; justify-content: center;"
+                  @click="expireVoucher(v)"
+                >
+                  <span class="material-symbols-rounded" style="font-size:16px; margin-right:4px;">block</span> Nonaktifkan
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
     <!-- Generate Modal -->
     <div v-if="showGenerateModal" class="modal-overlay" @click.self="showGenerateModal = false">
@@ -233,13 +230,14 @@
     <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
       {{ toast.message }}
     </div>
-  </div>
+  </AdminLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { UserButton } from "@clerk/vue";
+import { Icon } from "@iconify/vue";
+import AdminLayout from "@/components/admin/AdminLayout.vue";
 
 interface Voucher {
   id: string;
@@ -257,6 +255,7 @@ const authStore = useAuthStore();
 const vouchers = ref<Voucher[]>([]);
 const loading = ref(false);
 const searchQuery = ref("");
+const filterStatus = ref("all");
 const toast = ref<{ type: string; message: string } | null>(null);
 
 // Generate modal
@@ -272,11 +271,20 @@ const activeCount = computed(() => vouchers.value.filter((v) => v.status === "ac
 const redeemedCount = computed(() => vouchers.value.filter((v) => v.status === "redeemed").length);
 
 const filteredVouchers = computed(() => {
-  if (!searchQuery.value.trim()) return vouchers.value;
-  const q = searchQuery.value.toUpperCase();
-  return vouchers.value.filter(
-    (v) => v.code.includes(q) || (v.note && v.note.toUpperCase().includes(q))
-  );
+  let result = vouchers.value;
+
+  if (filterStatus.value !== "all") {
+    result = result.filter((v) => v.status === filterStatus.value);
+  }
+
+  if (searchQuery.value.trim()) {
+    const q = searchQuery.value.toUpperCase();
+    result = result.filter(
+      (v) => v.code.includes(q) || (v.note && v.note.toUpperCase().includes(q))
+    );
+  }
+
+  return result;
 });
 
 function showToast(type: string, message: string) {
@@ -502,16 +510,51 @@ onMounted(() => {
   letter-spacing: 0.04em;
 }
 
+/* Visibility Control */
+.mobile-only-cards {
+  display: none;
+}
+.desktop-only-table {
+  display: block;
+}
+
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  .voucher-table {
-    font-size: 13px;
+  .desktop-only-table { display: none; }
+  .mobile-only-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
   }
-  .voucher-table th,
-  .voucher-table td {
-    padding: 10px 8px;
+  .mobile-guest-card {
+    background: white;
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .mgc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .mgc-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .mgc-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
   }
   .generated-codes-list {
     grid-template-columns: 1fr;
