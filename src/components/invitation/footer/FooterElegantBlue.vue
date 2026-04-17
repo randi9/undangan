@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 <template>
   <footer style="margin-top: -1px; padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 500px; background: linear-gradient(to bottom, rgba(168, 208, 230, 0.45) 0%, #f8f9f9 85%);" class="text-white">
-=======
-  <template>
-  <footer style="margin-top: -1px; padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background: linear-gradient(to bottom, #ACCDE7, #ffffff);" class="text-white">
->>>>>>> a6952767380b6e2ffc50102064d93b52bd826bc1
     
     <!-- Mega Mendung Left Cloud -->
     <img 
