@@ -280,6 +280,19 @@ function toggleMusic() {
   }
 }
 
+function handleVisibilityChange() {
+  if (!musicPlayer.value) return;
+  if (document.hidden) {
+    if (isPlaying.value) {
+      musicPlayer.value.pause();
+    }
+  } else {
+    if (isPlaying.value) {
+      musicPlayer.value.play().catch(e => console.error("Auto-play resumed error:", e));
+    }
+  }
+}
+
 const countdown = reactive({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 let countdownTimer: ReturnType<typeof setInterval>;
 
@@ -385,6 +398,8 @@ async function handleSubmitRsvp(form: { guest_name: string; attendance: 'hadir' 
 const currentUrl = computed(() => window.location.href);
 
 onMounted(async () => {
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+
   // On desktop, we only render the iframe shell — skip all data loading
   if (isDesktop.value) return;
 
@@ -437,6 +452,7 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
   if (countdownTimer) clearInterval(countdownTimer);
   ScrollTrigger.getAll().forEach(t => t.kill());
   window.removeEventListener('resize', onResize);
