@@ -1,5 +1,5 @@
 <template>
-  <section ref="sectionRef" v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full min-h-[100vh] flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#eaf1f8]">
+  <section ref="sectionRef" v-if="invitation.akad_venue || invitation.resepsi_venue" class="w-full min-h-[100dvh] flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#eaf1f8]">
     
     <!-- 1. The Envelope & Paper Container -->
     <div ref="envelopeWrapper" class="relative w-[75vw] max-w-[360px] aspect-[4/5] flex flex-col items-center justify-center origin-[50%_88%] will-change-transform" style="transform: scale(1);">
