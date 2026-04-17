@@ -162,7 +162,7 @@
                 <span>Gunakan nama pasangan yang mudah diingat, contoh: <strong>andi-sarah</strong>, <strong>budi-dan-ani</strong>. Tamu akan mengakses undangan di alamat ini.</span>
               </div>
           <div class="form-group">
-            <label class="form-label">Slug (URL)</label>
+            <label class="form-label">Slug (URL) <span class="text-error" style="color: #dc2626;">*</span></label>
             <div style="position: relative;">
               <input
                 v-model="form.slug"
@@ -234,7 +234,7 @@
           <p class="form-section-subtitle">Data mempelai pria dan wanita</p>
           <div class="helper-tip">
             <Icon icon="lucide:info" class="helper-tip-icon" />
-            <span>Hanya <strong>Nama Panggilan</strong> yang wajib. Nama lengkap & orang tua opsional tapi akan terlihat lebih lengkap di undangan.</span>
+            <span>Hanya <strong>Nama Panggilan & Nama Lengkap</strong> yang wajib. Data orang tua dan foto opsional, namun akan terlihat lebih berkesan jika diisi lengkap.</span>
           </div>
 
           <div class="split-grid">
@@ -280,7 +280,7 @@
                 "
               >
                 <div class="form-group">
-                  <label class="form-label">Nama Panggilan *</label>
+                  <label class="form-label">Nama Panggilan <span class="text-error" style="color: #dc2626;">*</span></label>
                   <input
                     v-model="form.groom_name"
                     class="form-input"
@@ -290,7 +290,7 @@
                   />
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Nama Lengkap</label>
+                  <label class="form-label">Nama Lengkap <span class="text-error" style="color: #dc2626;">*</span></label>
                   <input
                     v-model="form.groom_full_name"
                     class="form-input"
@@ -361,7 +361,7 @@
                 "
               >
                 <div class="form-group">
-                  <label class="form-label">Nama Panggilan *</label>
+                  <label class="form-label">Nama Panggilan <span class="text-error" style="color: #dc2626;">*</span></label>
                   <input
                     v-model="form.bride_name"
                     class="form-input"
@@ -371,7 +371,7 @@
                   />
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Nama Lengkap</label>
+                  <label class="form-label">Nama Lengkap <span class="text-error" style="color: #dc2626;">*</span></label>
                   <input
                     v-model="form.bride_full_name"
                     class="form-input"
@@ -473,7 +473,7 @@
           <p class="form-section-subtitle">Informasi waktu dan tempat acara</p>
           <div class="helper-tip">
             <Icon icon="lucide:info" class="helper-tip-icon" />
-            <span>Isi <strong>tanggal, waktu, tempat, dan alamat</strong> acara. Link Google Maps opsional tapi memudahkan tamu menemukan lokasi.</span>
+            <span>Jadwal <strong>Akad Nikah wajib diisi</strong> (Tanggal, Waktu Mulai, Tempat, Alamat). Jadwal Resepsi sepenuhnya opsional.</span>
           </div>
 
           <div class="split-grid">
@@ -493,7 +493,7 @@
               </h4>
               <div style="display: flex; flex-direction: column; gap: 12px">
                 <div class="form-group">
-                  <label class="form-label">Tanggal</label>
+                  <label class="form-label">Tanggal <span class="text-error" style="color: #dc2626;">*</span></label>
                   <input
                     v-model="form.akad_date"
                     type="date"
@@ -501,7 +501,7 @@
                   />
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Waktu (Mulai - Selesai)</label>
+                  <label class="form-label">Waktu (Mulai <span class="text-error" style="color: #dc2626;">*</span> - Selesai)</label>
                   <div class="time-input-group">
                     <div class="time-range-row">
                       <input
@@ -529,7 +529,7 @@
                   </p>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Tempat</label>
+                  <label class="form-label">Tempat <span class="text-error" style="color: #dc2626;">*</span></label>
                   <input
                     v-model="form.akad_venue"
                     class="form-input"
@@ -538,7 +538,7 @@
                   />
                 </div>
                 <div class="form-group">
-                  <label class="form-label">Alamat</label>
+                  <label class="form-label">Alamat <span class="text-error" style="color: #dc2626;">*</span></label>
                   <textarea
                     v-model="form.akad_address"
                     class="form-input"
@@ -1743,4 +1743,4 @@ async function handleSubmit() {
     submitting.value = false;
   }
 }
-</script>
+</script>

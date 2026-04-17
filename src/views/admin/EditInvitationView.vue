@@ -141,7 +141,7 @@
             <h3 class="form-section-title"><Icon icon="lucide:link" style="color: var(--admin-primary);" /> URL Undangan</h3>
             <p class="form-section-subtitle">Slug unik untuk alamat undangan</p>
             <div class="form-group">
-              <label class="form-label">Slug (URL)</label>
+              <label class="form-label">Slug (URL) <span class="text-error" style="color: #dc2626;">*</span></label>
               <div style="position: relative;">
                 <input
                   v-model="form.slug"
@@ -211,6 +211,10 @@
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:users" style="color: var(--admin-primary);" /> Informasi Pasangan</h3>
             <p class="form-section-subtitle">Data mempelai pria dan wanita</p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Hanya <strong>Nama Panggilan & Nama Lengkap</strong> yang wajib. Data orang tua dan foto opsional, namun akan terlihat lebih berkesan jika diisi lengkap.</span>
+            </div>
 
             <div class="split-grid">
               <div>
@@ -257,7 +261,7 @@
                   "
                 >
                   <div class="form-group">
-                    <label class="form-label">Nama Panggilan *</label>
+                    <label class="form-label">Nama Panggilan <span class="text-error" style="color: #dc2626;">*</span></label>
                     <input
                       v-model="form.groom_name"
                       class="form-input"
@@ -266,7 +270,7 @@
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Nama Lengkap</label>
+                    <label class="form-label">Nama Lengkap <span class="text-error" style="color: #dc2626;">*</span></label>
                     <input v-model="form.groom_full_name" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
@@ -324,7 +328,7 @@
                   "
                 >
                   <div class="form-group">
-                    <label class="form-label">Nama Panggilan *</label>
+                    <label class="form-label">Nama Panggilan <span class="text-error" style="color: #dc2626;">*</span></label>
                     <input
                       v-model="form.bride_name"
                       class="form-input"
@@ -333,7 +337,7 @@
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Nama Lengkap</label>
+                    <label class="form-label">Nama Lengkap <span class="text-error" style="color: #dc2626;">*</span></label>
                     <input v-model="form.bride_full_name" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
@@ -355,6 +359,10 @@
             <p class="form-section-subtitle">
               Foto utama yang ditampilkan di halaman depan undangan
             </p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Gunakan foto <strong>portrait</strong> (tegak) untuk hasil terbaik. Foto prewedding sangat direkomendasikan!</span>
+            </div>
             <div
               class="photo-upload-zone"
               @click="($refs.coverPhotoInput as HTMLInputElement).click()"
@@ -412,6 +420,10 @@
             <p class="form-section-subtitle">
               Informasi waktu dan tempat acara
             </p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Jadwal <strong>Akad Nikah wajib diisi</strong> (Tanggal, Waktu Mulai, Tempat, Alamat). Jadwal Resepsi sepenuhnya opsional.</span>
+            </div>
 
             <div class="split-grid">
               <div
@@ -429,7 +441,7 @@
                 </h4>
                 <div style="display: flex; flex-direction: column; gap: 12px">
                   <div class="form-group">
-                    <label class="form-label">Tanggal</label>
+                    <label class="form-label">Tanggal <span class="text-error" style="color: #dc2626;">*</span></label>
                     <input
                       v-model="form.akad_date"
                       type="date"
@@ -437,7 +449,7 @@
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Waktu (Mulai - Selesai)</label>
+                    <label class="form-label">Waktu (Mulai <span class="text-error" style="color: #dc2626;">*</span> - Selesai)</label>
                     <div class="time-input-group">
                       <div class="time-range-row">
                         <input
@@ -465,11 +477,11 @@
                     </p>
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Tempat</label>
+                    <label class="form-label">Tempat <span class="text-error" style="color: #dc2626;">*</span></label>
                     <input v-model="form.akad_venue" class="form-input" maxlength="100" />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Alamat</label>
+                    <label class="form-label">Alamat <span class="text-error" style="color: #dc2626;">*</span></label>
                     <textarea
                       v-model="form.akad_address"
                       class="form-input"
@@ -577,8 +589,12 @@
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:heart" style="color: var(--admin-primary);" /> Love Story</h3>
             <p class="form-section-subtitle">
-              Ceritakan perjalanan cinta kalian
+              Ceritakan perjalanan cinta kalian (opsional)
             </p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Klik <strong>"+ Tambah Cerita"</strong> untuk menambahkan momen, misalnya: "2020 — Pertama Bertemu", "2023 — Lamaran". Bagian ini opsional.</span>
+            </div>
 
             <div
               v-for="(story, index) in form.love_story"
@@ -667,6 +683,10 @@
             <p class="form-section-subtitle">
               Upload foto-foto prewedding atau momen spesial
             </p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Bisa upload banyak foto sekaligus. Pilih mode <strong>Carousel</strong> (slideshow) atau <strong>Masonry</strong> (grid bertumpuk). Bagian ini opsional.</span>
+            </div>
 
             <!-- Gallery Type Selector -->
             <div class="gallery-type-selector">
@@ -727,6 +747,10 @@
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:quote" style="color: var(--admin-primary);" /> Kutipan / Ayat</h3>
             <p class="form-section-subtitle">Kutipan atau ayat yang ditampilkan di undangan</p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Contoh: Kutipan dari film, puisi, atau kitab suci (Ar-Rum ayat 21). Kosongkan jika tidak diperlukan.</span>
+            </div>
             <div class="form-group">
               <label class="form-label">Kutipan / Ayat</label>
               <textarea
@@ -758,7 +782,11 @@
           <!-- Bank Accounts (Gift) -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:wallet" style="color: var(--admin-primary);" /> Informasi Bank (Gift)</h3>
-            <p class="form-section-subtitle">Rekening untuk amplop digital. Bisa lebih dari satu.</p>
+            <p class="form-section-subtitle">Rekening untuk amplop digital. Bisa lebih dari satu. (opsional)</p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Tamu bisa mengirim hadiah uang digital. Klik <strong>"+ Tambah Rekening"</strong> lalu isi nama bank, nomor rekening, dan atas nama. Maksimal 2 rekening.</span>
+            </div>
 
             <div
               v-for="(bank, index) in form.banks"
@@ -805,6 +833,10 @@
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:music" style="color: var(--admin-primary);" /> Musik Latar</h3>
             <p class="form-section-subtitle">Lagu yang berputar otomatis saat undangan dibuka</p>
+            <div class="helper-tip">
+              <Icon icon="lucide:info" class="helper-tip-icon" />
+              <span>Setiap tema sudah memiliki musik default. Kamu bisa menggantinya dengan upload lagu sendiri, atau biarkan musik default yang bermain.</span>
+            </div>
             <div class="form-group">
               <!-- Musik Default Aktif -->
               <div v-if="form.music_url && isCurrentMusicDefault" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 20px;">
@@ -1188,6 +1220,41 @@
 }
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
+}
+
+/* ===== Helper Tips ===== */
+.helper-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #3b82f6;
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  line-height: 1.5;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.helper-tip-icon {
+  color: #3b82f6;
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.helper-tip strong {
+  color: #334155;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .time-error-hint {
   display: flex;
