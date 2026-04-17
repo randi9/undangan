@@ -1,22 +1,22 @@
 <template>
-  <section v-if="bankList.length > 0" ref="sectionRef" style="width: 100%; background-color: rgba(168, 208, 230, 0.45); display: flex; flex-direction: column; align-items: center; padding: 0 20px 80px 20px; overflow-x: hidden;">
+  <section v-if="bankList.length > 0" ref="sectionRef" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0 20px 80px 20px; overflow-x: hidden; background-color: #a8d0e6; background-image: radial-gradient(at 80% 20%, rgba(255,255,255,0.8) 0px, transparent 60%), radial-gradient(at 15% 30%, rgba(191,219,254,0.8) 0px, transparent 60%), radial-gradient(at 90% 80%, rgba(4,26,51,0.1) 0px, transparent 30%), radial-gradient(at 20% 90%, rgba(255,255,255,0.9) 0px, transparent 60%), radial-gradient(at 60% 60%, rgba(147,197,253,0.6) 0px, transparent 70%);">
 
     <!-- ==============================
          SINGLE CONTAINER — GIFT SECTION (Flat Top, Oval Bottom)
          ============================== -->
-    <div style="width: 100%; max-width: 380px; background-color: #041a33; border-radius: 0 0 190px 190px; padding: 60px 40px 160px 40px; margin-top: 16px; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(4,26,51,0.15);">
+    <div style="width: 100%; max-width: 380px; background: rgba(248, 249, 249, 0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); border-top: none; border-radius: 0 0 190px 190px; padding: 60px 40px 160px 40px; margin-top: 16px; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
 
       <!-- Subtle texture -->
       <div style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; mix-blend-mode: screen; background-image: url('https://www.transparenttextures.com/patterns/stardust.png');"></div>
 
       <!-- Title -->
-      <h2 style="position: relative; z-index: 2; color: #ffffff; font-size: 2rem; letter-spacing: 0.15em; font-weight: 300; margin-bottom: 8px; text-align: center;" :style="{ fontFamily: themeConfig.fontHeading }">Wedding Gift</h2>
+      <h2 style="position: relative; z-index: 2; color: #041a33; font-size: 2rem; letter-spacing: 0.15em; font-weight: 300; margin-bottom: 8px; text-align: center;" :style="{ fontFamily: themeConfig.fontHeading }">Wedding Gift</h2>
       <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px; position: relative; z-index: 2;">
-        <div style="height: 1px; width: 40px; background: rgba(255,255,255,0.3);"></div>
-        <div style="width: 5px; height: 5px; transform: rotate(45deg); background: rgba(255,255,255,0.4);"></div>
-        <div style="height: 1px; width: 40px; background: rgba(255,255,255,0.3);"></div>
+        <div style="height: 1px; width: 40px; background: rgba(4,26,51,0.3);"></div>
+        <div style="width: 5px; height: 5px; transform: rotate(45deg); background: rgba(4,26,51,0.4);"></div>
+        <div style="height: 1px; width: 40px; background: rgba(4,26,51,0.3);"></div>
       </div>
-      <p style="position: relative; z-index: 2; color: rgba(255,255,255,0.6); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 400; margin-bottom: 40px; text-align: center; max-width: 280px; line-height: 1.8;">Kehadiran dan doa restu Anda adalah hadiah terindah bagi kami. Bagi yang ingin memberikan tanda kasih, dapat melalui rekening berikut:</p>
+      <p style="position: relative; z-index: 2; color: rgba(4,26,51,0.6); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 400; margin-bottom: 40px; text-align: center; max-width: 280px; line-height: 1.8;">Kehadiran dan doa restu Anda adalah hadiah terindah bagi kami. Bagi yang ingin memberikan tanda kasih, dapat melalui rekening berikut:</p>
 
       <!-- Cards Wrapper -->
       <div style="width: 100%; max-width: 300px; position: relative; z-index: 2;">
@@ -294,14 +294,14 @@ onUnmounted(() => {
 }
 
 .theme-blue {
-  background: linear-gradient(135deg, #ffffff, #ACCDE7);
+  background: linear-gradient(135deg, #041a33, #ACCDE7);
   --text-primary: #1a252c;
   --text-secondary: #304851;
   --text-muted: rgba(48,72,81,0.65);
-  --btn-bg: rgba(255,255,255,0.4);
+  --btn-bg: rgba(4,26,51,0.4);
   --btn-text: #304851;
-  --btn-hover: rgba(255,255,255,0.6);
-  --circle-border: rgba(255,255,255,0.4);
+  --btn-hover: rgba(4,26,51,0.6);
+  --circle-border: rgba(4,26,51,0.4);
 }
 
 /* POLA DEKORASI */
@@ -381,7 +381,7 @@ onUnmounted(() => {
 
 .copy-btn {
   background-color: var(--btn-bg);
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(4,26,51,0.05);
   color: var(--btn-text);
   padding: 6px 12px;
   border-radius: 20px; /* Lebh membulat ala iOS pill */
