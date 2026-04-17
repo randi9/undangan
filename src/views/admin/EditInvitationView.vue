@@ -835,7 +835,7 @@
             <p class="form-section-subtitle">Lagu yang berputar otomatis saat undangan dibuka</p>
             <div class="helper-tip">
               <Icon icon="lucide:info" class="helper-tip-icon" />
-              <span>Setiap tema sudah memiliki musik default. Kamu bisa menggantinya dengan upload lagu sendiri, atau biarkan musik default yang bermain.</span>
+              <span>Setiap tema sudah memiliki musik default. Kamu bisa menggantinya dengan upload lagu sendiri, music default, atau dari pustaka lagu.</span>
             </div>
             <div class="form-group">
               <!-- Musik Default Aktif -->
@@ -848,12 +848,15 @@
                   </div>
                 </div>
                 <audio controls :src="form.music_url" style="width: 100%; height: 40px; margin-bottom: 12px;"></audio>
-                <div style="display: flex; gap: 8px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
                     <Icon icon="lucide:upload" style="font-size: 14px;" /> Upload Lagu
                   </button>
                   <button type="button" class="btn btn-outline btn-sm" @click.stop="openMusicLibrary" style="font-size: 13px;">
                     <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic" style="font-size: 13px;">
+                    <Icon icon="lucide:volume-x" style="font-size: 14px;" /> Tanpa Lagu
                   </button>
                 </div>
               </div>
@@ -887,7 +890,7 @@
                 <Icon icon="lucide:music-4" class="upload-icon" style="color: var(--admin-text-secondary);" />
                 <div class="upload-text">Upload File Audio</div>
                 <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 20MB</div>
-                <div style="display: flex; justify-content: center; gap: 8px; margin-top: 12px;">
+                <div style="display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
                   <button type="button" class="btn btn-outline btn-sm" style="font-size: 13px;" @click.stop="restoreDefaultMusic">
                     <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Lagu Default
                   </button>
