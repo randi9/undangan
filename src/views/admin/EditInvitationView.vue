@@ -149,6 +149,7 @@
                   :class="{ 'input-error': slugStatus === 'taken', 'input-success': slugStatus === 'available' }"
                   placeholder="contoh: andi-sarah"
                   required
+                  maxlength="50"
                   pattern="[a-z0-9-]+"
                   title="Hanya huruf kecil, angka, dan tanda hubung"
                   @input="handleSlugInput"
@@ -181,11 +182,12 @@
                   </button>
                 </div>
               </div>
-              <small v-else-if="slugStatus === 'available'" style="color: #10b981; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px;">
-                <Icon icon="lucide:check" /> Link tersedia!
+              <small v-else-if="slugStatus === 'available'" style="color: #10b981; font-size: 13px; font-weight: 500; display: flex; align-items: flex-start; gap: 6px; margin-top: 6px;">
+                <Icon icon="lucide:check" style="flex-shrink: 0; margin-top: 2px;" /> 
+                <span style="word-break: break-word; line-height: 1.4;"><strong>{{ form.slug }}</strong>.mengundanganda.com tersedia!</span>
               </small>
-              <small v-else style="color: var(--admin-text-secondary); font-size: 12px; margin-top: 4px; display: block;">
-                Undangan akan bisa diakses di: <strong>{{ form.slug || "slug-anda" }}.mengundanganda.com</strong>
+              <small v-else style="color: var(--admin-text-secondary); font-size: 12px; margin-top: 6px; display: block; line-height: 1.4;">
+                Undangan akan bisa diakses di: <strong style="word-break: break-word;">{{ form.slug || "slug-anda" }}.mengundanganda.com</strong>
               </small>
             </div>
           </div>
@@ -260,19 +262,20 @@
                       v-model="form.groom_name"
                       class="form-input"
                       required
+                      maxlength="20"
                     />
                   </div>
                   <div class="form-group">
                     <label class="form-label">Nama Lengkap</label>
-                    <input v-model="form.groom_full_name" class="form-input" />
+                    <input v-model="form.groom_full_name" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">Putra dari Bapak</label>
-                    <input v-model="form.groom_father" class="form-input" />
+                    <input v-model="form.groom_father" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">dan Ibu</label>
-                    <input v-model="form.groom_mother" class="form-input" />
+                    <input v-model="form.groom_mother" class="form-input" maxlength="60" />
                   </div>
                 </div>
               </div>
@@ -326,19 +329,20 @@
                       v-model="form.bride_name"
                       class="form-input"
                       required
+                      maxlength="20"
                     />
                   </div>
                   <div class="form-group">
                     <label class="form-label">Nama Lengkap</label>
-                    <input v-model="form.bride_full_name" class="form-input" />
+                    <input v-model="form.bride_full_name" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">Putri dari Bapak</label>
-                    <input v-model="form.bride_father" class="form-input" />
+                    <input v-model="form.bride_father" class="form-input" maxlength="60" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">dan Ibu</label>
-                    <input v-model="form.bride_mother" class="form-input" />
+                    <input v-model="form.bride_mother" class="form-input" maxlength="60" />
                   </div>
                 </div>
               </div>
@@ -433,12 +437,36 @@
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Waktu</label>
-                    <input v-model="form.akad_time" class="form-input" />
+                    <label class="form-label">Waktu (Mulai - Selesai)</label>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                      <input
+                        v-model="akadStart"
+                        type="time"
+                        class="form-input"
+                        style="flex: 1; min-width: 0; padding-left: 8px; padding-right: 4px;"
+                        @keydown.enter.prevent
+                      />
+                      <span style="color: var(--admin-text-secondary); font-weight: 500;">-</span>
+                      <input
+                        v-model="akadEnd"
+                        type="time"
+                        class="form-input"
+                        style="flex: 1; min-width: 0; padding-left: 8px; padding-right: 4px;"
+                        @keydown.enter.prevent
+                      />
+                      <select v-model="akadZone" class="form-input" style="width: 72px; flex-shrink: 0; padding-left: 6px; padding-right: 6px;">
+                        <option value="WIB">WIB</option>
+                        <option value="WITA">WITA</option>
+                        <option value="WIT">WIT</option>
+                      </select>
+                    </div>
+                    <p v-if="akadStart && akadEnd && akadStart >= akadEnd" class="time-error-hint">
+                      <Icon icon="lucide:alert-circle" style="font-size: 13px; flex-shrink: 0;" /> Waktu selesai harus lebih dari waktu mulai
+                    </p>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Tempat</label>
-                    <input v-model="form.akad_venue" class="form-input" />
+                    <input v-model="form.akad_venue" class="form-input" maxlength="100" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">Alamat</label>
@@ -446,11 +474,12 @@
                       v-model="form.akad_address"
                       class="form-input"
                       rows="2"
+                      maxlength="200"
                     ></textarea>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Link Google Maps</label>
-                    <input v-model="form.akad_map_url" class="form-input" />
+                    <input v-model="form.akad_map_url" class="form-input" maxlength="500" />
                   </div>
                 </div>
               </div>
@@ -478,12 +507,36 @@
                     />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Waktu</label>
-                    <input v-model="form.resepsi_time" class="form-input" />
+                    <label class="form-label">Waktu (Mulai - Selesai)</label>
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                      <input
+                        v-model="resepsiStart"
+                        type="time"
+                        class="form-input"
+                        style="flex: 1; min-width: 0; padding-left: 8px; padding-right: 4px;"
+                        @keydown.enter.prevent
+                      />
+                      <span style="color: var(--admin-text-secondary); font-weight: 500;">-</span>
+                      <input
+                        v-model="resepsiEnd"
+                        type="time"
+                        class="form-input"
+                        style="flex: 1; min-width: 0; padding-left: 8px; padding-right: 4px;"
+                        @keydown.enter.prevent
+                      />
+                      <select v-model="resepsiZone" class="form-input" style="width: 72px; flex-shrink: 0; padding-left: 6px; padding-right: 6px;">
+                        <option value="WIB">WIB</option>
+                        <option value="WITA">WITA</option>
+                        <option value="WIT">WIT</option>
+                      </select>
+                    </div>
+                    <p v-if="resepsiStart && resepsiEnd && resepsiStart >= resepsiEnd" class="time-error-hint">
+                      <Icon icon="lucide:alert-circle" style="font-size: 13px; flex-shrink: 0;" /> Waktu selesai harus lebih dari waktu mulai
+                    </p>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Tempat</label>
-                    <input v-model="form.resepsi_venue" class="form-input" />
+                    <input v-model="form.resepsi_venue" class="form-input" maxlength="100" />
                   </div>
                   <div class="form-group">
                     <label class="form-label">Alamat</label>
@@ -491,11 +544,12 @@
                       v-model="form.resepsi_address"
                       class="form-input"
                       rows="2"
+                      maxlength="200"
                     ></textarea>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Link Google Maps</label>
-                    <input v-model="form.resepsi_map_url" class="form-input" />
+                    <input v-model="form.resepsi_map_url" class="form-input" maxlength="500" />
                   </div>
                 </div>
               </div>
@@ -562,17 +616,20 @@
                   v-model="story.date"
                   class="form-input"
                   placeholder="Tahun/Tanggal"
+                  maxlength="20"
                 />
                 <input
                   v-model="story.title"
                   class="form-input"
                   placeholder="Judul"
+                  maxlength="50"
                 />
                 <textarea
                   v-model="story.description"
                   class="form-input"
                   placeholder="Ceritakan momen ini..."
                   rows="2"
+                  maxlength="300"
                 ></textarea>
               </div>
               <button
@@ -676,6 +733,7 @@
                 v-model="form.quote"
                 class="form-input"
                 rows="3"
+                maxlength="500"
               ></textarea>
             </div>
           </div>
@@ -721,7 +779,7 @@
               <div class="form-grid">
                 <div class="form-group">
                   <label class="form-label">Nama Bank</label>
-                  <input v-model="bank.bank_name" class="form-input" placeholder="BCA" />
+                  <input v-model="bank.bank_name" class="form-input" placeholder="BCA" maxlength="50" />
                 </div>
                 <div class="form-group">
                   <label class="form-label">No. Rekening</label>
@@ -729,7 +787,7 @@
                 </div>
                 <div class="form-group full-width">
                   <label class="form-label">Atas Nama</label>
-                  <input v-model="bank.bank_holder" class="form-input" placeholder="Ahmad Andi Pratama" />
+                  <input v-model="bank.bank_holder" class="form-input" placeholder="Ahmad Andi Pratama" maxlength="60" />
                 </div>
               </div>
             </div>
@@ -1131,6 +1189,21 @@
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
+.time-error-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 6px 0 0;
+  padding: 0;
+  font-size: 12.5px;
+  color: #dc2626;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 </style>
 
 <script setup lang="ts">
@@ -1168,9 +1241,57 @@ function validateStep(stepIndex: number): string[] {
       if (!form.groom_name || !form.groom_name.trim()) errors.push('Nama panggilan mempelai pria wajib diisi')
       if (!form.bride_name || !form.bride_name.trim()) errors.push('Nama panggilan mempelai wanita wajib diisi')
       break
+    case 2: // Acara
+      if (akadStart.value && akadEnd.value && akadStart.value >= akadEnd.value) {
+        errors.push('Waktu selesai Akad Nikah tidak boleh lebih awal atau sama dengan waktu mulai')
+      }
+      if (resepsiStart.value && resepsiEnd.value && resepsiStart.value >= resepsiEnd.value) {
+        errors.push('Waktu selesai Resepsi tidak boleh lebih awal atau sama dengan waktu mulai')
+      }
+      break
   }
   return errors
 }
+
+// --- Time Parsing (Jam & Zona Waktu) ---
+function parseTimeStr(timeStr: string) {
+  if (!timeStr) return { start: '', end: '', zone: 'WIB' };
+  const match = timeStr.match(/^(\d{2}:\d{2})(?:\s*-\s*(\d{2}:\d{2}))?\s*(WIB|WITA|WIT)?$/i);
+  if (match) {
+    return { start: match[1] || '', end: match[2] || '', zone: match[3]?.toUpperCase() || 'WIB' };
+  }
+  return { start: '', end: '', zone: 'WIB' };
+}
+function buildTimeStr(start: string, end: string, zone: string) {
+  if (!start && !end) return ''; // if both empty, clear it
+  return `${start || '00:00'}${end ? ' - ' + end : ''} ${zone}`;
+}
+
+const akadStart = computed({
+  get: () => parseTimeStr(form.akad_time).start,
+  set: (val) => form.akad_time = buildTimeStr(val, parseTimeStr(form.akad_time).end, parseTimeStr(form.akad_time).zone)
+});
+const akadEnd = computed({
+  get: () => parseTimeStr(form.akad_time).end,
+  set: (val) => form.akad_time = buildTimeStr(parseTimeStr(form.akad_time).start, val, parseTimeStr(form.akad_time).zone)
+});
+const akadZone = computed({
+  get: () => parseTimeStr(form.akad_time).zone,
+  set: (val) => form.akad_time = buildTimeStr(parseTimeStr(form.akad_time).start, parseTimeStr(form.akad_time).end, val)
+});
+
+const resepsiStart = computed({
+  get: () => parseTimeStr(form.resepsi_time).start,
+  set: (val) => form.resepsi_time = buildTimeStr(val, parseTimeStr(form.resepsi_time).end, parseTimeStr(form.resepsi_time).zone)
+});
+const resepsiEnd = computed({
+  get: () => parseTimeStr(form.resepsi_time).end,
+  set: (val) => form.resepsi_time = buildTimeStr(parseTimeStr(form.resepsi_time).start, val, parseTimeStr(form.resepsi_time).zone)
+});
+const resepsiZone = computed({
+  get: () => parseTimeStr(form.resepsi_time).zone,
+  set: (val) => form.resepsi_time = buildTimeStr(parseTimeStr(form.resepsi_time).start, parseTimeStr(form.resepsi_time).end, val)
+});
 
 // --- Wizard ---
 const wizard = useFormWizard([
@@ -1241,6 +1362,19 @@ function getPhotoUrl(url: string) {
 
 // --- Submit ---
 async function handleSubmit() {
+  // Validate ALL wizard steps before submitting
+  for (let i = 0; i < wizard.steps.length; i++) {
+    const errors = validateStep(i)
+    if (errors.length > 0) {
+      wizard.goToStepDirect(i)
+      wizard.stepErrors.value = errors
+      wizard.showStepErrors.value = true
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      showToast("error", errors[0] || "Terdapat error pada form")
+      return
+    }
+  }
+
   submitting.value = true;
   try {
     const id = route.params.id as string;

@@ -12,6 +12,7 @@ export function useSlugValidation(
     // Sanitize slug
     slugRef.value = slugRef.value
       .toLowerCase()
+      .slice(0, 50)
       .replace(/[^a-z0-9-]/g, '-')
       .replace(/-+/g, '-')
 
