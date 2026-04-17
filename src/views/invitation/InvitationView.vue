@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, reactive, watch, nextTick, type Component } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, reactive, watch, nextTick, type Component, defineAsyncComponent } from "vue";
 import { DotLottieVue } from '@lottiefiles/dotlottie-vue';
 
 // === DESKTOP IFRAME MODE ===
@@ -23,147 +23,82 @@ import type { ThemeConfig } from "@/types/theme";
 import { resolveAssetUrl } from "@/utils/url";
 import { Icon } from "@iconify/vue";
 
-// Covers
-import CoverElegant from "@/components/invitation/covers/CoverElegant.vue";
-import CoverFloral from "@/components/invitation/covers/CoverFloral.vue";
-import CoverMinimalist from "@/components/invitation/covers/CoverMinimalist.vue";
-import CoverElegantBlue from "@/components/invitation/covers/CoverElegantBlue.vue";
-
-// Heroes
-import HeroElegant from "@/components/invitation/heroes/HeroElegant.vue";
-import HeroFloral from "@/components/invitation/heroes/HeroFloral.vue";
-import HeroMinimalist from "@/components/invitation/heroes/HeroMinimalist.vue";
-import HeroElegantBlue from "@/components/invitation/heroes/HeroElegantBlue.vue";
-
-// Quotes
-import QuoteElegant from "@/components/invitation/quotes/QuoteElegant.vue";
-import QuoteFloral from "@/components/invitation/quotes/QuoteFloral.vue";
-import QuoteMinimalist from "@/components/invitation/quotes/QuoteMinimalist.vue";
-import QuoteElegantBlue from "@/components/invitation/quotes/QuoteElegantBlue.vue";
-
-// Couples
-import CoupleElegant from "@/components/invitation/couples/CoupleElegant.vue";
-import CoupleFloral from "@/components/invitation/couples/CoupleFloral.vue";
-import CoupleMinimalist from "@/components/invitation/couples/CoupleMinimalist.vue";
-import CoupleElegantBlue from "@/components/invitation/couples/CoupleElegantBlue.vue";
-
-// Countdowns
-import CountdownElegant from "@/components/invitation/countdowns/CountdownElegant.vue";
-import CountdownFloral from "@/components/invitation/countdowns/CountdownFloral.vue";
-import CountdownMinimalist from "@/components/invitation/countdowns/CountdownMinimalist.vue";
-import CountdownElegantBlue from "@/components/invitation/countdowns/CountdownElegantBlue.vue";
-
-// Events
-import EventsElegant from "@/components/invitation/events/EventsElegant.vue";
-import EventsFloral from "@/components/invitation/events/EventsFloral.vue";
-import EventsMinimalist from "@/components/invitation/events/EventsMinimalist.vue";
-import EventsElegantBlue from "@/components/invitation/events/EventsElegantBlue.vue";
-
-// Love Story
-import LoveStoryElegant from "@/components/invitation/lovestory/LoveStoryElegant.vue";
-import LoveStoryFloral from "@/components/invitation/lovestory/LoveStoryFloral.vue";
-import LoveStoryMinimalist from "@/components/invitation/lovestory/LoveStoryMinimalist.vue";
-import LoveStoryElegantBlue from "@/components/invitation/lovestory/LoveStoryElegantBlue.vue";
-
-// Gallery
-import GalleryElegant from "@/components/invitation/gallery/GalleryElegant.vue";
-import GalleryFloral from "@/components/invitation/gallery/GalleryFloral.vue";
-import GalleryMinimalist from "@/components/invitation/gallery/GalleryMinimalist.vue";
-import GalleryElegantBlue from "@/components/invitation/gallery/GalleryElegantBlue.vue";
-
-// RSVP
-import RsvpElegant from "@/components/invitation/rsvp/RsvpElegant.vue";
-import RsvpFloral from "@/components/invitation/rsvp/RsvpFloral.vue";
-import RsvpMinimalist from "@/components/invitation/rsvp/RsvpMinimalist.vue";
-import RsvpElegantBlue from "@/components/invitation/rsvp/RsvpElegantBlue.vue";
-
-// Gift
-import GiftElegant from "@/components/invitation/gift/GiftElegant.vue";
-import GiftFloral from "@/components/invitation/gift/GiftFloral.vue";
-import GiftMinimalist from "@/components/invitation/gift/GiftMinimalist.vue";
-import GiftElegantBlue from "@/components/invitation/gift/GiftElegantBlue.vue";
-
-// Footer
-import FooterElegant from "@/components/invitation/footer/FooterElegant.vue";
-import FooterFloral from "@/components/invitation/footer/FooterFloral.vue";
-import FooterMinimalist from "@/components/invitation/footer/FooterMinimalist.vue";
-import FooterElegantBlue from "@/components/invitation/footer/FooterElegantBlue.vue";
-
-// --- COMPONENT MAPS ---
+// --- ASYNC COMPONENT MAPS ---
 const coverComponents: Record<string, Component> = {
-  elegant: CoverElegant,
-  floral: CoverFloral,
-  minimalist: CoverMinimalist,
-  elegant_blue: CoverElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/covers/CoverElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/covers/CoverFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/covers/CoverMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/covers/CoverElegantBlue.vue")),
 };
+
 const heroComponents: Record<string, Component> = {
-  elegant: HeroElegant,
-  floral: HeroFloral,
-  minimalist: HeroMinimalist,
-  elegant_blue: HeroElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/heroes/HeroElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/heroes/HeroFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/heroes/HeroMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/heroes/HeroElegantBlue.vue")),
 };
 
 const quoteComponents: Record<string, Component> = {
-  elegant: QuoteElegant,
-  floral: QuoteFloral,
-  minimalist: QuoteMinimalist,
-  elegant_blue: QuoteElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/quotes/QuoteElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/quotes/QuoteFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/quotes/QuoteMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/quotes/QuoteElegantBlue.vue")),
 };
 
 const coupleComponents: Record<string, Component> = {
-  elegant: CoupleElegant,
-  floral: CoupleFloral,
-  minimalist: CoupleMinimalist,
-  elegant_blue: CoupleElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/couples/CoupleElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/couples/CoupleFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/couples/CoupleMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/couples/CoupleElegantBlue.vue")),
 };
 
 const countdownComponents: Record<string, Component> = {
-  elegant: CountdownElegant,
-  floral: CountdownFloral,
-  minimalist: CountdownMinimalist,
-  elegant_blue: CountdownElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/countdowns/CountdownElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/countdowns/CountdownFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/countdowns/CountdownMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/countdowns/CountdownElegantBlue.vue")),
 };
 
 const eventsComponents: Record<string, Component> = {
-  elegant: EventsElegant,
-  floral: EventsFloral,
-  minimalist: EventsMinimalist,
-  elegant_blue: EventsElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/events/EventsElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/events/EventsFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/events/EventsMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/events/EventsElegantBlue.vue")),
 };
 
 const loveStoryComponents: Record<string, Component> = {
-  elegant: LoveStoryElegant,
-  floral: LoveStoryFloral,
-  minimalist: LoveStoryMinimalist,
-  elegant_blue: LoveStoryElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/lovestory/LoveStoryElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/lovestory/LoveStoryFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/lovestory/LoveStoryMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/lovestory/LoveStoryElegantBlue.vue")),
 };
 
 const galleryComponents: Record<string, Component> = {
-  elegant: GalleryElegant,
-  floral: GalleryFloral,
-  minimalist: GalleryMinimalist,
-  elegant_blue: GalleryElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/gallery/GalleryElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/gallery/GalleryFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/gallery/GalleryMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/gallery/GalleryElegantBlue.vue")),
 };
 
 const rsvpComponents: Record<string, Component> = {
-  elegant: RsvpElegant,
-  floral: RsvpFloral,
-  minimalist: RsvpMinimalist,
-  elegant_blue: RsvpElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/rsvp/RsvpElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/rsvp/RsvpFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/rsvp/RsvpMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/rsvp/RsvpElegantBlue.vue")),
 };
 
 const giftComponents: Record<string, Component> = {
-  elegant: GiftElegant,
-  floral: GiftFloral,
-  minimalist: GiftMinimalist,
-  elegant_blue: GiftElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/gift/GiftElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/gift/GiftFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/gift/GiftMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/gift/GiftElegantBlue.vue")),
 };
 
 const footerComponents: Record<string, Component> = {
-  elegant: FooterElegant,
-  floral: FooterFloral,
-  minimalist: FooterMinimalist,
-  elegant_blue: FooterElegantBlue,
+  elegant: defineAsyncComponent(() => import("@/components/invitation/footer/FooterElegant.vue")),
+  floral: defineAsyncComponent(() => import("@/components/invitation/footer/FooterFloral.vue")),
+  minimalist: defineAsyncComponent(() => import("@/components/invitation/footer/FooterMinimalist.vue")),
+  elegant_blue: defineAsyncComponent(() => import("@/components/invitation/footer/FooterElegantBlue.vue")),
 };
 
 // --- THEME DATA SYSTEM (from centralized registry) ---
@@ -296,17 +231,17 @@ const activeTheme = computed((): ThemeConfig => {
 const themeName = computed(() => activeTheme.value.name);
 
 // Dynamic component selectors
-const activeCover = computed(() => coverComponents[themeName.value] || CoverElegant);
-const activeHero = computed(() => heroComponents[themeName.value] || HeroElegant);
-const activeQuote = computed(() => quoteComponents[themeName.value] || QuoteElegant);
-const activeCouple = computed(() => coupleComponents[themeName.value] || CoupleElegant);
-const activeCountdown = computed(() => countdownComponents[themeName.value] || CountdownElegant);
-const activeEvents = computed(() => eventsComponents[themeName.value] || EventsElegant);
-const activeLoveStory = computed(() => loveStoryComponents[themeName.value] || LoveStoryElegant);
-const activeGallery = computed(() => galleryComponents[themeName.value] || GalleryElegant);
-const activeRsvp = computed(() => rsvpComponents[themeName.value] || RsvpElegant);
-const activeGift = computed(() => giftComponents[themeName.value] || GiftElegant);
-const activeFooter = computed(() => footerComponents[themeName.value] || FooterElegant);
+const activeCover = computed(() => coverComponents[themeName.value] || coverComponents['elegant']);
+const activeHero = computed(() => heroComponents[themeName.value] || heroComponents['elegant']);
+const activeQuote = computed(() => quoteComponents[themeName.value] || quoteComponents['elegant']);
+const activeCouple = computed(() => coupleComponents[themeName.value] || coupleComponents['elegant']);
+const activeCountdown = computed(() => countdownComponents[themeName.value] || countdownComponents['elegant']);
+const activeEvents = computed(() => eventsComponents[themeName.value] || eventsComponents['elegant']);
+const activeLoveStory = computed(() => loveStoryComponents[themeName.value] || loveStoryComponents['elegant']);
+const activeGallery = computed(() => galleryComponents[themeName.value] || galleryComponents['elegant']);
+const activeRsvp = computed(() => rsvpComponents[themeName.value] || rsvpComponents['elegant']);
+const activeGift = computed(() => giftComponents[themeName.value] || giftComponents['elegant']);
+const activeFooter = computed(() => footerComponents[themeName.value] || footerComponents['elegant']);
 
 // Map Theme to CSS Variables
 const themeStyles = computed(() => ({

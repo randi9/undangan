@@ -23,7 +23,7 @@
             <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:sparkles" style="color: var(--admin-primary);" /> Buat Undangan Baru</span>
             <button 
               class="btn btn-outline btn-sm mobile-only" 
-              @click="showMobilePreview = true"
+              @click="previewPanel?.openMobilePreview()"
               style="border-radius: 20px; font-weight: 600;"
             >
               👀 Preview
@@ -915,42 +915,8 @@
             </div>
           </form>
         </div>
-
-        <!-- Area Kanan: Live Preview (Desktop) -->
-        <div class="editor-preview-area">
-          <iframe 
-            ref="previewIframe" 
-            class="editor-preview-iframe"
-            :src="`/invitation/preview`"
-            title="Live Preview"
-          ></iframe>
-        </div>
-      </div>
-
-      <!-- Tombol FAB Mobile Preview -->
-      <button class="mobile-preview-fab" @click="showMobilePreview = true">
-        <Icon icon="lucide:eye" style="font-size: 20px;" /> Lihat Preview
-      </button>
-
-      <!-- Modal Fullscreen Mobile Preview -->
-      <div v-if="showMobilePreview" class="mobile-preview-modal block">
-        <div class="mobile-preview-header">
-          <span style="display: flex; align-items: center; gap: 8px;">
-            <span class="material-symbols-rounded" style="color: var(--admin-primary); font-size: 20px;">visibility</span>
-            Live Preview
-          </span>
-          <button class="btn btn-outline btn-sm" @click="showMobilePreview = false" style="border: none; padding: 4px;">
-            <span class="material-symbols-rounded">close</span>
-          </button>
-        </div>
-        <div style="flex: 1; height: calc(100vh - 60px);">
-          <iframe 
-            ref="mobilePreviewIframe" 
-            class="editor-preview-iframe"
-            :src="`/invitation/preview`"
-            title="Live Preview Mobile"
-          ></iframe>
-        </div>
+        <!-- Live Preview Panel Component -->
+        <LivePreviewPanel ref="previewPanel" :form="form" />
       </div>
     </div>
 
@@ -1331,8 +1297,8 @@ import { useInvitationForm } from "@/composables/useInvitationForm";
 import { useSlugValidation } from "@/composables/useSlugValidation";
 import { usePhotoUpload } from "@/composables/usePhotoUpload";
 import { useMusicManager } from "@/composables/useMusicManager";
-import { usePreviewSync } from "@/composables/usePreviewSync";
 import { useFormWizard } from "@/composables/useFormWizard";
+import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -1383,7 +1349,7 @@ const {
 } = useMusicManager(form, showToast);
 
 // --- Preview Sync ---
-const { previewIframe, mobilePreviewIframe, showMobilePreview } = usePreviewSync(form);
+const previewPanel = ref<InstanceType<typeof LivePreviewPanel> | null>(null);
 
 // --- Theme Selection ---
 const showThemeModal = ref(false);

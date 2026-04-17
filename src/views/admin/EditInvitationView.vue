@@ -62,7 +62,7 @@
               <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:pencil" style="color: var(--admin-primary);" /> Edit Undangan</span>
               <button 
                 class="btn btn-outline btn-sm mobile-only" 
-                @click="showMobilePreview = true"
+                @click="previewPanel?.openMobilePreview()"
                 style="border-radius: 20px; font-weight: 600;"
               >
                 👀 Preview
@@ -821,16 +821,8 @@
             </form>
           </div>
 
-          <!-- Area Kanan: Live Preview (Desktop) -->
-          <div class="editor-preview-area">
-            <!-- Iframe Live Preview -->
-            <iframe 
-              ref="previewIframe" 
-              class="editor-preview-iframe"
-              :src="`/invitation/preview`"
-              title="Live Preview"
-            ></iframe>
-          </div>
+          <!-- Live Preview Panel Component -->
+          <LivePreviewPanel ref="previewPanel" :form="form" />
         </div>
 
         <!-- Modal Pustaka Lagu -->
@@ -885,32 +877,7 @@
           </div>
         </div>
 
-        <!-- Tombol FAB Mobile Preview -->
-        <button class="mobile-preview-fab" @click="showMobilePreview = true">
-          <Icon icon="lucide:eye" style="font-size: 20px;" /> Lihat Preview
-        </button>
 
-        <!-- Modal Fullscreen Mobile Preview -->
-        <div v-if="showMobilePreview" class="mobile-preview-modal block">
-          <div class="mobile-preview-header">
-            <span style="display: flex; align-items: center; gap: 8px;">
-              <span class="material-symbols-rounded" style="color: var(--admin-primary); font-size: 20px;">visibility</span>
-              Live Preview
-            </span>
-            <button class="btn btn-outline btn-sm" @click="showMobilePreview = false" style="border: none; padding: 4px;">
-              <span class="material-symbols-rounded">close</span>
-            </button>
-          </div>
-          <div style="flex: 1; height: calc(100vh - 60px);">
-            <!-- Gunakan iframe yang sama secara logic, ditaruh penuh -->
-            <iframe 
-              ref="mobilePreviewIframe" 
-              class="editor-preview-iframe"
-              :src="`/invitation/preview`"
-              title="Live Preview Mobile"
-            ></iframe>
-          </div>
-        </div>
         <!-- Modal Pilih Tema -->
     <div v-if="showThemeModal" class="modal-overlay" @click.self="showThemeModal = false">
       <div class="modal-content" style="max-width: 800px; width: 90%;">
@@ -1104,8 +1071,8 @@ import { useInvitationForm } from "@/composables/useInvitationForm";
 import { useSlugValidation } from "@/composables/useSlugValidation";
 import { usePhotoUpload } from "@/composables/usePhotoUpload";
 import { useMusicManager } from "@/composables/useMusicManager";
-import { usePreviewSync } from "@/composables/usePreviewSync";
 import { useFormWizard } from "@/composables/useFormWizard";
+import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -1158,7 +1125,7 @@ const {
 } = useMusicManager(form, showToast);
 
 // --- Preview Sync ---
-const { previewIframe, mobilePreviewIframe, showMobilePreview } = usePreviewSync(form);
+const previewPanel = ref<InstanceType<typeof LivePreviewPanel> | null>(null);
 
 // --- Theme Selection ---
 const showThemeModal = ref(false);
