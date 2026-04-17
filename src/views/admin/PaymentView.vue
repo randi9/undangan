@@ -1,56 +1,11 @@
 <template>
-  <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <router-link to="/dashboard" class="sidebar-brand">
-        <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
-          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-        </div>
-        <div class="sidebar-brand-text">Mengundang<span>Anda</span></div>
+  <AdminLayout>
+    <template #actions>
+      <router-link to="/dashboard" class="btn btn-outline">
+        <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">arrow_back</span>
+        Kembali ke Dashboard
       </router-link>
-
-      <nav class="sidebar-nav">
-        <router-link to="/dashboard" class="sidebar-link">
-          <span class="material-symbols-rounded">dashboard</span>
-          Dashboard
-        </router-link>
-        <router-link to="/dashboard/themes" class="sidebar-link">
-          <span class="material-symbols-rounded">palette</span>
-          Tema
-        </router-link>
-        <router-link to="/dashboard/payment" class="sidebar-link" exact>
-          <span class="material-symbols-rounded">payments</span>
-          Pembayaran
-        </router-link>
-      </nav>
-
-      <div class="sidebar-footer" style="padding: 1rem 0; border-top: 1px solid #e1e8f0; margin-top: auto;">
-        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-          <UserButton showName />
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="admin-main">
-      <header class="admin-topbar">
-        <router-link to="/dashboard" class="mobile-brand">
-          <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
-            <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-          </div>
-          <div class="sidebar-brand-text" style="font-size:16px;">Mengundang<span>Anda</span></div>
-        </router-link>
-
-        <div class="search-bar" style="visibility: hidden;"></div>
-        <div class="topbar-actions" style="gap: 12px;">
-          <router-link to="/dashboard" class="btn btn-outline">
-            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">arrow_back</span>
-            Kembali ke Dashboard
-          </router-link>
-        </div>
-      </header>
-
-      <div class="admin-container">
+    </template>
         <!-- Loading -->
         <div v-if="loading" style="text-align:center;padding:80px 0;">
           <div class="loading-spinner"></div>
@@ -252,22 +207,19 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
     <!-- Toast -->
     <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
       {{ toast.message }}
     </div>
-  </div>
+  </AdminLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import { UserButton } from "@clerk/vue";
 import { Icon } from "@iconify/vue";
+import AdminLayout from "@/components/admin/AdminLayout.vue";
 
 const route = useRoute();
 const authStore = useAuthStore();

@@ -1,68 +1,11 @@
 <template>
-  <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <router-link to="/dashboard" class="sidebar-brand">
-        <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
-          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-        </div>
-        <div class="sidebar-brand-text">Mengundang<span>Anda</span></div>
+  <AdminLayout>
+    <template #actions>
+      <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="btn btn-primary">
+        <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
+        Buat Undangan Baru
       </router-link>
-
-      <nav class="sidebar-nav">
-        <router-link to="/dashboard" class="sidebar-link">
-          <span class="material-symbols-rounded">dashboard</span>
-          Dashboard
-        </router-link>
-        <router-link to="/dashboard/themes" class="sidebar-link" exact>
-          <span class="material-symbols-rounded">palette</span>
-          Tema
-        </router-link>
-        <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="sidebar-link">
-          <span class="material-symbols-rounded">add_circle</span>
-          Buat Undangan
-        </router-link>
-        <router-link v-if="hasTrialInvitation" :to="`/dashboard/payment?invitation_id=${firstTrialInvitationId}`" class="sidebar-link">
-          <span class="material-symbols-rounded">payments</span>
-          Pembayaran
-        </router-link>
-        <router-link v-if="authStore.isAdmin" to="/dashboard/users" class="sidebar-link">
-          <span class="material-symbols-rounded">group</span>
-          Kelola User
-        </router-link>
-        <router-link v-if="authStore.isAdmin" to="/dashboard/vouchers" class="sidebar-link">
-          <span class="material-symbols-rounded">confirmation_number</span>
-          Voucher
-        </router-link>
-      </nav>
-
-      <div class="sidebar-footer" style="padding: 1rem 0; border-top: 1px solid #e1e8f0; margin-top: auto;">
-        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-          <UserButton showName />
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="admin-main">
-      <header class="admin-topbar">
-        <router-link to="/dashboard" class="mobile-brand">
-          <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
-            <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-          </div>
-          <div class="sidebar-brand-text" style="font-size:16px;">Mengundang<span>Anda</span></div>
-        </router-link>
-
-        <div class="search-bar" style="visibility: hidden;"></div>
-        <div class="topbar-actions">
-          <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="btn btn-primary">
-            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
-            Buat Undangan Baru
-          </router-link>
-        </div>
-      </header>
-
-      <div class="admin-container">
+    </template>
         <!-- Page Header -->
         <div class="theme-page-header">
           <div class="theme-page-header-content">
@@ -162,22 +105,19 @@
           <span class="material-symbols-rounded" style="font-size:20px;vertical-align:-4px">info</span>
           Anda telah mencapai batas undangan. Hubungi admin untuk menambah kuota atau hapus undangan yang tidak digunakan.
         </div>
-      </div>
-    </div>
-
-    <!-- Toast -->
+      <!-- Toast -->
     <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
       {{ toast.message }}
     </div>
-  </div>
+  </AdminLayout>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, nextTick } from "vue";
 import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
-import { UserButton } from "@clerk/vue";
 import { Icon } from "@iconify/vue";
+import AdminLayout from "@/components/admin/AdminLayout.vue";
 
 const store = useInvitationStore();
 const authStore = useAuthStore();

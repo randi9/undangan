@@ -73,7 +73,37 @@
             </p>
 
             <form @submit.prevent="handleSubmit">
-          <!-- Theme Selector -->
+
+            <!-- Wizard Stepper -->
+            <div class="wizard-stepper">
+              <template v-for="(step, i) in wizard.steps" :key="step.id">
+                <div
+                  class="wizard-step"
+                  :class="{ active: i === wizard.currentStepIndex.value, completed: i < wizard.currentStepIndex.value }"
+                  @click="wizard.goToStep(i)"
+                >
+                  <div class="wizard-step-number">
+                    <Icon v-if="i < wizard.currentStepIndex.value" icon="lucide:check" style="font-size: 14px;" />
+                    <span v-else>{{ i + 1 }}</span>
+                  </div>
+                  <span class="wizard-step-label">{{ step.label }}</span>
+                </div>
+                <div
+                  v-if="i < wizard.steps.length - 1"
+                  class="wizard-step-connector"
+                  :class="{ completed: i < wizard.currentStepIndex.value }"
+                />
+              </template>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="wizard-progress">
+              <div class="wizard-progress-bar" :style="{ width: wizard.progress.value + '%' }" />
+            </div>
+
+            <!-- Step 1: Tema & URL -->
+            <div v-show="wizard.currentStepIndex.value === 0" class="wizard-step-content">
+           <!-- Theme Selector -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:palette" style="color: var(--admin-primary);" /> Tema Undangan</h3>
             
@@ -142,6 +172,21 @@
             </div>
           </div>
 
+            <!-- Wizard Nav Step 1 -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <router-link to="/dashboard" class="btn btn-outline">Batal</router-link>
+              </div>
+              <div class="wizard-nav-right">
+                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
+                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
+                </button>
+              </div>
+            </div>
+            </div>
+
+            <!-- Step 2: Data Mempelai -->
+            <div v-show="wizard.currentStepIndex.value === 1" class="wizard-step-content">
           <!-- Couple Info -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:users" style="color: var(--admin-primary);" /> Informasi Pasangan</h3>
@@ -322,6 +367,23 @@
             />
           </div>
 
+            <!-- Wizard Nav Step 2 -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
+                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
+                </button>
+              </div>
+              <div class="wizard-nav-right">
+                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
+                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
+                </button>
+              </div>
+            </div>
+            </div>
+
+            <!-- Step 3: Detail Acara -->
+            <div v-show="wizard.currentStepIndex.value === 2" class="wizard-step-content">
           <!-- Event Details -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:calendar-days" style="color: var(--admin-primary);" /> Detail Acara</h3>
@@ -422,6 +484,23 @@
             </div>
           </div>
 
+            <!-- Wizard Nav Step 3 -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
+                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
+                </button>
+              </div>
+              <div class="wizard-nav-right">
+                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
+                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
+                </button>
+              </div>
+            </div>
+            </div>
+
+            <!-- Step 4: Konten -->
+            <div v-show="wizard.currentStepIndex.value === 3" class="wizard-step-content">
           <!-- Love Story -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:heart" style="color: var(--admin-primary);" /> Love Story</h3>
@@ -583,6 +662,23 @@
             </div>
           </div>
 
+            <!-- Wizard Nav Step 4 -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
+                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
+                </button>
+              </div>
+              <div class="wizard-nav-right">
+                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
+                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
+                </button>
+              </div>
+            </div>
+            </div>
+
+            <!-- Step 5: Lainnya -->
+            <div v-show="wizard.currentStepIndex.value === 4" class="wizard-step-content">
           <!-- Bank Accounts (Gift) -->
           <div class="form-section">
             <h3 class="form-section-title"><Icon icon="lucide:wallet" style="color: var(--admin-primary);" /> Informasi Bank (Gift)</h3>
@@ -702,32 +798,26 @@
             </div>
           </div>
 
-          <!-- Submit -->
-          <div
-            style="
-              display: flex;
-              gap: 12px;
-              justify-content: flex-end;
-              margin-top: 24px;
-            "
-          >
-            <router-link to="/dashboard" class="btn btn-outline btn-lg"
-              >Batal</router-link
-            >
-            <button
-              type="submit"
-              class="btn btn-primary btn-lg"
-              :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'"
-            >
-              <span
-                v-if="submitting"
-                class="loading-spinner"
-                style="margin-right: 8px"
-              ></span>
-              <span v-if="!submitting" style="margin-right: 8px; vertical-align: -3px;"><Icon icon="lucide:save" /></span>
-              {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
-            </button>
-          </div>
+            <!-- Wizard Nav Step 5 (Final) -->
+            <div class="wizard-nav">
+              <div class="wizard-nav-left">
+                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
+                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
+                </button>
+              </div>
+              <div class="wizard-nav-right">
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg"
+                  :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'"
+                >
+                  <span v-if="submitting" class="loading-spinner" style="margin-right: 8px"></span>
+                  <span v-if="!submitting" style="margin-right: 8px; vertical-align: -3px;"><Icon icon="lucide:save" /></span>
+                  {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
+                </button>
+              </div>
+            </div>
+            </div>
             </form>
           </div>
 
@@ -1001,471 +1091,100 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { ref, reactive, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
-import type { LoveStoryItem, Photo, BankAccount } from "@/types/invitation";
 import { resolveAssetUrl } from "@/utils/url";
-import { DEFAULT_MUSIC, isDefaultMusicUrl } from "@/config/defaultMusic";
-import { computed } from "vue";
+import { THEME_REGISTRY, THEME_LIST, getThemeGalleryDefault } from "@/config/themes";
+import { DEFAULT_MUSIC } from "@/config/defaultMusic";
 import AppSkeleton from "@/components/ui/AppSkeleton.vue";
 
-interface MusicItem {
-  id: string;
-  title: string;
-  artist: string;
-  url: string;
-}
-
-const MAX_FILE_SIZE_MB = 20;
-const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+// Shared composables
+import { useInvitationForm } from "@/composables/useInvitationForm";
+import { useSlugValidation } from "@/composables/useSlugValidation";
+import { usePhotoUpload } from "@/composables/usePhotoUpload";
+import { useMusicManager } from "@/composables/useMusicManager";
+import { usePreviewSync } from "@/composables/usePreviewSync";
+import { useFormWizard } from "@/composables/useFormWizard";
 
 const route = useRoute();
 const router = useRouter();
 const store = useInvitationStore();
 const apiBase = import.meta.env.VITE_API_URL || "";
 
-const showThemeModal = ref(false);
+// --- Wizard ---
+const wizard = useFormWizard([
+  { id: 'theme', label: 'Tema & URL', icon: 'lucide:palette' },
+  { id: 'couple', label: 'Mempelai', icon: 'lucide:users' },
+  { id: 'event', label: 'Acara', icon: 'lucide:calendar-days' },
+  { id: 'content', label: 'Konten', icon: 'lucide:image' },
+  { id: 'extras', label: 'Finalisasi', icon: 'lucide:sparkles' },
+]);
 
-const themeGalleryDefaults: Record<string, 'carousel' | 'masonry'> = {
-  floral: 'carousel',
-  elegant: 'masonry',
-  minimalist: 'masonry',
-  elegant_blue: 'masonry',
-};
+const loading = ref(true);
+
+// --- Form State ---
+const {
+  form, submitting, toast, showToast,
+  populateForm, getSubmitPayload,
+  addLoveStory, removeLoveStory,
+} = useInvitationForm();
+
+// --- Slug Validation (with excludeId for edit mode) ---
+const slugRef = computed({
+  get: () => form.slug,
+  set: (v) => { form.slug = v },
+});
+const excludeId = computed(() => route.params.id as string | undefined);
+const { slugStatus, slugSuggestions, handleSlugInput, applySuggestion } = useSlugValidation(slugRef, excludeId);
+
+// --- Photo Upload ---
+const {
+  coverDragover, galleryDragover,
+  groomPhotoInput, bridePhotoInput, coverPhotoInput, loveStoryPhotoInput,
+  triggerUpload, handleSingleUpload, handleCoverDrop,
+  removeCoverPhoto, removeGroomPhoto, removeBridePhoto,
+  handleGalleryUpload, handleGalleryDrop, removeGalleryPhoto,
+  triggerLoveStoryPhotoUpload, handleLoveStoryPhotoUpload, removeLoveStoryPhoto,
+} = usePhotoUpload(form, showToast);
+
+// --- Music Manager ---
+const {
+  showMusicModal, musicLibrary, musicLibraryLoading,
+  searchMusicQuery, filteredMusicLibrary, musicFileInput,
+  openMusicLibrary, selectMusicFromLibrary,
+  handleMusicUpload, removeMusic, restoreDefaultMusic,
+  isCurrentMusicDefault, currentDefaultMusicLabel,
+} = useMusicManager(form, showToast);
+
+// --- Preview Sync ---
+const { previewIframe, mobilePreviewIframe, showMobilePreview } = usePreviewSync(form);
+
+// --- Theme Selection ---
+const showThemeModal = ref(false);
+const themeList = THEME_LIST;
 
 function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue") {
-  if (form) {
-    const oldTheme = form.theme;
-    form.theme = themeId;
-    form.gallery_type = themeGalleryDefaults[themeId] || 'carousel';
-    // Auto-ganti musik ke default tema baru jika masih pakai default tema lama atau belum ada musik
-    if (!form.music_url || (DEFAULT_MUSIC[oldTheme] && form.music_url === DEFAULT_MUSIC[oldTheme].url)) {
-      form.music_url = DEFAULT_MUSIC[themeId]?.url || "";
-    }
+  const oldTheme = form.theme;
+  form.theme = themeId;
+  form.gallery_type = getThemeGalleryDefault(themeId);
+  if (!form.music_url || (DEFAULT_MUSIC[oldTheme] && form.music_url === DEFAULT_MUSIC[oldTheme].url)) {
+    form.music_url = DEFAULT_MUSIC[themeId]?.url || "";
   }
   showThemeModal.value = false;
 }
 
-const loading = ref(true);
-const submitting = ref(false);
-const toast = ref<{ type: string; message: string } | null>(null);
-const musicFileInput = ref<HTMLInputElement>();
-
-const slugStatus = ref<"idle" | "loading" | "available" | "taken">("idle");
-const slugSuggestions = ref<string[]>([]);
-let slugCheckTimeout: ReturnType<typeof setTimeout> | null = null;
-
-// Preview Refs & State
-const previewIframe = ref<HTMLIFrameElement>();
-const mobilePreviewIframe = ref<HTMLIFrameElement>();
-const showMobilePreview = ref(false);
-
-// Music Library State
-const showMusicModal = ref(false);
-const musicLibrary = ref<MusicItem[]>([]);
-const musicLibraryLoading = ref(false);
-const searchMusicQuery = ref("");
-
-const filteredMusicLibrary = computed(() => {
-  const q = searchMusicQuery.value.toLowerCase().trim();
-  if (!q) return musicLibrary.value;
-  return musicLibrary.value.filter(m => 
-    m.title.toLowerCase().includes(q) || 
-    (m.artist && m.artist.toLowerCase().includes(q))
-  );
-});
-
-async function openMusicLibrary() {
-  showMusicModal.value = true;
-  searchMusicQuery.value = "";
-  if (musicLibrary.value.length === 0) {
-    musicLibraryLoading.value = true;
-    try {
-      const res = await fetch(`${apiBase}/api/music`);
-      if (res.ok) {
-        musicLibrary.value = await res.json();
-      }
-    } catch (err) {
-      console.error("Gagal mengambil pustaka lagu", err);
-    } finally {
-      musicLibraryLoading.value = false;
-    }
-  }
-}
-
-function selectMusicFromLibrary(music: MusicItem) {
-  form.music_url = music.url;
-  showMusicModal.value = false;
-  showToast("success", "Musik latar berhasil diganti");
-}
-
-const form = reactive({
-  slug: "",
-  theme: "elegant" as "elegant" | "minimalist" | "floral" | "elegant_blue",
-  groom_name: "",
-  bride_name: "",
-  groom_full_name: "",
-  bride_full_name: "",
-  groom_father: "",
-  groom_mother: "",
-  bride_father: "",
-  bride_mother: "",
-  groom_photo: "",
-  bride_photo: "",
-  cover_photo: "",
-  akad_date: "",
-  akad_time: "",
-  akad_venue: "",
-  akad_address: "",
-  akad_map_url: "",
-  resepsi_date: "",
-  resepsi_time: "",
-  resepsi_venue: "",
-  resepsi_address: "",
-  resepsi_map_url: "",
-  love_story: [] as LoveStoryItem[],
-  quote: "",
-  banks: [] as BankAccount[],
-  music_url: "",
-  gallery_type: 'carousel' as 'carousel' | 'masonry',
-  photos: [] as Photo[],
-});
-
+// --- Helper ---
 function getPhotoUrl(url: string) {
   return resolveAssetUrl(url, apiBase);
 }
 
-function normalizeLoveStory(value: unknown): LoveStoryItem[] {
-  if (!value) return [];
-  if (Array.isArray(value)) return value as LoveStoryItem[];
-  if (typeof value === "string") {
-    try {
-      const parsed = JSON.parse(value);
-      return Array.isArray(parsed) ? (parsed as LoveStoryItem[]) : [];
-    } catch {
-      return [];
-    }
-  }
-  return [];
-}
-
-function handleSlugInput() {
-  form.slug = form.slug
-    .toLowerCase()
-    .replace(/[^a-z0-9-]/g, "-")
-    .replace(/-+/g, "-");
-
-  slugSuggestions.value = [];
-
-  if (!form.slug) {
-    slugStatus.value = "idle";
-    return;
-  }
-
-  slugStatus.value = "loading";
-  
-  if (slugCheckTimeout) clearTimeout(slugCheckTimeout);
-  slugCheckTimeout = setTimeout(async () => {
-    try {
-      const excludeId = route.params.id;
-      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
-      const res = await fetch(`${API_BASE}/invitations/check-slug/${form.slug}?exclude_id=${excludeId}`);
-      const data = await res.json();
-      
-      if (res.ok) {
-        slugStatus.value = data.available ? "available" : "taken";
-        if (!data.available && data.suggestions) {
-          slugSuggestions.value = data.suggestions;
-        }
-      } else {
-        slugStatus.value = "idle";
-      }
-    } catch {
-      slugStatus.value = "idle";
-    }
-  }, 500);
-}
-
-function applySuggestion(suggestion: string) {
-  form.slug = suggestion;
-  slugSuggestions.value = [];
-  slugStatus.value = "loading";
-  setTimeout(async () => {
-    try {
-      const excludeId = route.params.id;
-      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
-      const res = await fetch(`${API_BASE}/invitations/check-slug/${form.slug}?exclude_id=${excludeId}`);
-      const data = await res.json();
-      if (res.ok) {
-        slugStatus.value = data.available ? "available" : "taken";
-        if (!data.available && data.suggestions) {
-          slugSuggestions.value = data.suggestions;
-        }
-      }
-    } catch {
-      slugStatus.value = "idle";
-    }
-  }, 100);
-}
-
-async function handleSingleUpload(
-  event: Event,
-  field: "groom_photo" | "bride_photo" | "cover_photo",
-) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file) return;
-  if (file.size > MAX_FILE_SIZE_BYTES) {
-    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
-    input.value = "";
-    return;
-  }
-  try {
-    const oldUrl = form[field];
-    const newUrl = await store.uploadPhoto(file, form.slug || undefined);
-    if (oldUrl) {
-      await store.deleteFile(oldUrl).catch(() => {});
-    }
-    form[field] = newUrl;
-  } catch {
-    showToast("error", "Gagal upload foto");
-  }
-  input.value = "";
-}
-
-// --- Love Story Photo Upload ---
-const loveStoryPhotoInput = ref<HTMLInputElement>();
-let loveStoryPhotoTargetIndex = -1;
-
-function triggerLoveStoryPhotoUpload(index: number) {
-  loveStoryPhotoTargetIndex = index;
-  loveStoryPhotoInput.value?.click();
-}
-
-async function handleLoveStoryPhotoUpload(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file || loveStoryPhotoTargetIndex < 0) return;
-  if (file.size > MAX_FILE_SIZE_BYTES) {
-    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
-    input.value = "";
-    return;
-  }
-  try {
-    const url = await store.uploadPhoto(file, form.slug || undefined);
-    const story = form.love_story[loveStoryPhotoTargetIndex];
-    if (story) {
-      if (story.photo) {
-        await store.deleteFile(story.photo).catch(() => {});
-      }
-      story.photo = url;
-    }
-  } catch {
-    showToast("error", "Gagal upload foto love story");
-  }
-  input.value = "";
-  loveStoryPhotoTargetIndex = -1;
-}
-
-async function removeLoveStoryPhoto(index: number) {
-  const story = form.love_story[index];
-  if (!story?.photo) return;
-  await store.deleteFile(story.photo).catch(() => {});
-  story.photo = '';
-}
-
-async function handleGalleryUpload(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const files = Array.from(input.files || []);
-  if (files.length === 0) return;
-  const oversized = files.filter(f => f.size > MAX_FILE_SIZE_BYTES);
-  if (oversized.length > 0) {
-    showToast("error", `${oversized.length} file melebihi batas ${MAX_FILE_SIZE_MB}MB dan dilewati.`);
-  }
-  const validFiles = files.filter(f => f.size <= MAX_FILE_SIZE_BYTES);
-  if (validFiles.length === 0) {
-    input.value = "";
-    return;
-  }
-  try {
-    const results = await store.uploadPhotos(validFiles, form.slug || undefined);
-    results.forEach((r) => {
-      form.photos.push({ url: r.url, caption: "" });
-    });
-  } catch {
-    showToast("error", "Gagal upload foto");
-  }
-  input.value = "";
-}
-
-async function handleMusicUpload(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file) return;
-  if (file.size > MAX_FILE_SIZE_BYTES) {
-    showToast("error", `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`);
-    input.value = "";
-    return;
-  }
-  try {
-    const url = await store.uploadMusic(file, form.slug || undefined);
-    if (form.music_url) {
-      await store.deleteFile(form.music_url).catch(() => {});
-    }
-    form.music_url = url;
-    showToast("success", "Musik berhasil diupload");
-  } catch {
-    showToast("error", "Gagal upload musik");
-  }
-  input.value = "";
-}
-
-async function removeMusic() {
-  if (form.music_url) {
-    // Jangan hapus file R2 jika ini adalah musik default
-    if (!isDefaultMusicUrl(form.music_url)) {
-      await store.deleteFile(form.music_url).catch(() => {});
-    }
-    form.music_url = "";
-  }
-}
-
-function restoreDefaultMusic() {
-  const defaultEntry = DEFAULT_MUSIC[form.theme];
-  if (defaultEntry) {
-    form.music_url = defaultEntry.url;
-  }
-}
-
-const isCurrentMusicDefault = computed(() => {
-  return isDefaultMusicUrl(form.music_url);
-});
-
-const currentDefaultMusicLabel = computed(() => {
-  const entry = Object.values(DEFAULT_MUSIC).find((e) => e.url === form.music_url);
-  return entry?.label || 'Musik Default';
-});
-
-async function removeCoverPhoto() {
-  if (form.cover_photo) {
-    await store.deleteFile(form.cover_photo).catch(() => {});
-    form.cover_photo = "";
-  }
-}
-
-async function removeGroomPhoto() {
-  if (form.groom_photo) {
-    await store.deleteFile(form.groom_photo).catch(() => {});
-    form.groom_photo = "";
-  }
-}
-
-async function removeBridePhoto() {
-  if (form.bride_photo) {
-    await store.deleteFile(form.bride_photo).catch(() => {});
-    form.bride_photo = "";
-  }
-}
-
-async function removeGalleryPhoto(index: number) {
-  const photo = form.photos[index];
-  if (photo && photo.url) {
-    await store.deleteFile(photo.url).catch(() => {});
-  }
-  form.photos.splice(index, 1);
-}
-
-function showToast(type: string, message: string) {
-  toast.value = { type, message };
-  setTimeout(() => {
-    toast.value = null;
-  }, 3000);
-}
-
-// Watch form changes to sync with Preview Iframe
-import { watch } from "vue";
-watch(
-  form,
-  (newVal) => {
-    const payload = {
-      type: "LIVE_PREVIEW",
-      data: {
-        ...newVal,
-        love_story: newVal.love_story.filter((s) => s.title || s.date),
-      }
-    };
-    const cleanPayload = JSON.parse(JSON.stringify(payload));
-    if (previewIframe.value?.contentWindow) {
-      previewIframe.value.contentWindow.postMessage(cleanPayload, "*");
-    }
-    if (mobilePreviewIframe.value?.contentWindow) {
-      mobilePreviewIframe.value.contentWindow.postMessage(cleanPayload, "*");
-    }
-  },
-  { deep: true }
-);
-
-// Listener for PREVIEW_READY from iframe
-onMounted(() => {
-  window.addEventListener("message", (event) => {
-    if (event.data?.type === "PREVIEW_READY") {
-      const payload = {
-        type: "LIVE_PREVIEW",
-        data: {
-          ...form,
-          love_story: form.love_story.filter((s) => s.title || s.date),
-        }
-      };
-      const cleanPayload = JSON.parse(JSON.stringify(payload));
-      if (previewIframe.value?.contentWindow) {
-        previewIframe.value.contentWindow.postMessage(cleanPayload, "*");
-      }
-      if (mobilePreviewIframe.value?.contentWindow) {
-        mobilePreviewIframe.value.contentWindow.postMessage(cleanPayload, "*");
-      }
-    }
-  });
-});
-
+// --- Submit ---
 async function handleSubmit() {
   submitting.value = true;
   try {
     const id = route.params.id as string;
-    await store.updateInvitation(id, {
-      slug: form.slug,
-      theme: form.theme,
-      groom_name: form.groom_name,
-      bride_name: form.bride_name,
-      groom_full_name: form.groom_full_name,
-      bride_full_name: form.bride_full_name,
-      groom_father: form.groom_father,
-      groom_mother: form.groom_mother,
-      bride_father: form.bride_father,
-      bride_mother: form.bride_mother,
-      groom_photo: form.groom_photo,
-      bride_photo: form.bride_photo,
-      cover_photo: form.cover_photo,
-      akad_date: form.akad_date,
-      akad_time: form.akad_time,
-      akad_venue: form.akad_venue,
-      akad_address: form.akad_address,
-      akad_map_url: form.akad_map_url,
-      resepsi_date: form.resepsi_date,
-      resepsi_time: form.resepsi_time,
-      resepsi_venue: form.resepsi_venue,
-      resepsi_address: form.resepsi_address,
-      resepsi_map_url: form.resepsi_map_url,
-      love_story: form.love_story.filter((s) => s.title || s.date),
-      quote: form.quote,
-      bank_name: form.banks[0]?.bank_name || "",
-      bank_account: form.banks[0]?.bank_account || "",
-      bank_holder: form.banks[0]?.bank_holder || "",
-      banks: form.banks.filter((b) => b.bank_name || b.bank_account),
-      music_url: form.music_url,
-      gallery_type: form.gallery_type,
-      photos: form.photos,
-    });
+    await store.updateInvitation(id, getSubmitPayload());
     showToast("success", "Undangan berhasil diperbarui! 🎉");
     setTimeout(() => router.push("/dashboard"), 1500);
   } catch (e: any) {
@@ -1475,46 +1194,12 @@ async function handleSubmit() {
   }
 }
 
+// --- Load Data ---
 onMounted(async () => {
   const id = route.params.id as string;
   const data = await store.fetchInvitationById(id);
   if (data) {
-    form.slug = data.slug || "";
-    form.theme = data.theme || "elegant";
-    form.groom_name = data.groom_name || "";
-    form.bride_name = data.bride_name || "";
-    form.groom_full_name = data.groom_full_name || "";
-    form.bride_full_name = data.bride_full_name || "";
-    form.groom_father = data.groom_father || "";
-    form.groom_mother = data.groom_mother || "";
-    form.bride_father = data.bride_father || "";
-    form.bride_mother = data.bride_mother || "";
-    form.groom_photo = data.groom_photo || "";
-    form.bride_photo = data.bride_photo || "";
-    form.cover_photo = data.cover_photo || "";
-    form.akad_date = data.akad_date || "";
-    form.akad_time = data.akad_time || "";
-    form.akad_venue = data.akad_venue || "";
-    form.akad_address = data.akad_address || "";
-    form.akad_map_url = data.akad_map_url || "";
-    form.resepsi_date = data.resepsi_date || "";
-    form.resepsi_time = data.resepsi_time || "";
-    form.resepsi_venue = data.resepsi_venue || "";
-    form.resepsi_address = data.resepsi_address || "";
-    form.resepsi_map_url = data.resepsi_map_url || "";
-    form.love_story = normalizeLoveStory(data.love_story);
-    form.quote = data.quote || "";
-    // Load banks: prefer banks array, fallback to legacy single fields
-    if (data.banks && Array.isArray(data.banks) && data.banks.length > 0) {
-      form.banks = data.banks;
-    } else if (data.bank_name) {
-      form.banks = [{ bank_name: data.bank_name, bank_account: data.bank_account || "", bank_holder: data.bank_holder || "" }];
-    } else {
-      form.banks = [];
-    }
-    form.music_url = data.music_url || "";
-    form.gallery_type = data.gallery_type || themeGalleryDefaults[data.theme || 'elegant'] || 'carousel';
-    form.photos = data.photos || [];
+    populateForm(data);
   }
   loading.value = false;
 });

@@ -1,4 +1,4 @@
-<template>
+  <template>
   <footer style="margin-top: -1px; padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background: linear-gradient(to bottom, #ACCDE7, #ffffff);" class="text-white">
     
     <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin-top: 20px;">

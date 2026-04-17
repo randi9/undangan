@@ -1,42 +1,5 @@
 <template>
-  <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <router-link to="/dashboard" class="sidebar-brand">
-        <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
-          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-        </div>
-        <div class="sidebar-brand-text">Mengundang<span>Anda</span></div>
-      </router-link>
-      <nav class="sidebar-nav">
-        <router-link to="/dashboard" class="sidebar-link">
-          <span class="material-symbols-rounded">dashboard</span>
-          Dashboard
-        </router-link>
-        <router-link to="/dashboard/themes" class="sidebar-link">
-          <span class="material-symbols-rounded">palette</span>
-          Tema
-        </router-link>
-      </nav>
-      <div class="sidebar-footer" style="padding: 1rem 0; border-top: 1px solid #e1e8f0; margin-top: auto;">
-        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-          <UserButton showName />
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="admin-main">
-      <header class="admin-topbar mobile-only-topbar" style="border-bottom:none;">
-        <router-link to="/dashboard" class="mobile-brand">
-          <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
-            <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-          </div>
-          <div class="sidebar-brand-text" style="font-size:16px;">Mengundang<span>Anda</span></div>
-        </router-link>
-      </header>
-
-      <div class="admin-container">
+  <AdminLayout>
         <div class="success-wrapper">
           <!-- Loading / Verifying -->
           <div v-if="verifying" class="success-card">
@@ -109,22 +72,20 @@
               </router-link>
             </div>
           </div>
-        </div>
-
-        <!-- Confetti animation for success -->
-        <div v-if="paymentConfirmed" class="confetti-container" aria-hidden="true">
-          <div v-for="i in 40" :key="i" class="confetti-piece" :style="confettiStyle(i)"></div>
-        </div>
       </div>
-    </div>
-  </div>
+
+      <!-- Confetti animation for success -->
+      <div v-if="paymentConfirmed" class="confetti-container" aria-hidden="true">
+        <div v-for="i in 40" :key="i" class="confetti-piece" :style="confettiStyle(i)"></div>
+      </div>
+  </AdminLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import { UserButton } from "@clerk/vue";
+import AdminLayout from "@/components/admin/AdminLayout.vue";
 
 const route = useRoute();
 const authStore = useAuthStore();

@@ -166,61 +166,13 @@ const footerComponents: Record<string, Component> = {
   elegant_blue: FooterElegantBlue,
 };
 
-// --- THEME DATA SYSTEM ---
-const themes: Record<string, ThemeConfig> = {
-  elegant_blue: {
-    name: 'elegant_blue',
-    bg: '#f8f9f9',
-    surface: '#F8FAFC',
-    primary: '#a8d0e6',
-    secondary: '#1E293B',
-    text: '#1E293B',
-    textLight: '#64748B',
-    fontHeading: "'Playfair Display', serif",
-    fontBody: "'Playfair Display', serif",
-    overlayGradient: 'linear-gradient(180deg, rgba(30,41,59,0.4) 0%, rgba(30,41,59,0.85) 100%)',
-    coverImage: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=1080&q=80',
-  },
-  elegant: {
-    name: 'elegant',
-    bg: '#faf8f4',
-    surface: '#f5efe6',
-    primary: '#8b6f4e',
-    secondary: '#c9a96e',
-    text: '#3d3425',
-    textLight: '#7a6e5d',
-    fontHeading: "'Playfair Display', serif",
-    fontBody: "'Inter', sans-serif",
-    overlayGradient: 'linear-gradient(180deg, rgba(44,36,23,0.6) 0%, rgba(44,36,23,0.8) 100%)',
-    coverImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80',
-  },
-  floral: {
-    name: 'floral',
-    bg: '#fdfbf7',
-    surface: '#f4f6e9',
-    primary: '#4a5d4e',
-    secondary: '#8a9a5b',
-    text: '#3d4a40',
-    textLight: '#6b7a6e',
-    fontHeading: "'Great Vibes', cursive",
-    fontBody: "'Inter', sans-serif",
-    overlayGradient: 'linear-gradient(180deg, rgba(74,93,78,0.5) 0%, rgba(74,93,78,0.8) 100%)',
-    coverImage: 'https://media.mengundanganda.com/tema%20floral/8a5a275c-909d-448b-8d1d-adaa5a7a39f3.webp',
-  },
-  minimalist: {
-    name: 'minimalist',
-    bg: '#ffffff',
-    surface: '#f9f9f9',
-    primary: '#111111',
-    secondary: '#666666',
-    text: '#222222',
-    textLight: '#555555',
-    fontHeading: "'Inter', sans-serif",
-    fontBody: "'Inter', sans-serif",
-    overlayGradient: 'linear-gradient(180deg, rgba(17,17,17,0.3) 0%, rgba(17,17,17,0.7) 100%)',
-    coverImage: 'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=1080&q=80',
-  }
-};
+// --- THEME DATA SYSTEM (from centralized registry) ---
+import { THEME_REGISTRY } from '@/config/themes'
+
+// Build themes Record from registry for backward compat
+const themes: Record<string, ThemeConfig> = Object.fromEntries(
+  Object.entries(THEME_REGISTRY).map(([key, entry]) => [key, entry.themeConfig])
+);
 
 const route = useRoute();
 const store = useInvitationStore();

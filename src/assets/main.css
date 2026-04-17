@@ -1094,6 +1094,198 @@ textarea.form-input {
   font-weight: 500;
 }
 
+/* ===== WIZARD STEPPER ===== */
+.wizard-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 32px;
+  padding: 20px 24px;
+  background: var(--admin-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--admin-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.wizard-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.wizard-step:hover {
+  background: rgba(124, 91, 245, 0.06);
+}
+
+.wizard-step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  border: 2px solid var(--admin-border);
+  background: var(--admin-bg);
+  color: var(--admin-text-secondary);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.wizard-step.active .wizard-step-number {
+  background: var(--admin-primary);
+  border-color: var(--admin-primary);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(124, 91, 245, 0.15);
+}
+
+.wizard-step.completed .wizard-step-number {
+  background: #10b981;
+  border-color: #10b981;
+  color: #fff;
+}
+
+.wizard-step-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--admin-text-secondary);
+  transition: color 0.25s ease;
+  white-space: nowrap;
+}
+
+.wizard-step.active .wizard-step-label {
+  color: var(--admin-text);
+  font-weight: 600;
+}
+
+.wizard-step.completed .wizard-step-label {
+  color: #10b981;
+}
+
+.wizard-step-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--admin-border);
+  min-width: 16px;
+  transition: background 0.3s ease;
+}
+
+.wizard-step-connector.completed {
+  background: #10b981;
+}
+
+/* Wizard Progress Bar */
+.wizard-progress {
+  height: 3px;
+  background: var(--admin-border);
+  border-radius: 3px;
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+
+.wizard-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--admin-primary), #a78bfa);
+  border-radius: 3px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Wizard Navigation Buttons */
+.wizard-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--admin-border);
+  gap: 12px;
+}
+
+.wizard-nav-left {
+  display: flex;
+  gap: 12px;
+}
+
+.wizard-nav-right {
+  display: flex;
+  gap: 12px;
+}
+
+/* Step content transition */
+.wizard-step-content {
+  animation: wizardFadeIn 0.3s ease;
+}
+
+@keyframes wizardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Wizard */
+@media (max-width: 768px) {
+  .wizard-stepper {
+    padding: 12px 8px;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  
+  .wizard-stepper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .wizard-step {
+    padding: 6px 8px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .wizard-step-number {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .wizard-step-label {
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .wizard-step-connector {
+    min-width: 8px;
+  }
+
+  .wizard-nav {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .wizard-nav-left,
+  .wizard-nav-right {
+    width: 100%;
+  }
+
+  .wizard-nav-left .btn,
+  .wizard-nav-right .btn {
+    flex: 1;
+  }
+}
+
 /* ===== EDITOR LAYOUT (Create/Edit Invitation) ===== */
 .editor-layout {
   display: flex;
@@ -1360,12 +1552,6 @@ textarea.form-input {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-  }
-
-  /* Sembunyikan nama user dari Clerk di mode mobile */
-  .sidebar-footer .cl-userButtonOuterIdentifier,
-  .sidebar-footer [class*="userButtonOuterIdentifier"] {
-    display: none !important;
   }
 
   .sidebar-nav {

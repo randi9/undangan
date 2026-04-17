@@ -1,74 +1,28 @@
 <template>
-  <div class="admin-layout">
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <router-link to="/dashboard" class="sidebar-brand">
-        <div class="sidebar-brand-icon" style="overflow:hidden;background:transparent">
-          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
+  <AdminLayout>
+    <template #search>
+      <div style="display: flex; gap: 12px; flex: 1; align-items: center; max-width: 500px;">
+        <div class="search-bar" style="flex: 1; margin: 0; max-width: none;">
+          <span class="material-symbols-rounded" style="font-size:20px">search</span>
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Cari kode voucher..."
+          />
         </div>
-        <div class="sidebar-brand-text">Mengundang<span>Anda</span></div>
-      </router-link>
-
-      <nav class="sidebar-nav">
-        <router-link to="/dashboard" class="sidebar-link">
-          <span class="material-symbols-rounded">dashboard</span>
-          Dashboard
-        </router-link>
-        <router-link to="/dashboard/themes" class="sidebar-link">
-          <span class="material-symbols-rounded">palette</span>
-          Tema
-        </router-link>
-        <router-link to="/dashboard/users" class="sidebar-link">
-          <span class="material-symbols-rounded">group</span>
-          Kelola User
-        </router-link>
-        <router-link to="/dashboard/vouchers" class="sidebar-link" exact>
-          <span class="material-symbols-rounded">confirmation_number</span>
-          Voucher
-        </router-link>
-      </nav>
-
-      <div class="sidebar-footer" style="padding: 1rem 0; border-top: 1px solid #e1e8f0; margin-top: auto;">
-        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-          <UserButton showName />
-        </div>
+        <select v-model="filterStatus" style="padding: 11px 14px; border-radius: 8px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text); outline: none; font-size: 14px; font-family: inherit;">
+          <option value="all">Semua</option>
+          <option value="active">Belum</option>
+          <option value="redeemed">Terpakai</option>
+        </select>
       </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="admin-main">
-      <header class="admin-topbar">
-        <router-link to="/dashboard" class="mobile-brand">
-          <div class="sidebar-brand-icon" style="width:28px;height:28px;border-radius:6px;overflow:hidden;background:transparent">
-            <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
-          </div>
-          <div class="sidebar-brand-text" style="font-size:16px;">Mengundang<span>Anda</span></div>
-        </router-link>
-
-        <div style="display: flex; gap: 12px; flex: 1; align-items: center; max-width: 500px;">
-          <div class="search-bar" style="flex: 1; margin: 0; max-width: none;">
-            <span class="material-symbols-rounded" style="font-size:20px">search</span>
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Cari kode voucher..."
-            />
-          </div>
-          <select v-model="filterStatus" style="padding: 11px 14px; border-radius: 8px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text); outline: none; font-size: 14px; font-family: inherit;">
-            <option value="all">Semua</option>
-            <option value="active">Belum</option>
-            <option value="redeemed">Terpakai</option>
-          </select>
-        </div>
-        <div class="topbar-actions">
-          <button class="btn btn-primary" @click="showGenerateModal = true">
-            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">add</span>
-            Generate Voucher
-          </button>
-        </div>
-      </header>
-
-      <div class="admin-container">
+    </template>
+    <template #actions>
+      <button class="btn btn-primary" @click="showGenerateModal = true">
+        <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">add</span>
+        Generate Voucher
+      </button>
+    </template>
         <!-- Stats -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -210,8 +164,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
     <!-- Generate Modal -->
     <div v-if="showGenerateModal" class="modal-overlay" @click.self="showGenerateModal = false">
@@ -278,14 +230,14 @@
     <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
       {{ toast.message }}
     </div>
-  </div>
+  </AdminLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { UserButton } from "@clerk/vue";
 import { Icon } from "@iconify/vue";
+import AdminLayout from "@/components/admin/AdminLayout.vue";
 
 interface Voucher {
   id: string;
