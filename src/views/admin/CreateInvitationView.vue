@@ -33,48 +33,58 @@
             Isi informasi di bawah untuk membuat undangan pernikahan
           </p>
 
-          <!-- Onboarding Guide Banner -->
-          <div v-if="showGuide" class="onboarding-banner">
-            <button class="onboarding-close" @click="dismissGuide" title="Tutup panduan">
-              <Icon icon="lucide:x" />
-            </button>
-            <div class="onboarding-header">
-              <Icon icon="lucide:book-open" style="font-size: 20px;" />
-              <span>Panduan Singkat Membuat Undangan</span>
-            </div>
-            <div class="onboarding-steps">
-              <div class="onboarding-step">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                  <strong>Pilih Tema & Buat URL</strong>
-                  <span>Pilih desain undangan, lalu buat alamat unik, contoh: <em>andi-sarah</em></span>
+          <!-- Onboarding Guide Popup Modal -->
+          <div v-if="showGuide" class="guide-modal-overlay" @click.self="dismissGuide">
+            <div class="guide-modal">
+              <button class="guide-modal-close" @click="dismissGuide" title="Tutup panduan">
+                <Icon icon="lucide:x" />
+              </button>
+              <div class="guide-modal-header">
+                <div class="guide-modal-icon">
+                  <Icon icon="lucide:book-open" style="font-size: 22px;" />
+                </div>
+                <h2>Panduan Membuat Undangan</h2>
+                <p>Ikuti langkah-langkah berikut untuk membuat undangan pernikahan digital Anda</p>
+              </div>
+              <div class="guide-modal-steps">
+                <div class="guide-step-card">
+                  <div class="guide-step-num">1</div>
+                  <div class="guide-step-body">
+                    <strong>Pilih Tema & Buat URL</strong>
+                    <span>Pilih desain undangan, lalu buat alamat unik, contoh: <em>andi-sarah</em></span>
+                  </div>
+                </div>
+                <div class="guide-step-card">
+                  <div class="guide-step-num">2</div>
+                  <div class="guide-step-body">
+                    <strong>Isi Data Mempelai</strong>
+                    <span>Nama panggilan wajib diisi. Nama lengkap & orang tua opsional.</span>
+                  </div>
+                </div>
+                <div class="guide-step-card">
+                  <div class="guide-step-num">3</div>
+                  <div class="guide-step-body">
+                    <strong>Upload Foto & Isi Acara</strong>
+                    <span>Foto sampul, detail akad/resepsi, galeri, dan musik latar.</span>
+                  </div>
+                </div>
+                <div class="guide-step-card">
+                  <div class="guide-step-num">4</div>
+                  <div class="guide-step-body">
+                    <strong>Klik "Buat Undangan"</strong>
+                    <span>Setelah selesai, klik tombol biru. Undangan langsung bisa disebar!</span>
+                  </div>
                 </div>
               </div>
-              <div class="onboarding-step">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                  <strong>Isi Data Mempelai</strong>
-                  <span>Nama panggilan wajib diisi. Nama lengkap, nama orang tua opsional.</span>
+              <div class="guide-modal-footer">
+                <div class="guide-modal-tip">
+                  <Icon icon="lucide:lightbulb" style="color: #f59e0b; flex-shrink: 0;" />
+                  <span>Yang bertanda <strong>*</strong> wajib diisi. Sisanya opsional — bisa dilengkapi nanti lewat menu <strong>Edit</strong>.</span>
                 </div>
+                <button class="btn btn-primary" @click="dismissGuide" style="width: 100%;">
+                  <Icon icon="lucide:rocket" style="font-size: 16px;" /> Mulai Buat Undangan
+                </button>
               </div>
-              <div class="onboarding-step">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                  <strong>Upload Foto & Isi Acara</strong>
-                  <span>Foto sampul, detail akad/resepsi, galeri, dan musik latar.</span>
-                </div>
-              </div>
-              <div class="onboarding-step">
-                <div class="step-number">4</div>
-                <div class="step-content">
-                  <strong>Klik "Buat Undangan"</strong>
-                  <span>Setelah selesai, klik tombol biru di bawah. Undangan langsung bisa disebar!</span>
-                </div>
-              </div>
-            </div>
-            <div class="onboarding-footer">
-              <Icon icon="lucide:lightbulb" style="color: #f59e0b; flex-shrink: 0;" />
-              <span>Yang bertanda <strong>*</strong> wajib diisi. Sisanya opsional — bisa dilengkapi nanti lewat menu <strong>Edit</strong>.</span>
             </div>
           </div>
 
@@ -106,6 +116,24 @@
             <div class="wizard-progress">
               <div class="wizard-progress-bar" :style="{ width: wizard.progress.value + '%' }" />
             </div>
+
+            <!-- Validation Errors Banner -->
+            <Transition name="fade">
+              <div v-if="wizard.showStepErrors.value && wizard.stepErrors.value.length > 0" class="wizard-errors">
+                <div class="wizard-errors-header">
+                  <span style="display: flex; align-items: center; gap: 6px;">
+                    <Icon icon="lucide:alert-circle" style="font-size: 16px;" />
+                    Lengkapi field berikut sebelum lanjut:
+                  </span>
+                  <button type="button" class="wizard-errors-close" @click="wizard.dismissErrors()">
+                    <Icon icon="lucide:x" style="font-size: 14px;" />
+                  </button>
+                </div>
+                <ul class="wizard-errors-list">
+                  <li v-for="(err, i) in wizard.stepErrors.value" :key="i">{{ err }}</li>
+                </ul>
+              </div>
+            </Transition>
 
             <!-- Step 1: Tema & URL -->
             <div v-show="wizard.currentStepIndex.value === 0" class="wizard-step-content">
@@ -1143,72 +1171,110 @@
   color: var(--admin-primary, #3b82f6);
 }
 
-/* ===== Onboarding Banner ===== */
-.onboarding-banner {
+/* ===== Guide Modal ===== */
+.guide-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.3s ease;
+}
+.guide-modal {
   position: relative;
-  background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
-  border: 1px solid #bfdbfe;
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 28px;
-  animation: slideDown 0.4s ease-out;
+  background: white;
+  border-radius: 20px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+  animation: slideUp 0.35s ease-out;
 }
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-12px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.onboarding-close {
+.guide-modal-close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 16px;
+  right: 16px;
   background: none;
   border: none;
   color: #94a3b8;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
+  padding: 6px;
+  border-radius: 8px;
   display: flex;
   transition: all 0.2s;
+  font-size: 18px;
 }
-.onboarding-close:hover {
-  background: rgba(0,0,0,0.05);
-  color: #64748b;
+.guide-modal-close:hover {
+  background: #f1f5f9;
+  color: #475569;
 }
-.onboarding-header {
+.guide-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.guide-modal-icon {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  color: #2563eb;
+  border-radius: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #1e40af;
-  margin-bottom: 18px;
+  justify-content: center;
+  margin: 0 auto 14px;
 }
-.onboarding-steps {
+.guide-modal-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 6px;
+}
+.guide-modal-header p {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+.guide-modal-steps {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
-@media (max-width: 640px) {
-  .onboarding-steps {
+@media (max-width: 520px) {
+  .guide-modal {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+  .guide-modal-steps {
     grid-template-columns: 1fr;
   }
 }
-.onboarding-step {
+.guide-step-card {
   display: flex;
   gap: 12px;
-  padding: 12px 14px;
-  background: rgba(255,255,255,0.8);
+  padding: 14px;
+  background: #f8fafc;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
   transition: all 0.2s;
 }
-.onboarding-step:hover {
+.guide-step-card:hover {
   border-color: #93c5fd;
-  box-shadow: 0 2px 8px rgba(59,130,246,0.08);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
   transform: translateY(-1px);
 }
-.step-number {
+.guide-step-num {
   width: 28px;
   height: 28px;
   background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -1221,30 +1287,95 @@
   font-weight: 700;
   flex-shrink: 0;
 }
-.step-content {
+.guide-step-body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
-.step-content strong {
+.guide-step-body strong {
   font-size: 13px;
   color: #1e293b;
 }
-.step-content span {
+.guide-step-body span {
   font-size: 12px;
   color: #64748b;
   line-height: 1.4;
 }
-.onboarding-footer {
+.guide-modal-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.guide-modal-tip {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   font-size: 12.5px;
   color: #64748b;
-  background: rgba(255,255,255,0.6);
+  background: #fffbeb;
   padding: 10px 14px;
   border-radius: 10px;
+  border: 1px solid #fde68a;
   line-height: 1.5;
+}
+
+/* ===== Wizard Validation Errors ===== */
+.wizard-errors {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  animation: shakeX 0.4s ease;
+}
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.wizard-errors-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #dc2626;
+  margin-bottom: 8px;
+}
+.wizard-errors-close {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  transition: all 0.2s;
+  opacity: 0.6;
+}
+.wizard-errors-close:hover {
+  opacity: 1;
+  background: rgba(220, 38, 38, 0.1);
+}
+.wizard-errors-list {
+  margin: 0;
+  padding: 0 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.wizard-errors-list li {
+  font-size: 13px;
+  color: #b91c1c;
+  line-height: 1.5;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 
 /* ===== Helper Tips ===== */
@@ -1305,6 +1436,23 @@ const route = useRoute();
 const store = useInvitationStore();
 const apiBase = import.meta.env.VITE_API_URL || "";
 
+// --- Step Validator ---
+function validateStep(stepIndex: number): string[] {
+  const errors: string[] = []
+  switch (stepIndex) {
+    case 0: // Tema & URL
+      if (!form.slug || !form.slug.trim()) errors.push('URL Undangan (slug) wajib diisi')
+      if (slugStatus.value === 'taken') errors.push('URL sudah dipakai, pilih yang lain')
+      break
+    case 1: // Mempelai
+      if (!form.groom_name || !form.groom_name.trim()) errors.push('Nama panggilan mempelai pria wajib diisi')
+      if (!form.bride_name || !form.bride_name.trim()) errors.push('Nama panggilan mempelai wanita wajib diisi')
+      break
+    // Step 2 (Acara), 3 (Konten), 4 (Finalisasi) — no required fields
+  }
+  return errors
+}
+
 // --- Wizard ---
 const wizard = useFormWizard([
   { id: 'theme', label: 'Tema & URL', icon: 'lucide:palette' },
@@ -1312,7 +1460,7 @@ const wizard = useFormWizard([
   { id: 'event', label: 'Acara', icon: 'lucide:calendar-days' },
   { id: 'content', label: 'Konten', icon: 'lucide:image' },
   { id: 'extras', label: 'Finalisasi', icon: 'lucide:sparkles' },
-]);
+], validateStep);
 
 
 // --- Form State ---

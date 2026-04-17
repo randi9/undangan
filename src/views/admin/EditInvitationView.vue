@@ -101,6 +101,24 @@
               <div class="wizard-progress-bar" :style="{ width: wizard.progress.value + '%' }" />
             </div>
 
+            <!-- Validation Errors Banner -->
+            <Transition name="fade">
+              <div v-if="wizard.showStepErrors.value && wizard.stepErrors.value.length > 0" class="wizard-errors">
+                <div class="wizard-errors-header">
+                  <span style="display: flex; align-items: center; gap: 6px;">
+                    <Icon icon="lucide:alert-circle" style="font-size: 16px;" />
+                    Lengkapi field berikut sebelum lanjut:
+                  </span>
+                  <button type="button" class="wizard-errors-close" @click="wizard.dismissErrors()">
+                    <Icon icon="lucide:x" style="font-size: 14px;" />
+                  </button>
+                </div>
+                <ul class="wizard-errors-list">
+                  <li v-for="(err, i) in wizard.stepErrors.value" :key="i">{{ err }}</li>
+                </ul>
+              </div>
+            </Transition>
+
             <!-- Step 1: Tema & URL -->
             <div v-show="wizard.currentStepIndex.value === 0" class="wizard-step-content">
            <!-- Theme Selector -->
@@ -1054,6 +1072,65 @@
   align-items: center;
   gap: 6px;
 }
+
+/* ===== Wizard Validation Errors ===== */
+.wizard-errors {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  animation: shakeX 0.4s ease;
+}
+@keyframes shakeX {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.wizard-errors-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #dc2626;
+  margin-bottom: 8px;
+}
+.wizard-errors-close {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  transition: all 0.2s;
+  opacity: 0.6;
+}
+.wizard-errors-close:hover {
+  opacity: 1;
+  background: rgba(220, 38, 38, 0.1);
+}
+.wizard-errors-list {
+  margin: 0;
+  padding: 0 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.wizard-errors-list li {
+  font-size: 13px;
+  color: #b91c1c;
+  line-height: 1.5;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
 </style>
 
 <script setup lang="ts">
@@ -1079,6 +1156,22 @@ const router = useRouter();
 const store = useInvitationStore();
 const apiBase = import.meta.env.VITE_API_URL || "";
 
+// --- Step Validator ---
+function validateStep(stepIndex: number): string[] {
+  const errors: string[] = []
+  switch (stepIndex) {
+    case 0: // Tema & URL
+      if (!form.slug || !form.slug.trim()) errors.push('URL Undangan (slug) wajib diisi')
+      if (slugStatus.value === 'taken') errors.push('URL sudah dipakai, pilih yang lain')
+      break
+    case 1: // Mempelai
+      if (!form.groom_name || !form.groom_name.trim()) errors.push('Nama panggilan mempelai pria wajib diisi')
+      if (!form.bride_name || !form.bride_name.trim()) errors.push('Nama panggilan mempelai wanita wajib diisi')
+      break
+  }
+  return errors
+}
+
 // --- Wizard ---
 const wizard = useFormWizard([
   { id: 'theme', label: 'Tema & URL', icon: 'lucide:palette' },
@@ -1086,7 +1179,7 @@ const wizard = useFormWizard([
   { id: 'event', label: 'Acara', icon: 'lucide:calendar-days' },
   { id: 'content', label: 'Konten', icon: 'lucide:image' },
   { id: 'extras', label: 'Finalisasi', icon: 'lucide:sparkles' },
-]);
+], validateStep);
 
 const loading = ref(true);
 
