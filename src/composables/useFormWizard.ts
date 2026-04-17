@@ -82,6 +82,15 @@ export function useFormWizard(steps: WizardStep[], validator?: StepValidator) {
     }
   }
 
+  /** Navigate directly to a step WITHOUT validation — for draft restore only */
+  function goToStepDirect(index: number) {
+    if (index >= 0 && index < steps.length) {
+      stepErrors.value = []
+      showStepErrors.value = false
+      currentStepIndex.value = index
+    }
+  }
+
   return {
     steps,
     currentStepIndex,
@@ -93,6 +102,7 @@ export function useFormWizard(steps: WizardStep[], validator?: StepValidator) {
     showStepErrors,
     dismissErrors,
     goToStep,
+    goToStepDirect,
     nextStep,
     prevStep,
   }

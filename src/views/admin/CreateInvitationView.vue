@@ -82,7 +82,7 @@
                   <span>Yang bertanda <strong>*</strong> wajib diisi. Sisanya opsional — bisa dilengkapi nanti lewat menu <strong>Edit</strong>.</span>
                 </div>
                 <button class="btn btn-primary" @click="dismissGuide" style="width: 100%;">
-                  <Icon icon="lucide:rocket" style="font-size: 16px;" /> Mulai Buat Undangan
+                  <Icon icon="lucide:check-circle-2" style="font-size: 16px;" /> Oke, Saya Paham
                 </button>
               </div>
             </div>
@@ -1417,7 +1417,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 import { ref, computed } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter, useRoute, onBeforeRouteLeave } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import { resolveAssetUrl } from "@/utils/url";
 import { THEME_REGISTRY, THEME_LIST, getThemeGalleryDefault } from "@/config/themes";
@@ -1429,6 +1429,7 @@ import { useSlugValidation } from "@/composables/useSlugValidation";
 import { usePhotoUpload } from "@/composables/usePhotoUpload";
 import { useMusicManager } from "@/composables/useMusicManager";
 import { useFormWizard } from "@/composables/useFormWizard";
+import { useFormDraft } from "@/composables/useFormDraft";
 import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
 
 const router = useRouter();
@@ -1477,6 +1478,27 @@ const slugRef = computed({
 });
 const { slugStatus, slugSuggestions, handleSlugInput, applySuggestion } = useSlugValidation(slugRef);
 
+// --- Draft Auto-Save ---
+const DRAFT_KEY = 'createInvitation_draft';
+const draft = useFormDraft(DRAFT_KEY);
+const restoredFromDraft = (() => {
+  const saved = draft.loadDraft();
+  if (saved) {
+    // Restore form data
+    Object.assign(form, saved.form);
+    // Restore wizard step (bypass validation)
+    wizard.goToStepDirect(saved.stepIndex);
+    // Re-trigger slug validation if slug was restored
+    if (form.slug) {
+      handleSlugInput();
+    }
+    return true;
+  }
+  return false;
+})();
+// Start auto-saving form changes + current wizard step
+draft.startAutoSave(form, () => wizard.currentStepIndex.value);
+
 // --- Photo Upload ---
 const {
   coverDragover, galleryDragover,
@@ -1515,11 +1537,19 @@ function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blu
 }
 
 // --- Onboarding Guide ---
-const showGuide = ref(localStorage.getItem('hideCreateGuide') !== 'true');
+const GUIDE_KEY = 'createGuideShown';
+// Don't show guide if we just restored from a draft (user is resuming work)
+const showGuide = ref(!restoredFromDraft && sessionStorage.getItem(GUIDE_KEY) !== 'true');
 function dismissGuide() {
   showGuide.value = false;
-  localStorage.setItem('hideCreateGuide', 'true');
+  sessionStorage.setItem(GUIDE_KEY, 'true');
 }
+
+// Clear guide flag AND draft when navigating away so next visit starts fresh
+onBeforeRouteLeave(() => {
+  sessionStorage.removeItem(GUIDE_KEY);
+  draft.clearDraft();
+});
 
 // --- Submit ---
 async function handleSubmit() {
@@ -1532,6 +1562,7 @@ async function handleSubmit() {
   try {
     await store.createInvitation(getSubmitPayload());
     showToast("success", "Undangan berhasil dibuat! 🎉");
+    draft.clearDraft(); // Clear draft on successful submit
     setTimeout(() => router.push("/dashboard"), 1500);
   } catch (e: any) {
     showToast("error", e.message || "Gagal membuat undangan");
