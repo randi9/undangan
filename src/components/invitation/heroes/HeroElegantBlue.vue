@@ -1,5 +1,5 @@
 <template>
-  <section ref="heroSection" class="relative min-h-[100vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden bg-[#f8f9f9]">
+  <section ref="heroSection" class="relative min-h-[100dvh] flex flex-col items-center justify-center text-center px-4 overflow-hidden bg-[#f8f9f9]">
     <!-- Background wrapper set to 200vh to spill over seamlessly into the Quote Section -->
     <div class="absolute top-0 left-0 w-full h-[200vh] z-0 overflow-hidden pointer-events-none">
       <div class="absolute inset-0 bg-gradient-to-b from-[var(--theme-primary)]/25 to-transparent z-10 w-full h-full mix-blend-multiply"></div>

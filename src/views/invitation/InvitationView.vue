@@ -213,11 +213,19 @@ watch(isOpened, (val) => {
   if (val) {
     heroTextItems.value = [];
     ScrollTrigger.config({ ignoreMobileResize: true });
-    nextTick(() => {
-      animateHeroOval();
-      setTimeout(() => ScrollTrigger.refresh(true), 150);
-      setTimeout(() => ScrollTrigger.refresh(true), 600);
-    });
+    
+    // Tunggu sampai ref heroOval benar-benar ada (terikat ke DOM)
+    // sebab pada komponen Async, render DOM mungkin terjadi lebih telat dari sekadar nextTick
+    const unwatchHero = watch(heroOval, (el) => {
+      if (el) {
+        nextTick(() => {
+          animateHeroOval();
+          setTimeout(() => ScrollTrigger.refresh(true), 150);
+          setTimeout(() => ScrollTrigger.refresh(true), 600);
+          unwatchHero();
+        });
+      }
+    }, { immediate: true });
   }
 });
 const musicPlayer = ref<HTMLAudioElement>();

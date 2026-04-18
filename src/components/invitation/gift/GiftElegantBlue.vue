@@ -1,30 +1,35 @@
 <template>
-  <section v-if="bankList.length > 0" class="gift-section w-full">
-    <!-- Header -->
-    <h2 class="gift-title" :style="{ fontFamily: themeConfig.fontHeading }">Wedding Gift</h2>
-    <div class="gift-divider">
-      <div class="gift-line"></div>
-      <div class="w-1.5 h-1.5 rotate-45 bg-[#304851]/40 mx-2"></div>
-      <div class="gift-line"></div>
-    </div>
-    
-    <p class="gift-desc px-4">
-      Kehadiran dan doa restu Anda adalah hadiah terindah. Bagi Anda yang ingin memberikan tanda kasih, dapat melalui rekening berikut:
-    </p>
+  <section v-if="bankList.length > 0" ref="sectionRef" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0 20px 80px 20px; overflow-x: hidden; background-color: #a8d0e6; background-image: radial-gradient(at 80% 20%, rgba(255,255,255,0.8) 0px, transparent 60%), radial-gradient(at 15% 30%, rgba(191,219,254,0.8) 0px, transparent 60%), radial-gradient(at 90% 80%, rgba(4,26,51,0.1) 0px, transparent 30%), radial-gradient(at 20% 90%, rgba(255,255,255,0.9) 0px, transparent 60%), radial-gradient(at 60% 60%, rgba(147,197,253,0.6) 0px, transparent 70%);">
 
-    <!-- Cards Wrapper -->
-    <div class="w-full max-w-3xl mx-auto px-4 md:px-6">
-      
-      <div class="card-stack-wrapper">
-         
-         <div 
-           v-for="(bank, index) in bankList" 
-           :key="index"
-           class="deck-card flex flex-col justify-between"
-           :class="index % 2 === 0 ? 'theme-light' : 'theme-dark'"
-           :style="getCardStyle(index)"
-           @click="selectCard(index)"
-         >
+    <!-- ==============================
+         SINGLE CONTAINER — GIFT SECTION (Flat Top, Oval Bottom)
+         ============================== -->
+    <div style="width: 100%; max-width: 380px; background: rgba(248, 249, 249, 0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.5); border-top: none; border-radius: 0 0 190px 190px; padding: 60px 40px 160px 40px; margin-top: 16px; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+
+      <!-- Subtle texture -->
+      <div style="position: absolute; inset: 0; opacity: 0.04; pointer-events: none; mix-blend-mode: screen; background-image: url('https://www.transparenttextures.com/patterns/stardust.png');"></div>
+
+      <!-- Title -->
+      <h2 style="position: relative; z-index: 2; color: #041a33; font-size: 2rem; letter-spacing: 0.15em; font-weight: 300; margin-bottom: 8px; text-align: center;" :style="{ fontFamily: themeConfig.fontHeading }">Wedding Gift</h2>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px; position: relative; z-index: 2;">
+        <div style="height: 1px; width: 40px; background: rgba(4,26,51,0.3);"></div>
+        <div style="width: 5px; height: 5px; transform: rotate(45deg); background: rgba(4,26,51,0.4);"></div>
+        <div style="height: 1px; width: 40px; background: rgba(4,26,51,0.3);"></div>
+      </div>
+      <p style="position: relative; z-index: 2; color: rgba(4,26,51,0.6); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 400; margin-bottom: 40px; text-align: center; max-width: 280px; line-height: 1.8;">Kehadiran dan doa restu Anda adalah hadiah terindah bagi kami. Bagi yang ingin memberikan tanda kasih, dapat melalui rekening berikut:</p>
+
+      <!-- Cards Wrapper -->
+      <div style="width: 100%; max-width: 300px; position: relative; z-index: 2;">
+
+        <div class="card-stack-wrapper">
+          <div 
+            v-for="(bank, index) in bankList" 
+            :key="index"
+            class="deck-card flex flex-col justify-between"
+            :class="index % 2 === 0 ? 'theme-light' : 'theme-blue'"
+            :style="getCardStyle(index)"
+            @click="selectCard(index)"
+          >
             <!-- Patterns (Absolute) -->
             <div class="card-circle-lg"></div>
             <div class="card-circle-sm"></div>
@@ -74,17 +79,26 @@
               </div>
             </div>
 
-         </div>
+          </div>
+        </div>
       </div>
+
     </div>
+
   </section>
 </template>
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation, BankAccount } from '@/types/invitation';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const props = defineProps<{
   invitation: Invitation;
@@ -92,6 +106,7 @@ const props = defineProps<{
 }>();
 
 const copiedIndex = ref<number | null>(null);
+const sectionRef = ref<HTMLElement | null>(null);
 
 // Animasi ngocok kartu state
 const activeFront = ref(0);
@@ -195,45 +210,36 @@ function copyAccount(index: number) {
     copiedIndex.value = null;
   }, 2000);
 }
+
+// GSAP animation
+let ctx: gsap.Context;
+
+onMounted(() => {
+  if (!sectionRef.value) return;
+
+  ctx = gsap.context(() => {
+    // Animate cards on scroll
+    const cards = sectionRef.value!.querySelectorAll('.deck-card');
+    
+    gsap.set(cards, { opacity: 0, y: 30 });
+
+    ScrollTrigger.batch(cards, {
+      onEnter: (elements) => {
+        gsap.to(elements, {
+          opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'power2.out'
+        });
+      },
+      once: true
+    });
+  }, sectionRef.value!);
+});
+
+onUnmounted(() => {
+  if (ctx) ctx.revert();
+});
 </script>
 
 <style scoped>
-.gift-section {
-  padding: 96px 0px;
-  background: linear-gradient(to bottom, #ffffff, #ACCDE7);
-  text-align: center;
-  overflow: hidden;
-}
-
-.gift-title {
-  color: #304851;
-  font-size: clamp(1.875rem, 5vw, 3rem);
-  margin-bottom: 8px;
-  letter-spacing: 0.1em;
-}
-
-.gift-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 32px;
-}
-.gift-line {
-  height: 1px;
-  width: 64px;
-  background-color: rgba(48, 72, 81, 0.2);
-}
-
-.gift-desc {
-  max-width: 36rem;
-  margin: 0 auto 64px auto;
-  color: #405C66;
-  font-size: clamp(0.875rem, 3vw, 1rem);
-  font-weight: 500;
-  line-height: 1.6;
-}
-
 /* WADAH TUMPUKAN KARTU */
 .card-stack-wrapper {
   position: relative;
@@ -250,13 +256,13 @@ function copyAccount(index: number) {
 /* FISIK KARTU FISIK DEBIT */
 .deck-card {
   position: absolute;
-  top: 50px;
+  top: 20px;
   left: 50%;
-  width: calc(100% - 32px);
-  max-width: 340px;
-  height: 190px;
+  width: calc(100% - 16px);
+  max-width: 300px;
+  height: 175px;
   /* Tambahan padding luas agar tidak nempel pojokan! */
-  padding: 22px 24px;
+  padding: 20px 22px;
   border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -269,9 +275,9 @@ function copyAccount(index: number) {
 }
 @media (min-width: 768px) {
   .deck-card { 
-    max-width: 360px;
-    height: 200px;
-    padding: 24px 28px;
+    max-width: 320px;
+    height: 190px;
+    padding: 22px 24px;
   }
 }
 
@@ -287,15 +293,15 @@ function copyAccount(index: number) {
   --circle-border: rgba(48,72,81,0.06);
 }
 
-.theme-dark {
-  background: linear-gradient(135deg, #1d2b32, #2a3d46);
-  --text-primary: #ffffff;
-  --text-secondary: #e2e8f0;
-  --text-muted: rgba(255,255,255,0.5);
-  --btn-bg: rgba(255,255,255,0.15);
-  --btn-text: #ffffff;
-  --btn-hover: rgba(255,255,255,0.25);
-  --circle-border: rgba(255,255,255,0.05);
+.theme-blue {
+  background: linear-gradient(135deg, #041a33, #ACCDE7);
+  --text-primary: #1a252c;
+  --text-secondary: #304851;
+  --text-muted: rgba(48,72,81,0.65);
+  --btn-bg: rgba(4,26,51,0.4);
+  --btn-text: #304851;
+  --btn-hover: rgba(4,26,51,0.6);
+  --circle-border: rgba(4,26,51,0.4);
 }
 
 /* POLA DEKORASI */
@@ -353,7 +359,7 @@ function copyAccount(index: number) {
 
 .bank-name-title {
   font-weight: 800;
-  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  font-size: clamp(0.8rem, 3vw, 1rem);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-secondary);
@@ -367,7 +373,7 @@ function copyAccount(index: number) {
 .account-number {
   font-weight: 700;
   font-family: 'Courier New', Courier, monospace;
-  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-size: clamp(1.1rem, 4.5vw, 1.35rem);
   letter-spacing: 0.12em;
   color: var(--text-primary);
   text-shadow: 0 2px 6px rgba(0,0,0,0.15); /* Embossed effect */
@@ -375,7 +381,7 @@ function copyAccount(index: number) {
 
 .copy-btn {
   background-color: var(--btn-bg);
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(4,26,51,0.05);
   color: var(--btn-text);
   padding: 6px 12px;
   border-radius: 20px; /* Lebh membulat ala iOS pill */
@@ -417,7 +423,7 @@ function copyAccount(index: number) {
   margin-bottom: 2px;
 }
 .holder-name {
-  font-size: clamp(0.75rem, 3vw, 0.9rem);
+  font-size: clamp(0.7rem, 3vw, 0.85rem);
   font-weight: bold;
   color: var(--text-primary);
   text-transform: uppercase;
@@ -427,8 +433,8 @@ function copyAccount(index: number) {
 
 /* DECORATIVE RINGS (MASTERCARD VIBE) */
 .ring {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   mix-blend-mode: normal; /* solid overlapping colors */
   opacity: 0.85;

@@ -42,7 +42,7 @@ defineEmits<{
 .gallery-section {
   width: 100%;
   padding: 100px 0;
-  background-color: #f8f9f9;
+  background-color: rgba(168, 208, 230, 0.45);
   position: relative;
   overflow: hidden;
 }
