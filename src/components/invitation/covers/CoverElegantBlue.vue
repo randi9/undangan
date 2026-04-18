@@ -8,30 +8,38 @@
   >
     <!-- Background Layer -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden" style="background-color: rgba(168, 208, 230, 0.85);">
-      <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_cda7d85b-0fae-41a2-9444-706364d76871.webp" alt="Corner Decoration" class="absolute top-[-20px] right-[-20px] w-[65vw] max-w-[350px] opacity-60" style="object-fit: contain; z-index: 1;" />
-      <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_cda7d85b-0fae-41a2-9444-706364d76871.webp" alt="Corner Decoration" class="absolute bottom-[-20px] left-[-20px] w-[65vw] max-w-[350px] opacity-60" style="object-fit: contain; transform: scaleX(-1) scaleY(-1); z-index: 1;" />
+      <!-- Linen Texture -->
+      <div class="absolute inset-0 pointer-events-none opacity-[0.25] mix-blend-overlay" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.75 0.5%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E'); filter: contrast(150%) brightness(90%);"></div>
+      <!-- Top Right (Horizontal Flip) -->
+      <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_b6cb329b-58cf-4a5c-b9ae-143545758649.webp" alt="Corner Decoration" class="absolute top-[-5px] right-[-5px] w-[55vw] max-w-[280px] opacity-100 drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]" style="object-fit: contain; transform: scaleX(-1); z-index: 1;" />
+      <!-- Bottom Left (Vertical Flip) -->
+      <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_b6cb329b-58cf-4a5c-b9ae-143545758649.webp" alt="Corner Decoration" class="absolute bottom-[-5px] left-[-5px] w-[55vw] max-w-[280px] opacity-100 drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]" style="object-fit: contain; transform: scaleY(-1); z-index: 1;" />
     </div>
 
     <!-- TOP CONTENT: Outside the Envelope -->
     <div ref="topContentRef" style="width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding-top: 10vh; padding-bottom: 28vh; padding-left: 24px; padding-right: 24px; position: relative; z-index: 10; transition: opacity 0.4s;">
       
       <!-- Groom & Bride Header (Atas) -->
-      <h1 :style="{ fontFamily: fontHeading, fontSize: 'clamp(2.5rem, 10vw, 3.5rem)', lineHeight: '1', color: 'var(--theme-text)', textAlign: 'center', margin: 0, textShadow: '0 2px 4px rgba(255,255,255,0.8)' }">
+      <h1 :style="{ fontFamily: fontHeading }" style="font-size: clamp(2.5rem, 10vw, 3.5rem); line-height: 1; color: #2b3e51; text-align: center; margin: 0; text-shadow: 0 2px 4px rgba(255,255,255,0.8); transform: translateY(2vh);">
         {{ groomName }}
-        <span style="display: block; font-size: clamp(1.5rem, 6vw, 2.2rem); color: #7095c5; margin-top: 2px; margin-bottom: 2px;">&amp;</span>
+        <span style="display: block; font-size: clamp(1.5rem, 6vw, 2.2rem); color: #d4af37; margin-top: 2px; margin-bottom: 2px;">&amp;</span>
         {{ brideName }}
       </h1>
       
       <!-- Bingkai Image (Tengah) -->
       <div v-if="coverImage" style="position: relative; width: 95vw; max-width: 420px; aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; margin-top: auto; margin-bottom: auto; z-index: 10; transform: translateY(-4vh);">
-        <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_80f63d0d-3082-4c51-8814-938db0dddf1d.webp" alt="Frame" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2;" />
-        <img :src="coverImage" alt="Cover" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 62%; height: 65%; object-fit: cover; border-radius: 50% / 50%; z-index: 1;" />
+        <!-- Frame Drop Shadow -->
+        <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_80f63d0d-3082-4c51-8814-938db0dddf1d.webp" alt="Frame" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2; pointer-events: none; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.35));" />
+        <!-- Layer Inner Shadow di Atas Image -->
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 62%; height: 65%; border-radius: 50% / 50%; box-shadow: inset 0 15px 30px rgba(0,0,0,0.5), inset 0 -5px 15px rgba(0,0,0,0.3); z-index: 1; pointer-events: none;"></div>
+        <!-- Cover Photo -->
+        <img :src="coverImage" alt="Cover" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 62%; height: 65%; object-fit: cover; border-radius: 50% / 50%; z-index: 0;" />
       </div>
 
       <!-- Kepada Yth (Di Atas Amplop) -->
-      <div style="text-align: center; z-index: 10; background-color: rgba(255, 255, 255, 0.4); padding: 8px 24px; border-radius: 12px; backdrop-filter: blur(4px);">
-        <p style="font-size: 10px; letter-spacing: 0.15em; color: var(--theme-text-light); text-transform: uppercase; margin: 0 0 6px 0; font-weight: 500;">Kepada Yth.</p>
-        <h3 style="font-size: 16px; font-weight: 700; color: var(--theme-text); max-width: 240px; margin: 0 auto; line-height: 1.4; text-shadow: 0 1px 3px rgba(255,255,255,0.8);">{{ guestName || 'Tamu Undangan' }}</h3>
+      <div style="text-align: center; width: 100%; margin-top: auto; z-index: 10; transform: translateY(-10vh);">
+        <p style="font-size: 10px; letter-spacing: 0.15em; color: #3b5068; text-transform: uppercase; margin: 0 0 6px 0; font-weight: 600;">Kepada Yth.</p>
+        <h3 style="font-size: 16px; font-weight: 700; color: #2b3e51; max-width: 240px; margin: 0 auto; line-height: 1.4; text-shadow: 0 1px 3px rgba(255,255,255,0.8);">{{ guestName || 'Tamu Undangan' }}</h3>
       </div>
     </div>
 
@@ -39,11 +47,11 @@
     <div class="absolute bottom-[12vh] left-1/2 -translate-x-1/2 z-20 flex justify-center" :class="{ 'pointer-events-none': isOpening }">
 
       <!-- Envelope Wrapper (Miniature, elegant size) -->
-      <div class="relative w-[180px] sm:w-[220px] md:w-[260px] lg:w-[300px]" style="perspective: 1200px; aspect-ratio: 34/22;">
+      <div class="relative w-[160px] sm:w-[180px] md:w-[220px] lg:w-[260px]" style="perspective: 1200px; aspect-ratio: 34/22;">
         
         <!-- 1. BACK BODY -->
-        <svg ref="envelopeBackRef" class="absolute inset-0 w-full h-full text-[#7095c5] drop-shadow-xl z-[1]" viewBox="0 0 340 220" fill="currentColor" preserveAspectRatio="none">
-          <path d="M0 20 L340 20 L340 220 L0 220 Z" class="opacity-90" />
+        <svg ref="envelopeBackRef" class="absolute inset-0 w-full h-full text-[#a8d0e6] drop-shadow-xl z-[1]" viewBox="0 0 340 220" fill="currentColor" preserveAspectRatio="none">
+          <path d="M0 20 L340 20 L340 220 L0 220 Z" class="brightness-[0.80]" stroke="currentColor" stroke-width="4" stroke-linejoin="round" />
         </svg>
 
         <!-- 2. THE PAPER (Slides up and scales!) portrait shape -->
@@ -53,23 +61,23 @@
             class="relative w-[90%] h-[90%] bg-white overflow-hidden"
             style="will-change: transform; transform-origin: center center;"
           >
-            <div class="absolute inset-0 bg-gradient-to-b from-[#7095c5]/5 to-transparent z-[1] w-full h-full mix-blend-multiply"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-[#a8d0e6]/10 to-transparent z-[1] w-full h-full mix-blend-multiply"></div>
             <!-- Decorator for border and shadow that fades out cleanly on zoom -->
-            <div ref="paperDecorRef" class="absolute inset-0 z-[2] rounded-[2px] shadow-[0_-2px_6px_rgba(0,0,0,0.05)] border border-[#7095c5]/20"></div>
+            <div ref="paperDecorRef" class="absolute inset-0 z-[2] rounded-[2px] shadow-[0_-2px_6px_rgba(0,0,0,0.05)] border border-[#a8d0e6]/60"></div>
           </div>
         </div>
 
         <!-- 3. FRONT POCKET -->
-        <svg ref="envelopeFrontRef" class="absolute inset-0 w-full h-full text-[#7095c5] z-[3] pointer-events-none drop-shadow-md" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-          <path d="M0 20 L170 130 L0 220 Z" fill="currentColor" class="opacity-75"/>
-          <path d="M340 20 L170 130 L340 220 Z" fill="currentColor" class="opacity-75"/>
-          <path d="M0 220 L170 130 L340 220 Z" fill="currentColor" class="opacity-90"/>
+        <svg ref="envelopeFrontRef" class="absolute inset-0 w-full h-full text-[#a8d0e6] z-[3] pointer-events-none drop-shadow-[0_20px_40px_rgba(30,60,90,0.15)]" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <path d="M0 20 L170 130 L0 220 Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round" class="brightness-[0.92]"/>
+          <path d="M340 20 L170 130 L340 220 Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round" class="brightness-[0.92]"/>
+          <path d="M0 220 L170 130 L340 220 Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round" class="brightness-100 drop-shadow-sm"/>
         </svg>
 
         <!-- 4. TOP FLAP -->
-        <div ref="flapWrapperRef" class="absolute left-0 w-full z-[4] origin-top text-[#7095c5]" style="perspective: 1000px; top: 9%; height: 59%;">
+        <div ref="flapWrapperRef" class="absolute left-0 w-full z-[4] origin-top text-[#a8d0e6]" style="perspective: 1000px; top: 9%; height: 59%;">
           <svg ref="flapRef" class="w-full h-full origin-top" viewBox="0 0 340 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0 0 L170 130 L340 0 Z" fill="currentColor" class="drop-shadow-[0_4px_6px_rgba(0,0,0,0.25)]"/>
+            <path d="M0 0 L170 130 L340 0 Z" fill="currentColor" stroke="currentColor" stroke-width="4" stroke-linejoin="round" class="brightness-[1.05] drop-shadow-[0_6px_10px_rgba(20,40,60,0.3)]"/>
             <path d="M0 0 L170 130 L340 0" stroke="var(--theme-bg)" stroke-opacity="0.25" stroke-width="1.5"/>
           </svg>
         </div>
@@ -78,7 +86,7 @@
         <button
           ref="sealRef"
           @click="bukaAmplop"
-          class="pulse-button absolute left-1/2 z-[5] w-[60px] sm:w-[70px] h-[60px] sm:h-[70px] flex items-center justify-center cursor-pointer shadow-none border-none bg-transparent"
+          class="pulse-button absolute left-1/2 z-[5] w-[50px] sm:w-[55px] h-[50px] sm:h-[55px] flex items-center justify-center cursor-pointer shadow-none border-none bg-transparent"
           style="top: 66%; transform: translate(-50%, -50%); outline: none; -webkit-tap-highlight-color: transparent;"
         >
           <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_bf662783-be26-45f3-8e96-7d36cac1c79f.webp" alt="Stamp" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));" />
