@@ -10,14 +10,17 @@
         <polygon points="0,650 500,750 1000,650" fill="#031429" /> <!-- fake depth flap -->
       </svg>
 
-      <!-- Paper Layer (Portrait, perfectly bounds into wrapper) -->
-      <div ref="paper" class="absolute left-[7%] right-[7%] bottom-[5%] aspect-[3/4] bg-[#faf9f6] z-20 shadow-[0_-2px_8px_rgba(0,0,0,0.1)] will-change-transform rounded-t-[4px] flex items-center justify-center overflow-hidden border-t border-x border-[#e5e7eb]">
+      <!-- Paper Layer -->
+      <div ref="paper" class="absolute left-[1.5%] right-[1.5%] bottom-[1%] z-20 will-change-transform rounded-t-[4px] flex items-center justify-center">
         
-        <!-- Texture Overlay -->
-        <div class="absolute inset-0 opacity-40 pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png'); mix-blend-mode: multiply;"></div>
+        <!-- Event Blank Paper (Underneath fixed, dictates height!) -->
+        <img ref="eventPaperImg" src="https://media.mengundanganda.com/elegant_blue/event%20section/kertas.jpg" class="relative w-full h-auto z-0" />
+        
+        <!-- Main Cover Image (Top Layer - Will fade out!) -->
+        <img ref="coverPaperImg" src="https://media.mengundanganda.com/elegant_blue/event%20section/kertastulisan.jpg" class="absolute top-0 left-0 w-full h-auto z-10" />
 
         <!-- Akad Content -->
-        <div ref="akadInfo" class="absolute inset-0 p-3 sm:p-4 flex flex-col items-center justify-center text-[#304851] will-change-[opacity,transform] opacity-0" style="transform: translateY(15px);">
+        <div ref="akadInfo" class="absolute inset-0 p-3 sm:p-4 flex flex-col items-center justify-center text-[#304851] will-change-[opacity,transform] opacity-0 z-20" style="transform: translateY(15px);">
           <Icon icon="ph:rings-duotone" class="w-6 h-6 md:w-8 md:h-8 mb-2 opacity-80" />
           <h3 class="text-xl md:text-3xl font-bold mb-2 md:mb-3" :style="{ fontFamily: themeConfig.fontHeading }">Akad Nikah</h3>
           <div class="space-y-1 text-[0.6rem] md:text-xs opacity-90 max-w-[200px] md:max-w-xs px-2 py-2 border-y border-[#304851]/20">
@@ -40,7 +43,7 @@
         </div>
 
         <!-- Resepsi Content -->
-        <div ref="resepsiInfo" class="absolute inset-0 p-3 sm:p-4 flex flex-col items-center justify-center text-[#304851] will-change-[opacity,transform] opacity-0" style="transform: translateY(15px);">
+        <div ref="resepsiInfo" class="absolute inset-0 p-3 sm:p-4 flex flex-col items-center justify-center text-[#304851] will-change-[opacity,transform] opacity-0 z-20" style="transform: translateY(15px);">
           <Icon icon="ph:confetti-duotone" class="w-6 h-6 md:w-8 md:h-8 mb-2 opacity-80" />
           <h3 class="text-xl md:text-3xl font-bold mb-2 md:mb-3" :style="{ fontFamily: themeConfig.fontHeading }">Resepsi</h3>
           <div class="space-y-1 text-[0.6rem] md:text-xs opacity-90 max-w-[200px] md:max-w-xs px-2 py-2 border-y border-[#304851]/20">
@@ -84,7 +87,7 @@
       <div ref="damaskBg" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none; opacity: 0.15; background-image: url('https://media.mengundanganda.com/elegant_blue/event%20section/randidewi_772c4451-713a-47f1-aea8-4995e9df061d.webp'), url('https://media.mengundanganda.com/elegant_blue/event%20section/randidewi_772c4451-713a-47f1-aea8-4995e9df061d.webp'); background-size: 200px 200px, 200px 200px; background-position: 0 0, 100px 100px; background-repeat: repeat;"></div>
 
       <!-- Top and Bottom Smooth Shadow -->
-      <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none; z-index: 0; box-shadow: inset 0 300px 250px -50px #062645, inset 0 -300px 250px -50px #062645, inset 0 120px 80px -20px #062645, inset 0 -120px 80px -20px #062645;"></div>
+      <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none; z-index: 0; box-shadow: inset 0 250px 250px -60px #062645, inset 0 -250px 250px -60px #062645, inset 0 100px 100px -25px #062645, inset 0 -100px 100px -25px #062645;"></div>
 
       <!-- Linen Texture -->
       <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none; opacity: 0.6; mix-blend-mode: multiply; background-image: url('https://www.transparenttextures.com/patterns/black-linen.png');"></div>
@@ -162,6 +165,8 @@ const introLayer = ref<HTMLElement | null>(null);
 const introContent = ref<HTMLElement | null>(null);
 const damaskBg = ref<HTMLElement | null>(null);
 const paper = ref<HTMLElement | null>(null);
+const coverPaperImg = ref<HTMLImageElement | null>(null);
+const eventPaperImg = ref<HTMLImageElement | null>(null);
 const akadInfo = ref<HTMLElement | null>(null);
 const resepsiInfo = ref<HTMLElement | null>(null);
 
@@ -170,8 +175,7 @@ let ctx: gsap.Context;
 onMounted(() => {
   ctx = gsap.context(() => {
     const mql = window.matchMedia('(min-width: 768px)');
-    // Zoom slightly increased based on user request ("agak gedein dikiiiit aja")
-    const paperZoomScale = mql.matches ? 1.1 : 1.3; 
+    const paperZoomScale = mql.matches ? 1.15 : 1.2; 
 
     // Set initial states via GSAP (not inline CSS) so GSAP owns the full lifecycle
     gsap.set(envelopeWrapper.value, { scale: 5, opacity: 1 });
@@ -179,6 +183,8 @@ onMounted(() => {
     gsap.set(introContent.value, { opacity: 1 });
     gsap.set(damaskBg.value, { opacity: 0.15 });
     gsap.set(paper.value, { y: '0%', scale: 1, zIndex: 20 });
+    if (coverPaperImg.value) gsap.set(coverPaperImg.value, { opacity: 1 });
+    if (eventPaperImg.value) gsap.set(eventPaperImg.value, { opacity: 1 });
     gsap.set(akadInfo.value, { opacity: 0, y: 15 });
     gsap.set(resepsiInfo.value, { opacity: 0, y: 15 });
 
@@ -201,7 +207,9 @@ onMounted(() => {
           gsap.set(introLayer.value, { opacity: 0 });
           gsap.set(introContent.value, { opacity: 0 });
           gsap.set(damaskBg.value, { opacity: 0 });
-          gsap.set(paper.value, { y: '-5%', scale: paperZoomScale, zIndex: 50, clearProps: 'boxShadow' });
+          gsap.set(paper.value, { y: '8%', scale: paperZoomScale, zIndex: 50, clearProps: 'boxShadow' });
+          if (coverPaperImg.value) gsap.set(coverPaperImg.value, { opacity: 0 });
+          if (eventPaperImg.value) gsap.set(eventPaperImg.value, { opacity: 1 });
           gsap.set(resepsiInfo.value, { opacity: 1, y: 0, pointerEvents: 'auto' });
           gsap.set(akadInfo.value, { opacity: 0, pointerEvents: 'none' });
         },
@@ -228,12 +236,22 @@ onMounted(() => {
     t += 0.3;
 
     // --- PHASE 2: Paper Extracts & Shows Akad ---
-    tl.to(paper.value, { y: '-20%', duration: 0.8, ease: 'power1.inOut' }, t)
-      .set(paper.value, { zIndex: 50 }, t + 0.2)
-      .to(paper.value, { scale: paperZoomScale, y: '-5%', boxShadow: '0 15px 30px -10px rgba(0,0,0,0.2)', duration: 1, ease: 'power2.inOut' }, t)
-      .to(akadInfo.value, { opacity: 1, y: 0, duration: 0.6, ease: 'power1.out' }, t + 0.4);
+    // 1. Pull paper completely out of the envelope pocket
+    tl.to(paper.value, { y: '-12%', duration: 0.6, ease: 'power2.out' }, t);
+    tl.set(paper.value, { zIndex: 50 }, t + 0.2); // pop over envelope flap correctly
     
-    t += 1.0;
+    // 2. Zoom it dynamically into the center and shift Y to balance visually
+    tl.to(paper.value, { scale: paperZoomScale, y: '8%', boxShadow: '0 8px 30px -5px rgba(0,0,0,0.2)', duration: 0.8, ease: 'power1.inOut' }, t + 0.6);
+    
+    if (coverPaperImg.value) {
+      // Fade out happens exactly as it STARTS zooming!
+      tl.to(coverPaperImg.value, { opacity: 0, duration: 0.8, ease: 'power2.inOut' }, t + 0.6);
+    }
+    
+    // 3. Akad text materializes smoothly on top of the blank graphics
+    tl.to(akadInfo.value, { opacity: 1, y: 0, duration: 0.6, ease: 'power1.out' }, t + 1.2);
+
+    t += 1.8;
     tl.addLabel('step3', t); // AKAD INFO VISIBLE
 
     tl.set(akadInfo.value, { pointerEvents: 'auto' }, t);
