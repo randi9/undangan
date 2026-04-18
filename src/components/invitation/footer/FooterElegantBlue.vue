@@ -11,11 +11,8 @@
           <svg width="65" height="65" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="50" cy="50" r="32" />
             <circle cx="50" cy="50" r="23" />
-            <!-- Inner dots to clearly track rotation -->
-            <circle cx="50" cy="22.5" r="2.5" fill="currentColor" stroke="none" />
-            <circle cx="50" cy="77.5" r="2.5" fill="currentColor" stroke="none" />
-            <circle cx="22.5" cy="50" r="2.5" fill="currentColor" stroke="none" />
-            <circle cx="77.5" cy="50" r="2.5" fill="currentColor" stroke="none" />
+            <!-- Single line on top to track rotation -->
+            <line x1="50" y1="18" x2="50" y2="27" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
           </svg>
         </div>
 
@@ -105,12 +102,7 @@ onMounted(() => {
     gsap.set(groomRing.value, { x: -200, rotation: -720, opacity: 0, transformOrigin: 'center center' });
     gsap.set(sparkle.value, { scale: 0, opacity: 0, rotation: 0, transformOrigin: 'center center' });
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ringsWrapper.value || footerRef.value,
-        start: 'top 75%',
-      }
-    });
+    const tl = gsap.timeline({ paused: true });
 
     // 1. Groom Ring rolls in rapidly from the left
     tl.to(groomRing.value, { 
@@ -157,6 +149,21 @@ onMounted(() => {
         yoyo: true 
       });
     }, 2.4);
+
+    // Use Intersection Observer which is 100% immune to height calculation bugs
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        tl.play();
+        observer.disconnect();
+      }
+    }, { 
+      rootMargin: "0px 0px -30% 0px", // Trigger saat bagian atas footer menyentuh tengah layar (50%)
+      threshold: 0 
+    });
+
+    if (footerRef.value) {
+      observer.observe(footerRef.value);
+    }
 
   }, footerRef.value!);
 });

@@ -6,10 +6,10 @@
     ]"
     :style="{ backgroundColor: 'var(--theme-bg)', fontFamily: fontBody }"
   >
-    <!-- Background Image -->
-    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden flex justify-center items-center">
-      <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_a18ff182-db38-4b9c-b0b4-95c217a01b47.webp" alt="Floral Background" style="height: 100%; width: auto; min-width: 100%; object-fit: cover; opacity: 0.7;" />
-      <div class="absolute inset-0" style="background-color: rgba(255, 255, 255, 0.25);"></div>
+    <!-- Background Layer -->
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden" style="background-color: rgba(168, 208, 230, 0.85);">
+      <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_cda7d85b-0fae-41a2-9444-706364d76871.webp" alt="Corner Decoration" class="absolute top-[-20px] right-[-20px] w-[65vw] max-w-[350px] opacity-60" style="object-fit: contain; z-index: 1;" />
+      <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_cda7d85b-0fae-41a2-9444-706364d76871.webp" alt="Corner Decoration" class="absolute bottom-[-20px] left-[-20px] w-[65vw] max-w-[350px] opacity-60" style="object-fit: contain; transform: scaleX(-1) scaleY(-1); z-index: 1;" />
     </div>
 
     <!-- TOP CONTENT: Outside the Envelope -->
@@ -18,14 +18,14 @@
       <!-- Groom & Bride Header (Atas) -->
       <h1 :style="{ fontFamily: fontHeading, fontSize: 'clamp(2.5rem, 10vw, 3.5rem)', lineHeight: '1', color: 'var(--theme-text)', textAlign: 'center', margin: 0, textShadow: '0 2px 4px rgba(255,255,255,0.8)' }">
         {{ groomName }}
-        <span style="display: block; font-size: clamp(1.5rem, 6vw, 2.2rem); color: var(--theme-primary); margin-top: 2px; margin-bottom: 2px;">&amp;</span>
+        <span style="display: block; font-size: clamp(1.5rem, 6vw, 2.2rem); color: #7095c5; margin-top: 2px; margin-bottom: 2px;">&amp;</span>
         {{ brideName }}
       </h1>
       
       <!-- Bingkai Image (Tengah) -->
-      <div v-if="coverImage" style="position: relative; width: 260px; height: 260px; display: flex; align-items: center; justify-content: center; margin-top: auto; margin-bottom: auto; z-index: 10;">
-        <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_bc0c2c01-2fff-42ae-a363-827fbe4ecd00.webp" alt="Frame" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2;" />
-        <img :src="coverImage" alt="Cover" style="width: 70%; height: 70%; object-fit: cover; border-radius: 50%; z-index: 1;" />
+      <div v-if="coverImage" style="position: relative; width: 95vw; max-width: 420px; aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; margin-top: auto; margin-bottom: auto; z-index: 10; transform: translateY(-4vh);">
+        <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_80f63d0d-3082-4c51-8814-938db0dddf1d.webp" alt="Frame" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2;" />
+        <img :src="coverImage" alt="Cover" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 62%; height: 65%; object-fit: cover; border-radius: 50% / 50%; z-index: 1;" />
       </div>
 
       <!-- Kepada Yth (Di Atas Amplop) -->
@@ -39,10 +39,10 @@
     <div class="absolute bottom-[12vh] left-1/2 -translate-x-1/2 z-20 flex justify-center" :class="{ 'pointer-events-none': isOpening }">
 
       <!-- Envelope Wrapper (Miniature, elegant size) -->
-      <div class="relative w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px]" style="perspective: 1200px; aspect-ratio: 34/22;">
+      <div class="relative w-[180px] sm:w-[220px] md:w-[260px] lg:w-[300px]" style="perspective: 1200px; aspect-ratio: 34/22;">
         
         <!-- 1. BACK BODY -->
-        <svg ref="envelopeBackRef" class="absolute inset-0 w-full h-full text-[var(--theme-primary)] drop-shadow-xl z-[1]" viewBox="0 0 340 220" fill="currentColor" preserveAspectRatio="none">
+        <svg ref="envelopeBackRef" class="absolute inset-0 w-full h-full text-[#7095c5] drop-shadow-xl z-[1]" viewBox="0 0 340 220" fill="currentColor" preserveAspectRatio="none">
           <path d="M0 20 L340 20 L340 220 L0 220 Z" class="opacity-90" />
         </svg>
 
@@ -50,24 +50,24 @@
         <div class="absolute inset-0 z-[2] flex justify-center items-end" style="padding-bottom: 5%;">
           <div
             ref="paperRef"
-            class="relative w-[90%] h-[90%] bg-[var(--theme-bg)] overflow-hidden"
+            class="relative w-[90%] h-[90%] bg-white overflow-hidden"
             style="will-change: transform; transform-origin: center center;"
           >
-            <div class="absolute inset-0 bg-gradient-to-b from-[var(--theme-primary)]/10 to-transparent z-[1] w-full h-full mix-blend-multiply"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-[#7095c5]/5 to-transparent z-[1] w-full h-full mix-blend-multiply"></div>
             <!-- Decorator for border and shadow that fades out cleanly on zoom -->
-            <div ref="paperDecorRef" class="absolute inset-0 z-[2] rounded-[2px] shadow-[0_-2px_6px_rgba(0,0,0,0.05)] border border-[var(--theme-primary)]/20"></div>
+            <div ref="paperDecorRef" class="absolute inset-0 z-[2] rounded-[2px] shadow-[0_-2px_6px_rgba(0,0,0,0.05)] border border-[#7095c5]/20"></div>
           </div>
         </div>
 
         <!-- 3. FRONT POCKET -->
-        <svg ref="envelopeFrontRef" class="absolute inset-0 w-full h-full text-[var(--theme-primary)] z-[3] pointer-events-none drop-shadow-md" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <svg ref="envelopeFrontRef" class="absolute inset-0 w-full h-full text-[#7095c5] z-[3] pointer-events-none drop-shadow-md" viewBox="0 0 340 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
           <path d="M0 20 L170 130 L0 220 Z" fill="currentColor" class="opacity-75"/>
           <path d="M340 20 L170 130 L340 220 Z" fill="currentColor" class="opacity-75"/>
           <path d="M0 220 L170 130 L340 220 Z" fill="currentColor" class="opacity-90"/>
         </svg>
 
         <!-- 4. TOP FLAP -->
-        <div ref="flapWrapperRef" class="absolute left-0 w-full z-[4] origin-top text-[var(--theme-primary)]" style="perspective: 1000px; top: 9%; height: 59%;">
+        <div ref="flapWrapperRef" class="absolute left-0 w-full z-[4] origin-top text-[#7095c5]" style="perspective: 1000px; top: 9%; height: 59%;">
           <svg ref="flapRef" class="w-full h-full origin-top" viewBox="0 0 340 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <path d="M0 0 L170 130 L340 0 Z" fill="currentColor" class="drop-shadow-[0_4px_6px_rgba(0,0,0,0.25)]"/>
             <path d="M0 0 L170 130 L340 0" stroke="var(--theme-bg)" stroke-opacity="0.25" stroke-width="1.5"/>
@@ -78,10 +78,10 @@
         <button
           ref="sealRef"
           @click="bukaAmplop"
-          class="absolute left-1/2 z-[5] w-12 sm:w-14 h-12 sm:h-14 rounded-full bg-[var(--theme-primary)] border-[3px] border-[var(--theme-bg)]/50 flex items-center justify-center cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-lg"
-          style="top: 66%; transform: translate(-50%, -50%);"
+          class="pulse-button absolute left-1/2 z-[5] w-[60px] sm:w-[70px] h-[60px] sm:h-[70px] flex items-center justify-center cursor-pointer shadow-none border-none bg-transparent"
+          style="top: 66%; transform: translate(-50%, -50%); outline: none; -webkit-tap-highlight-color: transparent;"
         >
-          <span ref="sealTextRef" class="text-[var(--theme-bg)] text-[10px] sm:text-xs font-bold tracking-widest mt-0.5 transition-opacity pointer-events-none">BUKA</span>
+          <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_bf662783-be26-45f3-8e96-7d36cac1c79f.webp" alt="Stamp" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));" />
         </button>
         
       </div>
@@ -116,7 +116,6 @@ const flapRef = ref<SVGElement | null>(null);
 const paperRef = ref<HTMLElement | null>(null);
 const paperDecorRef = ref<HTMLElement | null>(null);
 const sealRef = ref<HTMLElement | null>(null);
-const sealTextRef = ref<HTMLElement | null>(null);
 
 const isOpening = ref(false);
 
@@ -125,9 +124,6 @@ const bukaAmplop = () => {
   isOpening.value = true;
 
   const tl = gsap.timeline();
-
-  // 1. Text "BUKA" fades out BEFORE envelope opens
-  tl.to(sealTextRef.value, { opacity: 0, duration: 0.3 });
 
   // 2. Fade out the Wax Seal without sliding/scaling
   tl.to(sealRef.value, {
@@ -187,3 +183,13 @@ const bukaAmplop = () => {
   }, undefined, "-=0.2");
 };
 </script>
+
+<style scoped>
+.pulse-button {
+  animation: pulseStamp 1.2s infinite ease-in-out alternate;
+}
+@keyframes pulseStamp {
+  0% { transform: translate(-50%, -50%) scale(0.95); }
+  100% { transform: translate(-50%, -50%) scale(1.05); }
+}
+</style>
