@@ -130,7 +130,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       headerText: 'The Wedding Of',
       headerStyle: "font-size: 8px; letter-spacing: 3px; color: #A3B5C3; text-transform: uppercase;",
       nameText: 'Romeo & Juliet',
-      nameStyle: "font-family: 'Playfair Display', serif; font-size: 22px; margin-top: 4px;",
+      nameStyle: "font-family: 'Imperial Script', cursive; font-size: 28px; margin-top: 4px;",
     },
     themeConfig: {
       name: 'elegant_blue',
@@ -140,7 +140,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       secondary: '#1E293B',
       text: '#1E293B',
       textLight: '#64748B',
-      fontHeading: "'Playfair Display', serif",
+      fontHeading: "'Imperial Script', cursive",
       fontBody: "'Playfair Display', serif",
       overlayGradient: 'linear-gradient(180deg, rgba(30,41,59,0.4) 0%, rgba(30,41,59,0.85) 100%)',
       coverImage: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=1080&q=80',
