@@ -31,12 +31,12 @@
     <div class="max-w-5xl w-full mx-auto relative z-10 flex-1 flex flex-col justify-between">
       
       <div>
-        <h2 ref="titleRef" class="text-3xl md:text-5xl mb-2 text-[#304851] drop-shadow-sm tracking-widest cursor-default text-center" :style="{ fontFamily: themeConfig.fontHeading }">
+        <h2 ref="titleRef" :style="{ fontFamily: themeConfig.fontHeading }" style="font-size: clamp(3rem, 10vw, 4.5rem); font-weight: 500; color: #304851; text-align: center; margin: 40px 0 8px 0; text-shadow: 0 1px 2px rgba(48,72,81,0.15); cursor: default; line-height: 1.1; letter-spacing: normal;">
           The Future<br/>Mr. &amp; Mrs.
         </h2>
-        <div ref="heartRef" class="flex flex-col items-center justify-center gap-2 text-[#304851]/80 mt-4 md:mt-6 mb-8 md:mb-0">
-           <p class="text-[0.8rem] md:text-[0.95rem] font-light tracking-wide">Celebrating the upcoming union of...</p>
-           <p class="text-[0.7rem] md:text-[0.8rem] font-light tracking-widest uppercase">Our Complete Love Story</p>
+        <div ref="heartRef" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: rgba(48, 72, 81, 0.8); margin-top: 20px; margin-bottom: 24px;">
+           <p style="font-size: clamp(0.85rem, 3vw, 1rem); font-weight: 300; font-family: 'Inter', sans-serif; letter-spacing: 0.05em; font-style: italic; margin: 0; text-align: center; line-height: 1.4;">Melangkah bersama</p>
+           <p style="font-size: clamp(0.7rem, 2.5vw, 0.8rem); font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.15em; text-transform: uppercase; margin: 0; text-align: center; line-height: 1.4; margin-top: 3px;">Menapaki lembaran hidup yang baru</p>
         </div>
       </div>
       
@@ -45,8 +45,8 @@
         <div class="w-[45%] flex justify-end">
           <div class="relative">
             <!-- Minimalist Lines Deco -->
-            <div ref="groomDecoRef" class="absolute -inset-[6px] md:-inset-[8px] z-[5] pointer-events-none opacity-0 border-[1.9px] border-[#D4AF37]/80 rounded-t-[1000px]"></div>
-            <div ref="groomSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-t-[1000px] shadow-[0_15px_40px_rgba(48,72,81,0.25)] bg-[#405C66]/5 relative overflow-hidden z-10">
+            <div ref="groomDecoRef" class="absolute -inset-[6px] md:-inset-[8px] z-[5] pointer-events-none opacity-0 border-[2.5px] border-[#D4AF37]/90 rounded-t-[1000px]"></div>
+            <div ref="groomSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-t-[1000px] shadow-[0_8px_24px_rgba(48,72,81,0.08)] bg-[#405C66]/5 relative overflow-hidden z-10">
                <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realGroomImgRef" alt="Groom" />
                <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realGroomImgRef">👤</div>
             </div>
@@ -73,8 +73,8 @@
         <div class="w-[45%] flex justify-start">
           <div class="relative">
             <!-- Minimalist Lines Deco -->
-            <div ref="brideDecoRef" class="absolute -inset-[6px] md:-inset-[8px] z-[5] pointer-events-none opacity-0 border-[1.9px] border-[#D4AF37]/80 rounded-b-[1000px]"></div>
-            <div ref="brideSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-b-[1000px] shadow-[0_15px_40px_rgba(48,72,81,0.25)] bg-[#405C66]/5 relative overflow-hidden z-10">
+            <div ref="brideDecoRef" class="absolute -inset-[6px] md:-inset-[8px] z-[5] pointer-events-none opacity-0 border-[2.5px] border-[#D4AF37]/90 rounded-b-[1000px]"></div>
+            <div ref="brideSlotRef" class="opacity-0 w-36 h-48 md:w-56 md:h-72 rounded-b-[1000px] shadow-[0_8px_24px_rgba(48,72,81,0.08)] bg-[#405C66]/5 relative overflow-hidden z-10">
                <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover opacity-0" ref="realBrideImgRef" alt="Bride" />
                <div v-else class="w-full h-full flex items-center justify-center text-4xl text-[#405C66]/50 opacity-0" ref="realBrideImgRef">👤</div>
             </div>
@@ -97,20 +97,28 @@
     <!-- Animation Absolute Layer -->
     <div class="absolute inset-0 z-20 pointer-events-none w-full h-full block">
       
+      <!-- Unified Cover Deco Line -->
+      <div ref="coverDecoRef" class="absolute w-[252px] h-[332px] md:w-[336px] md:h-[456px] rounded-[1000px] border-[2.5px] border-[#D4AF37]/90 z-20 pointer-events-none" style="will-change: opacity; opacity: 1;"></div>
+
       <!-- Unified Cover Photo (Only visible at start, fades out) -->
-      <div ref="coverOvalRef" class="absolute w-[240px] h-[320px] md:w-[320px] md:h-[440px] rounded-[1000px] overflow-hidden shadow-[0_20px_50px_rgba(48,72,81,0.2)] bg-[#304851] z-30 border-[0px] border-[#073a69]" style="will-change: transform, opacity">
+      <div ref="coverOvalRef" class="absolute w-[240px] h-[320px] md:w-[320px] md:h-[440px] rounded-[1000px] overflow-hidden shadow-[0_10px_25px_rgba(48,72,81,0.1)] bg-[#304851] z-30 border-[0px]" style="will-change: transform, opacity">
          <img v-if="invitation.cover_photo" :src="resolveAssetUrl(invitation.cover_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover" />
          <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-white/50">Tidak ada cover</div>
       </div>
 
+      <!-- Unified Bottom Graphic (Fades out when corners shrink) -->
+      <div ref="bottomGraphicRef" class="absolute z-40 w-[180px] md:w-[240px] pointer-events-none" style="top: 50%; left: 50%; margin-top: clamp(230px, 30vw, 260px); will-change: opacity; opacity: 1;">
+         <img src="https://media.mengundanganda.com/elegant_blue/couple%20section/randidewi_0ba930f7-b510-460a-ab5d-c429fe7eeddb.webp" class="w-full h-auto object-contain drop-shadow-sm opacity-90" />
+      </div>
+
       <!-- Groom Half (Top) - Hidden beneath cover initially -->
-      <div ref="animGroomRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-t-[1000px] overflow-hidden shadow-[0_15px_40px_rgba(48,72,81,0.25)] bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
+      <div ref="animGroomRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-t-[1000px] overflow-hidden shadow-[0_8px_24px_rgba(48,72,81,0.08)] bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
          <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover" />
          <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-5xl bg-[#405C66]/10 text-[#405C66]/50">👤</div>
       </div>
 
       <!-- Bride Half (Bottom) - Hidden beneath cover initially -->
-      <div ref="animBrideRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-b-[1000px] overflow-hidden shadow-[0_15px_40px_rgba(48,72,81,0.25)] bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
+      <div ref="animBrideRef" class="absolute w-[240px] h-[160px] md:w-[320px] md:h-[220px] rounded-b-[1000px] overflow-hidden shadow-[0_8px_24px_rgba(48,72,81,0.08)] bg-[#405C66]/5 z-20" style="will-change: width, height, transform, top, left">
          <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" class="absolute inset-0 w-full h-full object-cover" />
          <div v-else class="absolute inset-0 w-full h-full flex items-center justify-center text-5xl bg-[#405C66]/10 text-[#405C66]/50">👤</div>
       </div>
@@ -148,6 +156,8 @@ const brideDecoRef = ref<HTMLElement | null>(null);
 const brideTextRef = ref<HTMLElement | null>(null);
 
 const coverOvalRef = ref<HTMLElement | null>(null);
+const coverDecoRef = ref<HTMLElement | null>(null);
+const bottomGraphicRef = ref<HTMLElement | null>(null);
 const animGroomRef = ref<HTMLElement | null>(null);
 const animBrideRef = ref<HTMLElement | null>(null);
 const realGroomImgRef = ref<HTMLElement | null>(null);
@@ -190,6 +200,8 @@ onMounted(() => {
 
     // 1. Initial robust Absolute positioning inside the GSAP context
     gsap.set(coverOvalRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 1, opacity: 1 });
+    if (coverDecoRef.value) gsap.set(coverDecoRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -50, x: 0, y: 0, opacity: 1 });
+    if (bottomGraphicRef.value) gsap.set(bottomGraphicRef.value, { left: "50%", xPercent: -50, opacity: 1 });
     gsap.set(animGroomRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -100, x: 0, y: 0, opacity: 1 });
     gsap.set(animBrideRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: 0, x: 0, y: 0, opacity: 1 });
     
@@ -217,9 +229,18 @@ onMounted(() => {
       ease: "power2.inOut"
     }, 0.5);
 
+    // Bottom graphic fades out closely tracing the corner shrink timing
+    if (bottomGraphicRef.value) {
+      tl.to(bottomGraphicRef.value, {
+        opacity: 0,
+        duration: 1.2,
+        ease: "power2.inOut"
+      }, 0.5);
+    }
+
     // 3. Fade out the unified cover (Memudar elegan tanpa scale down)
     if (coverOvalRef.value) {
-      tl.to(coverOvalRef.value, {
+      tl.to([coverOvalRef.value, coverDecoRef.value].filter(Boolean), {
         opacity: 0,
         duration: 0.5,
         ease: "power2.inOut"
