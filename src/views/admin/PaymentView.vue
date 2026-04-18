@@ -57,7 +57,7 @@
                   </div>
                   <div class="trial-stat-info">
                     <div class="trial-stat-label">Sisa Akses</div>
-                    <div class="trial-stat-value">{{ paymentData.views_remaining ?? '—' }} / {{ paymentData.max_views || 20 }}</div>
+                    <div class="trial-stat-value">{{ paymentData.views_remaining ?? '—' }} / {{ paymentData.max_views || 25 }}</div>
                   </div>
                 </div>
                 <div class="trial-stat-divider"></div>
@@ -96,23 +96,23 @@
                 <ul>
                   <li class="feature-item feature-limited">
                     <Icon icon="ph:hourglass-duotone" class="feature-list-icon" />
-                    Masa aktif 2 hari
+                    Masa aktif 7 hari
                   </li>
                   <li class="feature-item feature-limited">
                     <Icon icon="ph:eye-duotone" class="feature-list-icon" />
-                    20x akses link
+                    25x akses link
                   </li>
                   <li class="feature-item feature-included">
                     <Icon icon="ph:pencil-simple-duotone" class="feature-list-icon" />
-                    Unlimited edit
-                  </li>
-                  <li class="feature-item feature-included">
-                    <Icon icon="ph:check-circle-duotone" class="feature-list-icon" />
-                    Langsung jadi setelah input data
+                    Bebas edit tanpa batas
                   </li>
                   <li class="feature-item feature-included">
                     <Icon icon="ph:monitor-play-duotone" class="feature-list-icon" />
                     Live preview editor
+                  </li>
+                  <li class="feature-item feature-limited">
+                    <Icon icon="ph:tag-duotone" class="feature-list-icon" />
+                    Branding "Powered by"
                   </li>
                 </ul>
               </div>
@@ -124,19 +124,27 @@
                 <ul>
                   <li class="feature-item feature-included">
                     <Icon icon="ph:star-duotone" class="feature-list-icon" style="color: #3b82f6;" />
-                    <strong>Semua fitur di Free</strong>
+                    <strong>Masa aktif 1 tahun penuh</strong>
                   </li>
                   <li class="feature-item feature-included">
                     <Icon icon="ph:infinity-duotone" class="feature-list-icon" style="color: #3b82f6;" />
-                    Unlimited akses link
+                    Akses undangan unlimited
                   </li>
                   <li class="feature-item feature-included">
-                    <Icon icon="ph:calendar-check-duotone" class="feature-list-icon" style="color: #3b82f6;" />
-                    1 tahun masa aktif
+                    <Icon icon="ph:palette-duotone" class="feature-list-icon" style="color: #3b82f6;" />
+                    Semua koleksi tema premium
                   </li>
                   <li class="feature-item feature-included">
-                    <Icon icon="ph:users-duotone" class="feature-list-icon" style="color: #3b82f6;" />
-                    Unlimited tamu undangan
+                    <Icon icon="ph:wallet-duotone" class="feature-list-icon" style="color: #3b82f6;" />
+                    Fitur Amplop Digital / QRIS
+                  </li>
+                  <li class="feature-item feature-included">
+                    <Icon icon="ph:music-notes-duotone" class="feature-list-icon" style="color: #3b82f6;" />
+                    Upload musik latar sendiri
+                  </li>
+                  <li class="feature-item feature-included">
+                    <Icon icon="ph:seal-check-duotone" class="feature-list-icon" style="color: #3b82f6;" />
+                    Tanpa branding platform
                   </li>
                 </ul>
               </div>
