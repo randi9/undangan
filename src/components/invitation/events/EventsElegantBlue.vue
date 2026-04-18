@@ -20,48 +20,59 @@
         <img ref="coverPaperImg" src="https://media.mengundanganda.com/elegant_blue/event%20section/kertastulisan.jpg" class="absolute top-0 left-0 w-full h-auto z-10" />
 
         <!-- Akad Content -->
-        <div ref="akadInfo" class="absolute inset-0 p-3 sm:p-4 flex flex-col items-center justify-center text-[#304851] will-change-[opacity,transform] opacity-0 z-20" style="transform: translateY(15px);">
-          <Icon icon="ph:rings-duotone" class="w-6 h-6 md:w-8 md:h-8 mb-2 opacity-80" />
-          <h3 class="text-xl md:text-3xl font-bold mb-2 md:mb-3" :style="{ fontFamily: themeConfig.fontHeading }">Akad Nikah</h3>
-          <div class="space-y-1 text-[0.6rem] md:text-xs opacity-90 max-w-[200px] md:max-w-xs px-2 py-2 border-y border-[#304851]/20">
-            <div v-if="invitation.akad_date" class="flex gap-2 justify-center">
-              <Icon icon="ph:calendar-blank-duotone" class="w-3 h-3 flex-shrink-0" /> <span class="uppercase tracking-wider">{{ formatDateLong(invitation.akad_date) }}</span>
+        <div ref="akadInfo" class="absolute inset-0 pt-[15%] pb-[10%] px-4 flex flex-col items-center justify-center text-[#304851] will-change-[opacity,transform] opacity-0 z-20" style="transform: translateY(15px);">
+          
+          <Icon icon="ph:rings-duotone" class="w-8 h-8 md:w-10 md:h-10 mb-3 opacity-80" />
+          
+          <h3 class="text-3xl md:text-5xl font-bold mb-6" :style="{ fontFamily: themeConfig.fontHeading }">Akad Nikah</h3>
+          
+          <div class="space-y-3 md:space-y-4 text-[0.7rem] md:text-sm opacity-90 max-w-[280px] md:max-w-md px-6 py-4 border-y border-[#304851]/30 w-full shrink-0">
+            <div v-if="invitation.akad_date" class="flex gap-3 justify-center items-center">
+              <Icon icon="ph:calendar-blank-duotone" class="w-4 h-4 flex-shrink-0" /> 
+              <span class="uppercase tracking-[0.1em] font-medium">{{ formatDateLong(invitation.akad_date) }}</span>
             </div>
-            <div v-if="invitation.akad_time" class="flex gap-2 justify-center">
-              <Icon icon="ph:clock-duotone" class="w-3 h-3 flex-shrink-0" /> <span>{{ invitation.akad_time }}</span>
+            <div v-if="invitation.akad_time" class="flex gap-3 justify-center items-center">
+              <Icon icon="ph:clock-duotone" class="w-4 h-4 flex-shrink-0" /> 
+              <span class="tracking-widest font-medium">{{ invitation.akad_time }}</span>
             </div>
           </div>
-          <div v-if="invitation.akad_venue" class="mt-2.5 md:mt-3 text-center max-w-[220px] md:max-w-xs">
-            <Icon icon="ph:map-pin-duotone" class="w-3 h-3 md:w-4 md:h-4 flex-shrink-0 mx-auto mb-0.5" />
-            <strong class="text-[0.6rem] md:text-xs tracking-wider uppercase block">{{ invitation.akad_venue }}</strong>
-            <span v-if="invitation.akad_address" class="text-[0.45rem] md:text-[0.65rem] leading-tight block mt-0.5 opacity-80">{{ invitation.akad_address }}</span>
+          
+          <div v-if="invitation.akad_venue" class="mt-6 text-center w-full max-w-[250px] md:max-w-sm flex flex-col gap-2">
+            <strong class="text-[0.75rem] md:text-sm tracking-[0.15em] font-bold uppercase block leading-relaxed">{{ invitation.akad_venue }}</strong>
+            <span v-if="invitation.akad_address" class="text-[0.55rem] md:text-xs leading-relaxed block opacity-75">{{ invitation.akad_address }}</span>
           </div>
-          <div class="flex flex-wrap justify-center gap-1.5 md:gap-2 mt-3 pointer-events-auto">
-             <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-[#304851] text-[#304851] font-bold text-[0.5rem] md:text-[0.6rem] hover:bg-[#304851] hover:text-white transition-colors bg-white/70 backdrop-blur-sm shadow-sm"><Icon icon="ph:map-trifold-duotone" class="w-3 h-3" /> Maps</a>
-             <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-[#304851] text-[#304851] font-bold text-[0.5rem] md:text-[0.6rem] hover:bg-[#304851] hover:text-white transition-colors bg-white/70 backdrop-blur-sm shadow-sm"><Icon icon="ph:calendar-plus-duotone" class="w-3 h-3" /> Ingatkan</a>
+          
+          <div class="flex flex-wrap justify-center gap-2 md:gap-3 mt-8 pointer-events-auto">
+             <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full border border-[#304851] text-[#304851] font-bold text-[0.6rem] md:text-[0.7rem] uppercase tracking-widest hover:bg-[#304851] hover:text-white transition-all bg-white/70 backdrop-blur-sm shadow-md"><Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Buka Peta</a>
           </div>
         </div>
 
         <!-- Resepsi Content -->
-        <div ref="resepsiInfo" class="absolute inset-0 p-3 sm:p-4 flex flex-col items-center justify-center text-[#304851] will-change-[opacity,transform] opacity-0 z-20" style="transform: translateY(15px);">
-          <Icon icon="ph:confetti-duotone" class="w-6 h-6 md:w-8 md:h-8 mb-2 opacity-80" />
-          <h3 class="text-xl md:text-3xl font-bold mb-2 md:mb-3" :style="{ fontFamily: themeConfig.fontHeading }">Resepsi</h3>
-          <div class="space-y-1 text-[0.6rem] md:text-xs opacity-90 max-w-[200px] md:max-w-xs px-2 py-2 border-y border-[#304851]/20">
-            <div v-if="invitation.resepsi_date" class="flex gap-2 justify-center">
-              <Icon icon="ph:calendar-blank-duotone" class="w-3 h-3 flex-shrink-0" /> <span class="uppercase tracking-wider">{{ formatDateLong(invitation.resepsi_date) }}</span>
+        <div ref="resepsiInfo" class="absolute inset-0 pt-[15%] pb-[10%] px-4 flex flex-col items-center justify-center text-[#304851] will-change-[opacity,transform] opacity-0 z-20" style="transform: translateY(15px);">
+          
+          <Icon icon="ph:confetti-duotone" class="w-8 h-8 md:w-10 md:h-10 mb-3 opacity-80" />
+          
+          <h3 class="text-3xl md:text-5xl font-bold mb-6" :style="{ fontFamily: themeConfig.fontHeading }">Resepsi</h3>
+          
+          <div class="space-y-3 md:space-y-4 text-[0.7rem] md:text-sm opacity-90 max-w-[280px] md:max-w-md px-6 py-4 border-y border-[#304851]/30 w-full shrink-0">
+            <div v-if="invitation.resepsi_date" class="flex gap-3 justify-center items-center">
+              <Icon icon="ph:calendar-blank-duotone" class="w-4 h-4 flex-shrink-0" /> 
+              <span class="uppercase tracking-[0.1em] font-medium">{{ formatDateLong(invitation.resepsi_date) }}</span>
             </div>
-            <div v-if="invitation.resepsi_time" class="flex gap-2 justify-center">
-              <Icon icon="ph:clock-duotone" class="w-3 h-3 flex-shrink-0" /> <span>{{ invitation.resepsi_time }}</span>
+            <div v-if="invitation.resepsi_time" class="flex gap-3 justify-center items-center">
+              <Icon icon="ph:clock-duotone" class="w-4 h-4 flex-shrink-0" /> 
+              <span class="tracking-widest font-medium">{{ invitation.resepsi_time }}</span>
             </div>
           </div>
-          <div v-if="invitation.resepsi_venue" class="mt-2.5 md:mt-3 text-center max-w-[220px] md:max-w-xs">
-            <Icon icon="ph:map-pin-duotone" class="w-3 h-3 md:w-4 md:h-4 flex-shrink-0 mx-auto mb-0.5" />
-            <strong class="text-[0.6rem] md:text-xs tracking-wider uppercase block">{{ invitation.resepsi_venue }}</strong>
-            <span v-if="invitation.resepsi_address" class="text-[0.45rem] md:text-[0.65rem] leading-tight block mt-0.5 opacity-80">{{ invitation.resepsi_address }}</span>
+          
+          <div v-if="invitation.resepsi_venue" class="mt-6 text-center w-full max-w-[250px] md:max-w-sm flex flex-col gap-2">
+            <Icon icon="ph:map-pin-duotone" class="w-5 h-5 md:w-6 md:h-6 flex-shrink-0 mx-auto opacity-80 mb-1" />
+            <strong class="text-[0.75rem] md:text-sm tracking-[0.15em] font-bold uppercase block leading-relaxed">{{ invitation.resepsi_venue }}</strong>
+            <span v-if="invitation.resepsi_address" class="text-[0.55rem] md:text-xs leading-relaxed block opacity-75">{{ invitation.resepsi_address }}</span>
           </div>
-          <div class="flex flex-wrap justify-center gap-1.5 md:gap-2 mt-3 pointer-events-auto">
-             <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-[#304851] text-[#304851] font-bold text-[0.5rem] md:text-[0.6rem] hover:bg-[#304851] hover:text-white transition-colors bg-white/70 backdrop-blur-sm shadow-sm"><Icon icon="ph:map-trifold-duotone" class="w-3 h-3" /> Maps</a>
-             <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-[#304851] text-[#304851] font-bold text-[0.5rem] md:text-[0.6rem] hover:bg-[#304851] hover:text-white transition-colors bg-white/70 backdrop-blur-sm shadow-sm"><Icon icon="ph:calendar-plus-duotone" class="w-3 h-3" /> Ingatkan</a>
+          
+          <div class="flex flex-wrap justify-center gap-2 md:gap-3 mt-8 pointer-events-auto">
+             <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full border border-[#304851] text-[#304851] font-bold text-[0.6rem] md:text-[0.7rem] uppercase tracking-widest hover:bg-[#304851] hover:text-white transition-all bg-white/70 backdrop-blur-sm shadow-md"><Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Buka Peta</a>
           </div>
         </div>
 

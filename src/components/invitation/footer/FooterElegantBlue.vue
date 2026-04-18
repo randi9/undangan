@@ -152,7 +152,7 @@ onMounted(() => {
 
     // Use Intersection Observer which is 100% immune to height calculation bugs
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
+      if (entries[0]?.isIntersecting) {
         tl.play();
         observer.disconnect();
       }
