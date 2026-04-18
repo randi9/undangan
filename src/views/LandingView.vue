@@ -285,14 +285,14 @@
             <div class="lp-pricing-header">
               <h3>Free</h3>
               <div class="lp-pricing-price">Gratis</div>
-              <p>Cocok untuk mencoba membuat undangan.</p>
+              <p>Coba buat undangan & lihat hasilnya langsung.</p>
             </div>
             <ul class="lp-pricing-features">
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Masa aktif 2 hari</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> 20x akses link</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Unlimited edit</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Langsung jadi setelah input data</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Masa aktif 7 hari</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Maksimal 25x akses undangan</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Bebas edit tanpa batas</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Live preview editor</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Branding "Powered by MengundangAnda"</li>
             </ul>
             <a href="/login" class="lp-btn lp-pricing-btn">Mulai Gratis</a>
           </div>
@@ -304,13 +304,15 @@
             <div class="lp-pricing-header">
               <h3>Premium</h3>
               <div class="lp-pricing-price">Rp 50.000</div>
-              <p>Fitur penuh untuk undangan tak terbatas.</p>
+              <p>Fitur penuh untuk hari bahagia Anda tanpa batas.</p>
             </div>
             <ul class="lp-pricing-features">
-              <li><Icon icon="solar:star-fall-bold-duotone" class="check-icon accent" /> <strong>Semua fitur di Free</strong></li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Unlimited akses link</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> 1 tahun masa aktif</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Unlimited tamu undangan</li>
+              <li><Icon icon="solar:star-fall-bold-duotone" class="check-icon accent" /> <strong>Masa aktif 1 tahun penuh</strong></li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Akses undangan unlimited (tanpa batas)</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Bebas pilih semua koleksi tema premium</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Fitur Amplop Digital / QRIS</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Upload musik latar sendiri</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Tanpa branding platform</li>
             </ul>
             <a href="/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</a>
           </div>
@@ -447,7 +449,7 @@ const faqList = [
   },
   {
     q: 'Berapa harga paket premium MengundangAnda?',
-    a: 'Paket Premium hanya Rp 50.000 (sekali bayar) dengan fitur: unlimited akses link, masa aktif 1 tahun, unlimited tamu undangan, dan tanpa watermark.'
+    a: 'Paket Premium hanya Rp 50.000 (sekali bayar) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform.'
   },
   {
     q: 'Fitur apa saja yang tersedia di MengundangAnda?',

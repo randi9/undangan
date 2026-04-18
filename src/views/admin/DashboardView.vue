@@ -158,10 +158,9 @@
             </div>
 
             <div class="invitation-card-body">
-              <!-- Trial/Paid Badge -->
               <div v-if="invitation.payment_status === 'trial'" class="payment-status-badge trial-badge-indicator">
                 <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">hourglass_top</span>
-                TRIAL
+                Free
               </div>
               <div v-else-if="invitation.payment_status === 'paid'" class="payment-status-badge paid-badge-indicator">
                 <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">verified</span>
@@ -181,7 +180,15 @@
                 <span title="Tema Undangan"><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">palette</span> <strong style="text-transform: capitalize">{{ invitation.theme || 'Elegant' }}</strong></span>
                 <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">photo_camera</span> {{ invitation.photo_count || 0 }} foto</span>
                 <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">mail</span> {{ invitation.rsvp_count || 0 }} RSVP</span>
-                <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">visibility</span> {{ invitation.view_count || 0 }} views</span>
+                
+                <span v-if="invitation.payment_status === 'trial'" style="color: #d97706; font-weight: 500; background: #fffbeb; padding: 2px 6px; border-radius: 4px;">
+                  <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">incomplete_circle</span> 
+                  Sisa {{ Math.max(0, (invitation.max_views || 25) - (invitation.view_count || 0)) }} akses
+                </span>
+                <span v-else>
+                  <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">visibility</span> {{ invitation.view_count || 0 }} views
+                </span>
+
                 <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">calendar_today</span> {{ formatDate(invitation.created_at) }}</span>
               </div>
               <div class="invitation-card-actions">

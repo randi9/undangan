@@ -497,18 +497,7 @@ onBeforeUnmount(() => {
       </div>
     </Transition>
 
-    <!-- Free INFO BANNER -->
-    <div v-if="invitation.is_trial && isOpened" class="trial-banner">
-      <div class="trial-banner-content">
-        <span class="trial-badge">⏱️ Free</span>
-        <span v-if="invitation.views_remaining !== null && invitation.views_remaining !== undefined">
-          Sisa {{ invitation.views_remaining }} akses
-        </span>
-        <span class="trial-separator">•</span>
-        <span>Upgrade untuk hapus Free Banner & akses penuh</span>
-        <span>Kunjungi <a href="https://mengundanganda.com" style="color: blue;">mengundanganda.com</a></span>
-      </div>
-    </div>
+    <!-- Powered by branding moved to after Footer component -->
 
     <!-- COVER OVERLAY -->
     <component :is="activeCover"
@@ -612,6 +601,17 @@ onBeforeUnmount(() => {
         :theme-config="activeTheme"
       />
 
+      <!-- Powered by branding (trial only, sticky bottom) -->
+      <div v-if="invitation.is_trial" class="powered-by-sticky">
+        <a href="https://mengundanganda.com" target="_blank" class="powered-by-link">
+          <img src="/images/logo.webp" alt="Logo MengundangAnda" class="powered-by-logo" />
+          <div class="powered-by-text">
+            <span class="powered-by-title">Dibuat dengan</span>
+            <span class="powered-by-brand">MengundangAnda.com</span>
+          </div>
+        </a>
+      </div>
+
       <!-- LIGHTBOX -->
       <div v-if="lightboxOpen && invitation.photos" class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm" @click="lightboxOpen = false">
         <button class="absolute top-6 right-6 w-12 h-12 bg-white/10 rounded-full text-white text-2xl hover:bg-white/20 transition-colors flex items-center justify-center" @click.stop="lightboxOpen = false">×</button>
@@ -623,7 +623,7 @@ onBeforeUnmount(() => {
 
     <!-- Music Player -->
     <audio ref="musicPlayer" v-if="invitation.music_url" :src="resolveAssetUrl(invitation.music_url, apiBase)" loop preload="auto"></audio>
-    <button v-if="invitation.music_url && isOpened" @click="toggleMusic" :class="['fixed bottom-8 right-6 z-50 w-12 h-12 rounded-full shadow-lg border border-white/50 backdrop-blur-md flex items-center justify-center transition-all duration-300', isPlaying ? 'bg-white/40 text-[var(--theme-primary)] hover:scale-105 active:scale-95' : 'bg-white/20 text-gray-500 opacity-80 hover:opacity-100 hover:scale-105 active:scale-95']">
+    <button v-if="invitation.music_url && isOpened" @click="toggleMusic" :class="['fixed right-6 z-50 w-12 h-12 rounded-full shadow-lg border border-white/50 backdrop-blur-md flex items-center justify-center transition-all duration-300', invitation.is_trial ? 'bottom-20' : 'bottom-8', isPlaying ? 'bg-white/40 text-[var(--theme-primary)] hover:scale-105 active:scale-95' : 'bg-white/20 text-gray-500 opacity-80 hover:opacity-100 hover:scale-105 active:scale-95']">
       <Icon :icon="isPlaying ? 'ph:music-notes-simple-fill' : 'ph:speaker-slash-fill'" class="w-5 h-5 drop-shadow-sm" />
     </button>
   </div>
@@ -695,37 +695,62 @@ onBeforeUnmount(() => {
   user-select: none;
 }
 
-/* TRIAL BANNER */
-.trial-banner {
+/* POWERED BY FIXED BANNER (trial only) */
+.powered-by-sticky {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  z-index: 999;
-  background: linear-gradient(135deg, #ff6b35, #f7931e);
-  color: white;
+  z-index: 90;
+  background-color: #f0f7ff; /* Warna biru muda yang lembut */
+  border-top: 1px solid #cce4ff;
+  box-shadow: 0 -4px 12px rgba(0, 100, 255, 0.06);
   padding: 10px 16px;
-  text-align: center;
-  font-size: 0.85rem;
-  font-weight: 500;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
-.trial-banner-content {
+.powered-by-link {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.trial-badge {
-  background: rgba(255,255,255,0.2);
-  padding: 2px 10px;
+  gap: 12px;
+  text-decoration: none;
+  background: white;
+  padding: 6px 16px 6px 6px;
   border-radius: 99px;
-  font-weight: 700;
-  font-size: 0.8rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.trial-separator {
-  opacity: 0.6;
+.powered-by-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+.powered-by-logo {
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: white;
+}
+.powered-by-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.powered-by-title {
+  font-size: 10px;
+  color: #64748b;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.powered-by-brand {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0284c7; /* Warna biru identitas logo */
+  line-height: 1.2;
 }
 </style>
 
