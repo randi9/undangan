@@ -189,44 +189,32 @@ onMounted(() => {
     const paperZoomScale = mql.matches ? 1.15 : 1.2; 
 
     // Set initial states via GSAP (not inline CSS) so GSAP owns the full lifecycle
-    gsap.set(envelopeWrapper.value, { scale: 5, opacity: 1 });
-    gsap.set(introLayer.value, { opacity: 1 });
-    gsap.set(introContent.value, { opacity: 1 });
-    gsap.set(damaskBg.value, { opacity: 0.15 });
+    gsap.set(envelopeWrapper.value, { scale: 5, autoAlpha: 1 });
+    gsap.set(introLayer.value, { autoAlpha: 1 });
+    gsap.set(introContent.value, { autoAlpha: 1 });
+    gsap.set(damaskBg.value, { autoAlpha: 0.15 });
     gsap.set(paper.value, { y: '0%', scale: 1, zIndex: 20 });
-    if (coverPaperImg.value) gsap.set(coverPaperImg.value, { opacity: 1 });
-    if (eventPaperImg.value) gsap.set(eventPaperImg.value, { opacity: 1 });
-    gsap.set(akadInfo.value, { opacity: 0, y: 15 });
-    gsap.set(resepsiInfo.value, { opacity: 0, y: 15 });
+    if (coverPaperImg.value) gsap.set(coverPaperImg.value, { autoAlpha: 1 });
+    if (eventPaperImg.value) gsap.set(eventPaperImg.value, { autoAlpha: 1 });
+    gsap.set(akadInfo.value, { autoAlpha: 0, y: 15 });
+    gsap.set(resepsiInfo.value, { autoAlpha: 0, y: 15 });
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=150%', // Reduced distance so 1 scroll travels further
+        end: '+=350%', // Increased scroll distance for more natural feel
         pin: true,
-        scrub: 0.5, // Faster catching up to scroll position
+        pinSpacing: true,
+        scrub: 0.5, 
+        anticipatePin: 1,
         snap: {
           snapTo: "labels", // Perfect snapping to defined steps
-          duration: { min: 0.2, max: 0.5 },
-          delay: 0.05, // Snap immediately when scroll stops
+          duration: { min: 0.2, max: 0.6 },
+          delay: 0.05,
           ease: 'power1.inOut'
         },
         invalidateOnRefresh: true,
-        onLeave: () => {
-          gsap.set(envelopeWrapper.value, { scale: 1, opacity: 1 });
-          gsap.set(introLayer.value, { opacity: 0 });
-          gsap.set(introContent.value, { opacity: 0 });
-          gsap.set(damaskBg.value, { opacity: 0 });
-          gsap.set(paper.value, { y: '8%', scale: paperZoomScale, zIndex: 50, clearProps: 'boxShadow' });
-          if (coverPaperImg.value) gsap.set(coverPaperImg.value, { opacity: 0 });
-          if (eventPaperImg.value) gsap.set(eventPaperImg.value, { opacity: 1 });
-          gsap.set(resepsiInfo.value, { opacity: 1, y: 0, pointerEvents: 'auto' });
-          gsap.set(akadInfo.value, { opacity: 0, pointerEvents: 'none' });
-        },
-        onEnterBack: () => {
-          gsap.set(resepsiInfo.value, { pointerEvents: 'none' });
-        },
       }
     });
 
@@ -235,9 +223,9 @@ onMounted(() => {
     tl.addLabel('step1', t);
 
     // --- PHASE 1: Fade out Frame -> Zoom out Envelope ---
-    tl.to(introContent.value, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, t);
-    tl.to(damaskBg.value, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, t);
-    tl.to(introLayer.value, { opacity: 0, duration: 1, ease: 'power2.inOut' }, t + 0.2);
+    tl.to(introContent.value, { autoAlpha: 0, duration: 0.6, ease: 'power2.inOut' }, t);
+    tl.to(damaskBg.value, { autoAlpha: 0, duration: 0.6, ease: 'power2.inOut' }, t);
+    tl.to(introLayer.value, { autoAlpha: 0, duration: 1, ease: 'power2.inOut' }, t + 0.2);
     tl.to(envelopeWrapper.value, { scale: 1, duration: 1.2, ease: 'power2.out' }, t + 0.1);
     
     t += 1.3;
@@ -249,36 +237,33 @@ onMounted(() => {
     // --- PHASE 2: Paper Extracts & Shows Akad ---
     // 1. Pull paper completely out of the envelope pocket
     tl.to(paper.value, { y: '-12%', duration: 0.6, ease: 'power2.out' }, t);
-    tl.set(paper.value, { zIndex: 50 }, t + 0.2); // pop over envelope flap correctly
+    tl.to(paper.value, { zIndex: 50, duration: 0.01 }, t + 0.2); // pop over envelope flap seamlessly
     
     // 2. Zoom it dynamically into the center and shift Y to balance visually
     tl.to(paper.value, { scale: paperZoomScale, y: '8%', boxShadow: '0 8px 30px -5px rgba(0,0,0,0.2)', duration: 0.8, ease: 'power1.inOut' }, t + 0.6);
     
     if (coverPaperImg.value) {
       // Fade out happens exactly as it STARTS zooming!
-      tl.to(coverPaperImg.value, { opacity: 0, duration: 0.8, ease: 'power2.inOut' }, t + 0.6);
+      tl.to(coverPaperImg.value, { autoAlpha: 0, duration: 0.8, ease: 'power2.inOut' }, t + 0.6);
     }
     
     // 3. Akad text materializes smoothly on top of the blank graphics
-    tl.to(akadInfo.value, { opacity: 1, y: 0, duration: 0.6, ease: 'power1.out' }, t + 1.2);
+    tl.to(akadInfo.value, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power1.out' }, t + 1.2);
 
     t += 1.8;
     tl.addLabel('step3', t); // AKAD INFO VISIBLE
 
-    tl.set(akadInfo.value, { pointerEvents: 'auto' }, t);
-    tl.to({}, { duration: 0.4 }, t); // hold buffer
-    tl.set(akadInfo.value, { pointerEvents: 'none' }, t + 0.4);
-    t += 0.4;
+    tl.to({}, { duration: 0.6 }, t); // longer read time for Akad
+    t += 0.6;
 
     // --- PHASE 3: Akad fades, Resepsi fades in ---
-    tl.to(akadInfo.value, { opacity: 0, y: -15, duration: 0.5, ease: 'power1.inOut' }, t)
-      .set(resepsiInfo.value, { pointerEvents: 'auto' }, t)
-      .to(resepsiInfo.value, { opacity: 1, y: 0, duration: 0.5, ease: 'power1.out' }, t + 0.2);
+    tl.to(akadInfo.value, { autoAlpha: 0, y: -15, duration: 0.5, ease: 'power1.inOut' }, t);
+    tl.to(resepsiInfo.value, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power1.out' }, t + 0.3);
 
-    t += 0.7;
+    t += 0.8;
     tl.addLabel('step4', t); // RESEPSI INFO VISIBLE
 
-    tl.to({}, { duration: 0.1 }, t); // tiny buffer before unpinning
+    tl.to({}, { duration: 0.3 }, t); // buffer before unpinning
 
   }, sectionRef.value!);
 });

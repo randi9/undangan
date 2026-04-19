@@ -17,17 +17,17 @@
     </div>
 
     <!-- TOP CONTENT: Outside the Envelope -->
-    <div ref="topContentRef" style="width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding-top: 10vh; padding-bottom: 20vh; padding-left: 24px; padding-right: 24px; position: relative; z-index: 10; transition: opacity 0.4s;">
+    <div ref="topContentRef" style="width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding-top: 8vh; padding-bottom: 25vh; padding-left: 24px; padding-right: 24px; position: relative; z-index: 10; transition: opacity 0.4s;">
       
       <!-- Groom & Bride Header (Atas) -->
-      <h1 :style="{ fontFamily: fontHeading }" style="font-size: clamp(3.5rem, 14vw, 5rem); font-weight: 500; line-height: 0.9; color: #2b3e51; text-align: center; margin: 0; text-shadow: 0 0 1px #2b3e51, 0 2px 4px rgba(255,255,255,0.8); transform: translateY(2vh);">
+      <h1 :style="{ fontFamily: fontHeading }" style="font-size: clamp(3.2rem, 13vw, 5rem); font-weight: 500; line-height: 0.9; color: #2b3e51; text-align: center; margin: 0; text-shadow: 0 0 1px #2b3e51, 0 2px 4px rgba(255,255,255,0.8);">
         {{ groomName }}
-        <span style="display: block; font-size: clamp(2.5rem, 10vw, 3.5rem); color: #a67c21; margin-top: 2px; margin-bottom: 2px;">&amp;</span>
+        <span style="display: block; font-size: clamp(2.2rem, 9vw, 3.5rem); color: #a67c21; margin-top: 2px; margin-bottom: 2px;">&amp;</span>
         {{ brideName }}
       </h1>
       
       <!-- Bingkai Image (Tengah) -->
-      <div v-if="coverImage" style="position: relative; width: 95vw; max-width: 420px; aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; margin-top: auto; margin-bottom: auto; z-index: 10; transform: translateY(-4vh);">
+      <div v-if="coverImage" style="position: relative; height: 46vh; max-height: 600px; aspect-ratio: 3/4; display: flex; align-items: center; justify-content: center; margin-top: auto; margin-bottom: auto; z-index: 10;">
         <!-- Frame Drop Shadow -->
         <img src="https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_80f63d0d-3082-4c51-8814-938db0dddf1d.webp" alt="Frame" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; z-index: 2; pointer-events: none; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.35));" />
         <!-- Layer Inner Shadow di Atas Image -->
@@ -37,7 +37,7 @@
       </div>
 
       <!-- Kepada Yth (Di Atas Amplop) -->
-      <div style="text-align: center; width: 100%; margin-top: auto; z-index: 10; transform: translateY(-10vh);">
+      <div style="text-align: center; width: 100%; margin-top: auto; z-index: 10;">
         <p style="font-size: 10px; letter-spacing: 0.15em; color: #3b5068; text-transform: uppercase; margin: 0 0 6px 0; font-weight: 600;">Kepada Yth.</p>
         <h3 style="font-size: 16px; font-weight: 700; color: #2b3e51; max-width: 240px; margin: 0 auto; line-height: 1.4; text-shadow: 0 1px 3px rgba(255,255,255,0.8);">{{ guestName || 'Tamu Undangan' }}</h3>
       </div>
