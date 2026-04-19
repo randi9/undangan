@@ -33,7 +33,7 @@
                  {{ story.date }}
                </div>
                <!-- Title -->
-               <h4 class="font-bold text-2xl md:text-3xl mb-4" :style="{ fontFamily: themeConfig.fontHeading, color: '#304851' }">{{ story.title }}</h4>
+               <h4 class="font-bold text-xl md:text-2xl mb-4" :style="{ color: '#304851' }">{{ story.title }}</h4>
                <!-- Description -->
                <p class="text-sm md:text-base font-light leading-relaxed whitespace-pre-line" style="color: rgba(64, 92, 102, 0.85);">{{ story.description }}</p>
              </div>

@@ -199,11 +199,12 @@ onMounted(() => {
     gsap.set(corners, { scale: 1, opacity: 1 });
 
     // 1. Initial robust Absolute positioning inside the GSAP context
-    gsap.set(coverOvalRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 1, opacity: 1 });
-    if (coverDecoRef.value) gsap.set(coverDecoRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -50, x: 0, y: 0, opacity: 1 });
-    if (bottomGraphicRef.value) gsap.set(bottomGraphicRef.value, { left: "50%", xPercent: -50, opacity: 1 });
-    gsap.set(animGroomRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: -100, x: 0, y: 0, opacity: 1 });
-    gsap.set(animBrideRef.value, { top: "50%", left: "50%", xPercent: -50, yPercent: 0, x: 0, y: 0, opacity: 1 });
+    const initialTop = "54%"; // Shifted downwards to avoid overlapping header text
+    gsap.set(coverOvalRef.value, { top: initialTop, left: "50%", xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 1, opacity: 1 });
+    if (coverDecoRef.value) gsap.set(coverDecoRef.value, { top: initialTop, left: "50%", xPercent: -50, yPercent: -50, x: 0, y: 0, opacity: 1 });
+    if (bottomGraphicRef.value) gsap.set(bottomGraphicRef.value, { top: initialTop /* kept for symmetry */, left: "50%", xPercent: -50, opacity: 1 });
+    gsap.set(animGroomRef.value, { top: initialTop, left: "50%", xPercent: -50, yPercent: -100, x: 0, y: 0, opacity: 1 });
+    gsap.set(animBrideRef.value, { top: initialTop, left: "50%", xPercent: -50, yPercent: 0, x: 0, y: 0, opacity: 1 });
     
     // Explicitly hide slots dynamically as a fallback
     gsap.set([groomSlotRef.value, brideSlotRef.value], { opacity: 0 });
@@ -283,12 +284,12 @@ onMounted(() => {
     tl.set([groomSlotRef.value, brideSlotRef.value, realGroomImgRef.value, realBrideImgRef.value].filter(Boolean), { opacity: 1 }, 2.0);
     tl.set([animGroomRef.value, animBrideRef.value, coverOvalRef.value].filter(Boolean), { opacity: 0 }, 2.0);
 
-    // 6. Fade in decorations right as the pictures lock into their grids
+    // 6. Fade in decorations precisely when the pictures lock into their grids (at 2.0s)
     tl.to([groomDecoRef.value, brideDecoRef.value].filter(Boolean), {
       opacity: 1,
-      duration: 0.3,
+      duration: 0.4,
       ease: "power2.out"
-    }, 1.8);
+    }, 2.0);
 
   }, sectionRef.value);
 });
