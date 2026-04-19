@@ -5,6 +5,16 @@ import type { InvitationFormData } from './useInvitationForm'
 const MAX_FILE_SIZE_MB = 20
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 
+// Crop config per field type
+type CropField = 'groom_photo' | 'bride_photo' | 'cover_photo' | 'love_story'
+
+const CROP_CONFIG: Record<CropField, { aspectRatio: number; stencilShape: 'circle' | 'rectangle' }> = {
+  cover_photo: { aspectRatio: 3 / 4, stencilShape: 'rectangle' },
+  groom_photo: { aspectRatio: 1, stencilShape: 'circle' },
+  bride_photo: { aspectRatio: 1, stencilShape: 'circle' },
+  love_story: { aspectRatio: 16 / 9, stencilShape: 'rectangle' },
+}
+
 export function usePhotoUpload(
   form: InvitationFormData,
   showToast: (type: string, message: string) => void
@@ -20,12 +30,99 @@ export function usePhotoUpload(
   const loveStoryPhotoInput = ref<HTMLInputElement>()
   let loveStoryPhotoTargetIndex = -1
 
+  // === Crop Modal State ===
+  const cropModalOpen = ref(false)
+  const cropImageSrc = ref('')
+  const cropAspectRatio = ref(1)
+  const cropStencilShape = ref<'circle' | 'rectangle'>('rectangle')
+  // Internal: track which field the crop is for
+  let pendingCropField: CropField | null = null
+  let pendingOldUrl = ''
+
   function triggerUpload(type: string) {
     if (type === 'groom') groomPhotoInput.value?.click()
     else if (type === 'bride') bridePhotoInput.value?.click()
     else if (type === 'cover') coverPhotoInput.value?.click()
   }
 
+  // Read file as data URL for crop preview
+  function readFileAsDataURL(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
+
+  // Open crop modal for a given file and field
+  async function openCropModal(file: File, field: CropField, oldUrl: string = '') {
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      showToast('error', `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`)
+      return
+    }
+    try {
+      const dataUrl = await readFileAsDataURL(file)
+      const config = CROP_CONFIG[field]
+      cropImageSrc.value = dataUrl
+      cropAspectRatio.value = config.aspectRatio
+      cropStencilShape.value = config.stencilShape
+      pendingCropField = field
+      pendingOldUrl = oldUrl
+      cropModalOpen.value = true
+    } catch {
+      showToast('error', 'Gagal membaca file gambar')
+    }
+  }
+
+  // Handle crop confirm — upload the cropped blob
+  async function handleCropConfirm(blob: Blob) {
+    if (!pendingCropField) return
+    const field = pendingCropField
+    const oldUrl = pendingOldUrl
+
+    try {
+      // Convert blob to File for upload
+      const file = new File([blob], `cropped-${Date.now()}.webp`, { type: 'image/webp' })
+
+      if (field === 'love_story') {
+        const url = await store.uploadPhoto(file, form.slug || undefined)
+        const story = form.love_story[loveStoryPhotoTargetIndex]
+        if (story) {
+          if (story.photo) {
+            await store.deleteFile(story.photo).catch(() => {})
+          }
+          story.photo = url
+        }
+        loveStoryPhotoTargetIndex = -1
+      } else {
+        // Delete old photo if exists
+        if (oldUrl) {
+          await store.deleteFile(oldUrl).catch(() => {})
+        }
+        const url = await store.uploadPhoto(file, form.slug || undefined)
+        form[field] = url
+      }
+    } catch {
+      showToast('error', 'Gagal upload foto')
+    }
+
+    // Reset crop state
+    cropModalOpen.value = false
+    cropImageSrc.value = ''
+    pendingCropField = null
+    pendingOldUrl = ''
+  }
+
+  function handleCropCancel() {
+    cropModalOpen.value = false
+    cropImageSrc.value = ''
+    pendingCropField = null
+    pendingOldUrl = ''
+    loveStoryPhotoTargetIndex = -1
+  }
+
+  // Single upload (groom, bride, cover) — now opens crop modal instead of direct upload
   async function handleSingleUpload(
     event: Event,
     field: 'groom_photo' | 'bride_photo' | 'cover_photo'
@@ -33,21 +130,7 @@ export function usePhotoUpload(
     const input = event.target as HTMLInputElement
     const file = input.files?.[0]
     if (!file) return
-    if (file.size > MAX_FILE_SIZE_BYTES) {
-      showToast('error', `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`)
-      input.value = ''
-      return
-    }
-    try {
-      const oldUrl = form[field]
-      const url = await store.uploadPhoto(file, form.slug || undefined)
-      if (oldUrl) {
-        await store.deleteFile(oldUrl).catch(() => {})
-      }
-      form[field] = url
-    } catch {
-      showToast('error', 'Gagal upload foto')
-    }
+    await openCropModal(file, field, form[field])
     input.value = ''
   }
 
@@ -55,15 +138,7 @@ export function usePhotoUpload(
     coverDragover.value = false
     const file = event.dataTransfer?.files[0]
     if (!file || !file.type.startsWith('image/')) return
-    if (file.size > MAX_FILE_SIZE_BYTES) {
-      showToast('error', `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`)
-      return
-    }
-    try {
-      form.cover_photo = await store.uploadPhoto(file, form.slug || undefined)
-    } catch {
-      showToast('error', 'Gagal upload foto')
-    }
+    await openCropModal(file, 'cover_photo', form.cover_photo)
   }
 
   async function removeCoverPhoto() {
@@ -87,7 +162,7 @@ export function usePhotoUpload(
     }
   }
 
-  // Gallery
+  // Gallery — NO crop, direct upload (gallery photos are displayed as-is)
   async function handleGalleryUpload(event: Event) {
     const input = event.target as HTMLInputElement
     const files = Array.from(input.files || [])
@@ -142,7 +217,7 @@ export function usePhotoUpload(
     form.photos.splice(index, 1)
   }
 
-  // Love Story Photos
+  // Love Story Photos — now opens crop modal
   function triggerLoveStoryPhotoUpload(index: number) {
     loveStoryPhotoTargetIndex = index
     loveStoryPhotoInput.value?.click()
@@ -152,25 +227,8 @@ export function usePhotoUpload(
     const input = event.target as HTMLInputElement
     const file = input.files?.[0]
     if (!file || loveStoryPhotoTargetIndex < 0) return
-    if (file.size > MAX_FILE_SIZE_BYTES) {
-      showToast('error', `Ukuran file terlalu besar (${(file.size / 1024 / 1024).toFixed(1)}MB). Maksimal ${MAX_FILE_SIZE_MB}MB.`)
-      input.value = ''
-      return
-    }
-    try {
-      const url = await store.uploadPhoto(file, form.slug || undefined)
-      const story = form.love_story[loveStoryPhotoTargetIndex]
-      if (story) {
-        if (story.photo) {
-          await store.deleteFile(story.photo).catch(() => {})
-        }
-        story.photo = url
-      }
-    } catch {
-      showToast('error', 'Gagal upload foto love story')
-    }
+    await openCropModal(file, 'love_story', form.love_story[loveStoryPhotoTargetIndex]?.photo || '')
     input.value = ''
-    loveStoryPhotoTargetIndex = -1
   }
 
   async function removeLoveStoryPhoto(index: number) {
@@ -199,5 +257,12 @@ export function usePhotoUpload(
     triggerLoveStoryPhotoUpload,
     handleLoveStoryPhotoUpload,
     removeLoveStoryPhoto,
+    // Crop modal state & handlers
+    cropModalOpen,
+    cropImageSrc,
+    cropAspectRatio,
+    cropStencilShape,
+    handleCropConfirm,
+    handleCropCancel,
   }
 }
