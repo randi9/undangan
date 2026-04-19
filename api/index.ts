@@ -587,6 +587,7 @@ app.post("/api/invitations", requireAuth, async (req: any, res: any) => {
       bank_account: body.bank_account || "",
       bank_holder: body.bank_holder || "",
       music_url: body.music_url || "",
+      gallery_type: body.gallery_type || "carousel",
       wa_message: body.wa_message || "",
       banks: Array.isArray(body.banks) ? body.banks : [],
       // Payment / Trial fields
@@ -646,7 +647,7 @@ app.put("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
       "groom_photo", "bride_photo", "cover_photo",
       "akad_date", "akad_time", "akad_venue", "akad_address", "akad_map_url",
       "resepsi_date", "resepsi_time", "resepsi_venue", "resepsi_address", "resepsi_map_url",
-      "quote", "bank_name", "bank_account", "bank_holder", "music_url", "banks", "wa_message"
+      "quote", "bank_name", "bank_account", "bank_holder", "music_url", "banks", "wa_message", "gallery_type"
     ];
     for (const f of fields) {
       if (body[f] !== undefined) updateData[f] = body[f];
