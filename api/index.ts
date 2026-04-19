@@ -312,7 +312,7 @@ app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
       }
 
       // Check view count limit
-      const maxViews = invitation.max_views || 20;
+      const maxViews = invitation.max_views || 25;
       if ((invitation.view_count || 0) >= maxViews) {
         viewsExhausted = true;
       }
@@ -321,8 +321,8 @@ app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
       if (trialExpired || viewsExhausted) {
         return res.status(403).json({
           error: trialExpired
-            ? "Masa trial undangan ini telah berakhir. Silakan upgrade ke paket premium."
-            : "Batas akses trial (20x) telah tercapai. Silakan upgrade ke paket premium.",
+            ? "Masa free undangan ini telah berakhir. Silakan upgrade ke paket premium."
+            : "Batas akses free (25x) telah tercapai. Silakan upgrade ke paket premium.",
           trial_expired: trialExpired,
           views_exhausted: viewsExhausted,
           payment_required: true,
@@ -403,7 +403,7 @@ app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
       show_watermark: showWatermark,
       trial_expired: trialExpired,
       views_exhausted: viewsExhausted,
-      views_remaining: isTrial ? Math.max(0, (invitation.max_views || 20) - (invitation.view_count || 0) - 1) : null,
+      views_remaining: isTrial ? Math.max(0, (invitation.max_views || 25) - (invitation.view_count || 0) - 1) : null,
     });
   } catch (err: any) {
     res.status(500).json({ error: err.message || "Failed to fetch invitation" });
@@ -553,7 +553,7 @@ app.post("/api/invitations", requireAuth, async (req: any, res: any) => {
 
     const isAdminCreated = req.user!.user_source === "admin_created" || req.user!.role === "admin";
     const paymentStatus = (isAdminCreated || isUserPremium) ? "paid" : "trial";
-    const trialExpiresAt = (isAdminCreated || isUserPremium) ? null : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
+    const trialExpiresAt = (isAdminCreated || isUserPremium) ? null : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
     console.log(`[Create Invitation] User ${req.user!.id} premium=${isUserPremium}, paidAt=${userPaidAt}, status=${paymentStatus}`);
 
@@ -594,7 +594,7 @@ app.post("/api/invitations", requireAuth, async (req: any, res: any) => {
       paid_at: isUserPremium ? userPaidAt : (isAdminCreated ? new Date().toISOString() : null),
       trial_expires_at: trialExpiresAt,
       view_count: 0,
-      max_views: 20,
+      max_views: 25,
     };
 
     const { data: created, error: createError } = await supabase
@@ -1464,7 +1464,7 @@ app.get("/api/payment/status/:invitationId", requireAuth, async (req: any, res: 
 
     const isTrial = invitation.payment_status === "trial";
     const trialExpired = isTrial && invitation.trial_expires_at && new Date(invitation.trial_expires_at) < new Date();
-    const viewsExhausted = isTrial && (invitation.view_count || 0) >= (invitation.max_views || 20);
+    const viewsExhausted = isTrial && (invitation.view_count || 0) >= (invitation.max_views || 25);
 
     // Compute trial time remaining
     let trialTimeRemaining = null;
@@ -1481,7 +1481,7 @@ app.get("/api/payment/status/:invitationId", requireAuth, async (req: any, res: 
       is_trial: isTrial,
       trial_expired: !!trialExpired,
       views_exhausted: !!viewsExhausted,
-      views_remaining: isTrial ? Math.max(0, (invitation.max_views || 20) - (invitation.view_count || 0)) : null,
+      views_remaining: isTrial ? Math.max(0, (invitation.max_views || 25) - (invitation.view_count || 0)) : null,
       trial_time_remaining: trialTimeRemaining,
       amount: PAYMENT_AMOUNT,
     });
