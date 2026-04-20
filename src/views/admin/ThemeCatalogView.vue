@@ -106,8 +106,9 @@
           Anda telah mencapai batas undangan. Hubungi admin untuk menambah kuota atau hapus undangan yang tidak digunakan.
         </div>
       <!-- Toast -->
-    <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
-      {{ toast.message }}
+    <div v-if="toast" :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']">
+      <Icon :icon="toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'" style="font-size: 18px; flex-shrink: 0;" />
+      <span>{{ toast.message }}</span>
     </div>
   </AdminLayout>
 </template>

@@ -330,8 +330,9 @@
     </div>
 
     <!-- Toast -->
-    <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
-      {{ toast.message }}
+    <div v-if="toast" :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']">
+      <Icon :icon="toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'" style="font-size: 18px; flex-shrink: 0;" />
+      <span>{{ toast.message }}</span>
     </div>
   </AdminLayout>
 </template>
@@ -447,7 +448,7 @@ async function copyLink(slug: string) {
   const url = getInvitationUrl(slug);
   try {
     await navigator.clipboard.writeText(url);
-    showToast('success', '✅ Link berhasil disalin!');
+    showToast('success', 'Link berhasil disalin!');
   } catch {
     showToast('error', 'Gagal menyalin link');
   }
@@ -514,7 +515,7 @@ onMounted(async () => {
       const data = await res.json();
       
       if (res.ok && (data.status === "ok" || data.status === "already_paid")) {
-        showToast("success", "🎉 Pembayaran berhasil diverifikasi! Undangan sudah aktif.");
+        showToast("success", "Pembayaran berhasil diverifikasi! Undangan sudah aktif.");
         // Refresh invitations to show updated status
         await store.fetchInvitations();
       } else {

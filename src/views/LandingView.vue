@@ -1802,7 +1802,7 @@ const themesData = [
 }
 .lp-pricing-features li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   font-size: 15px;
   color: var(--lp-text);
@@ -1811,6 +1811,8 @@ const themesData = [
 .check-icon {
   font-size: 22px;
   color: #94a3b8;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 .check-icon.accent {
   color: var(--lp-accent-hover);

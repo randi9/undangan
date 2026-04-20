@@ -1147,8 +1147,9 @@
     </div>
 
     <!-- Toast -->
-    <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
-      {{ toast.message }}
+    <div v-if="toast" :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']">
+      <Icon :icon="toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'" style="font-size: 18px; flex-shrink: 0;" />
+      <span>{{ toast.message }}</span>
     </div>
 
     <!-- Image Crop Modal -->
@@ -1773,7 +1774,7 @@ const showLoveStoryTemplateModal = ref(false);
 function handleLoveStoryTemplateSelect(stories: import('@/types/invitation').LoveStoryItem[]) {
   form.love_story = stories;
   showLoveStoryTemplateModal.value = false;
-  showToast('success', '✨ Template kisah cinta berhasil diterapkan!');
+  showToast('success', 'Template kisah cinta berhasil diterapkan!');
 }
 
 // --- Map Picker ---
@@ -1845,7 +1846,7 @@ async function handleSubmit() {
   submitting.value = true;
   try {
     await store.createInvitation(getSubmitPayload());
-    showToast("success", "Undangan berhasil dibuat! 🎉");
+    showToast("success", "Undangan berhasil dibuat!");
     draft.clearDraft(); // Clear draft on successful submit
     setTimeout(() => router.push("/dashboard?just_created=1"), 1500);
   } catch (e: any) {
