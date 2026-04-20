@@ -684,15 +684,20 @@
               @change="handleLoveStoryPhotoUpload"
             />
 
-            <button
-              type="button"
-              class="btn btn-outline"
-              @click="
-                form.love_story.push({ date: '', title: '', description: '', photo: '' })
-              "
-            >
-              + Tambah Cerita
-            </button>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button
+                type="button"
+                class="btn btn-outline"
+                @click="
+                  form.love_story.push({ date: '', title: '', description: '', photo: '' })
+                "
+              >
+                + Tambah Cerita
+              </button>
+              <button type="button" class="btn btn-outline" @click="showLoveStoryTemplateModal = true" style="display: flex; align-items: center; gap: 6px;">
+                <Icon icon="lucide:wand-2" style="font-size: 15px;" /> Pilih Template Cerita
+              </button>
+            </div>
           </div>
 
           <!-- Gallery -->
@@ -1110,6 +1115,13 @@
       @select="handleQuoteSelect"
     />
 
+    <!-- Love Story Template Modal -->
+    <LoveStoryTemplateModal
+      :show="showLoveStoryTemplateModal"
+      @close="showLoveStoryTemplateModal = false"
+      @select="handleLoveStoryTemplateSelect"
+    />
+
     <!-- Map Picker Modal -->
     <MapPickerModal
       :show="showMapPickerModal"
@@ -1411,6 +1423,7 @@ import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
 import ImageCropModal from "@/components/admin/ImageCropModal.vue";
 import QuoteLibraryModal from "@/components/admin/QuoteLibraryModal.vue";
 import MapPickerModal from "@/components/admin/MapPickerModal.vue";
+import LoveStoryTemplateModal from "@/components/admin/LoveStoryTemplateModal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -1540,6 +1553,14 @@ const showQuoteModal = ref(false);
 function handleQuoteSelect(quoteStr: string) {
   form.quote = quoteStr;
   showQuoteModal.value = false;
+}
+
+// --- Love Story Template ---
+const showLoveStoryTemplateModal = ref(false);
+function handleLoveStoryTemplateSelect(stories: import('@/types/invitation').LoveStoryItem[]) {
+  form.love_story = stories;
+  showLoveStoryTemplateModal.value = false;
+  showToast('success', '✨ Template kisah cinta berhasil diterapkan!');
 }
 
 // --- Map Picker ---
