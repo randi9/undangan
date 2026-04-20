@@ -831,6 +831,11 @@
               rows="3"
               maxlength="500"
             ></textarea>
+            <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
+              <button type="button" class="btn btn-outline btn-sm" @click="showQuoteModal = true" style="font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                <Icon icon="lucide:book-text" style="font-size: 15px;" /> Pilih dari Template
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1133,6 +1138,13 @@
       :stencil-shape="cropStencilShape"
       @confirm="handleCropConfirm"
       @cancel="handleCropCancel"
+    />
+
+    <!-- Quote Library Modal -->
+    <QuoteLibraryModal
+      :show="showQuoteModal"
+      @close="showQuoteModal = false"
+      @select="handleQuoteSelect"
     />
   </div>
 </template>
@@ -1567,6 +1579,7 @@ import { useFormWizard } from "@/composables/useFormWizard";
 import { useFormDraft } from "@/composables/useFormDraft";
 import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
 import ImageCropModal from "@/components/admin/ImageCropModal.vue";
+import QuoteLibraryModal from "@/components/admin/QuoteLibraryModal.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -1710,6 +1723,13 @@ const previewPanel = ref<InstanceType<typeof LivePreviewPanel> | null>(null);
 // --- Theme Selection ---
 const showThemeModal = ref(false);
 const themeList = THEME_LIST;
+
+// --- Quote Library ---
+const showQuoteModal = ref(false);
+function handleQuoteSelect(quoteStr: string) {
+  form.quote = quoteStr;
+  showQuoteModal.value = false;
+}
 
 function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue") {
   const oldTheme = form.theme;
