@@ -1,6 +1,6 @@
 <template>
   <section v-if="photos && photos.length > 0" ref="gallerySection" class="pt-24 pb-32 px-0 max-w-5xl mx-auto text-center relative overflow-hidden bg-white">
-    <div ref="headerRef" class="opacity-0 translate-y-6 mb-16 px-6 relative z-10">
+    <div ref="headerRef" class="mb-16 px-6 relative z-10">
       <h2 class="text-3xl md:text-5xl font-light tracking-wide text-gray-800 mb-4" :style="{ fontFamily: themeConfig.fontHeading }">Galeri Foto</h2>
       <div class="flex items-center justify-center gap-4 text-gray-300">
         <div class="h-[1px] w-8 bg-gray-300"></div>
@@ -16,7 +16,7 @@
         :key="i" 
         @click="$emit('openLightbox', i)" 
         :ref="el => { if (el) itemRefs[i] = el as HTMLElement }"
-        class="snap-center flex-shrink-0 w-[65vw] md:w-[350px] aspect-[3/4] md:aspect-[4/5] rounded-[2rem] overflow-hidden cursor-pointer group shadow-[0_15px_40px_rgba(0,0,0,0.06)] border border-gray-100 bg-gray-50 opacity-0 translate-x-8 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] focus:outline-none"
+        class="snap-center flex-shrink-0 w-[65vw] md:w-[350px] aspect-[3/4] md:aspect-[4/5] rounded-[2rem] overflow-hidden cursor-pointer group shadow-[0_15px_40px_rgba(0,0,0,0.06)] border border-gray-100 bg-gray-50 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] focus:outline-none"
       >
         <img :src="resolveAssetUrl(photo.url, apiBase)" alt="Galeri Photo" class="w-full h-full object-cover grayscale-[15%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105" />
       </div>
@@ -61,6 +61,12 @@ const itemRefs = ref<HTMLElement[]>([]);
 
 onMounted(() => {
   if (!gallerySection.value) return;
+
+  // Set initial hidden state via GSAP so content is visible by default if ScrollTrigger fails
+  gsap.set(headerRef.value, { opacity: 0, y: 24 });
+  if (itemRefs.value.length) {
+    gsap.set(itemRefs.value, { opacity: 0, x: 32 });
+  }
 
   const tl = gsap.timeline({
     scrollTrigger: {

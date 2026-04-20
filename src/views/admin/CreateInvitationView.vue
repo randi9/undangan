@@ -1124,6 +1124,16 @@
     <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
       {{ toast.message }}
     </div>
+
+    <!-- Image Crop Modal -->
+    <ImageCropModal
+      v-if="cropModalOpen"
+      :image-src="cropImageSrc"
+      :aspect-ratio="cropAspectRatio"
+      :stencil-shape="cropStencilShape"
+      @confirm="handleCropConfirm"
+      @cancel="handleCropCancel"
+    />
   </div>
 </template>
 
@@ -1556,6 +1566,7 @@ import { useMusicManager } from "@/composables/useMusicManager";
 import { useFormWizard } from "@/composables/useFormWizard";
 import { useFormDraft } from "@/composables/useFormDraft";
 import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
+import ImageCropModal from "@/components/admin/ImageCropModal.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -1680,6 +1691,8 @@ const {
   removeCoverPhoto, removeGroomPhoto, removeBridePhoto,
   handleGalleryUpload, handleGalleryDrop, removeGalleryPhoto,
   triggerLoveStoryPhotoUpload, handleLoveStoryPhotoUpload, removeLoveStoryPhoto,
+  cropModalOpen, cropImageSrc, cropAspectRatio, cropStencilShape,
+  handleCropConfirm, handleCropCancel,
 } = usePhotoUpload(form, showToast);
 
 // --- Music Manager ---

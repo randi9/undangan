@@ -2,7 +2,7 @@
   <section v-if="photos && photos.length > 0" ref="gallerySection" style="position: relative; width: 100%; padding: 96px 24px 120px; text-align: center; background-color: var(--theme-surface); overflow: hidden; z-index: 20;">
     
     <!-- Top Decorative Line -->
-    <div ref="headerRef" class="opacity-0 translate-y-6" style="margin-bottom: 48px;">
+    <div ref="headerRef" style="margin-bottom: 48px;">
       <h2 :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)', fontSize: 'clamp(32px, 5vw, 48px)', marginBottom: '12px' }">Galeri Cinta</h2>
       <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
         <svg viewBox="0 0 60 2" width="60" style="opacity: 0.4;"><rect width="60" height="1.5" rx="0.75" fill="var(--theme-secondary)"/></svg>
@@ -13,7 +13,7 @@
       </div>
     </div>
     
-    <div ref="carouselRef" class="gallery-container opacity-0 translate-y-8" style="position: relative; z-index: 10;">
+    <div ref="carouselRef" class="gallery-container" style="position: relative; z-index: 10;">
       
       <!-- Main Featured Image -->
       <div 
@@ -151,6 +151,10 @@ onMounted(() => {
   startAutoPlay();
 
   if (gallerySection.value) {
+    // Set initial hidden state via GSAP (not CSS class) so content is visible by default if ScrollTrigger fails
+    gsap.set(headerRef.value, { opacity: 0, y: 24 });
+    gsap.set(carouselRef.value, { opacity: 0, y: 32 });
+
     gsap.to(headerRef.value, {
       opacity: 1,
       y: 0,

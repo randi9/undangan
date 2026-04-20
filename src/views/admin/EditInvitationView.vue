@@ -198,6 +198,11 @@
                 <router-link to="/dashboard" class="btn btn-outline">Batal</router-link>
               </div>
               <div class="wizard-nav-right">
+                <button type="button" class="btn btn-success" @click="handleSubmit" :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'">
+                  <span v-if="submitting" class="loading-spinner" style="margin-right: 6px"></span>
+                  <Icon v-else icon="lucide:save" style="font-size: 16px; margin-right: 4px;" />
+                  {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
+                </button>
                 <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
                   Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
                 </button>
@@ -405,6 +410,11 @@
                 </button>
               </div>
               <div class="wizard-nav-right">
+                <button type="button" class="btn btn-success" @click="handleSubmit" :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'">
+                  <span v-if="submitting" class="loading-spinner" style="margin-right: 6px"></span>
+                  <Icon v-else icon="lucide:save" style="font-size: 16px; margin-right: 4px;" />
+                  {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
+                </button>
                 <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
                   Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
                 </button>
@@ -576,6 +586,11 @@
                 </button>
               </div>
               <div class="wizard-nav-right">
+                <button type="button" class="btn btn-success" @click="handleSubmit" :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'">
+                  <span v-if="submitting" class="loading-spinner" style="margin-right: 6px"></span>
+                  <Icon v-else icon="lucide:save" style="font-size: 16px; margin-right: 4px;" />
+                  {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
+                </button>
                 <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
                   Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
                 </button>
@@ -770,6 +785,11 @@
                 </button>
               </div>
               <div class="wizard-nav-right">
+                <button type="button" class="btn btn-success" @click="handleSubmit" :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'">
+                  <span v-if="submitting" class="loading-spinner" style="margin-right: 6px"></span>
+                  <Icon v-else icon="lucide:save" style="font-size: 16px; margin-right: 4px;" />
+                  {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
+                </button>
                 <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
                   Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
                 </button>
@@ -1051,6 +1071,16 @@
     <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
       {{ toast.message }}
     </div>
+
+    <!-- Image Crop Modal -->
+    <ImageCropModal
+      v-if="cropModalOpen"
+      :image-src="cropImageSrc"
+      :aspect-ratio="cropAspectRatio"
+      :stencil-shape="cropStencilShape"
+      @confirm="handleCropConfirm"
+      @cancel="handleCropCancel"
+    />
   </div>
 </template>
 
@@ -1343,6 +1373,7 @@ import { usePhotoUpload } from "@/composables/usePhotoUpload";
 import { useMusicManager } from "@/composables/useMusicManager";
 import { useFormWizard } from "@/composables/useFormWizard";
 import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
+import ImageCropModal from "@/components/admin/ImageCropModal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -1447,6 +1478,8 @@ const {
   removeCoverPhoto, removeGroomPhoto, removeBridePhoto,
   handleGalleryUpload, handleGalleryDrop, removeGalleryPhoto,
   triggerLoveStoryPhotoUpload, handleLoveStoryPhotoUpload, removeLoveStoryPhoto,
+  cropModalOpen, cropImageSrc, cropAspectRatio, cropStencilShape,
+  handleCropConfirm, handleCropCancel,
 } = usePhotoUpload(form, showToast);
 
 // --- Music Manager ---
