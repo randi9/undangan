@@ -20,6 +20,7 @@ const isSearching = ref(false);
 const selectedAddress = ref('');
 const selectedLat = ref<number | null>(null);
 const selectedLng = ref<number | null>(null);
+const skipNextMapClick = ref(false);
 
 // Use shallowRef for Leaflet instances to avoid Vue reactivity proxying deep objects
 const mapInstance = shallowRef<L.Map | null>(null);
@@ -39,6 +40,11 @@ function initMap() {
   }).addTo(mapInstance.value);
 
   mapInstance.value.on('click', async (e: L.LeafletMouseEvent) => {
+    // Prevent map click from overriding a just-selected search result
+    if (skipNextMapClick.value) {
+      skipNextMapClick.value = false;
+      return;
+    }
     const lat = e.latlng.lat;
     const lng = e.latlng.lng;
     setMarker(lat, lng);
@@ -93,6 +99,9 @@ function selectResult(result: any) {
   selectedAddress.value = result.display_name;
   searchResults.value = [];
   searchQuery.value = result.display_name;
+  // On mobile, tapping a search result can also fire a map click underneath.
+  // Skip the next map click so the address doesn't get overwritten by reverseGeocode.
+  skipNextMapClick.value = true;
   if (mapInstance.value) {
     mapInstance.value.setView([lat, lng], 16);
   }
@@ -101,7 +110,12 @@ function selectResult(result: any) {
 async function reverseGeocode(lat: number, lng: number) {
   isSearching.value = true;
   try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6000); // 6s timeout for mobile
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
     const data = await res.json();
     if (data && data.display_name) {
       selectedAddress.value = data.display_name;
@@ -211,10 +225,12 @@ watch(() => props.show, (newVal) => {
           <button 
             type="button" 
             class="btn btn-success confirm-btn" 
-            :disabled="selectedLat === null"
+            :disabled="selectedLat === null || isSearching"
             @click="confirmSelection"
           >
-            <Icon icon="lucide:check" style="font-size: 16px; margin-right: 4px;" /> Gunakan Lokasi Ini
+            <span v-if="isSearching" class="loading-spinner" style="border-width: 2px; width: 14px; height: 14px; margin-right: 4px;"></span>
+            <Icon v-else icon="lucide:check" style="font-size: 16px; margin-right: 4px;" />
+            {{ isSearching ? 'Memuat alamat...' : 'Gunakan Lokasi Ini' }}
           </button>
         </div>
       </div>
