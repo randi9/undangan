@@ -27,6 +27,10 @@ export const DEFAULT_MUSIC: Record<string, DefaultMusicEntry> = {
     url: "https://music.mengundanganda.com/minimalist/Love%20Story%20_%20Indila%20%E3%80%90Piano%20Cover%E3%80%91.mp3",
     label: "Love Story / Indila (Piano Cover)",
   },
+  floral_blue: {
+    url: "https://music.mengundanganda.com/music%20flora/Nadhif%20Basalamah%20-%20bergema%20sampai%20selamanya%20Official%20Lyric%20Video.mp3",
+    label: "Nadhif Basalamah - Bergema Sampai Selamanya",
+  },
 };
 
 /**

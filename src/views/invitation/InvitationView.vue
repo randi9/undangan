@@ -29,6 +29,7 @@ const coverComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/covers/CoverFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/covers/CoverMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/covers/CoverElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/covers/CoverFloralBlue.vue")),
 };
 
 const heroComponents: Record<string, Component> = {
@@ -36,6 +37,7 @@ const heroComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/heroes/HeroFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/heroes/HeroMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/heroes/HeroElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/heroes/HeroFloralBlue.vue")),
 };
 
 const quoteComponents: Record<string, Component> = {
@@ -43,6 +45,7 @@ const quoteComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/quotes/QuoteFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/quotes/QuoteMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/quotes/QuoteElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/quotes/QuoteFloralBlue.vue")),
 };
 
 const coupleComponents: Record<string, Component> = {
@@ -50,6 +53,7 @@ const coupleComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/couples/CoupleFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/couples/CoupleMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/couples/CoupleElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/couples/CoupleFloralBlue.vue")),
 };
 
 const countdownComponents: Record<string, Component> = {
@@ -57,6 +61,7 @@ const countdownComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/countdowns/CountdownFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/countdowns/CountdownMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/countdowns/CountdownElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/countdowns/CountdownFloralBlue.vue")),
 };
 
 const eventsComponents: Record<string, Component> = {
@@ -64,6 +69,7 @@ const eventsComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/events/EventsFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/events/EventsMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/events/EventsElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/events/EventsFloralBlue.vue")),
 };
 
 const loveStoryComponents: Record<string, Component> = {
@@ -71,6 +77,7 @@ const loveStoryComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/lovestory/LoveStoryFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/lovestory/LoveStoryMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/lovestory/LoveStoryElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/lovestory/LoveStoryFloralBlue.vue")),
 };
 
 const galleryComponents: Record<string, Component> = {
@@ -78,6 +85,7 @@ const galleryComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/gallery/GalleryFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/gallery/GalleryMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/gallery/GalleryElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/gallery/GalleryFloralBlue.vue")),
 };
 
 const rsvpComponents: Record<string, Component> = {
@@ -85,6 +93,7 @@ const rsvpComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/rsvp/RsvpFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/rsvp/RsvpMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/rsvp/RsvpElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/rsvp/RsvpFloralBlue.vue")),
 };
 
 const giftComponents: Record<string, Component> = {
@@ -92,6 +101,7 @@ const giftComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/gift/GiftFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/gift/GiftMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/gift/GiftElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/gift/GiftFloralBlue.vue")),
 };
 
 const footerComponents: Record<string, Component> = {
@@ -99,6 +109,7 @@ const footerComponents: Record<string, Component> = {
   floral: defineAsyncComponent(() => import("@/components/invitation/footer/FooterFloral.vue")),
   minimalist: defineAsyncComponent(() => import("@/components/invitation/footer/FooterMinimalist.vue")),
   elegant_blue: defineAsyncComponent(() => import("@/components/invitation/footer/FooterElegantBlue.vue")),
+  floral_blue: defineAsyncComponent(() => import("@/components/invitation/footer/FooterFloralBlue.vue")),
 };
 
 // --- THEME DATA SYSTEM (from centralized registry) ---

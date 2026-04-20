@@ -1032,6 +1032,14 @@
             <div class="edit-theme-label">Elegant Blue</div>
             <div v-if="form.theme === 'elegant_blue'" class="edit-theme-active-badge">Aktif</div>
           </div>
+          <div class="edit-theme-card" :class="{ active: form.theme === 'floral_blue' }" @click="selectTheme('floral_blue')">
+            <div class="edit-theme-preview" style="background: #3b6b8a; color: #fff;">
+              <div style="font-size: 8px; letter-spacing: 3px; color: #b8d4e3; text-transform: uppercase;">The Wedding</div>
+              <div style="font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;">Romeo &amp; Juliet</div>
+            </div>
+            <div class="edit-theme-label">Floral Blue</div>
+            <div v-if="form.theme === 'floral_blue'" class="edit-theme-active-badge">Aktif</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1457,7 +1465,7 @@ const previewPanel = ref<InstanceType<typeof LivePreviewPanel> | null>(null);
 const showThemeModal = ref(false);
 const themeList = THEME_LIST;
 
-function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue") {
+function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue") {
   const oldTheme = form.theme;
   form.theme = themeId;
   form.gallery_type = getThemeGalleryDefault(themeId);

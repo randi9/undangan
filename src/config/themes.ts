@@ -10,7 +10,7 @@
 import type { ThemeConfig } from '@/types/theme'
 
 export interface ThemeRegistryEntry {
-  id: 'elegant' | 'minimalist' | 'floral' | 'elegant_blue'
+  id: 'elegant' | 'minimalist' | 'floral' | 'elegant_blue' | 'floral_blue'
   name: string
   description: string
   icon: string
@@ -144,6 +144,35 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       fontBody: "'Playfair Display', serif",
       overlayGradient: 'linear-gradient(180deg, rgba(30,41,59,0.4) 0%, rgba(30,41,59,0.85) 100%)',
       coverImage: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=1080&q=80',
+    },
+  },
+  floral_blue: {
+    id: 'floral_blue',
+    name: 'Floral Blue',
+    description: 'Floral romantis dengan nuansa biru dusty',
+    icon: 'solar:flowers-bold-duotone',
+    color: '#4a7c9b',
+    defaultGalleryType: 'carousel',
+    previewStyle: {
+      bg: '#3b6b8a',
+      color: '#fff',
+      headerText: 'The Wedding',
+      headerStyle: "font-size: 8px; letter-spacing: 3px; color: #b8d4e3; text-transform: uppercase;",
+      nameText: 'Romeo & Juliet',
+      nameStyle: "font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;",
+    },
+    themeConfig: {
+      name: 'floral_blue',
+      bg: '#f0f4f8',
+      surface: '#e8eef4',
+      primary: '#4a7c9b',
+      secondary: '#6b8fa3',
+      text: '#2c3e50',
+      textLight: '#5a7a8a',
+      fontHeading: "'Great Vibes', cursive",
+      fontBody: "'Inter', sans-serif",
+      overlayGradient: 'linear-gradient(180deg, rgba(74,124,155,0.5) 0%, rgba(74,124,155,0.8) 100%)',
+      coverImage: 'https://media.mengundanganda.com/tema%20floral/8a5a275c-909d-448b-8d1d-adaa5a7a39f3.webp',
     },
   },
 }
