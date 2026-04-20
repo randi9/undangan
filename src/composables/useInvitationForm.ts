@@ -5,7 +5,7 @@ import { getThemeGalleryDefault } from '@/config/themes'
 
 export interface InvitationFormData {
   slug: string
-  theme: 'elegant' | 'minimalist' | 'floral' | 'elegant_blue'
+  theme: 'elegant' | 'minimalist' | 'floral' | 'elegant_blue' | 'floral_blue'
   groom_name: string
   bride_name: string
   groom_full_name: string
