@@ -168,7 +168,7 @@ const themes = [
     color: '#c9a96e',
     bgColor: '#2c2417',
     bgGradient: 'linear-gradient(135deg, #2c2417, #5a4b3d)',
-    sampleUrl: '',  // ← Isi dengan link undangan contoh
+    sampleUrl: 'https://elegant.mengundanganda.com',
     icon: 'solar:crown-bold-duotone',
   },
   {
@@ -178,7 +178,7 @@ const themes = [
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
     bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
-    sampleUrl: 'https://aku-ayang.mengundanganda.com',  // ← Isi dengan link undangan contoh
+    sampleUrl: 'https://floral.mengundanganda.com',
     icon: 'solar:leaf-bold-duotone',
   },
   {
@@ -188,7 +188,7 @@ const themes = [
     color: '#111111',
     bgColor: '#f9f9f9',
     bgGradient: 'linear-gradient(135deg, #1e293b, #475569)',
-    sampleUrl: '',  // ← Isi dengan link undangan contoh
+    sampleUrl: 'https://minimalist.mengundanganda.com',
     icon: 'solar:minimalistic-magnifer-bold-duotone',
   },
   {
@@ -198,8 +198,18 @@ const themes = [
     color: '#A3B5C3',
     bgColor: '#1e3a8a',
     bgGradient: 'linear-gradient(135deg, #1e3a8a, #A3B5C3)',
-    sampleUrl: '',
+    sampleUrl: 'https://elegant-blue.mengundanganda.com',
     icon: 'solar:stars-bold-duotone',
+  },
+  {
+    id: 'floral_blue',
+    name: 'Floral Blue',
+    description: 'Perpaduan ornamen floral dengan palet biru yang segar dan elegan. Cocok untuk nuansa romantis dengan sentuhan modern.',
+    color: '#3b6b8a',
+    bgColor: '#3b6b8a',
+    bgGradient: 'linear-gradient(135deg, #3b6b8a, #b8d4e3)',
+    sampleUrl: 'https://floralblue.mengundanganda.com',
+    icon: 'solar:leaf-bold-duotone',
   },
 ];
 
