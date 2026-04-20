@@ -1826,7 +1826,7 @@ async function handleSubmit() {
     await store.createInvitation(getSubmitPayload());
     showToast("success", "Undangan berhasil dibuat! 🎉");
     draft.clearDraft(); // Clear draft on successful submit
-    setTimeout(() => router.push("/dashboard"), 1500);
+    setTimeout(() => router.push("/dashboard?just_created=1"), 1500);
   } catch (e: any) {
     showToast("error", e.message || "Gagal membuat undangan");
   } finally {
