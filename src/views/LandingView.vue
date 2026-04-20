@@ -24,32 +24,7 @@
 
     <main>
     <!-- Hero Section -->
-    <section class="lp-hero" aria-label="Hero">
-      <div class="lp-hero-bg"></div>
-      <div class="lp-hero-overlay"></div>
-      <!-- Floating Orbs -->
-      <div class="lp-hero-orbs" aria-hidden="true">
-        <div class="lp-orb lp-orb-1"></div>
-        <div class="lp-orb lp-orb-2"></div>
-        <div class="lp-orb lp-orb-3"></div>
-        <div class="lp-orb lp-orb-4"></div>
-      </div>
-      <div class="lp-container lp-hero-content">
-        <p class="lp-hero-kicker lp-fade-up">Bikin Undangan Terasa Lebih Mudah</p>
-        <h1 class="lp-hero-title lp-fade-up lp-delay-1">
-          Undangan Pernikahan Mewah,<br>
-          <span class="lp-hero-script">Langsung Jadi Dalam 5 Menit.</span>
-        </h1>
-        <p class="lp-hero-sub lp-fade-up lp-delay-2">
-          Tinggalkan cara lama yang memakan waktu dan biaya mahal.<br>
-          Cukup pilih tema premium, lengkapi detail acara, dan bagikan seketika.
-        </p>
-        <div class="lp-hero-actions lp-fade-up lp-delay-3">
-          <a href="/login" class="lp-btn lp-btn-primary">Mulai Buat Undangan</a>
-          <a href="#tema" class="lp-btn lp-btn-outline">Jelajahi Tema Dulu</a>
-        </div>
-      </div>
-    </section>
+    <LandingHeroCinematic />
 
     <!-- Back to Top Arrow -->
     <button class="lp-back-to-top" :class="{ visible: showBackToTop }" @click="scrollToTop" aria-label="Kembali ke atas">
@@ -424,6 +399,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
+import LandingHeroCinematic from '@/components/landing/LandingHeroCinematic.vue'
 
 const navScrolled = ref(false)
 const mobileMenuOpen = ref(false)
