@@ -21,13 +21,6 @@
         <div class="editor-form-area">
           <h1 class="admin-page-title" style="display: flex; justify-content: space-between; align-items: center;">
             <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:sparkles" style="color: var(--admin-primary);" /> Buat Undangan Baru</span>
-            <button 
-              class="btn btn-outline btn-sm mobile-only" 
-              @click="previewPanel?.openMobilePreview()"
-              style="border-radius: 20px; font-weight: 600;"
-            >
-              👀 Preview
-            </button>
           </h1>
           <p class="admin-page-subtitle">
             Isi informasi di bawah untuk membuat undangan pernikahan
