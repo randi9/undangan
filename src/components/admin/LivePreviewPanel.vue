@@ -16,21 +16,16 @@
 
   <!-- Modal Fullscreen Mobile Preview -->
   <div v-if="showMobilePreview" class="mobile-preview-modal block">
-    <div class="mobile-preview-header">
-      <span style="display: flex; align-items: center; gap: 8px;">
-        <span class="material-symbols-rounded" style="color: var(--admin-primary); font-size: 20px;">visibility</span>
-        Live Preview
-      </span>
-      <button class="btn btn-outline btn-sm" @click="showMobilePreview = false" style="border: none; padding: 4px;">
-        <span class="material-symbols-rounded">close</span>
-      </button>
-    </div>
-    <div style="flex: 1; height: calc(100vh - 60px);">
+    <button class="mobile-preview-close-fab" @click="showMobilePreview = false" title="Tutup Preview">
+      <Icon icon="lucide:x" style="font-size: 22px;" />
+    </button>
+    <div style="width: 100%; height: 100vh; overflow: hidden;">
       <iframe 
         ref="mobilePreviewIframe" 
         class="editor-preview-iframe"
         :src="`/invitation/preview`"
         title="Live Preview Mobile"
+        style="height: 100%;"
       ></iframe>
     </div>
   </div>
@@ -59,3 +54,28 @@ defineExpose({
   openMobilePreview
 });
 </script>
+
+<style scoped>
+.mobile-preview-close-fab {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e293b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.mobile-preview-close-fab:active {
+  transform: scale(0.95);
+  background: #f1f5f9;
+}
+</style>
