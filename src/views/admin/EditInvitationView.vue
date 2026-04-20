@@ -834,8 +834,21 @@
               </div>
               <div class="form-grid">
                 <div class="form-group">
-                  <label class="form-label">Nama Bank</label>
-                  <input v-model="bank.bank_name" class="form-input" placeholder="BCA" maxlength="50" />
+                  <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                    Nama Bank / E-Wallet
+                  </label>
+                  <input v-model="bank.bank_name" class="form-input" placeholder="Contoh: BCA, Mandiri, GoPay" maxlength="50" />
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+                    <button type="button" @click="bank.bank_name = 'BCA'" class="bank-pill">BCA</button>
+                    <button type="button" @click="bank.bank_name = 'Mandiri'" class="bank-pill">Mandiri</button>
+                    <button type="button" @click="bank.bank_name = 'BNI'" class="bank-pill">BNI</button>
+                    <button type="button" @click="bank.bank_name = 'BRI'" class="bank-pill">BRI</button>
+                    <button type="button" @click="bank.bank_name = 'BSI'" class="bank-pill">BSI</button>
+                    <button type="button" @click="bank.bank_name = 'GoPay'" class="bank-pill">GoPay</button>
+                    <button type="button" @click="bank.bank_name = 'OVO'" class="bank-pill">OVO</button>
+                    <button type="button" @click="bank.bank_name = 'DANA'" class="bank-pill">DANA</button>
+                    <button type="button" @click="bank.bank_name = 'ShopeePay'" class="bank-pill">ShopeePay</button>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="form-label">No. Rekening</label>
@@ -1602,5 +1615,25 @@ onMounted(async () => {
   loading.value = false;
 });
 </script>
+
+<style scoped>
+.bank-pill {
+  background: var(--admin-bg, #f1f5f9);
+  color: var(--admin-text-secondary, #64748b);
+  border: 1px solid var(--admin-border, #e2e8f0);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bank-pill:hover {
+  background: #e2e8f0;
+  color: var(--admin-text);
+  border-color: #cbd5e1;
+}
+</style>
 
 
