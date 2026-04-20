@@ -16,8 +16,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
+import { useAuthStore } from "@/stores/auth";
 import type { Invitation, LoveStoryItem, Rsvp } from "@/types/invitation";
 import type { ThemeConfig } from "@/types/theme";
 import { resolveAssetUrl } from "@/utils/url";
@@ -121,8 +122,18 @@ const themes: Record<string, ThemeConfig> = Object.fromEntries(
 );
 
 const route = useRoute();
+const router = useRouter();
 const store = useInvitationStore();
+const authStore = useAuthStore();
 const apiBase = import.meta.env.VITE_API_URL || "";
+
+const goHome = () => {
+  if (authStore.user) {
+    router.push('/dashboard');
+  } else {
+    router.push('/');
+  }
+};
 
 const loading = ref(true);
 const assetsLoaded = ref(false);
@@ -499,11 +510,51 @@ onBeforeUnmount(() => {
     <DotLottieVue src="/loading.lottie" background="transparent" :speed="1" style="width: 200px; height: 200px;" autoplay loop />
   </div>
 
-  <div v-else-if="!invitation" class="min-h-[100dvh] flex flex-col items-center justify-center bg-gray-50 gap-4">
-    <div class="text-6xl">💌</div>
-    <h2 class="text-2xl font-serif text-amber-800">Undangan Tidak Ditemukan</h2>
-    <p class="text-gray-500">Link undangan yang Anda cari tidak tersedia.</p>
-    <router-link to="/" class="mt-2 px-6 py-2 border border-amber-600 text-amber-700 rounded-full hover:bg-amber-50 transition">← Kembali</router-link>
+  <div v-else-if="!invitation" class="min-h-[100dvh] flex flex-col items-center justify-center p-6 lg:p-10 bg-[#f8fafc] relative overflow-hidden" style="font-family: var(--font-sans, 'Inter', sans-serif);">
+    <!-- Modern ambient blobs -->
+    <div class="absolute top-0 right-0 w-[50vw] h-[50vw] max-w-[350px] bg-blue-200/40 rounded-full blur-[80px] md:blur-[120px] translate-x-1/3 -translate-y-1/3 pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-[60vw] h-[60vw] max-w-[450px] bg-amber-200/40 rounded-full blur-[80px] md:blur-[120px] -translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
+
+    <!-- Content Container -->
+    <div class="relative z-10 flex flex-col items-center justify-center text-center w-full max-w-[400px]" style="transform: translateY(-5vh)">
+      
+      <!-- Premium Icon Container -->
+      <div class="relative w-28 h-28 flex items-center justify-center group cursor-default">
+        <div class="absolute inset-0 bg-white shadow-xl shadow-slate-200/50 rounded-[1.8rem] rotate-6 transition-transform duration-500 group-hover:rotate-12"></div>
+        <div class="absolute inset-0 bg-amber-50 rounded-[1.8rem] border border-amber-100/60 backdrop-blur-sm -rotate-3 flex items-center justify-center transition-transform duration-500 group-hover:rotate-0">
+          <Icon icon="ph:envelope-open-duotone" class="text-[52px] text-amber-500" />
+        </div>
+      </div>
+      
+      <div style="height: 48px; width: 100%;"></div>
+      
+      <!-- Typography -->
+      <div class="flex flex-col items-center">
+        <h1 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight leading-none">
+          404
+        </h1>
+        <div style="height: 12px; width: 100%;"></div>
+        <h2 class="text-xl md:text-2xl font-bold text-slate-700">
+          Tidak Ditemukan
+        </h2>
+      </div>
+      
+      <div style="height: 24px; width: 100%;"></div>
+      
+      <p class="text-base text-slate-500 leading-relaxed px-4 max-w-[320px]">
+        Oops! Halaman yang Anda coba tuju sepertinya salah ketik atau URL-nya sudah tidak aktif.
+      </p>
+
+      <div style="height: 40px; width: 100%;"></div>
+
+      <!-- Deep premium button -->
+      <button @click="goHome" class="group w-full max-w-[280px] bg-blue-600 text-white font-semibold py-4 px-8 rounded-[1.25rem] transition-all duration-300 hover:bg-blue-700 hover:-translate-y-1 hover:shadow-[0_12px_24px_-8px_rgba(37,99,235,0.45)] active:scale-[0.98]">
+        <div class="flex items-center justify-center gap-3">
+          <span class="tracking-wide">{{ authStore.user ? 'Ke Dashboard' : 'Buat Undangan Gratis' }}</span>
+          <Icon icon="ph:arrow-right-bold" class="text-lg group-hover:translate-x-1 transition-transform duration-300" />
+        </div>
+      </button>
+    </div>
   </div>
 
   <!-- Main UI Wrapper -->

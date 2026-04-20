@@ -164,6 +164,13 @@ if (subdomain) {
       component: () => import("@/views/invitation/InvitationView.vue"),
       meta: { title: "Undangan Pernikahan" },
     },
+    {
+      // Catch-all 404
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: () => import("@/views/NotFoundView.vue"),
+      meta: { title: "Halaman Tidak Ditemukan - MengundangAnda" },
+    },
   ];
 }
 
