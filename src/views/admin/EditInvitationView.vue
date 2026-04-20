@@ -491,7 +491,12 @@
                     <input v-model="form.akad_venue" class="form-input" maxlength="100" />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Alamat <span class="text-error" style="color: #dc2626;">*</span></label>
+                    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                      <span>Alamat <span class="text-error" style="color: #dc2626;">*</span></span>
+                      <button type="button" class="btn btn-outline btn-sm" @click="openMapPicker('akad')" style="font-size: 11.5px; height: auto; padding: 4px 8px; border-radius: 6px;">
+                        <Icon icon="lucide:map-pin" style="font-size: 14px; margin-right: 4px;" /> Cari di Peta
+                      </button>
+                    </label>
                     <textarea
                       v-model="form.akad_address"
                       class="form-input"
@@ -561,7 +566,12 @@
                     <input v-model="form.resepsi_venue" class="form-input" maxlength="100" />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Alamat</label>
+                    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                      <span>Alamat</span>
+                      <button type="button" class="btn btn-outline btn-sm" @click="openMapPicker('resepsi')" style="font-size: 11.5px; height: auto; padding: 4px 8px; border-radius: 6px;">
+                        <Icon icon="lucide:map-pin" style="font-size: 14px; margin-right: 4px;" /> Cari di Peta
+                      </button>
+                    </label>
                     <textarea
                       v-model="form.resepsi_address"
                       class="form-input"
@@ -1093,6 +1103,13 @@
       @close="showQuoteModal = false"
       @select="handleQuoteSelect"
     />
+
+    <!-- Map Picker Modal -->
+    <MapPickerModal
+      :show="showMapPickerModal"
+      @close="showMapPickerModal = false"
+      @select="handleMapLocationSelect"
+    />
   </div>
 </template>
 
@@ -1387,6 +1404,7 @@ import { useFormWizard } from "@/composables/useFormWizard";
 import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
 import ImageCropModal from "@/components/admin/ImageCropModal.vue";
 import QuoteLibraryModal from "@/components/admin/QuoteLibraryModal.vue";
+import MapPickerModal from "@/components/admin/MapPickerModal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -1516,6 +1534,26 @@ const showQuoteModal = ref(false);
 function handleQuoteSelect(quoteStr: string) {
   form.quote = quoteStr;
   showQuoteModal.value = false;
+}
+
+// --- Map Picker ---
+const showMapPickerModal = ref(false);
+const mapPickerTarget = ref<'akad' | 'resepsi'>('akad');
+
+function openMapPicker(target: 'akad' | 'resepsi') {
+  mapPickerTarget.value = target;
+  showMapPickerModal.value = true;
+}
+
+function handleMapLocationSelect(payload: { lat: number, lng: number, address: string, link: string }) {
+  if (mapPickerTarget.value === 'akad') {
+    form.akad_address = payload.address;
+    form.akad_map_url = payload.link;
+  } else {
+    form.resepsi_address = payload.address;
+    form.resepsi_map_url = payload.link;
+  }
+  showMapPickerModal.value = false;
 }
 
 function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue") {
