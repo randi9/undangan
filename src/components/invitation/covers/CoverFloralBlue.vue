@@ -701,11 +701,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, onMounted, onUnmounted, nextTick, watch } from "vue";
 import { Mail, MailOpen } from "lucide-vue-next";
 import { gsap } from "gsap";
 
-defineProps<{
+const props = defineProps<{
   groomName: string;
   brideName: string;
   guestName: string;
@@ -713,6 +713,7 @@ defineProps<{
   fontHeading?: string;
   fontBody?: string;
   coverImage: string;
+  isLoaded?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -816,17 +817,37 @@ onMounted(() => {
             opacity: 0,
             scaleY: item.scaleY,
           });
-
-          // 2. Animasikan ke posisi normal (y: 0)
-          gsap.to(item.ref.value, {
-            y: 0,
-            opacity: 1,
-            duration: 2.5,
-            ease: "power3.out",
-            delay: 0.2,
-          });
         }
       });
+
+      const playEntrance = () => {
+        flowerList.forEach((item) => {
+          if (item.ref.value) {
+            gsap.to(item.ref.value, {
+              y: 0,
+              opacity: 1,
+              duration: 2.5,
+              ease: "power3.out",
+              delay: 0.2,
+            });
+          }
+        });
+      };
+
+      // Mainkan segera jika isLoaded tidak terdefinisi (misal untuk tes),
+      // tapi jika isLoaded false, kita tunda lewat watcher.
+      if (props.isLoaded !== false) {
+        playEntrance();
+      }
+
+      watch(
+        () => props.isLoaded,
+        (newVal) => {
+          if (newVal) {
+            playEntrance();
+          }
+        },
+      );
 
       const swayConfigs = [
         { el: flowerTop1ImgRef, rot: 5, dur: 1 },
