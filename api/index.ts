@@ -156,13 +156,13 @@ app.post("/api/music", requireAuth, requireAdmin, async (req: any, res: any) => 
   try {
     const { title, artist, url } = req.body;
     if (!title || !url) return res.status(400).json({ error: "Judul dan URL wajib diisi" });
-    
+
     const { data, error } = await supabase
       .from("music_library")
       .insert([{ title, artist, url, created_at: new Date().toISOString() }])
       .select()
       .single();
-      
+
     if (error) throw error;
     res.status(201).json(data);
   } catch (err: any) {
@@ -174,14 +174,14 @@ app.put("/api/music/:id", requireAuth, requireAdmin, async (req: any, res: any) 
   try {
     const { title, artist, url } = req.body;
     const { id } = req.params;
-    
+
     const { data, error } = await supabase
       .from("music_library")
       .update({ title, artist, url })
       .eq("id", id)
       .select()
       .single();
-      
+
     if (error) throw error;
     res.json(data);
   } catch (err: any) {
@@ -249,14 +249,14 @@ app.get("/api/invitations/check-slug/:slug", async (req: any, res: any) => {
   try {
     const slug = req.params.slug;
     const excludeId = req.query.exclude_id;
-    
+
     let query = supabase.from("invitations").select("id").eq("slug", slug);
     if (excludeId) {
       query = query.neq("id", excludeId);
     }
-    
+
     const { data } = await query.single();
-    
+
     if (!data) {
       return res.json({ available: true });
     }
@@ -328,14 +328,14 @@ app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
           payment_required: true,
         });
       }
-      
+
       showWatermark = true;
     } else if (paymentStatus === "paid" && invitation.paid_at) {
       // Periksa batas 1 tahun dari tanggal pembayaran
       const paidDate = new Date(invitation.paid_at);
       const expireDate = new Date(paidDate);
       expireDate.setFullYear(expireDate.getFullYear() + 1);
-      
+
       const now = new Date();
       if (now > expireDate) {
         return res.status(403).json({
@@ -351,7 +351,7 @@ app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
     const isPreview = req.query.preview === "true";
     if (!isPreview) {
       const viewerIp = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.ip || "unknown";
-      
+
       const incrementView = async () => {
         try {
           // 1. Cek apakah IP ini sudah pernah mengunjungi undangan ini
@@ -368,7 +368,7 @@ app.get("/api/invitations/slug/:slug", async (req: any, res: any) => {
               invitation_id: invitation.id,
               viewer_ip: viewerIp,
             }]);
-            
+
             await supabase
               .from("invitations")
               .update({ view_count: (invitation.view_count || 0) + 1 })
@@ -441,7 +441,7 @@ app.get("/api/invitations/:id", requireAuth, async (req: any, res: any) => {
 app.get("/api/invitations/:id/stats", requireAuth, async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    
+
     // Validate ownership
     const { data: inv, error: invError } = await supabase.from("invitations").select("owner_id, view_count").eq("id", id).single();
     if (invError || !inv) return res.status(404).json({ error: "Invitation not found" });
@@ -457,7 +457,7 @@ app.get("/api/invitations/:id/stats", requireAuth, async (req: any, res: any) =>
     const hadirData = rsvps?.filter(r => r.attendance === "hadir") || [];
     const notHadirData = rsvps?.filter(r => r.attendance === "tidak_hadir") || [];
     const raguData = rsvps?.filter(r => r.attendance === "ragu") || []; // just in case 'ragu' is added
-    
+
     let totalPax = 0;
     for (const r of hadirData) {
       totalPax += (r.guest_count || 1);
@@ -812,7 +812,7 @@ app.put("/api/rsvp/:id", requireAuth, async (req: any, res: any) => {
     const { id } = req.params;
 
     // Optional: check ownership by joining invitations
-    
+
     // We update fields that are provided
     const updateData: any = {};
     if (is_hidden !== undefined) updateData.is_hidden = is_hidden;
@@ -1049,7 +1049,7 @@ async function uploadToSupabaseStorage(file: Express.Multer.File, slug?: string)
   const key = slug ? `${slug}/${filename}` : filename;
   const isMusic = file.mimetype.startsWith("audio/");
   const bucket = isMusic ? "music" : "uploads";
-  
+
   const command = new PutObjectCommand({
     Bucket: bucket,
     Key: key,
@@ -1059,10 +1059,10 @@ async function uploadToSupabaseStorage(file: Express.Multer.File, slug?: string)
 
   await s3Client.send(command);
 
-  const publicUrlBase = isMusic 
+  const publicUrlBase = isMusic
     ? process.env.R2_PUBLIC_URL_MUSIC || "https://music.mengundanganda.com"
     : process.env.R2_PUBLIC_URL_UPLOADS || "https://media.mengundanganda.com";
-  
+
   const publicUrl = `${publicUrlBase}/${key}`;
   return { url: publicUrl, filename: key };
 }
@@ -1106,7 +1106,7 @@ app.delete("/api/upload/file", requireAuth, (req: express.Request, res: express.
 
       const isMusic = url.includes("music.mengundanganda.com");
       const bucket = isMusic ? "music" : "uploads";
-      
+
       let key = "";
       try {
         const parsed = new URL(url);
@@ -1192,7 +1192,7 @@ app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) 
     // Get either licenseCode (Membership) or transaction_id / id (Payment Link)
     const { licenseCode, transaction_id, id, invitation_id: fallbackInvId, productId, email } = req.body;
     const paymentIdentifier = licenseCode || transaction_id || id || fallbackInvId;
-    
+
     if (!paymentIdentifier) {
       return res.status(400).json({ error: "Parameter identitas pembayaran (licenseCode/transaction_id/invitation_id) tidak ditemukan." });
     }
@@ -1292,10 +1292,10 @@ app.post("/api/payment/verify-license", requireAuth, async (req: any, res: any) 
     }], { onConflict: "invitation_id" });
 
     console.log(`[Payment] ✅ License verified! Invitation ${invitationId} → PAID (token: ${paymentIdentifier})`);
-    
-    res.json({ 
-      status: "ok", 
-      message: "Pembayaran berhasil diverifikasi!", 
+
+    res.json({
+      status: "ok",
+      message: "Pembayaran berhasil diverifikasi!",
       invitation_id: invitationId,
     });
   } catch (err: any) {
@@ -1310,10 +1310,10 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
     const body = req.body;
     console.log("[Mayar Webhook] ===== INCOMING =====");
     console.log("[Mayar Webhook] Full payload:", JSON.stringify(body));
-    
+
     const event = body.event || body.type || "unknown";
     const data = body.data || body;
-    
+
     console.log(`[Mayar Webhook] Event: ${event}`);
 
     // Accept ANY event that could mean a payment was made
@@ -1332,11 +1332,11 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
     // (Mayar might send events we don't know about)
     if (isPaymentEvent || data) {
       const now = new Date().toISOString();
-      
+
       // Try to extract invitation_id from various places in the payload
       let invitationId: string | null = null;
       const invoiceId = data.id || data.invoiceId || data.transactionId || data.transaction_id;
-      
+
       // 1. Check if custom fields have invitation_id
       if (data.customFields?.invitation_id) {
         invitationId = data.customFields.invitation_id;
@@ -1348,14 +1348,14 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
       if (data.metadata?.invitation_id) {
         invitationId = data.metadata.invitation_id;
       }
-      
+
       // 2. Check any URL fields for invitation_id param
       const urlFields = [
         data.redirectUrl, data.redirect_url, data.redirectURL,
         data.link, data.linkUrl, data.link_url,
         data.successUrl, data.success_url,
       ].filter(Boolean);
-      
+
       for (const url of urlFields) {
         if (url && url.includes("invitation_id=")) {
           const match = url.match(/invitation_id=([a-f0-9-]+)/i);
@@ -1374,7 +1374,7 @@ app.post("/api/payment/webhook", async (req: any, res: any) => {
           .eq("status", "pending")
           .order("created_at", { ascending: false })
           .limit(1);
-        
+
         if (logs && logs.length > 0) {
           invitationId = logs[0].invitation_id;
           console.log(`[Mayar Webhook] Matched to latest pending payment: ${invitationId}`);
