@@ -826,9 +826,9 @@ onMounted(() => {
             gsap.to(item.ref.value, {
               y: 0,
               opacity: 1,
-              duration: 2.5,
+              duration: 2.2, // Sedikit dipercepat agar lebih natural saat fade out
               ease: "power3.out",
-              delay: 0.2,
+              delay: 0, // Tanpa delay tambahan
             });
           }
         });
