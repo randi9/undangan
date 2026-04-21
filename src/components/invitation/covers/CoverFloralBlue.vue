@@ -606,32 +606,56 @@
 
     <div class="absolute z-10 inset-0 flex items-center justify-center px-6">
       <div
-        class="w-full h-full bg-white/20 flex flex-col items-center justify-center text-center text-white gap-6 md:gap-8"
+        style="
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.2);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          text-align: center;
+          color: white;
+        "
       >
-        <h1
-          class="leading-[1.1] drop-shadow-md flex flex-wrap items-center justify-center gap-x-2 gap-y-0 md:gap-x-4 w-full px-2"
-          :style="{
-            fontFamily: fontHeading,
-            fontSize:
-              groomName.length + brideName.length > 14
-                ? 'clamp(28px, 8.5vw, 52px)'
-                : 'clamp(42px, 12vw, 75px)',
-          }"
-        >
-          <span>{{ groomName }}</span>
-          <span
-            class="text-white/70"
+        <!-- Top Section -->
+        <div style="width: 100%; display: flex; justify-content: center; margin-top: 15vh;">
+          <h1
             :style="{
+              fontFamily: fontHeading,
               fontSize:
                 groomName.length + brideName.length > 14
-                  ? 'clamp(22px, 6.5vw, 38px)'
-                  : 'clamp(30px, 9vw, 55px)',
+                  ? 'clamp(36px, 10vw, 64px)'
+                  : 'lamp(52px, 14vw, 90px)',
+              fontWeight: '500',
+              lineHeight: '1.1',
+              filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))',
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              columnGap: '16px',
+              width: '100%',
+              padding: '0 8px',
+              margin: '0',
             }"
-            >&amp;</span
           >
-          <span>{{ brideName }}</span>
-        </h1>
-        <!-- Custom Frame Image with Rounded Photo -->
+            <span>{{ groomName }}</span>
+            <span
+              :style="{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontSize:
+                  groomName.length + brideName.length > 14
+                    ? 'clamp(22px, 6.5vw, 38px)'
+                    : 'clamp(30px, 9vw, 55px)',
+              }"
+              >&amp;</span
+            >
+            <span>{{ brideName }}</span>
+          </h1>
+        </div>
+
+        <!-- Custom Frame Image with Rounded Photo (Exactly Centered) -->
         <div
           v-if="coverImage && !coverImage.includes('randidewi_28658')"
           style="
@@ -641,59 +665,123 @@
             justify-content: center;
             width: 270px;
             height: 240px;
-            margin-bottom: 20px;
           "
         >
           <img
-            :src="coverImage"
+            src="https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_9e2676f0-4d38-494e-b308-c2cd49af5c46.webp"
             style="
-              position: relative;
-              z-index: 10;
-              width: 190px;
-              height: 190px;
-              border-radius: 50%;
-              object-fit: cover;
-              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              width: 250px;
+              height: 250px;
+              object-fit: contain;
+              z-index: 20;
+              pointer-events: none;
             "
-            alt="Cover Photo"
+            alt="Love Frame Overlay"
           />
+          <div style="filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.15)); z-index: 10; position: relative;">
+            <img
+              :src="coverImage"
+              style="
+                display: block;
+                width: 215px;
+                height: 195px;
+                object-fit: cover;
+                transform: translateY(-2px);
+                -webkit-mask-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIgMyAyMCAxOC4zNSI+PHBhdGggZD0iTTEyIDIxLjM1bC0xLjQ1LTEuMzJDNS40IDE1LjM2IDIgMTIuMjggMiA4LjUgMiA1LjQyIDQuNDIgMyA3LjUgM2MxLjc0IDAgMy40MS44MSA0LjUgMi4wOUMxMy4wOSAzLjgxIDE0Ljc2IDMgMTYuNSAzIDE5LjU4IDMgMjIgNS40MiAyMiA4LjVjMCAzLjc4LTMuNCA2Ljg2LTguNTUgMTEuNTRTMTIgMjEuMzV6Ii8+PC9zdmc+');
+                mask-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIgMyAyMCAxOC4zNSI+PHBhdGggZD0iTTEyIDIxLjM1bC0xLjQ1LTEuMzJDNS40IDE1LjM2IDIgMTIuMjggMiA4LjUgMiA1LjQyIDQuNDIgMyA3LjUgM2MxLjc0IDAgMy40MS44MSA0LjUgMi4wOUMxMy4wOSAzLjgxIDE0Ljc2IDMgMTYuNSAzIDE5LjU4IDMgMjIgNS40MiAyMiA4LjVjMCAzLjc4LTMuNCA2Ljg2LTguNTUgMTEuNTRTMTIgMjEuMzV6Ii8+PC9zdmc+');
+                -webkit-mask-size: 100% 100%;
+                mask-size: 100% 100%;
+                -webkit-mask-repeat: no-repeat;
+                mask-repeat: no-repeat;
+                -webkit-mask-position: center;
+                mask-position: center;
+              "
+              alt="Cover Photo"
+            />
+          </div>
         </div>
 
-        <div class="w-12 md:w-16 h-px bg-white/30 my-6 md:my-10"></div>
-
-        <div
-          class="w-full max-w-[240px] md:max-w-[360px] lg:max-w-[420px] h-fit flex flex-col items-center gap-2 md:gap-4"
-        >
-          <div class="flex items-center justify-center gap-3 mb-3 md:mb-5">
-            <div class="h-px w-8 md:w-12 bg-white/40"></div>
-            <MailOpen class="w-4 md:w-5 h-4 md:h-5 text-white/70" />
-            <div class="h-px w-8 md:w-12 bg-white/40"></div>
-          </div>
-
-          <p
-            class="text-[15px] md:text-[18px] uppercase tracking-[0.2em] text-white/70 font-medium"
-            :style="{ fontFamily: fontBody }"
+        <!-- Bottom Section -->
+        <div style="width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 8vh;">
+          <div
+            style="
+              width: 100%;
+              max-width: 420px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+            "
           >
-            Kepada Yth.
-          </p>
-          <h3
-            class="text-base md:text-xl lg:text-2xl font-semibold tracking-wide text-white break-words mb-10 md:mb-14 mt-4 md:mt-6"
-            :style="{ fontFamily: fontBody }"
-          >
-            {{ guestName || "Tamu Undangan" }}
-          </h3>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px;">
+              <div style="height: 1px; width: 40px; background-color: rgba(255, 255, 255, 0.4);"></div>
+              <MailOpen style="width: 20px; height: 20px; color: rgba(255, 255, 255, 0.7);" />
+              <div style="height: 1px; width: 40px; background-color: rgba(255, 255, 255, 0.4);"></div>
+            </div>
 
-          <button
-            ref="stampRef"
-            @click="bukaAmplop"
-            class="w-16 md:w-20 h-16 md:h-20 rounded-full flex-shrink-0 flex flex-col items-center justify-center gap-1 bg-white/20 backdrop-blur-xl border border-white/40 text-white hover:bg-white/30 transition-colors duration-300 active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
-          >
-            <Mail class="w-6 md:w-8 h-6 md:h-8" />
-            <span
-              class="text-[8px] md:text-[10px] tracking-widest uppercase font-semibold"
-              >Buka</span
+            <p
+              :style="{
+                fontFamily: fontBody,
+                fontSize: '16px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.2em',
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontWeight: 500,
+                margin: '0',
+              }"
             >
-          </button>
+              Kepada Yth.
+            </p>
+            <h3
+              :style="{
+                fontFamily: fontBody,
+                fontSize: '20px',
+                fontWeight: 600,
+                letterSpacing: '0.025em',
+                color: 'white',
+                wordBreak: 'break-word',
+                margin: '8px 0 32px 0',
+              }"
+            >
+              {{ guestName || "Tamu Undangan" }}
+            </h3>
+
+            <button
+              ref="stampRef"
+              @click="bukaAmplop"
+              class="hover:bg-white/30 transition-colors duration-300 active:scale-95 cursor-pointer"
+              style="
+                width: 76px;
+                height: 76px;
+                border-radius: 9999px;
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                background-color: rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(16px);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                color: white;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+              "
+            >
+              <Mail style="width: 28px; height: 28px;" />
+              <span
+                style="
+                  font-size: 10px;
+                  letter-spacing: 0.1em;
+                  text-transform: uppercase;
+                  font-weight: 600;
+                "
+                >Buka</span
+              >
+            </button>
+          </div>
         </div>
       </div>
     </div>
