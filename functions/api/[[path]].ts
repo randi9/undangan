@@ -27,6 +27,34 @@ function getPathname(request: Request) {
   return new URL(request.url).pathname.replace(/^\/api\/?/, "");
 }
 
+function getBearerToken(request: Request) {
+  const header = request.headers.get("authorization") || "";
+  if (!header.toLowerCase().startsWith("bearer ")) return null;
+  return header.slice(7).trim() || null;
+}
+
+function decodeJwtPayload(token: string): unknown {
+  const parts = token.split(".");
+  if (parts.length < 2) return null;
+  try {
+    const payload = parts[1].replaceAll("-", "+").replaceAll("_", "/");
+    const padded = payload + "==".slice((payload.length + 3) % 4);
+    const text = atob(padded);
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+function getClerkUserIdFromRequest(request: Request) {
+  const token = getBearerToken(request);
+  if (!token) return null;
+  const payload = decodeJwtPayload(token);
+  if (!payload || typeof payload !== "object") return null;
+  const typed = payload as { sub?: string; userId?: string };
+  return typed.sub || typed.userId || null;
+}
+
 async function loadInvitationBySlug(supabase: any, slug: string) {
   return await supabase
     .from("invitations")
@@ -145,6 +173,77 @@ async function handleHealth() {
     runtime: "cloudflare-pages-functions",
     timestamp: new Date().toISOString(),
   });
+}
+
+async function ensureLocalUser(supabase: any, clerkId: string) {
+  const { data: existingUser } = await supabase
+    .from("users")
+    .select("*")
+    .eq("username", clerkId)
+    .maybeSingle();
+
+  if (existingUser) return existingUser;
+
+  const { count } = await supabase
+    .from("users")
+    .select("id", { count: "exact", head: true });
+  const isFirstUser = count === 0;
+
+  const { data: newUser, error } = await supabase
+    .from("users")
+    .insert([
+      {
+        username: clerkId,
+        password_hash: `clerk_managed_${crypto.randomUUID()}`,
+        role: isFirstUser ? "admin" : "user",
+        max_invitations: isFirstUser ? 999 : 3,
+      },
+    ])
+    .select("*")
+    .single();
+
+  if (error) throw error;
+  return newUser;
+}
+
+async function handleAuthMe(supabase: any, request: Request) {
+  const clerkId = getClerkUserIdFromRequest(request);
+  if (!clerkId) return json({ error: "Tidak terautentikasi." }, 401);
+
+  const user = await ensureLocalUser(supabase, clerkId);
+  const { count } = await supabase
+    .from("invitations")
+    .select("id", { count: "exact", head: true })
+    .eq("owner_id", user.id);
+
+  return json({ ...user, invitation_count: count || 0 });
+}
+
+async function handleInvitationList(supabase: any, request: Request) {
+  const clerkId = getClerkUserIdFromRequest(request);
+  if (!clerkId) return json({ error: "Tidak terautentikasi." }, 401);
+
+  const user = await ensureLocalUser(supabase, clerkId);
+
+  let query = supabase
+    .from("invitations")
+    .select("*, photos(id), rsvps(id)")
+    .order("created_at", { ascending: false });
+
+  if (user.role !== "admin") {
+    query = query.eq("owner_id", user.id);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+
+  const invitations = (data || []).map((i: any) => ({
+    ...i,
+    photo_count: i.photos?.length || 0,
+    rsvp_count: i.rsvps?.length || 0,
+  }));
+
+  return json(invitations);
 }
 
 async function handleCheckSlug(
@@ -296,6 +395,14 @@ export async function onRequest(context: any) {
 
     if (pathname === "health" || pathname === "") {
       return await handleHealth();
+    }
+
+    if (pathname === "auth/me" && request.method === "GET") {
+      return await handleAuthMe(supabase, request);
+    }
+
+    if (pathname === "invitations" && request.method === "GET") {
+      return await handleInvitationList(supabase, request);
     }
 
     if (pathname.startsWith("invitations/check-slug/")) {
