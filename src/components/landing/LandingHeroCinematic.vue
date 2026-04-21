@@ -8,7 +8,7 @@
       muted 
       playsinline
     >
-      <source :src="'/landinghero.mp4'" type="video/mp4" />
+      <source src="https://media.mengundanganda.com/videolanding/landinghero.mp4" type="video/mp4" />
     </video>
 
     <!-- Dark Overlay that fades in at 1.5s -->
