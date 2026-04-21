@@ -117,20 +117,20 @@
             <div class="lp-theme-preview">
               <div class="lp-theme-device-frame">
                 <div class="lp-theme-device-notch"></div>
-                <div class="lp-theme-device-screen" :ref="(el) => setLpScreenRef(el as HTMLElement)">
-                  <iframe
-                    v-if="theme.sampleUrl"
-                    :src="theme.sampleUrl"
-                    class="lp-theme-iframe"
-                    :style="{ transform: `scale(${lpIframeScale})` }"
-                    loading="lazy"
-                    :title="'Preview tema ' + theme.name"
-                    sandbox="allow-scripts allow-same-origin"
-                  ></iframe>
-                  <div v-else class="lp-theme-placeholder">
-                    <Icon :icon="theme.icon" class="lp-placeholder-icon" />
-                    <span class="lp-placeholder-text">Preview akan tersedia</span>
+                <div class="lp-theme-device-screen">
+                  <!-- Fallback Placeholder -->
+                  <div class="lp-theme-placeholder">
+                    <Icon :icon="theme.icon" class="lp-placeholder-icon" :style="{ color: theme.color }" />
+                    <span class="lp-placeholder-text">{{ theme.name }}</span>
                   </div>
+                  <!-- Thumbnail Image -->
+                  <img
+                    :src="theme.thumbnail"
+                    @error="($event.target as HTMLImageElement).style.opacity = '0'"
+                    class="lp-theme-image"
+                    :alt="'Preview tema ' + theme.name"
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <div class="lp-theme-accent-bar" :style="{ background: theme.bgGradient }"></div>
@@ -541,44 +541,15 @@ onMounted(() => {
   nextTick(() => {
     setupRevealObserver()
     setupStatsObserver()
-
-    // Init iframe scaling
-    updateLpIframeScale()
-    if (lpScreenRefs.length > 0) {
-      const el = lpScreenRefs[0];
-      if (el) {
-        lpResizeObserver = new ResizeObserver(() => updateLpIframeScale())
-        lpResizeObserver.observe(el)
-      }
-    }
   })
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
-  lpResizeObserver?.disconnect()
   revealObserver?.disconnect()
   statsObserver?.disconnect()
 })
 
-// Dynamic iframe scaling for theme previews
-const lpIframeScale = ref(0.5)
-const lpScreenRefs: HTMLElement[] = []
-let lpResizeObserver: ResizeObserver | null = null
-
-function setLpScreenRef(el: HTMLElement | null) {
-  if (el && !lpScreenRefs.includes(el)) lpScreenRefs.push(el)
-}
-
-function updateLpIframeScale() {
-  if (lpScreenRefs.length > 0) {
-    const el = lpScreenRefs[0];
-    if (el) {
-      const width = el.clientWidth
-      if (width > 0) lpIframeScale.value = width / 375
-    }
-  }
-}
 
 const features = [
   { icon: 'solar:stopwatch-bold-duotone', title: 'Siap Sebar Dalam 5 Menit', desc: 'Lupakan proses revisi berhari-hari dengan vendor. Isi form, dan undangan siap di-share.' },
@@ -605,6 +576,7 @@ const themesData = [
   {
     id: 'elegant',
     name: 'Elegant Gold',
+    thumbnail: 'https://media.mengundanganda.com/floral/43498db7-3a42-4aaa-a066-a0322604ac92.webp',
     description: 'Desain klasik premium dengan aksen emas dan font serif yang mewah. Cocok untuk acara formal dan mewah yang membutuhkan sentuhan kemewahan.',
     color: '#c9a96e',
     bgColor: '#2c2417',
@@ -615,6 +587,7 @@ const themesData = [
   {
     id: 'floral',
     name: 'Floral',
+    thumbnail: 'https://media.mengundanganda.com/floral/24b44e21-d97b-4b62-bb88-e29eea9c8e18.webp',
     description: 'Desain romantis dengan ornamen daun dan bunga, warna pastel lembut. Sempurna untuk nuansa garden party yang penuh keindahan alam.',
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
@@ -625,6 +598,7 @@ const themesData = [
   {
     id: 'minimalist',
     name: 'Clean Minimalist',
+    thumbnail: 'https://media.mengundanganda.com/floral/79f8508a-609c-4b27-9803-bfc1c2fbea16.webp',
     description: 'Tampilan bersih & modern dengan ruang putih luas dan font sans-serif tebal. Untuk pasangan yang mencintai kesederhanaan dan keanggunan modern.',
     color: '#111111',
     bgColor: '#f9f9f9',
@@ -635,6 +609,7 @@ const themesData = [
   {
     id: 'elegant_blue',
     name: 'Elegant Blue',
+    thumbnail: 'https://media.mengundanganda.com/floral/b308425f-94ec-4923-91b4-89a22eeef55d.webp',
     description: 'Desain elegan dengan nuansa biru dusty yang menenangkan dipadukan dengan aksen champagne gold. Sempurna untuk nuansa mewah modern.',
     color: '#A3B5C3',
     bgColor: '#1e3a8a',
@@ -645,6 +620,7 @@ const themesData = [
   {
     id: 'floral_blue',
     name: 'Floral Blue',
+    thumbnail: 'https://media.mengundanganda.com/floral/24b44e21-d97b-4b62-bb88-e29eea9c8e18.webp',
     description: 'Perpaduan ornamen floral dengan palet biru yang segar dan elegan. Cocok untuk pasangan yang menginginkan nuansa romantis dengan sentuhan modern.',
     color: '#3b6b8a',
     bgColor: '#3b6b8a',
@@ -1429,12 +1405,18 @@ const themesData = [
   border-radius: 20px 20px 0 0;
 }
 
-.lp-theme-iframe {
-  width: 375px;
-  height: 812px;
+.lp-theme-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
   border: none;
   pointer-events: none;
-  transform-origin: top left;
+  z-index: 10;
+  transition: opacity 0.3s ease;
   background: #fff;
 }
 
