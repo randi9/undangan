@@ -3,6 +3,7 @@ import {
   createWebHistory,
   type RouteRecordRaw,
 } from "vue-router";
+import LandingView from "@/views/LandingView.vue";
 
 const host = globalThis.location.hostname;
 const parts = host.split(".");
@@ -47,7 +48,7 @@ if (subdomain) {
     {
       path: "/",
       name: "landing",
-      component: () => import("@/views/LandingView.vue"),
+      component: LandingView,
       meta: { title: "MengundangAnda — Undangan Digital Pernikahan Premium" },
     },
     {
