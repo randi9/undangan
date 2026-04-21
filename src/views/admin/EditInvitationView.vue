@@ -2,14 +2,33 @@
   <div class="admin-page-simple">
     <header class="simple-topbar">
       <router-link to="/dashboard" class="simple-topbar-brand">
-        <div class="sidebar-brand-icon" style="width:32px;height:32px;border-radius:10px;overflow:hidden;background:transparent">
-          <img src="/images/logo.webp" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
+        <div
+          class="sidebar-brand-icon"
+          style="
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: transparent;
+          "
+        >
+          <img
+            src="/images/logo.webp"
+            alt="Logo"
+            style="width: 100%; height: 100%; object-fit: cover"
+          />
         </div>
-        <span class="sidebar-brand-text" style="font-size:17px">Mengundang<span>Anda</span></span>
+        <span class="sidebar-brand-text" style="font-size: 17px"
+          >Mengundang<span>Anda</span></span
+        >
       </router-link>
       <nav class="simple-topbar-nav">
         <router-link to="/dashboard" class="btn btn-outline btn-sm">
-          <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">arrow_back</span>
+          <span
+            class="material-symbols-rounded"
+            style="font-size: 16px; vertical-align: -3px"
+            >arrow_back</span
+          >
           Kembali ke Dashboard
         </router-link>
       </nav>
@@ -18,34 +37,102 @@
     <div class="editor-container">
       <!-- Skeletons while Loading (Editor Form Array) -->
       <div v-if="loading" class="editor-layout">
-        <div class="editor-form-area" style="width: 100%;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div class="editor-form-area" style="width: 100%">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 24px;
+            "
+          >
             <AppSkeleton height="32px" width="200px" />
             <AppSkeleton height="32px" width="100px" rounded="full" />
           </div>
-          
+
           <div class="form-section" v-for="i in 3" :key="`skel-sec-${i}`">
-            <AppSkeleton height="24px" width="150px" style="margin-bottom: 8px;" />
-            <AppSkeleton height="14px" width="250px" style="margin-bottom: 24px;" />
-            
-            <AppSkeleton height="16px" width="120px" style="margin-bottom: 8px;" />
-            <AppSkeleton height="42px" width="100%" rounded="md" style="margin-bottom: 16px;" />
-            
+            <AppSkeleton
+              height="24px"
+              width="150px"
+              style="margin-bottom: 8px"
+            />
+            <AppSkeleton
+              height="14px"
+              width="250px"
+              style="margin-bottom: 24px"
+            />
+
+            <AppSkeleton
+              height="16px"
+              width="120px"
+              style="margin-bottom: 8px"
+            />
+            <AppSkeleton
+              height="42px"
+              width="100%"
+              rounded="md"
+              style="margin-bottom: 16px"
+            />
+
             <div class="split-grid" v-if="i === 2">
               <div>
-                <AppSkeleton height="20px" width="120px" style="margin-bottom: 16px;" />
-                <AppSkeleton height="160px" width="160px" rounded="lg" style="margin-bottom: 16px; margin: 0 auto; display: block;" />
-                <AppSkeleton height="16px" width="100px" style="margin-bottom: 8px;" />
-                <AppSkeleton height="42px" width="100%" rounded="md" style="margin-bottom: 12px;" />
-                <AppSkeleton height="16px" width="100px" style="margin-bottom: 8px;" />
+                <AppSkeleton
+                  height="20px"
+                  width="120px"
+                  style="margin-bottom: 16px"
+                />
+                <AppSkeleton
+                  height="160px"
+                  width="160px"
+                  rounded="lg"
+                  style="margin-bottom: 16px; margin: 0 auto; display: block"
+                />
+                <AppSkeleton
+                  height="16px"
+                  width="100px"
+                  style="margin-bottom: 8px"
+                />
+                <AppSkeleton
+                  height="42px"
+                  width="100%"
+                  rounded="md"
+                  style="margin-bottom: 12px"
+                />
+                <AppSkeleton
+                  height="16px"
+                  width="100px"
+                  style="margin-bottom: 8px"
+                />
                 <AppSkeleton height="42px" width="100%" rounded="md" />
               </div>
               <div>
-                <AppSkeleton height="20px" width="120px" style="margin-bottom: 16px;" />
-                <AppSkeleton height="160px" width="160px" rounded="lg" style="margin-bottom: 16px; margin: 0 auto; display: block;" />
-                <AppSkeleton height="16px" width="100px" style="margin-bottom: 8px;" />
-                <AppSkeleton height="42px" width="100%" rounded="md" style="margin-bottom: 12px;" />
-                <AppSkeleton height="16px" width="100px" style="margin-bottom: 8px;" />
+                <AppSkeleton
+                  height="20px"
+                  width="120px"
+                  style="margin-bottom: 16px"
+                />
+                <AppSkeleton
+                  height="160px"
+                  width="160px"
+                  rounded="lg"
+                  style="margin-bottom: 16px; margin: 0 auto; display: block"
+                />
+                <AppSkeleton
+                  height="16px"
+                  width="100px"
+                  style="margin-bottom: 8px"
+                />
+                <AppSkeleton
+                  height="42px"
+                  width="100%"
+                  rounded="md"
+                  style="margin-bottom: 12px"
+                />
+                <AppSkeleton
+                  height="16px"
+                  width="100px"
+                  style="margin-bottom: 8px"
+                />
                 <AppSkeleton height="42px" width="100%" rounded="md" />
               </div>
             </div>
@@ -58,923 +145,1887 @@
         <div class="editor-layout">
           <!-- Area Kiri: Form Isian -->
           <div class="editor-form-area">
-            <h1 class="admin-page-title" style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:pencil" style="color: var(--admin-primary);" /> Edit Undangan</span>
+            <h1
+              class="admin-page-title"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <span style="display: flex; align-items: center; gap: 8px"
+                ><Icon
+                  icon="lucide:pencil"
+                  style="color: var(--admin-primary)"
+                />
+                Edit Undangan</span
+              >
             </h1>
             <p class="admin-page-subtitle">
               {{ form.groom_name }} & {{ form.bride_name }}
             </p>
 
             <form @submit.prevent="handleSubmit">
-
-            <!-- Wizard Stepper -->
-            <div class="wizard-stepper">
-              <template v-for="(step, i) in wizard.steps" :key="step.id">
-                <div
-                  class="wizard-step"
-                  :class="{ active: i === wizard.currentStepIndex.value, completed: i < wizard.currentStepIndex.value }"
-                  @click="wizard.goToStep(i)"
-                >
-                  <div class="wizard-step-number">
-                    <Icon v-if="i < wizard.currentStepIndex.value" icon="lucide:check" style="font-size: 14px;" />
-                    <span v-else>{{ i + 1 }}</span>
-                  </div>
-                  <span class="wizard-step-label">{{ step.label }}</span>
-                </div>
-                <div
-                  v-if="i < wizard.steps.length - 1"
-                  class="wizard-step-connector"
-                  :class="{ completed: i < wizard.currentStepIndex.value }"
-                />
-              </template>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="wizard-progress">
-              <div class="wizard-progress-bar" :style="{ width: wizard.progress.value + '%' }" />
-            </div>
-
-            <!-- Validation Errors Banner -->
-            <Transition name="fade">
-              <div v-if="wizard.showStepErrors.value && wizard.stepErrors.value.length > 0" class="wizard-errors">
-                <div class="wizard-errors-header">
-                  <span style="display: flex; align-items: center; gap: 6px;">
-                    <Icon icon="lucide:alert-circle" style="font-size: 16px;" />
-                    Lengkapi field berikut sebelum lanjut:
-                  </span>
-                  <button type="button" class="wizard-errors-close" @click="wizard.dismissErrors()">
-                    <Icon icon="lucide:x" style="font-size: 14px;" />
-                  </button>
-                </div>
-                <ul class="wizard-errors-list">
-                  <li v-for="(err, i) in wizard.stepErrors.value" :key="i">{{ err }}</li>
-                </ul>
-              </div>
-            </Transition>
-
-            <!-- Step 1: Tema & URL -->
-            <div v-show="wizard.currentStepIndex.value === 0" class="wizard-step-content">
-           <!-- Theme Selector -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:palette" style="color: var(--admin-primary);" /> Tema Undangan</h3>
-            
-            <div class="active-theme-container" style="display: flex; justify-content: space-between; align-items: center; background: var(--admin-surface); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--admin-border);">
-              <div>
-                <div style="font-size: 13px; color: var(--admin-text-secondary); margin-bottom: 4px;">Tema saat ini</div>
-                <strong style="text-transform: capitalize; font-size: 16px;">{{ form.theme }}</strong>
-              </div>
-              <button type="button" class="btn btn-outline" @click="showThemeModal = true">
-                <Icon icon="lucide:arrow-left-right" style="font-size: 16px;" />
-                Ubah Tema
-              </button>
-            </div>
-          </div>
-          <!-- Slug -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:link" style="color: var(--admin-primary);" /> URL Undangan</h3>
-            <p class="form-section-subtitle">Slug unik untuk alamat undangan</p>
-            <div class="form-group">
-              <label class="form-label">Slug (URL) <span class="text-error" style="color: #dc2626;">*</span></label>
-              <div style="position: relative;">
-                <input
-                  v-model="form.slug"
-                  class="form-input"
-                  :class="{ 'input-error': slugStatus === 'taken', 'input-success': slugStatus === 'available' }"
-                  placeholder="contoh: andi-sarah"
-                  required
-                  maxlength="50"
-                  pattern="[a-z0-9-]+"
-                  title="Hanya huruf kecil, angka, dan tanda hubung"
-                  @input="handleSlugInput"
-                  style="padding-right: 36px;"
-                />
-                <div 
-                  v-if="slugStatus !== 'idle'" 
-                  style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display:flex; align-items:center;"
-                >
-                  <Icon v-if="slugStatus === 'loading'" icon="lucide:loader-2" class="spin-icon" style="color: var(--admin-text-secondary);" />
-                  <Icon v-else-if="slugStatus === 'available'" icon="lucide:check-circle-2" style="color: #10b981;" />
-                  <Icon v-else-if="slugStatus === 'taken'" icon="lucide:x-circle" style="color: #ef4444;" />
-                </div>
-              </div>
-              
-              <small v-if="slugStatus === 'taken'" style="color: #ef4444; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px;">
-                <Icon icon="lucide:alert-circle" /> Link sudah dipakai, coba variasi lain
-              </small>
-              <div v-if="slugStatus === 'taken' && slugSuggestions.length > 0" class="slug-suggestions">
-                <small style="color: var(--admin-text-secondary); font-size: 12px; display: block; margin-bottom: 6px;">💡 Saran yang tersedia:</small>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                  <button
-                    v-for="s in slugSuggestions"
-                    :key="s"
-                    type="button"
-                    class="slug-suggestion-chip"
-                    @click="applySuggestion(s)"
+              <!-- Wizard Stepper -->
+              <div class="wizard-stepper">
+                <template v-for="(step, i) in wizard.steps" :key="step.id">
+                  <div
+                    class="wizard-step"
+                    :class="{
+                      active: i === wizard.currentStepIndex.value,
+                      completed: i < wizard.currentStepIndex.value,
+                    }"
+                    @click="wizard.goToStep(i)"
                   >
-                    {{ s }}
-                  </button>
-                </div>
-              </div>
-              <small v-else-if="slugStatus === 'available'" style="color: #10b981; font-size: 13px; font-weight: 500; display: flex; align-items: flex-start; gap: 6px; margin-top: 6px;">
-                <Icon icon="lucide:check" style="flex-shrink: 0; margin-top: 2px;" /> 
-                <span style="word-break: break-word; line-height: 1.4;"><strong>{{ form.slug }}</strong>.mengundanganda.com tersedia!</span>
-              </small>
-              <small v-else style="color: var(--admin-text-secondary); font-size: 12px; margin-top: 6px; display: block; line-height: 1.4;">
-                Undangan akan bisa diakses di: <strong style="word-break: break-word;">{{ form.slug || "slug-anda" }}.mengundanganda.com</strong>
-              </small>
-            </div>
-          </div>
-
-            <!-- Wizard Nav Step 1 -->
-            <div class="wizard-nav">
-              <div class="wizard-nav-left">
-                <router-link to="/dashboard" class="btn btn-outline">Batal</router-link>
-              </div>
-              <div class="wizard-nav-right">
-                <button type="button" class="btn btn-success" @click="handleSubmit" :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'">
-                  <span v-if="submitting" class="loading-spinner" style="margin-right: 6px"></span>
-                  <Icon v-else icon="lucide:save" style="font-size: 16px; margin-right: 4px;" />
-                  {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
-                </button>
-                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
-                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
-                </button>
-              </div>
-            </div>
-            </div>
-
-            <!-- Step 2: Data Mempelai -->
-            <div v-show="wizard.currentStepIndex.value === 1" class="wizard-step-content">
-          <!-- Couple Info -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:users" style="color: var(--admin-primary);" /> Informasi Pasangan</h3>
-            <p class="form-section-subtitle">Data mempelai pria dan wanita</p>
-            <div class="helper-tip">
-              <Icon icon="lucide:info" class="helper-tip-icon" />
-              <span>Hanya <strong>Nama Panggilan & Nama Lengkap</strong> yang wajib. Data orang tua dan foto opsional, namun akan terlihat lebih berkesan jika diisi lengkap.</span>
-            </div>
-
-            <div class="split-grid">
-              <div>
-                <h4
-                  style="
-                    font-size: 15px;
-                    font-weight: 600;
-                    margin-bottom: 16px;
-                    color: var(--admin-primary);
-                  "
-                >
-                  Mempelai Pria
-                </h4>
-                <div
-                  class="single-photo-upload"
-                  @click="($refs.groomPhotoInput as HTMLInputElement).click()"
-                >
-                  <img
-                    v-if="form.groom_photo"
-                    :src="getPhotoUrl(form.groom_photo)"
-                    alt="Foto mempelai pria"
-                  />
-                  <div v-else class="upload-placeholder">
-                    <Icon icon="lucide:user" style="font-size: 32px; color: var(--admin-text-secondary); margin-bottom: 8px;" />
-                    Upload Foto
-                  </div>
-                </div>
-                <button v-if="form.groom_photo" type="button" class="btn btn-danger btn-sm" style="margin: 12px auto 0; display: flex;" @click="removeGroomPhoto">
-                  Hapus Foto
-                </button>
-                <input
-                  ref="groomPhotoInput"
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  @change="(e) => handleSingleUpload(e, 'groom_photo')"
-                />
-                <div
-                  style="
-                    margin-top: 16px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                  "
-                >
-                  <div class="form-group">
-                    <label class="form-label">Nama Panggilan <span class="text-error" style="color: #dc2626;">*</span></label>
-                    <input
-                      v-model="form.groom_name"
-                      class="form-input"
-                      required
-                      maxlength="20"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Nama Lengkap <span class="text-error" style="color: #dc2626;">*</span></label>
-                    <input v-model="form.groom_full_name" class="form-input" maxlength="60" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Putra dari Bapak</label>
-                    <input v-model="form.groom_father" class="form-input" maxlength="60" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">dan Ibu</label>
-                    <input v-model="form.groom_mother" class="form-input" maxlength="60" />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h4
-                  style="
-                    font-size: 15px;
-                    font-weight: 600;
-                    margin-bottom: 16px;
-                    color: var(--admin-accent);
-                  "
-                >
-                  Mempelai Wanita
-                </h4>
-                <div
-                  class="single-photo-upload"
-                  @click="($refs.bridePhotoInput as HTMLInputElement).click()"
-                >
-                  <img
-                    v-if="form.bride_photo"
-                    :src="getPhotoUrl(form.bride_photo)"
-                    alt="Foto mempelai wanita"
-                  />
-                  <div v-else class="upload-placeholder">
-                    <Icon icon="lucide:user" style="font-size: 32px; color: var(--admin-text-secondary); margin-bottom: 8px;" />
-                    Upload Foto
-                  </div>
-                </div>
-                <button v-if="form.bride_photo" type="button" class="btn btn-danger btn-sm" style="margin: 12px auto 0; display: flex;" @click="removeBridePhoto">
-                  Hapus Foto
-                </button>
-                <input
-                  ref="bridePhotoInput"
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  @change="(e) => handleSingleUpload(e, 'bride_photo')"
-                />
-                <div
-                  style="
-                    margin-top: 16px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                  "
-                >
-                  <div class="form-group">
-                    <label class="form-label">Nama Panggilan <span class="text-error" style="color: #dc2626;">*</span></label>
-                    <input
-                      v-model="form.bride_name"
-                      class="form-input"
-                      required
-                      maxlength="20"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Nama Lengkap <span class="text-error" style="color: #dc2626;">*</span></label>
-                    <input v-model="form.bride_full_name" class="form-input" maxlength="60" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Putri dari Bapak</label>
-                    <input v-model="form.bride_father" class="form-input" maxlength="60" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">dan Ibu</label>
-                    <input v-model="form.bride_mother" class="form-input" maxlength="60" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cover Photo -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:image" style="color: var(--admin-primary);" /> Foto Sampul</h3>
-            <p class="form-section-subtitle">
-              Foto utama yang ditampilkan di halaman depan undangan
-            </p>
-            <div class="helper-tip">
-              <Icon icon="lucide:info" class="helper-tip-icon" />
-              <span>Gunakan foto <strong>portrait</strong> (tegak) untuk hasil terbaik. Foto prewedding sangat direkomendasikan!</span>
-            </div>
-            <div
-              class="photo-upload-zone"
-              @click="($refs.coverPhotoInput as HTMLInputElement).click()"
-            >
-              <div v-if="form.cover_photo" style="position: relative; display: inline-block;">
-                <img
-                  :src="getPhotoUrl(form.cover_photo)"
-                  alt="Foto sampul"
-                  style="max-height: 200px; border-radius: 8px; display: block;"
-                />
-                <button
-                  type="button"
-                  title="Hapus foto"
-                  style="position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; background: #ef4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);"
-                  @click.stop="removeCoverPhoto"
-                >
-                  ✕
-                </button>
-              </div>
-              <div v-else>
-                <Icon icon="lucide:camera" class="upload-icon" style="color: var(--admin-text-secondary);" />
-                <div class="upload-text">Klik atau drag foto ke sini</div>
-                <div class="upload-hint">JPG, PNG, WebP • Max 20MB</div>
-              </div>
-            </div>
-            <input
-              ref="coverPhotoInput"
-              type="file"
-              accept="image/*"
-              hidden
-              @change="(e) => handleSingleUpload(e, 'cover_photo')"
-            />
-          </div>
-
-            <!-- Wizard Nav Step 2 -->
-            <div class="wizard-nav">
-              <div class="wizard-nav-left">
-                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
-                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
-                </button>
-              </div>
-              <div class="wizard-nav-right">
-                <button type="button" class="btn btn-success" @click="handleSubmit" :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'">
-                  <span v-if="submitting" class="loading-spinner" style="margin-right: 6px"></span>
-                  <Icon v-else icon="lucide:save" style="font-size: 16px; margin-right: 4px;" />
-                  {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
-                </button>
-                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
-                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
-                </button>
-              </div>
-            </div>
-            </div>
-
-            <!-- Step 3: Detail Acara -->
-            <div v-show="wizard.currentStepIndex.value === 2" class="wizard-step-content">
-          <!-- Event Details -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:calendar-days" style="color: var(--admin-primary);" /> Detail Acara</h3>
-            <p class="form-section-subtitle">
-              Informasi waktu dan tempat acara
-            </p>
-            <div class="helper-tip">
-              <Icon icon="lucide:info" class="helper-tip-icon" />
-              <span>Jadwal <strong>Akad Nikah wajib diisi</strong> (Tanggal, Waktu Mulai, Tempat, Alamat). Jadwal Resepsi sepenuhnya opsional.</span>
-            </div>
-
-            <div class="split-grid">
-              <div
-                style="
-                  padding: 20px;
-                  background: var(--admin-bg);
-                  border-radius: var(--radius-md);
-                  border: 1px solid var(--admin-border);
-                "
-              >
-                <h4
-                  style="font-size: 15px; font-weight: 600; margin-bottom: 16px"
-                >
-                  <Icon icon="lucide:heart-handshake" style="vertical-align: -4px; margin-right: 6px; color: var(--admin-primary);" /> Akad Nikah
-                </h4>
-                <div style="display: flex; flex-direction: column; gap: 12px">
-                  <div class="form-group">
-                    <label class="form-label">Tanggal <span class="text-error" style="color: #dc2626;">*</span></label>
-                    <input
-                      v-model="form.akad_date"
-                      type="date"
-                      class="form-input"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Waktu (Mulai <span class="text-error" style="color: #dc2626;">*</span> - Selesai)</label>
-                    <div class="time-input-group">
-                      <div class="time-range-row">
-                        <input
-                          v-model="akadStart"
-                          type="time"
-                          class="form-input"
-                          @keydown.enter.prevent
-                        />
-                        <span class="time-separator">-</span>
-                        <input
-                          v-model="akadEnd"
-                          type="time"
-                          class="form-input"
-                          @keydown.enter.prevent
-                        />
-                      </div>
-                      <select v-model="akadZone" class="form-input time-zone-select">
-                        <option value="WIB">WIB</option>
-                        <option value="WITA">WITA</option>
-                        <option value="WIT">WIT</option>
-                      </select>
+                    <div class="wizard-step-number">
+                      <Icon
+                        v-if="i < wizard.currentStepIndex.value"
+                        icon="lucide:check"
+                        style="font-size: 14px"
+                      />
+                      <span v-else>{{ i + 1 }}</span>
                     </div>
-                    <p v-if="akadStart && akadEnd && akadStart >= akadEnd" class="time-error-hint">
-                      <Icon icon="lucide:alert-circle" style="font-size: 13px; flex-shrink: 0;" /> Waktu selesai harus lebih dari waktu mulai
-                    </p>
+                    <span class="wizard-step-label">{{ step.label }}</span>
                   </div>
-                  <div class="form-group">
-                    <label class="form-label">Tempat <span class="text-error" style="color: #dc2626;">*</span></label>
-                    <input v-model="form.akad_venue" class="form-input" maxlength="100" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
-                      <span>Alamat <span class="text-error" style="color: #dc2626;">*</span></span>
-                      <button type="button" class="btn btn-outline btn-sm" @click="openMapPicker('akad')" style="font-size: 11.5px; height: auto; padding: 4px 8px; border-radius: 6px;">
-                        <Icon icon="lucide:map-pin" style="font-size: 14px; margin-right: 4px;" /> Cari di Peta
-                      </button>
-                    </label>
-                    <textarea
-                      v-model="form.akad_address"
-                      class="form-input"
-                      rows="2"
-                      maxlength="200"
-                    ></textarea>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Link Google Maps</label>
-                    <input v-model="form.akad_map_url" class="form-input" maxlength="500" />
-                  </div>
-                </div>
+                  <div
+                    v-if="i < wizard.steps.length - 1"
+                    class="wizard-step-connector"
+                    :class="{ completed: i < wizard.currentStepIndex.value }"
+                  />
+                </template>
               </div>
 
-              <div
-                style="
-                  padding: 20px;
-                  background: var(--admin-bg);
-                  border-radius: var(--radius-md);
-                  border: 1px solid var(--admin-border);
-                "
-              >
-                <h4
-                  style="font-size: 15px; font-weight: 600; margin-bottom: 16px"
+              <!-- Progress Bar -->
+              <div class="wizard-progress">
+                <div
+                  class="wizard-progress-bar"
+                  :style="{ width: wizard.progress.value + '%' }"
+                />
+              </div>
+
+              <!-- Validation Errors Banner -->
+              <Transition name="fade">
+                <div
+                  v-if="
+                    wizard.showStepErrors.value &&
+                    wizard.stepErrors.value.length > 0
+                  "
+                  class="wizard-errors"
                 >
-                  <Icon icon="lucide:party-popper" style="vertical-align: -4px; margin-right: 6px; color: var(--admin-primary);" /> Resepsi
-                </h4>
-                <div style="display: flex; flex-direction: column; gap: 12px">
-                  <div class="form-group">
-                    <label class="form-label">Tanggal</label>
-                    <input
-                      v-model="form.resepsi_date"
-                      type="date"
-                      class="form-input"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Waktu (Mulai - Selesai)</label>
-                    <div class="time-input-group">
-                      <div class="time-range-row">
-                        <input
-                          v-model="resepsiStart"
-                          type="time"
-                          class="form-input"
-                          @keydown.enter.prevent
-                        />
-                        <span class="time-separator">-</span>
-                        <input
-                          v-model="resepsiEnd"
-                          type="time"
-                          class="form-input"
-                          @keydown.enter.prevent
-                        />
-                      </div>
-                      <select v-model="resepsiZone" class="form-input time-zone-select">
-                        <option value="WIB">WIB</option>
-                        <option value="WITA">WITA</option>
-                        <option value="WIT">WIT</option>
-                      </select>
-                    </div>
-                    <p v-if="resepsiStart && resepsiEnd && resepsiStart >= resepsiEnd" class="time-error-hint">
-                      <Icon icon="lucide:alert-circle" style="font-size: 13px; flex-shrink: 0;" /> Waktu selesai harus lebih dari waktu mulai
-                    </p>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Tempat</label>
-                    <input v-model="form.resepsi_venue" class="form-input" maxlength="100" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
-                      <span>Alamat</span>
-                      <button type="button" class="btn btn-outline btn-sm" @click="openMapPicker('resepsi')" style="font-size: 11.5px; height: auto; padding: 4px 8px; border-radius: 6px;">
-                        <Icon icon="lucide:map-pin" style="font-size: 14px; margin-right: 4px;" /> Cari di Peta
-                      </button>
-                    </label>
-                    <textarea
-                      v-model="form.resepsi_address"
-                      class="form-input"
-                      rows="2"
-                      maxlength="200"
-                    ></textarea>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Link Google Maps</label>
-                    <input v-model="form.resepsi_map_url" class="form-input" maxlength="500" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-            <!-- Wizard Nav Step 3 -->
-            <div class="wizard-nav">
-              <div class="wizard-nav-left">
-                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
-                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
-                </button>
-              </div>
-              <div class="wizard-nav-right">
-                <button type="button" class="btn btn-success" @click="handleSubmit" :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'">
-                  <span v-if="submitting" class="loading-spinner" style="margin-right: 6px"></span>
-                  <Icon v-else icon="lucide:save" style="font-size: 16px; margin-right: 4px;" />
-                  {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
-                </button>
-                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
-                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
-                </button>
-              </div>
-            </div>
-            </div>
-
-            <!-- Step 4: Konten -->
-            <div v-show="wizard.currentStepIndex.value === 3" class="wizard-step-content">
-          <!-- Love Story -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:heart" style="color: var(--admin-primary);" /> Love Story</h3>
-            <p class="form-section-subtitle">
-              Ceritakan perjalanan cinta kalian (opsional)
-            </p>
-            <div class="helper-tip">
-              <Icon icon="lucide:info" class="helper-tip-icon" />
-              <span>Klik <strong>"+ Tambah Cerita"</strong> untuk menambahkan momen, misalnya: "2020 — Pertama Bertemu", "2023 — Lamaran". Bagian ini opsional.</span>
-            </div>
-
-            <div
-              v-for="(story, index) in form.love_story"
-              :key="index"
-              class="love-story-item"
-            >
-              <div style="font-size: 24px; color: var(--admin-primary)">
-                {{ index + 1 }}
-              </div>
-              <div class="story-fields">
-                <!-- Photo Upload -->
-                <div style="margin-bottom: 8px;">
-                  <div v-if="story.photo" style="position: relative; display: inline-block;">
-                    <img :src="getPhotoUrl(story.photo)" alt="Foto story" style="width: 100%; max-height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--admin-border);" />
+                  <div class="wizard-errors-header">
+                    <span style="display: flex; align-items: center; gap: 6px">
+                      <Icon
+                        icon="lucide:alert-circle"
+                        style="font-size: 16px"
+                      />
+                      Lengkapi field berikut sebelum lanjut:
+                    </span>
                     <button
                       type="button"
-                      title="Hapus foto"
-                      style="position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; background: #ef4444; color: white; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); cursor: pointer;"
-                      @click.stop="removeLoveStoryPhoto(index)"
+                      class="wizard-errors-close"
+                      @click="wizard.dismissErrors()"
                     >
-                      ✕
+                      <Icon icon="lucide:x" style="font-size: 14px" />
                     </button>
                   </div>
-                  <button
-                    v-else
-                    type="button"
-                    class="btn btn-outline btn-sm"
-                    style="font-size: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 4px;"
-                    @click.stop="triggerLoveStoryPhotoUpload(index)"
-                  >
-                    <Icon icon="lucide:image-plus" style="font-size: 14px;" /> Tambah Foto
-                  </button>
+                  <ul class="wizard-errors-list">
+                    <li v-for="(err, i) in wizard.stepErrors.value" :key="i">
+                      {{ err }}
+                    </li>
+                  </ul>
                 </div>
-                <input
-                  v-model="story.date"
-                  class="form-input"
-                  placeholder="Tahun/Tanggal"
-                  maxlength="20"
-                />
-                <input
-                  v-model="story.title"
-                  class="form-input"
-                  placeholder="Judul"
-                  maxlength="50"
-                />
-                <textarea
-                  v-model="story.description"
-                  class="form-input"
-                  placeholder="Ceritakan momen ini..."
-                  rows="2"
-                  maxlength="300"
-                ></textarea>
-              </div>
-              <button
-                type="button"
-                class="btn btn-danger btn-icon"
-                @click="form.love_story.splice(index, 1)"
-              >
-                ×
-              </button>
-            </div>
+              </Transition>
 
-            <!-- Hidden file input for love story photos -->
-            <input
-              ref="loveStoryPhotoInput"
-              type="file"
-              accept="image/*"
-              hidden
-              @change="handleLoveStoryPhotoUpload"
-            />
-
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button
-                type="button"
-                class="btn btn-outline"
-                @click="
-                  form.love_story.push({ date: '', title: '', description: '', photo: '' })
-                "
-              >
-                + Tambah Cerita
-              </button>
-              <button type="button" class="btn btn-outline" @click="showLoveStoryTemplateModal = true" style="display: flex; align-items: center; gap: 6px;">
-                <Icon icon="lucide:wand-2" style="font-size: 15px;" /> Pilih Template Cerita
-              </button>
-            </div>
-          </div>
-
-          <!-- Gallery -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:images" style="color: var(--admin-primary);" /> Galeri Foto</h3>
-            <p class="form-section-subtitle">
-              Upload foto-foto prewedding atau momen spesial
-            </p>
-            <div class="helper-tip">
-              <Icon icon="lucide:info" class="helper-tip-icon" />
-              <span>Bisa upload banyak foto sekaligus. Pilih mode <strong>Carousel</strong> (slideshow) atau <strong>Masonry</strong> (grid bertumpuk). Bagian ini opsional.</span>
-            </div>
-
-            <!-- Gallery Type Selector -->
-            <div class="gallery-type-selector">
-              <label class="form-label" style="margin-bottom: 10px; display: block;">Tipe Tampilan Galeri</label>
-              <div class="gallery-type-options">
-                <button type="button" class="gallery-type-btn" :class="{ active: form.gallery_type === 'carousel' }" @click="form.gallery_type = 'carousel'">
-                  <Icon icon="lucide:gallery-horizontal-end" style="font-size: 22px;" />
-                  <span>Carousel</span>
-                  <small>Slideshow satu per satu</small>
-                </button>
-                <button type="button" class="gallery-type-btn" :class="{ active: form.gallery_type === 'masonry' }" @click="form.gallery_type = 'masonry'">
-                  <Icon icon="lucide:layout-grid" style="font-size: 22px;" />
-                  <span>Masonry</span>
-                  <small>Grid bertumpuk estetik</small>
-                </button>
-              </div>
-            </div>
-
-            <div
-              class="photo-upload-zone"
-              @click="($refs.galleryInput as HTMLInputElement).click()"
-            >
-              <Icon icon="lucide:image-plus" class="upload-icon" style="color: var(--admin-text-secondary);" />
-              <div class="upload-text">Klik atau drag foto ke sini</div>
-              <div class="upload-hint">Bisa upload banyak foto sekaligus • Max 20MB per foto</div>
-            </div>
-            <input
-              ref="galleryInput"
-              type="file"
-              accept="image/*"
-              multiple
-              hidden
-              @change="handleGalleryUpload"
-            />
-
-            <div
-              v-if="form.photos && form.photos.length > 0"
-              class="photo-preview-grid"
-            >
+              <!-- Step 1: Tema & URL -->
               <div
-                v-for="(photo, index) in form.photos"
-                :key="index"
-                class="photo-preview-item"
+                v-show="wizard.currentStepIndex.value === 0"
+                class="wizard-step-content"
               >
-                <img :src="getPhotoUrl(photo.url)" />
-                <button
-                  type="button"
-                  class="remove-btn"
-                  @click="removeGalleryPhoto(index)"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-          </div>
+                <!-- Theme Selector -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:palette"
+                      style="color: var(--admin-primary)"
+                    />
+                    Tema Undangan
+                  </h3>
 
-          <!-- Quote -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:quote" style="color: var(--admin-primary);" /> Kutipan / Ayat</h3>
-            <p class="form-section-subtitle">Kutipan atau ayat yang ditampilkan di undangan</p>
-            <div class="helper-tip">
-              <Icon icon="lucide:info" class="helper-tip-icon" />
-              <span>Contoh: Kutipan dari film, puisi, atau kitab suci (Ar-Rum ayat 21). Kosongkan jika tidak diperlukan.</span>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Kutipan / Ayat</label>
-              <textarea
-                v-model="form.quote"
-                class="form-input"
-                rows="3"
-                maxlength="500"
-              ></textarea>
-              <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
-                <button type="button" class="btn btn-outline btn-sm" @click="showQuoteModal = true" style="font-size: 13px; display: flex; align-items: center; gap: 6px;">
-                  <Icon icon="lucide:book-text" style="font-size: 15px;" /> Pilih dari Template
-                </button>
-              </div>
-            </div>
-          </div>
-
-            <!-- Wizard Nav Step 4 -->
-            <div class="wizard-nav">
-              <div class="wizard-nav-left">
-                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
-                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
-                </button>
-              </div>
-              <div class="wizard-nav-right">
-                <button type="button" class="btn btn-success" @click="handleSubmit" :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'">
-                  <span v-if="submitting" class="loading-spinner" style="margin-right: 6px"></span>
-                  <Icon v-else icon="lucide:save" style="font-size: 16px; margin-right: 4px;" />
-                  {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
-                </button>
-                <button type="button" class="btn btn-primary" @click="wizard.nextStep()">
-                  Lanjut <Icon icon="lucide:arrow-right" style="font-size: 16px; margin-left: 4px;" />
-                </button>
-              </div>
-            </div>
-            </div>
-
-            <!-- Step 5: Lainnya -->
-            <div v-show="wizard.currentStepIndex.value === 4" class="wizard-step-content">
-          <!-- Bank Accounts (Gift) -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:wallet" style="color: var(--admin-primary);" /> Informasi Bank (Gift)</h3>
-            <p class="form-section-subtitle">Rekening untuk amplop digital. Bisa lebih dari satu. (opsional)</p>
-            <div class="helper-tip">
-              <Icon icon="lucide:info" class="helper-tip-icon" />
-              <span>Tamu bisa mengirim hadiah uang digital. Klik <strong>"+ Tambah Rekening"</strong> lalu isi nama bank, nomor rekening, dan atas nama. Maksimal 2 rekening.</span>
-            </div>
-
-            <div
-              v-for="(bank, index) in form.banks"
-              :key="index"
-              class="bank-item"
-            >
-              <div class="bank-item-header">
-                <span class="bank-item-number">Bank {{ index + 1 }}</span>
-                <button
-                  type="button"
-                  class="btn btn-danger btn-icon btn-sm"
-                  @click="form.banks.splice(index, 1)"
-                  title="Hapus bank"
-                >
-                  ×
-                </button>
-              </div>
-              <div class="form-grid">
-                <div class="form-group">
-                  <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
-                    Nama Bank / E-Wallet
-                  </label>
-                  <input v-model="bank.bank_name" class="form-input" placeholder="Contoh: BCA, Mandiri, GoPay" maxlength="50" />
-                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
-                    <button type="button" @click="bank.bank_name = 'BCA'" class="bank-pill">BCA</button>
-                    <button type="button" @click="bank.bank_name = 'Mandiri'" class="bank-pill">Mandiri</button>
-                    <button type="button" @click="bank.bank_name = 'BNI'" class="bank-pill">BNI</button>
-                    <button type="button" @click="bank.bank_name = 'BRI'" class="bank-pill">BRI</button>
-                    <button type="button" @click="bank.bank_name = 'BSI'" class="bank-pill">BSI</button>
-                    <button type="button" @click="bank.bank_name = 'GoPay'" class="bank-pill">GoPay</button>
-                    <button type="button" @click="bank.bank_name = 'OVO'" class="bank-pill">OVO</button>
-                    <button type="button" @click="bank.bank_name = 'DANA'" class="bank-pill">DANA</button>
-                    <button type="button" @click="bank.bank_name = 'ShopeePay'" class="bank-pill">ShopeePay</button>
+                  <div
+                    class="active-theme-container"
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      background: var(--admin-surface);
+                      padding: 16px;
+                      border-radius: var(--radius-md);
+                      border: 1px solid var(--admin-border);
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 13px;
+                          color: var(--admin-text-secondary);
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Tema saat ini
+                      </div>
+                      <strong
+                        style="text-transform: capitalize; font-size: 16px"
+                        >{{ form.theme }}</strong
+                      >
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      @click="showThemeModal = true"
+                    >
+                      <Icon
+                        icon="lucide:arrow-left-right"
+                        style="font-size: 16px"
+                      />
+                      Ubah Tema
+                    </button>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="form-label">No. Rekening</label>
-                  <input v-model="bank.bank_account" class="form-input" placeholder="1234567890" maxlength="20" />
-                </div>
-                <div class="form-group full-width">
-                  <label class="form-label">Atas Nama</label>
-                  <input v-model="bank.bank_holder" class="form-input" placeholder="Ahmad Andi Pratama" maxlength="60" />
-                </div>
-              </div>
-            </div>
+                <!-- Slug -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:link"
+                      style="color: var(--admin-primary)"
+                    />
+                    URL Undangan
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Slug unik untuk alamat undangan
+                  </p>
+                  <div class="form-group">
+                    <label class="form-label"
+                      >Slug (URL)
+                      <span class="text-error" style="color: #dc2626"
+                        >*</span
+                      ></label
+                    >
+                    <div style="position: relative">
+                      <input
+                        v-model="form.slug"
+                        class="form-input"
+                        :class="{
+                          'input-error': slugStatus === 'taken',
+                          'input-success': slugStatus === 'available',
+                        }"
+                        placeholder="contoh: andi-sarah"
+                        required
+                        maxlength="50"
+                        pattern="[a-z0-9-]+"
+                        title="Hanya huruf kecil, angka, dan tanda hubung"
+                        @input="handleSlugInput"
+                        style="padding-right: 36px"
+                      />
+                      <div
+                        v-if="slugStatus !== 'idle'"
+                        style="
+                          position: absolute;
+                          right: 12px;
+                          top: 50%;
+                          transform: translateY(-50%);
+                          display: flex;
+                          align-items: center;
+                        "
+                      >
+                        <Icon
+                          v-if="slugStatus === 'loading'"
+                          icon="lucide:loader-2"
+                          class="spin-icon"
+                          style="color: var(--admin-text-secondary)"
+                        />
+                        <Icon
+                          v-else-if="slugStatus === 'available'"
+                          icon="lucide:check-circle-2"
+                          style="color: #10b981"
+                        />
+                        <Icon
+                          v-else-if="slugStatus === 'taken'"
+                          icon="lucide:x-circle"
+                          style="color: #ef4444"
+                        />
+                      </div>
+                    </div>
 
-            <button
-              v-if="form.banks.length < 2"
-              type="button"
-              class="btn btn-outline"
-              @click="form.banks.push({ bank_name: '', bank_account: '', bank_holder: '' })"
-            >
-              + Tambah Rekening (Maks. 2)
-            </button>
-          </div>
-          <!-- Background Music -->
-          <div class="form-section">
-            <h3 class="form-section-title"><Icon icon="lucide:music" style="color: var(--admin-primary);" /> Musik Latar</h3>
-            <p class="form-section-subtitle">Lagu yang berputar otomatis saat undangan dibuka</p>
-            <div class="helper-tip">
-              <Icon icon="lucide:info" class="helper-tip-icon" />
-              <span>Setiap tema sudah memiliki musik default. Kamu bisa menggantinya dengan upload lagu sendiri, music default, atau dari pustaka lagu.</span>
-            </div>
-            <div class="form-group">
-              <!-- Musik Default Aktif -->
-              <div v-if="form.music_url && isCurrentMusicDefault" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 20px;">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                  <Icon icon="ph:music-notes-simple-fill" style="color: var(--admin-primary); font-size: 20px;" />
-                  <div>
-                    <div style="font-size: 13px; color: var(--admin-text-secondary);">Musik Default Tema</div>
-                    <strong style="font-size: 14px;">{{ currentDefaultMusicLabel }}</strong>
+                    <small
+                      v-if="slugStatus === 'taken'"
+                      style="
+                        color: #ef4444;
+                        font-size: 13px;
+                        font-weight: 500;
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                        margin-top: 4px;
+                      "
+                    >
+                      <Icon icon="lucide:alert-circle" /> Link sudah dipakai,
+                      coba variasi lain
+                    </small>
+                    <div
+                      v-if="
+                        slugStatus === 'taken' && slugSuggestions.length > 0
+                      "
+                      class="slug-suggestions"
+                    >
+                      <small
+                        style="
+                          color: var(--admin-text-secondary);
+                          font-size: 12px;
+                          display: block;
+                          margin-bottom: 6px;
+                        "
+                        >💡 Saran yang tersedia:</small
+                      >
+                      <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                        <button
+                          v-for="s in slugSuggestions"
+                          :key="s"
+                          type="button"
+                          class="slug-suggestion-chip"
+                          @click="applySuggestion(s)"
+                        >
+                          {{ s }}
+                        </button>
+                      </div>
+                    </div>
+                    <small
+                      v-else-if="slugStatus === 'available'"
+                      style="
+                        color: #10b981;
+                        font-size: 13px;
+                        font-weight: 500;
+                        display: flex;
+                        align-items: flex-start;
+                        gap: 6px;
+                        margin-top: 6px;
+                      "
+                    >
+                      <Icon
+                        icon="lucide:check"
+                        style="flex-shrink: 0; margin-top: 2px"
+                      />
+                      <span style="word-break: break-word; line-height: 1.4"
+                        ><strong>{{ form.slug }}</strong
+                        >.mengundanganda.com tersedia!</span
+                      >
+                    </small>
+                    <small
+                      v-else
+                      style="
+                        color: var(--admin-text-secondary);
+                        font-size: 12px;
+                        margin-top: 6px;
+                        display: block;
+                        line-height: 1.4;
+                      "
+                    >
+                      Undangan akan bisa diakses di:
+                      <strong style="word-break: break-word"
+                        >{{
+                          form.slug || "slug-anda"
+                        }}.mengundanganda.com</strong
+                      >
+                    </small>
                   </div>
                 </div>
-                <audio controls :src="form.music_url" style="width: 100%; height: 40px; margin-bottom: 12px;"></audio>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
-                    <Icon icon="lucide:upload" style="font-size: 14px;" /> Upload Lagu
-                  </button>
-                  <button type="button" class="btn btn-outline btn-sm" @click.stop="openMusicLibrary" style="font-size: 13px;">
-                    <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic" style="font-size: 13px;">
-                    <Icon icon="lucide:volume-x" style="font-size: 14px;" /> Tanpa Lagu
-                  </button>
-                </div>
-              </div>
-              <!-- Musik Custom (Upload User) -->
-              <div v-else-if="form.music_url" style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--radius-md); padding: 20px;">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                  <Icon icon="lucide:headphones" style="color: var(--admin-primary); font-size: 20px;" />
-                  <div>
-                    <div style="font-size: 13px; color: var(--admin-text-secondary);">Lagu Custom</div>
-                    <strong style="font-size: 14px;">Lagu Terpilih</strong>
+
+                <!-- Wizard Nav Step 1 -->
+                <div class="wizard-nav">
+                  <div class="wizard-nav-left">
+                    <router-link to="/dashboard" class="btn btn-outline"
+                      >Batal</router-link
+                    >
+                  </div>
+                  <div class="wizard-nav-right">
+                    <button
+                      type="button"
+                      class="btn btn-success"
+                      @click="handleSubmit"
+                      :disabled="
+                        submitting ||
+                        slugStatus === 'taken' ||
+                        slugStatus === 'loading'
+                      "
+                    >
+                      <span
+                        v-if="submitting"
+                        class="loading-spinner"
+                        style="margin-right: 6px"
+                      ></span>
+                      <Icon
+                        v-else
+                        icon="lucide:save"
+                        style="font-size: 16px; margin-right: 4px"
+                      />
+                      {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      @click="wizard.nextStep()"
+                    >
+                      Lanjut
+                      <Icon
+                        icon="lucide:arrow-right"
+                        style="font-size: 16px; margin-left: 4px"
+                      />
+                    </button>
                   </div>
                 </div>
-                <audio controls :src="resolveAssetUrl(form.music_url, apiBase)" style="width: 100%; height: 40px; margin-bottom: 12px;"></audio>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                  <button type="button" class="btn btn-outline btn-sm" @click.stop="musicFileInput?.click()" style="font-size: 13px;">
-                    <Icon icon="lucide:upload" style="font-size: 14px;" /> Upload Lagu
-                  </button>
-                  <button type="button" class="btn btn-outline btn-sm" @click.stop="openMusicLibrary" style="font-size: 13px;">
-                    <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
-                  </button>
-                  <button type="button" class="btn btn-outline btn-sm" @click.stop="restoreDefaultMusic" style="font-size: 13px;">
-                    <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Lagu Default
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm" @click.stop="removeMusic" style="font-size: 13px;">
-                    Hapus
-                  </button>
-                </div>
               </div>
-              <!-- Tidak Ada Musik -->
-              <div v-else class="photo-upload-zone" style="padding: 24px;" @click="musicFileInput?.click()">
-                <Icon icon="lucide:music-4" class="upload-icon" style="color: var(--admin-text-secondary);" />
-                <div class="upload-text">Upload File Audio</div>
-                <div class="upload-hint">Format bebas: .mp3, .m4a, .wav • Max 20MB</div>
-                <div style="display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-                  <button type="button" class="btn btn-outline btn-sm" style="font-size: 13px;" @click.stop="restoreDefaultMusic">
-                    <Icon icon="lucide:undo-2" style="font-size: 14px;" /> Lagu Default
-                  </button>
-                  <button type="button" class="btn btn-outline btn-sm" style="font-size: 13px;" @click.stop="openMusicLibrary">
-                    <Icon icon="lucide:library" style="font-size: 14px;" /> Pustaka Lagu
-                  </button>
-                </div>
-              </div>
-              <input
-                ref="musicFileInput"
-                type="file"
-                accept="audio/mpeg, audio/aac, audio/mp4, audio/wav, audio/ogg, audio/x-m4a"
-                hidden
-                @change="handleMusicUpload"
-              />
-            </div>
-          </div>
 
-            <!-- Wizard Nav Step 5 (Final) -->
-            <div class="wizard-nav">
-              <div class="wizard-nav-left">
-                <button type="button" class="btn btn-outline" @click="wizard.prevStep()">
-                  <Icon icon="lucide:arrow-left" style="font-size: 16px; margin-right: 4px;" /> Kembali
-                </button>
+              <!-- Step 2: Data Mempelai -->
+              <div
+                v-show="wizard.currentStepIndex.value === 1"
+                class="wizard-step-content"
+              >
+                <!-- Couple Info -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:users"
+                      style="color: var(--admin-primary)"
+                    />
+                    Informasi Pasangan
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Data mempelai pria dan wanita
+                  </p>
+                  <div class="helper-tip">
+                    <Icon icon="lucide:info" class="helper-tip-icon" />
+                    <span
+                      >Hanya <strong>Nama Panggilan & Nama Lengkap</strong> yang
+                      wajib. Data orang tua dan foto opsional, namun akan
+                      terlihat lebih berkesan jika diisi lengkap.</span
+                    >
+                  </div>
+
+                  <div class="split-grid">
+                    <div>
+                      <h4
+                        style="
+                          font-size: 15px;
+                          font-weight: 600;
+                          margin-bottom: 16px;
+                          color: var(--admin-primary);
+                        "
+                      >
+                        Mempelai Pria
+                      </h4>
+                      <div
+                        class="single-photo-upload"
+                        @click="
+                          ($refs.groomPhotoInput as HTMLInputElement).click()
+                        "
+                      >
+                        <img
+                          v-if="form.groom_photo"
+                          :src="getPhotoUrl(form.groom_photo)"
+                          alt="Foto mempelai pria"
+                        />
+                        <div v-else class="upload-placeholder">
+                          <Icon
+                            icon="lucide:user"
+                            style="
+                              font-size: 32px;
+                              color: var(--admin-text-secondary);
+                              margin-bottom: 8px;
+                            "
+                          />
+                          Upload Foto
+                        </div>
+                      </div>
+                      <button
+                        v-if="form.groom_photo"
+                        type="button"
+                        class="btn btn-danger btn-sm"
+                        style="margin: 12px auto 0; display: flex"
+                        @click="removeGroomPhoto"
+                      >
+                        Hapus Foto
+                      </button>
+                      <input
+                        ref="groomPhotoInput"
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        @change="(e) => handleSingleUpload(e, 'groom_photo')"
+                      />
+                      <div
+                        style="
+                          margin-top: 16px;
+                          display: flex;
+                          flex-direction: column;
+                          gap: 12px;
+                        "
+                      >
+                        <div class="form-group">
+                          <label class="form-label"
+                            >Nama Panggilan
+                            <span class="text-error" style="color: #dc2626"
+                              >*</span
+                            ></label
+                          >
+                          <input
+                            v-model="form.groom_name"
+                            class="form-input"
+                            required
+                            maxlength="20"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label"
+                            >Nama Lengkap
+                            <span class="text-error" style="color: #dc2626"
+                              >*</span
+                            ></label
+                          >
+                          <input
+                            v-model="form.groom_full_name"
+                            class="form-input"
+                            maxlength="60"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Putra dari Bapak</label>
+                          <input
+                            v-model="form.groom_father"
+                            class="form-input"
+                            maxlength="60"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">dan Ibu</label>
+                          <input
+                            v-model="form.groom_mother"
+                            class="form-input"
+                            maxlength="60"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4
+                        style="
+                          font-size: 15px;
+                          font-weight: 600;
+                          margin-bottom: 16px;
+                          color: var(--admin-accent);
+                        "
+                      >
+                        Mempelai Wanita
+                      </h4>
+                      <div
+                        class="single-photo-upload"
+                        @click="
+                          ($refs.bridePhotoInput as HTMLInputElement).click()
+                        "
+                      >
+                        <img
+                          v-if="form.bride_photo"
+                          :src="getPhotoUrl(form.bride_photo)"
+                          alt="Foto mempelai wanita"
+                        />
+                        <div v-else class="upload-placeholder">
+                          <Icon
+                            icon="lucide:user"
+                            style="
+                              font-size: 32px;
+                              color: var(--admin-text-secondary);
+                              margin-bottom: 8px;
+                            "
+                          />
+                          Upload Foto
+                        </div>
+                      </div>
+                      <button
+                        v-if="form.bride_photo"
+                        type="button"
+                        class="btn btn-danger btn-sm"
+                        style="margin: 12px auto 0; display: flex"
+                        @click="removeBridePhoto"
+                      >
+                        Hapus Foto
+                      </button>
+                      <input
+                        ref="bridePhotoInput"
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        @change="(e) => handleSingleUpload(e, 'bride_photo')"
+                      />
+                      <div
+                        style="
+                          margin-top: 16px;
+                          display: flex;
+                          flex-direction: column;
+                          gap: 12px;
+                        "
+                      >
+                        <div class="form-group">
+                          <label class="form-label"
+                            >Nama Panggilan
+                            <span class="text-error" style="color: #dc2626"
+                              >*</span
+                            ></label
+                          >
+                          <input
+                            v-model="form.bride_name"
+                            class="form-input"
+                            required
+                            maxlength="20"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label"
+                            >Nama Lengkap
+                            <span class="text-error" style="color: #dc2626"
+                              >*</span
+                            ></label
+                          >
+                          <input
+                            v-model="form.bride_full_name"
+                            class="form-input"
+                            maxlength="60"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Putri dari Bapak</label>
+                          <input
+                            v-model="form.bride_father"
+                            class="form-input"
+                            maxlength="60"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">dan Ibu</label>
+                          <input
+                            v-model="form.bride_mother"
+                            class="form-input"
+                            maxlength="60"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cover Photo -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:image"
+                      style="color: var(--admin-primary)"
+                    />
+                    Foto Sampul
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Foto utama yang ditampilkan di halaman depan undangan
+                  </p>
+                  <div class="helper-tip">
+                    <Icon icon="lucide:info" class="helper-tip-icon" />
+                    <span
+                      >Gunakan foto <strong>portrait</strong> (tegak) untuk
+                      hasil terbaik. Foto prewedding sangat
+                      direkomendasikan!</span
+                    >
+                  </div>
+                  <div
+                    class="photo-upload-zone"
+                    @click="($refs.coverPhotoInput as HTMLInputElement).click()"
+                  >
+                    <div
+                      v-if="form.cover_photo"
+                      style="position: relative; display: inline-block"
+                    >
+                      <img
+                        :src="getPhotoUrl(form.cover_photo)"
+                        alt="Foto sampul"
+                        style="
+                          max-height: 200px;
+                          border-radius: 8px;
+                          display: block;
+                        "
+                      />
+                      <button
+                        type="button"
+                        title="Hapus foto"
+                        style="
+                          position: absolute;
+                          top: -10px;
+                          right: -10px;
+                          width: 26px;
+                          height: 26px;
+                          background: #ef4444;
+                          color: white;
+                          border-radius: 50%;
+                          border: 2px solid white;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          font-size: 14px;
+                          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+                        "
+                        @click.stop="removeCoverPhoto"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <div v-else>
+                      <Icon
+                        icon="lucide:camera"
+                        class="upload-icon"
+                        style="color: var(--admin-text-secondary)"
+                      />
+                      <div class="upload-text">Klik atau drag foto ke sini</div>
+                      <div class="upload-hint">JPG, PNG, WebP • Max 20MB</div>
+                    </div>
+                  </div>
+                  <input
+                    ref="coverPhotoInput"
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    @change="(e) => handleSingleUpload(e, 'cover_photo')"
+                  />
+                </div>
+
+                <!-- Wizard Nav Step 2 -->
+                <div class="wizard-nav">
+                  <div class="wizard-nav-left">
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      @click="wizard.prevStep()"
+                    >
+                      <Icon
+                        icon="lucide:arrow-left"
+                        style="font-size: 16px; margin-right: 4px"
+                      />
+                      Kembali
+                    </button>
+                  </div>
+                  <div class="wizard-nav-right">
+                    <button
+                      type="button"
+                      class="btn btn-success"
+                      @click="handleSubmit"
+                      :disabled="
+                        submitting ||
+                        slugStatus === 'taken' ||
+                        slugStatus === 'loading'
+                      "
+                    >
+                      <span
+                        v-if="submitting"
+                        class="loading-spinner"
+                        style="margin-right: 6px"
+                      ></span>
+                      <Icon
+                        v-else
+                        icon="lucide:save"
+                        style="font-size: 16px; margin-right: 4px"
+                      />
+                      {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      @click="wizard.nextStep()"
+                    >
+                      Lanjut
+                      <Icon
+                        icon="lucide:arrow-right"
+                        style="font-size: 16px; margin-left: 4px"
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div class="wizard-nav-right">
-                <button
-                  type="submit"
-                  class="btn btn-primary btn-lg"
-                  :disabled="submitting || slugStatus === 'taken' || slugStatus === 'loading'"
-                >
-                  <span v-if="submitting" class="loading-spinner" style="margin-right: 8px"></span>
-                  <span v-if="!submitting" style="margin-right: 8px; vertical-align: -3px;"><Icon icon="lucide:save" /></span>
-                  {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
-                </button>
+
+              <!-- Step 3: Detail Acara -->
+              <div
+                v-show="wizard.currentStepIndex.value === 2"
+                class="wizard-step-content"
+              >
+                <!-- Event Details -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:calendar-days"
+                      style="color: var(--admin-primary)"
+                    />
+                    Detail Acara
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Informasi waktu dan tempat acara
+                  </p>
+                  <div class="helper-tip">
+                    <Icon icon="lucide:info" class="helper-tip-icon" />
+                    <span
+                      >Jadwal <strong>Akad Nikah wajib diisi</strong> (Tanggal,
+                      Waktu Mulai, Tempat, Alamat). Jadwal Resepsi sepenuhnya
+                      opsional.</span
+                    >
+                  </div>
+
+                  <div class="split-grid">
+                    <div
+                      style="
+                        padding: 20px;
+                        background: var(--admin-bg);
+                        border-radius: var(--radius-md);
+                        border: 1px solid var(--admin-border);
+                      "
+                    >
+                      <h4
+                        style="
+                          font-size: 15px;
+                          font-weight: 600;
+                          margin-bottom: 16px;
+                        "
+                      >
+                        <Icon
+                          icon="lucide:heart-handshake"
+                          style="
+                            vertical-align: -4px;
+                            margin-right: 6px;
+                            color: var(--admin-primary);
+                          "
+                        />
+                        Akad Nikah
+                      </h4>
+                      <div
+                        style="display: flex; flex-direction: column; gap: 12px"
+                      >
+                        <div class="form-group">
+                          <label class="form-label"
+                            >Tanggal
+                            <span class="text-error" style="color: #dc2626"
+                              >*</span
+                            ></label
+                          >
+                          <input
+                            v-model="form.akad_date"
+                            type="date"
+                            class="form-input"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label"
+                            >Waktu (Mulai
+                            <span class="text-error" style="color: #dc2626"
+                              >*</span
+                            >
+                            - Selesai)</label
+                          >
+                          <div class="time-input-group">
+                            <div class="time-range-row">
+                              <input
+                                v-model="akadStart"
+                                type="time"
+                                class="form-input"
+                                @keydown.enter.prevent
+                              />
+                              <span class="time-separator">-</span>
+                              <input
+                                v-model="akadEnd"
+                                type="time"
+                                class="form-input"
+                                @keydown.enter.prevent
+                              />
+                            </div>
+                            <select
+                              v-model="akadZone"
+                              class="form-input time-zone-select"
+                            >
+                              <option value="WIB">WIB</option>
+                              <option value="WITA">WITA</option>
+                              <option value="WIT">WIT</option>
+                            </select>
+                          </div>
+                          <p
+                            v-if="akadStart && akadEnd && akadStart >= akadEnd"
+                            class="time-error-hint"
+                          >
+                            <Icon
+                              icon="lucide:alert-circle"
+                              style="font-size: 13px; flex-shrink: 0"
+                            />
+                            Waktu selesai harus lebih dari waktu mulai
+                          </p>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label"
+                            >Tempat
+                            <span class="text-error" style="color: #dc2626"
+                              >*</span
+                            ></label
+                          >
+                          <input
+                            v-model="form.akad_venue"
+                            class="form-input"
+                            maxlength="100"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label
+                            class="form-label"
+                            style="
+                              display: flex;
+                              justify-content: space-between;
+                              align-items: center;
+                            "
+                          >
+                            <span
+                              >Alamat
+                              <span class="text-error" style="color: #dc2626"
+                                >*</span
+                              ></span
+                            >
+                            <button
+                              type="button"
+                              class="btn btn-outline btn-sm"
+                              @click="openMapPicker('akad')"
+                              style="
+                                font-size: 11.5px;
+                                height: auto;
+                                padding: 4px 8px;
+                                border-radius: 6px;
+                              "
+                            >
+                              <Icon
+                                icon="lucide:map-pin"
+                                style="font-size: 14px; margin-right: 4px"
+                              />
+                              Cari di Peta
+                            </button>
+                          </label>
+                          <textarea
+                            v-model="form.akad_address"
+                            class="form-input"
+                            rows="2"
+                            maxlength="200"
+                          ></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Link Google Maps</label>
+                          <input
+                            v-model="form.akad_map_url"
+                            class="form-input"
+                            maxlength="500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      style="
+                        padding: 20px;
+                        background: var(--admin-bg);
+                        border-radius: var(--radius-md);
+                        border: 1px solid var(--admin-border);
+                      "
+                    >
+                      <h4
+                        style="
+                          font-size: 15px;
+                          font-weight: 600;
+                          margin-bottom: 16px;
+                        "
+                      >
+                        <Icon
+                          icon="lucide:party-popper"
+                          style="
+                            vertical-align: -4px;
+                            margin-right: 6px;
+                            color: var(--admin-primary);
+                          "
+                        />
+                        Resepsi
+                      </h4>
+                      <div
+                        style="display: flex; flex-direction: column; gap: 12px"
+                      >
+                        <div class="form-group">
+                          <label class="form-label">Tanggal</label>
+                          <input
+                            v-model="form.resepsi_date"
+                            type="date"
+                            class="form-input"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label"
+                            >Waktu (Mulai - Selesai)</label
+                          >
+                          <div class="time-input-group">
+                            <div class="time-range-row">
+                              <input
+                                v-model="resepsiStart"
+                                type="time"
+                                class="form-input"
+                                @keydown.enter.prevent
+                              />
+                              <span class="time-separator">-</span>
+                              <input
+                                v-model="resepsiEnd"
+                                type="time"
+                                class="form-input"
+                                @keydown.enter.prevent
+                              />
+                            </div>
+                            <select
+                              v-model="resepsiZone"
+                              class="form-input time-zone-select"
+                            >
+                              <option value="WIB">WIB</option>
+                              <option value="WITA">WITA</option>
+                              <option value="WIT">WIT</option>
+                            </select>
+                          </div>
+                          <p
+                            v-if="
+                              resepsiStart &&
+                              resepsiEnd &&
+                              resepsiStart >= resepsiEnd
+                            "
+                            class="time-error-hint"
+                          >
+                            <Icon
+                              icon="lucide:alert-circle"
+                              style="font-size: 13px; flex-shrink: 0"
+                            />
+                            Waktu selesai harus lebih dari waktu mulai
+                          </p>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Tempat</label>
+                          <input
+                            v-model="form.resepsi_venue"
+                            class="form-input"
+                            maxlength="100"
+                          />
+                        </div>
+                        <div class="form-group">
+                          <label
+                            class="form-label"
+                            style="
+                              display: flex;
+                              justify-content: space-between;
+                              align-items: center;
+                            "
+                          >
+                            <span>Alamat</span>
+                            <button
+                              type="button"
+                              class="btn btn-outline btn-sm"
+                              @click="openMapPicker('resepsi')"
+                              style="
+                                font-size: 11.5px;
+                                height: auto;
+                                padding: 4px 8px;
+                                border-radius: 6px;
+                              "
+                            >
+                              <Icon
+                                icon="lucide:map-pin"
+                                style="font-size: 14px; margin-right: 4px"
+                              />
+                              Cari di Peta
+                            </button>
+                          </label>
+                          <textarea
+                            v-model="form.resepsi_address"
+                            class="form-input"
+                            rows="2"
+                            maxlength="200"
+                          ></textarea>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Link Google Maps</label>
+                          <input
+                            v-model="form.resepsi_map_url"
+                            class="form-input"
+                            maxlength="500"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Wizard Nav Step 3 -->
+                <div class="wizard-nav">
+                  <div class="wizard-nav-left">
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      @click="wizard.prevStep()"
+                    >
+                      <Icon
+                        icon="lucide:arrow-left"
+                        style="font-size: 16px; margin-right: 4px"
+                      />
+                      Kembali
+                    </button>
+                  </div>
+                  <div class="wizard-nav-right">
+                    <button
+                      type="button"
+                      class="btn btn-success"
+                      @click="handleSubmit"
+                      :disabled="
+                        submitting ||
+                        slugStatus === 'taken' ||
+                        slugStatus === 'loading'
+                      "
+                    >
+                      <span
+                        v-if="submitting"
+                        class="loading-spinner"
+                        style="margin-right: 6px"
+                      ></span>
+                      <Icon
+                        v-else
+                        icon="lucide:save"
+                        style="font-size: 16px; margin-right: 4px"
+                      />
+                      {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      @click="wizard.nextStep()"
+                    >
+                      Lanjut
+                      <Icon
+                        icon="lucide:arrow-right"
+                        style="font-size: 16px; margin-left: 4px"
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-            </div>
+
+              <!-- Step 4: Konten -->
+              <div
+                v-show="wizard.currentStepIndex.value === 3"
+                class="wizard-step-content"
+              >
+                <!-- Love Story -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:heart"
+                      style="color: var(--admin-primary)"
+                    />
+                    Love Story
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Ceritakan perjalanan cinta kalian (opsional)
+                  </p>
+                  <div class="helper-tip">
+                    <Icon icon="lucide:info" class="helper-tip-icon" />
+                    <span
+                      >Klik <strong>"+ Tambah Cerita"</strong> untuk menambahkan
+                      momen, misalnya: "2020 — Pertama Bertemu", "2023 —
+                      Lamaran". Bagian ini opsional.</span
+                    >
+                  </div>
+
+                  <div
+                    v-for="(story, index) in form.love_story"
+                    :key="index"
+                    class="love-story-item"
+                  >
+                    <div style="font-size: 24px; color: var(--admin-primary)">
+                      {{ index + 1 }}
+                    </div>
+                    <div class="story-fields">
+                      <!-- Photo Upload -->
+                      <div style="margin-bottom: 8px">
+                        <div
+                          v-if="story.photo"
+                          style="position: relative; display: inline-block"
+                        >
+                          <img
+                            :src="getPhotoUrl(story.photo)"
+                            alt="Foto story"
+                            style="
+                              width: 100%;
+                              max-height: 140px;
+                              object-fit: cover;
+                              border-radius: 8px;
+                              border: 1px solid var(--admin-border);
+                            "
+                          />
+                          <button
+                            type="button"
+                            title="Hapus foto"
+                            style="
+                              position: absolute;
+                              top: -8px;
+                              right: -8px;
+                              width: 22px;
+                              height: 22px;
+                              background: #ef4444;
+                              color: white;
+                              border-radius: 50%;
+                              border: 2px solid white;
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              font-size: 12px;
+                              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+                              cursor: pointer;
+                            "
+                            @click.stop="removeLoveStoryPhoto(index)"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                        <button
+                          v-else
+                          type="button"
+                          class="btn btn-outline btn-sm"
+                          style="
+                            font-size: 12px;
+                            padding: 6px 12px;
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+                          "
+                          @click.stop="triggerLoveStoryPhotoUpload(index)"
+                        >
+                          <Icon
+                            icon="lucide:image-plus"
+                            style="font-size: 14px"
+                          />
+                          Tambah Foto
+                        </button>
+                      </div>
+                      <input
+                        v-model="story.date"
+                        class="form-input"
+                        placeholder="Tahun/Tanggal"
+                        maxlength="20"
+                      />
+                      <input
+                        v-model="story.title"
+                        class="form-input"
+                        placeholder="Judul"
+                        maxlength="50"
+                      />
+                      <textarea
+                        v-model="story.description"
+                        class="form-input"
+                        placeholder="Ceritakan momen ini..."
+                        rows="2"
+                        maxlength="300"
+                      ></textarea>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-icon"
+                      @click="form.love_story.splice(index, 1)"
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <!-- Hidden file input for love story photos -->
+                  <input
+                    ref="loveStoryPhotoInput"
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    @change="handleLoveStoryPhotoUpload"
+                  />
+
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      @click="
+                        form.love_story.push({
+                          date: '',
+                          title: '',
+                          description: '',
+                          photo: '',
+                        })
+                      "
+                    >
+                      + Tambah Cerita
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      @click="showLoveStoryTemplateModal = true"
+                      style="display: flex; align-items: center; gap: 6px"
+                    >
+                      <Icon icon="lucide:wand-2" style="font-size: 15px" />
+                      Pilih Template Cerita
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Gallery -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:images"
+                      style="color: var(--admin-primary)"
+                    />
+                    Galeri Foto
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Upload foto-foto prewedding atau momen spesial
+                  </p>
+                  <div class="helper-tip">
+                    <Icon icon="lucide:info" class="helper-tip-icon" />
+                    <span
+                      >Bisa upload banyak foto sekaligus. Pilih mode
+                      <strong>Carousel</strong> (slideshow) atau
+                      <strong>Masonry</strong> (grid bertumpuk). Bagian ini
+                      opsional.</span
+                    >
+                  </div>
+
+                  <!-- Gallery Type Selector -->
+                  <div class="gallery-type-selector">
+                    <label
+                      class="form-label"
+                      style="margin-bottom: 10px; display: block"
+                      >Tipe Tampilan Galeri</label
+                    >
+                    <div class="gallery-type-options">
+                      <button
+                        type="button"
+                        class="gallery-type-btn"
+                        :class="{ active: form.gallery_type === 'carousel' }"
+                        @click="form.gallery_type = 'carousel'"
+                      >
+                        <Icon
+                          icon="lucide:gallery-horizontal-end"
+                          style="font-size: 22px"
+                        />
+                        <span>Carousel</span>
+                        <small>Slideshow satu per satu</small>
+                      </button>
+                      <button
+                        type="button"
+                        class="gallery-type-btn"
+                        :class="{ active: form.gallery_type === 'masonry' }"
+                        @click="form.gallery_type = 'masonry'"
+                      >
+                        <Icon
+                          icon="lucide:layout-grid"
+                          style="font-size: 22px"
+                        />
+                        <span>Masonry</span>
+                        <small>Grid bertumpuk estetik</small>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div
+                    class="photo-upload-zone"
+                    @click="($refs.galleryInput as HTMLInputElement).click()"
+                  >
+                    <Icon
+                      icon="lucide:image-plus"
+                      class="upload-icon"
+                      style="color: var(--admin-text-secondary)"
+                    />
+                    <div class="upload-text">Klik atau drag foto ke sini</div>
+                    <div class="upload-hint">
+                      Bisa upload banyak foto sekaligus • Max 20MB per foto
+                    </div>
+                  </div>
+                  <input
+                    ref="galleryInput"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    hidden
+                    @change="handleGalleryUpload"
+                  />
+
+                  <div
+                    v-if="form.photos && form.photos.length > 0"
+                    class="photo-preview-grid"
+                  >
+                    <div
+                      v-for="(photo, index) in form.photos"
+                      :key="index"
+                      class="photo-preview-item"
+                    >
+                      <img :src="getPhotoUrl(photo.url)" />
+                      <button
+                        type="button"
+                        class="remove-btn"
+                        @click="removeGalleryPhoto(index)"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Quote -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:quote"
+                      style="color: var(--admin-primary)"
+                    />
+                    Kutipan / Ayat
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Kutipan atau ayat yang ditampilkan di undangan
+                  </p>
+                  <div class="helper-tip">
+                    <Icon icon="lucide:info" class="helper-tip-icon" />
+                    <span
+                      >Contoh: Kutipan dari film, puisi, atau kitab suci (Ar-Rum
+                      ayat 21). Kosongkan jika tidak diperlukan.</span
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Kutipan / Ayat</label>
+                    <textarea
+                      v-model="form.quote"
+                      class="form-input"
+                      rows="3"
+                      maxlength="500"
+                    ></textarea>
+                    <div
+                      style="
+                        margin-top: 12px;
+                        display: flex;
+                        justify-content: flex-end;
+                      "
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm"
+                        @click="showQuoteModal = true"
+                        style="
+                          font-size: 13px;
+                          display: flex;
+                          align-items: center;
+                          gap: 6px;
+                        "
+                      >
+                        <Icon icon="lucide:book-text" style="font-size: 15px" />
+                        Pilih dari Template
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Wizard Nav Step 4 -->
+                <div class="wizard-nav">
+                  <div class="wizard-nav-left">
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      @click="wizard.prevStep()"
+                    >
+                      <Icon
+                        icon="lucide:arrow-left"
+                        style="font-size: 16px; margin-right: 4px"
+                      />
+                      Kembali
+                    </button>
+                  </div>
+                  <div class="wizard-nav-right">
+                    <button
+                      type="button"
+                      class="btn btn-success"
+                      @click="handleSubmit"
+                      :disabled="
+                        submitting ||
+                        slugStatus === 'taken' ||
+                        slugStatus === 'loading'
+                      "
+                    >
+                      <span
+                        v-if="submitting"
+                        class="loading-spinner"
+                        style="margin-right: 6px"
+                      ></span>
+                      <Icon
+                        v-else
+                        icon="lucide:save"
+                        style="font-size: 16px; margin-right: 4px"
+                      />
+                      {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      @click="wizard.nextStep()"
+                    >
+                      Lanjut
+                      <Icon
+                        icon="lucide:arrow-right"
+                        style="font-size: 16px; margin-left: 4px"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 5: Lainnya -->
+              <div
+                v-show="wizard.currentStepIndex.value === 4"
+                class="wizard-step-content"
+              >
+                <!-- Bank Accounts (Gift) -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:wallet"
+                      style="color: var(--admin-primary)"
+                    />
+                    Informasi Bank (Gift)
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Rekening untuk amplop digital. Bisa lebih dari satu.
+                    (opsional)
+                  </p>
+                  <div class="helper-tip">
+                    <Icon icon="lucide:info" class="helper-tip-icon" />
+                    <span
+                      >Tamu bisa mengirim hadiah uang digital. Klik
+                      <strong>"+ Tambah Rekening"</strong> lalu isi nama bank,
+                      nomor rekening, dan atas nama. Maksimal 2 rekening.</span
+                    >
+                  </div>
+
+                  <div
+                    v-for="(bank, index) in form.banks"
+                    :key="index"
+                    class="bank-item"
+                  >
+                    <div class="bank-item-header">
+                      <span class="bank-item-number">Bank {{ index + 1 }}</span>
+                      <button
+                        type="button"
+                        class="btn btn-danger btn-icon btn-sm"
+                        @click="form.banks.splice(index, 1)"
+                        title="Hapus bank"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <div class="form-grid">
+                      <div class="form-group">
+                        <label
+                          class="form-label"
+                          style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                          "
+                        >
+                          Nama Bank / E-Wallet
+                        </label>
+                        <input
+                          v-model="bank.bank_name"
+                          class="form-input"
+                          placeholder="Contoh: BCA, Mandiri, GoPay"
+                          maxlength="50"
+                        />
+                        <div
+                          style="
+                            display: flex;
+                            gap: 6px;
+                            flex-wrap: wrap;
+                            margin-top: 8px;
+                          "
+                        >
+                          <button
+                            type="button"
+                            @click="bank.bank_name = 'BCA'"
+                            class="bank-pill"
+                          >
+                            BCA
+                          </button>
+                          <button
+                            type="button"
+                            @click="bank.bank_name = 'Mandiri'"
+                            class="bank-pill"
+                          >
+                            Mandiri
+                          </button>
+                          <button
+                            type="button"
+                            @click="bank.bank_name = 'BNI'"
+                            class="bank-pill"
+                          >
+                            BNI
+                          </button>
+                          <button
+                            type="button"
+                            @click="bank.bank_name = 'BRI'"
+                            class="bank-pill"
+                          >
+                            BRI
+                          </button>
+                          <button
+                            type="button"
+                            @click="bank.bank_name = 'BSI'"
+                            class="bank-pill"
+                          >
+                            BSI
+                          </button>
+                          <button
+                            type="button"
+                            @click="bank.bank_name = 'GoPay'"
+                            class="bank-pill"
+                          >
+                            GoPay
+                          </button>
+                          <button
+                            type="button"
+                            @click="bank.bank_name = 'OVO'"
+                            class="bank-pill"
+                          >
+                            OVO
+                          </button>
+                          <button
+                            type="button"
+                            @click="bank.bank_name = 'DANA'"
+                            class="bank-pill"
+                          >
+                            DANA
+                          </button>
+                          <button
+                            type="button"
+                            @click="bank.bank_name = 'ShopeePay'"
+                            class="bank-pill"
+                          >
+                            ShopeePay
+                          </button>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">No. Rekening</label>
+                        <input
+                          v-model="bank.bank_account"
+                          class="form-input"
+                          placeholder="1234567890"
+                          maxlength="20"
+                        />
+                      </div>
+                      <div class="form-group full-width">
+                        <label class="form-label">Atas Nama</label>
+                        <input
+                          v-model="bank.bank_holder"
+                          class="form-input"
+                          placeholder="Ahmad Andi Pratama"
+                          maxlength="60"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    v-if="form.banks.length < 2"
+                    type="button"
+                    class="btn btn-outline"
+                    @click="
+                      form.banks.push({
+                        bank_name: '',
+                        bank_account: '',
+                        bank_holder: '',
+                      })
+                    "
+                  >
+                    + Tambah Rekening (Maks. 2)
+                  </button>
+                </div>
+                <!-- Background Music -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:music"
+                      style="color: var(--admin-primary)"
+                    />
+                    Musik Latar
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Lagu yang berputar otomatis saat undangan dibuka
+                  </p>
+                  <div class="helper-tip">
+                    <Icon icon="lucide:info" class="helper-tip-icon" />
+                    <span
+                      >Setiap tema sudah memiliki musik default. Kamu bisa
+                      menggantinya dengan upload lagu sendiri, music default,
+                      atau dari pustaka lagu.</span
+                    >
+                  </div>
+                  <div class="form-group">
+                    <!-- Musik Default Aktif -->
+                    <div
+                      v-if="form.music_url && isCurrentMusicDefault"
+                      style="
+                        background: var(--admin-surface);
+                        border: 1px solid var(--admin-border);
+                        border-radius: var(--radius-md);
+                        padding: 20px;
+                      "
+                    >
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: 8px;
+                          margin-bottom: 12px;
+                        "
+                      >
+                        <Icon
+                          icon="ph:music-notes-simple-fill"
+                          style="color: var(--admin-primary); font-size: 20px"
+                        />
+                        <div>
+                          <div
+                            style="
+                              font-size: 13px;
+                              color: var(--admin-text-secondary);
+                            "
+                          >
+                            Musik Default Tema
+                          </div>
+                          <strong style="font-size: 14px">{{
+                            currentDefaultMusicLabel
+                          }}</strong>
+                        </div>
+                      </div>
+                      <audio
+                        controls
+                        :src="form.music_url"
+                        style="width: 100%; height: 40px; margin-bottom: 12px"
+                      ></audio>
+                      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm"
+                          @click.stop="musicFileInput?.click()"
+                          style="font-size: 13px"
+                        >
+                          <Icon icon="lucide:upload" style="font-size: 14px" />
+                          Upload Lagu
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm"
+                          @click.stop="openMusicLibrary"
+                          style="font-size: 13px"
+                        >
+                          <Icon icon="lucide:library" style="font-size: 14px" />
+                          Pustaka Lagu
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-danger btn-sm"
+                          @click.stop="removeMusic"
+                          style="font-size: 13px"
+                        >
+                          <Icon
+                            icon="lucide:volume-x"
+                            style="font-size: 14px"
+                          />
+                          Tanpa Lagu
+                        </button>
+                      </div>
+                    </div>
+                    <!-- Musik Custom (Upload User) -->
+                    <div
+                      v-else-if="form.music_url"
+                      style="
+                        background: var(--admin-surface);
+                        border: 1px solid var(--admin-border);
+                        border-radius: var(--radius-md);
+                        padding: 20px;
+                      "
+                    >
+                      <div
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: 8px;
+                          margin-bottom: 12px;
+                        "
+                      >
+                        <Icon
+                          icon="lucide:headphones"
+                          style="color: var(--admin-primary); font-size: 20px"
+                        />
+                        <div>
+                          <div
+                            style="
+                              font-size: 13px;
+                              color: var(--admin-text-secondary);
+                            "
+                          >
+                            Lagu Custom
+                          </div>
+                          <strong style="font-size: 14px">Lagu Terpilih</strong>
+                        </div>
+                      </div>
+                      <audio
+                        controls
+                        :src="resolveAssetUrl(form.music_url, apiBase)"
+                        style="width: 100%; height: 40px; margin-bottom: 12px"
+                      ></audio>
+                      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm"
+                          @click.stop="musicFileInput?.click()"
+                          style="font-size: 13px"
+                        >
+                          <Icon icon="lucide:upload" style="font-size: 14px" />
+                          Upload Lagu
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm"
+                          @click.stop="openMusicLibrary"
+                          style="font-size: 13px"
+                        >
+                          <Icon icon="lucide:library" style="font-size: 14px" />
+                          Pustaka Lagu
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm"
+                          @click.stop="restoreDefaultMusic"
+                          style="font-size: 13px"
+                        >
+                          <Icon icon="lucide:undo-2" style="font-size: 14px" />
+                          Lagu Default
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-danger btn-sm"
+                          @click.stop="removeMusic"
+                          style="font-size: 13px"
+                        >
+                          Hapus
+                        </button>
+                      </div>
+                    </div>
+                    <!-- Tidak Ada Musik -->
+                    <div
+                      v-else
+                      class="photo-upload-zone"
+                      style="padding: 24px"
+                      @click="musicFileInput?.click()"
+                    >
+                      <Icon
+                        icon="lucide:music-4"
+                        class="upload-icon"
+                        style="color: var(--admin-text-secondary)"
+                      />
+                      <div class="upload-text">Upload File Audio</div>
+                      <div class="upload-hint">
+                        Format bebas: .mp3, .m4a, .wav • Max 20MB
+                      </div>
+                      <div
+                        style="
+                          display: flex;
+                          justify-content: center;
+                          gap: 8px;
+                          margin-top: 12px;
+                          flex-wrap: wrap;
+                        "
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm"
+                          style="font-size: 13px"
+                          @click.stop="restoreDefaultMusic"
+                        >
+                          <Icon icon="lucide:undo-2" style="font-size: 14px" />
+                          Lagu Default
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm"
+                          style="font-size: 13px"
+                          @click.stop="openMusicLibrary"
+                        >
+                          <Icon icon="lucide:library" style="font-size: 14px" />
+                          Pustaka Lagu
+                        </button>
+                      </div>
+                    </div>
+                    <input
+                      ref="musicFileInput"
+                      type="file"
+                      accept="audio/mpeg, audio/aac, audio/mp4, audio/wav, audio/ogg, audio/x-m4a"
+                      hidden
+                      @change="handleMusicUpload"
+                    />
+                  </div>
+                </div>
+
+                <!-- Wizard Nav Step 5 (Final) -->
+                <div class="wizard-nav">
+                  <div class="wizard-nav-left">
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      @click="wizard.prevStep()"
+                    >
+                      <Icon
+                        icon="lucide:arrow-left"
+                        style="font-size: 16px; margin-right: 4px"
+                      />
+                      Kembali
+                    </button>
+                  </div>
+                  <div class="wizard-nav-right">
+                    <button
+                      type="submit"
+                      class="btn btn-primary btn-lg"
+                      :disabled="
+                        submitting ||
+                        slugStatus === 'taken' ||
+                        slugStatus === 'loading'
+                      "
+                    >
+                      <span
+                        v-if="submitting"
+                        class="loading-spinner"
+                        style="margin-right: 8px"
+                      ></span>
+                      <span
+                        v-if="!submitting"
+                        style="margin-right: 8px; vertical-align: -3px"
+                        ><Icon icon="lucide:save"
+                      /></span>
+                      {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
+                    </button>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
 
@@ -983,119 +2034,197 @@
         </div>
 
         <!-- Modal Pustaka Lagu -->
-        <div v-if="showMusicModal" class="modal-overlay" @click.self="showMusicModal = false">
-          <div class="modal-content" style="max-width: 600px; width: 90%; max-height: 85vh; display: flex; flex-direction: column;">
-            <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-              <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:library_music" style="color: var(--admin-primary)" /> Pustaka Lagu</span>
-              <button type="button" class="btn btn-outline btn-sm" @click="showMusicModal = false" style="border: none; padding: 4px;">
-                <Icon icon="lucide:x" style="font-size: 20px;" />
+        <div
+          v-if="showMusicModal"
+          class="modal-overlay"
+          @click.self="showMusicModal = false"
+        >
+          <div
+            class="modal-content"
+            style="
+              max-width: 600px;
+              width: 90%;
+              max-height: 85vh;
+              display: flex;
+              flex-direction: column;
+            "
+          >
+            <div
+              class="modal-title"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 24px;
+              "
+            >
+              <span style="display: flex; align-items: center; gap: 8px"
+                ><Icon
+                  icon="lucide:library_music"
+                  style="color: var(--admin-primary)"
+                />
+                Pustaka Lagu</span
+              >
+              <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                @click="showMusicModal = false"
+                style="border: none; padding: 4px"
+              >
+                <Icon icon="lucide:x" style="font-size: 20px" />
               </button>
             </div>
-            
-            <div style="margin-bottom: 16px;">
-              <input type="text" v-model="searchMusicQuery" placeholder="Cari judul lagu atau artis..." style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--admin-border); background: var(--admin-surface); font-size: 14px; outline: none; box-sizing: border-box;" />
+
+            <div style="margin-bottom: 16px">
+              <input
+                type="text"
+                v-model="searchMusicQuery"
+                placeholder="Cari judul lagu atau artis..."
+                style="
+                  width: 100%;
+                  padding: 10px 14px;
+                  border-radius: 8px;
+                  border: 1px solid var(--admin-border);
+                  background: var(--admin-surface);
+                  font-size: 14px;
+                  outline: none;
+                  box-sizing: border-box;
+                "
+              />
             </div>
-            
-            <div v-if="musicLibraryLoading" style="text-align: center; padding: 40px 0;">
+
+            <div
+              v-if="musicLibraryLoading"
+              style="text-align: center; padding: 40px 0"
+            >
               <div class="loading-spinner"></div>
-              <div style="margin-top:12px; color:var(--admin-text-secondary); font-size:14px;">Memuat pustaka lagu...</div>
+              <div
+                style="
+                  margin-top: 12px;
+                  color: var(--admin-text-secondary);
+                  font-size: 14px;
+                "
+              >
+                Memuat pustaka lagu...
+              </div>
             </div>
-            <div v-else-if="musicLibrary.length === 0" style="text-align: center; padding: 40px 0; color:var(--admin-text-secondary); font-size:14px;">
+            <div
+              v-else-if="musicLibrary.length === 0"
+              style="
+                text-align: center;
+                padding: 40px 0;
+                color: var(--admin-text-secondary);
+                font-size: 14px;
+              "
+            >
               Belum ada pustaka lagu yang tersedia.
             </div>
-            <div v-else-if="filteredMusicLibrary.length === 0" style="text-align: center; padding: 40px 0; color:var(--admin-text-secondary); font-size:14px;">
+            <div
+              v-else-if="filteredMusicLibrary.length === 0"
+              style="
+                text-align: center;
+                padding: 40px 0;
+                color: var(--admin-text-secondary);
+                font-size: 14px;
+              "
+            >
               Lagu tidak ditemukan.
             </div>
-            <div v-else style="flex: 1; overflow-y: auto; padding-right: 8px; display: flex; flex-direction: column; gap: 12px; text-align: left;">
-              <div 
-                v-for="music in filteredMusicLibrary" 
-                :key="music.id" 
-                style="border: 1px solid var(--admin-border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--admin-surface);"
+            <div
+              v-else
+              style="
+                flex: 1;
+                overflow-y: auto;
+                padding-right: 8px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                text-align: left;
+              "
+            >
+              <div
+                v-for="music in filteredMusicLibrary"
+                :key="music.id"
+                style="
+                  border: 1px solid var(--admin-border);
+                  border-radius: 12px;
+                  padding: 16px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 12px;
+                  background: var(--admin-surface);
+                "
               >
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
-                  <div style="text-align: left; word-break: break-word;">
-                    <div style="font-weight: 600; font-size: 15px; color: var(--admin-text); line-height: 1.3;">{{ music.title }}</div>
-                    <div style="font-size: 13px; color: var(--admin-text-secondary); margin-top: 2px;">{{ music.artist || 'Unknown Artist' }}</div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    gap: 12px;
+                  "
+                >
+                  <div style="text-align: left; word-break: break-word">
+                    <div
+                      style="
+                        font-weight: 600;
+                        font-size: 15px;
+                        color: var(--admin-text);
+                        line-height: 1.3;
+                      "
+                    >
+                      {{ music.title }}
+                    </div>
+                    <div
+                      style="
+                        font-size: 13px;
+                        color: var(--admin-text-secondary);
+                        margin-top: 2px;
+                      "
+                    >
+                      {{ music.artist || "Unknown Artist" }}
+                    </div>
                   </div>
-                  <button 
-                    type="button" 
-                    class="btn btn-primary btn-sm" 
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
                     @click="selectMusicFromLibrary(music)"
-                    style="padding: 6px 12px; font-size: 12px;"
+                    style="padding: 6px 12px; font-size: 12px"
                   >
                     Gunakan
                   </button>
                 </div>
-                <audio controls preload="none" style="width: 100%; height: 36px;">
+                <audio
+                  controls
+                  preload="none"
+                  style="width: 100%; height: 36px"
+                >
                   <source :src="music.url" type="audio/mpeg" />
                 </audio>
               </div>
             </div>
           </div>
         </div>
-
-
-        <!-- Modal Pilih Tema -->
-    <div v-if="showThemeModal" class="modal-overlay" @click.self="showThemeModal = false">
-      <div class="modal-content" style="max-width: 800px; width: 90%;">
-        <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:palette" style="color: var(--admin-primary)" /> Pilih Tema Undangan</span>
-          <button type="button" class="btn btn-outline btn-sm" @click="showThemeModal = false" style="border: none; padding: 4px;">
-            <Icon icon="lucide:x" style="font-size: 20px;" />
-          </button>
-        </div>
-        
-        <div class="edit-theme-grid">
-          <div class="edit-theme-card" :class="{ active: form.theme === 'elegant' }" @click="selectTheme('elegant')">
-            <div class="edit-theme-preview" style="background: #2c2417; color: #fff;">
-              <div style="font-size: 8px; letter-spacing: 3px; color: #c9a96e; text-transform: uppercase;">The Wedding Of</div>
-              <div style="font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;">Romeo & Juliet</div>
-            </div>
-            <div class="edit-theme-label">Elegant Gold</div>
-            <div v-if="form.theme === 'elegant'" class="edit-theme-active-badge">Aktif</div>
-          </div>
-          <div class="edit-theme-card" :class="{ active: form.theme === 'floral' }" @click="selectTheme('floral')">
-            <div class="edit-theme-preview" style="background: #4a5d4e; color: #fff;">
-              <div style="font-size: 8px; letter-spacing: 3px; color: #e6e0d4; text-transform: uppercase;">The Wedding</div>
-              <div style="font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; margin-top: 4px;">Romeo & Juliet</div>
-            </div>
-            <div class="edit-theme-label">Floral</div>
-            <div v-if="form.theme === 'floral'" class="edit-theme-active-badge">Aktif</div>
-          </div>
-          <div class="edit-theme-card" :class="{ active: form.theme === 'minimalist' }" @click="selectTheme('minimalist')">
-            <div class="edit-theme-preview" style="background: #f9f9f9; color: #111; border: 1px solid #eee;">
-              <div style="font-size: 8px; letter-spacing: 5px; color: #666; text-transform: uppercase;">Wedding</div>
-              <div style="font-family: 'Inter', sans-serif; font-weight: 300; font-size: 22px; margin-top: 4px; letter-spacing: -1px;">R & J</div>
-            </div>
-            <div class="edit-theme-label">Clean Minimalist</div>
-            <div v-if="form.theme === 'minimalist'" class="edit-theme-active-badge">Aktif</div>
-          </div>
-          <div class="edit-theme-card" :class="{ active: form.theme === 'elegant_blue' }" @click="selectTheme('elegant_blue')">
-            <div class="edit-theme-preview" style="background: #1e3a8a; color: #fff;">
-              <div style="font-size: 8px; letter-spacing: 3px; color: #A3B5C3; text-transform: uppercase;">The Wedding Of</div>
-              <div style="font-family: 'Playfair Display', serif; font-size: 22px; margin-top: 4px;">Romeo & Juliet</div>
-            </div>
-            <div class="edit-theme-label">Elegant Blue</div>
-            <div v-if="form.theme === 'elegant_blue'" class="edit-theme-active-badge">Aktif</div>
-          </div>
-          <div class="edit-theme-card" :class="{ active: form.theme === 'floral_blue' }" @click="selectTheme('floral_blue')">
-            <div class="edit-theme-preview" style="background: #3b6b8a; color: #fff;">
-              <div style="font-size: 8px; letter-spacing: 3px; color: #b8d4e3; text-transform: uppercase;">The Wedding</div>
-              <div style="font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;">Romeo &amp; Juliet</div>
-            </div>
-            <div class="edit-theme-label">Floral Blue</div>
-            <div v-if="form.theme === 'floral_blue'" class="edit-theme-active-badge">Aktif</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </template>
+        <ThemePickerModal
+          :show="showThemeModal"
+          :themes="themeList"
+          :selected-theme-id="form.theme"
+          @close="showThemeModal = false"
+          @select="selectTheme"
+        />
+      </template>
     </div>
 
     <!-- Toast -->
-    <div v-if="toast" :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']">
-      <Icon :icon="toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'" style="font-size: 18px; flex-shrink: 0;" />
+    <div
+      v-if="toast"
+      :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']"
+    >
+      <Icon
+        :icon="
+          toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'
+        "
+        style="font-size: 18px; flex-shrink: 0"
+      />
       <span>{{ toast.message }}</span>
     </div>
 
@@ -1137,8 +2266,12 @@
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 .input-error {
   border-color: #ef4444 !important;
@@ -1214,7 +2347,7 @@
   border-color: var(--admin-primary, #3b82f6);
   color: var(--admin-primary, #3b82f6);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 .gallery-type-btn.active {
   border-color: var(--admin-primary, #3b82f6);
@@ -1262,11 +2395,22 @@
   animation: shakeX 0.4s ease;
 }
 @keyframes shakeX {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
 }
 .wizard-errors-header {
   display: flex;
@@ -1304,10 +2448,12 @@
   color: #b91c1c;
   line-height: 1.5;
 }
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s ease;
 }
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 
@@ -1329,8 +2475,12 @@
   animation: fadeIn 0.3s ease;
 }
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .helper-tip-icon {
   color: #3b82f6;
@@ -1399,18 +2549,22 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 </style>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import { Icon } from "@iconify/vue";
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import { resolveAssetUrl } from "@/utils/url";
-import { THEME_REGISTRY, THEME_LIST, getThemeGalleryDefault } from "@/config/themes";
+import { THEME_LIST, getThemeGalleryDefault } from "@/config/themes";
 import { DEFAULT_MUSIC } from "@/config/defaultMusic";
 import AppSkeleton from "@/components/ui/AppSkeleton.vue";
 
@@ -1425,6 +2579,7 @@ import ImageCropModal from "@/components/admin/ImageCropModal.vue";
 import QuoteLibraryModal from "@/components/admin/QuoteLibraryModal.vue";
 import MapPickerModal from "@/components/admin/MapPickerModal.vue";
 import LoveStoryTemplateModal from "@/components/admin/LoveStoryTemplateModal.vue";
+import ThemePickerModal from "@/components/admin/ThemePickerModal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -1433,113 +2588,200 @@ const apiBase = import.meta.env.VITE_API_URL || "";
 
 // --- Step Validator ---
 function validateStep(stepIndex: number): string[] {
-  const errors: string[] = []
+  const errors: string[] = [];
   switch (stepIndex) {
     case 0: // Tema & URL
-      if (!form.slug || !form.slug.trim()) errors.push('URL Undangan (slug) wajib diisi')
-      if (slugStatus.value === 'taken') errors.push('URL sudah dipakai, pilih yang lain')
-      break
+      if (!form.slug || !form.slug.trim())
+        errors.push("URL Undangan (slug) wajib diisi");
+      if (slugStatus.value === "taken")
+        errors.push("URL sudah dipakai, pilih yang lain");
+      break;
     case 1: // Mempelai
-      if (!form.groom_name || !form.groom_name.trim()) errors.push('Nama panggilan mempelai pria wajib diisi')
-      if (!form.bride_name || !form.bride_name.trim()) errors.push('Nama panggilan mempelai wanita wajib diisi')
-      break
+      if (!form.groom_name || !form.groom_name.trim())
+        errors.push("Nama panggilan mempelai pria wajib diisi");
+      if (!form.bride_name || !form.bride_name.trim())
+        errors.push("Nama panggilan mempelai wanita wajib diisi");
+      break;
     case 2: // Acara
-      if (akadStart.value && akadEnd.value && akadStart.value >= akadEnd.value) {
-        errors.push('Waktu selesai Akad Nikah tidak boleh lebih awal atau sama dengan waktu mulai')
+      if (
+        akadStart.value &&
+        akadEnd.value &&
+        akadStart.value >= akadEnd.value
+      ) {
+        errors.push(
+          "Waktu selesai Akad Nikah tidak boleh lebih awal atau sama dengan waktu mulai",
+        );
       }
-      if (resepsiStart.value && resepsiEnd.value && resepsiStart.value >= resepsiEnd.value) {
-        errors.push('Waktu selesai Resepsi tidak boleh lebih awal atau sama dengan waktu mulai')
+      if (
+        resepsiStart.value &&
+        resepsiEnd.value &&
+        resepsiStart.value >= resepsiEnd.value
+      ) {
+        errors.push(
+          "Waktu selesai Resepsi tidak boleh lebih awal atau sama dengan waktu mulai",
+        );
       }
-      break
+      break;
   }
-  return errors
+  return errors;
 }
 
 // --- Time Parsing (Jam & Zona Waktu) ---
 function parseTimeStr(timeStr: string) {
-  if (!timeStr) return { start: '', end: '', zone: 'WIB' };
-  const match = timeStr.match(/^(\d{2}:\d{2})(?:\s*-\s*(\d{2}:\d{2}))?\s*(WIB|WITA|WIT)?$/i);
+  if (!timeStr) return { start: "", end: "", zone: "WIB" };
+  const match = timeStr.match(
+    /^(\d{2}:\d{2})(?:\s*-\s*(\d{2}:\d{2}))?\s*(WIB|WITA|WIT)?$/i,
+  );
   if (match) {
-    return { start: match[1] || '', end: match[2] || '', zone: match[3]?.toUpperCase() || 'WIB' };
+    return {
+      start: match[1] || "",
+      end: match[2] || "",
+      zone: match[3]?.toUpperCase() || "WIB",
+    };
   }
-  return { start: '', end: '', zone: 'WIB' };
+  return { start: "", end: "", zone: "WIB" };
 }
 function buildTimeStr(start: string, end: string, zone: string) {
-  if (!start && !end) return ''; // if both empty, clear it
-  return `${start || '00:00'}${end ? ' - ' + end : ''} ${zone}`;
+  if (!start && !end) return ""; // if both empty, clear it
+  return `${start || "00:00"}${end ? " - " + end : ""} ${zone}`;
 }
 
 const akadStart = computed({
   get: () => parseTimeStr(form.akad_time).start,
-  set: (val) => form.akad_time = buildTimeStr(val, parseTimeStr(form.akad_time).end, parseTimeStr(form.akad_time).zone)
+  set: (val) =>
+    (form.akad_time = buildTimeStr(
+      val,
+      parseTimeStr(form.akad_time).end,
+      parseTimeStr(form.akad_time).zone,
+    )),
 });
 const akadEnd = computed({
   get: () => parseTimeStr(form.akad_time).end,
-  set: (val) => form.akad_time = buildTimeStr(parseTimeStr(form.akad_time).start, val, parseTimeStr(form.akad_time).zone)
+  set: (val) =>
+    (form.akad_time = buildTimeStr(
+      parseTimeStr(form.akad_time).start,
+      val,
+      parseTimeStr(form.akad_time).zone,
+    )),
 });
 const akadZone = computed({
   get: () => parseTimeStr(form.akad_time).zone,
-  set: (val) => form.akad_time = buildTimeStr(parseTimeStr(form.akad_time).start, parseTimeStr(form.akad_time).end, val)
+  set: (val) =>
+    (form.akad_time = buildTimeStr(
+      parseTimeStr(form.akad_time).start,
+      parseTimeStr(form.akad_time).end,
+      val,
+    )),
 });
 
 const resepsiStart = computed({
   get: () => parseTimeStr(form.resepsi_time).start,
-  set: (val) => form.resepsi_time = buildTimeStr(val, parseTimeStr(form.resepsi_time).end, parseTimeStr(form.resepsi_time).zone)
+  set: (val) =>
+    (form.resepsi_time = buildTimeStr(
+      val,
+      parseTimeStr(form.resepsi_time).end,
+      parseTimeStr(form.resepsi_time).zone,
+    )),
 });
 const resepsiEnd = computed({
   get: () => parseTimeStr(form.resepsi_time).end,
-  set: (val) => form.resepsi_time = buildTimeStr(parseTimeStr(form.resepsi_time).start, val, parseTimeStr(form.resepsi_time).zone)
+  set: (val) =>
+    (form.resepsi_time = buildTimeStr(
+      parseTimeStr(form.resepsi_time).start,
+      val,
+      parseTimeStr(form.resepsi_time).zone,
+    )),
 });
 const resepsiZone = computed({
   get: () => parseTimeStr(form.resepsi_time).zone,
-  set: (val) => form.resepsi_time = buildTimeStr(parseTimeStr(form.resepsi_time).start, parseTimeStr(form.resepsi_time).end, val)
+  set: (val) =>
+    (form.resepsi_time = buildTimeStr(
+      parseTimeStr(form.resepsi_time).start,
+      parseTimeStr(form.resepsi_time).end,
+      val,
+    )),
 });
 
 // --- Wizard ---
-const wizard = useFormWizard([
-  { id: 'theme', label: 'Tema & URL', icon: 'lucide:palette' },
-  { id: 'couple', label: 'Mempelai', icon: 'lucide:users' },
-  { id: 'event', label: 'Acara', icon: 'lucide:calendar-days' },
-  { id: 'content', label: 'Konten', icon: 'lucide:image' },
-  { id: 'extras', label: 'Finalisasi', icon: 'lucide:sparkles' },
-], validateStep);
+const wizard = useFormWizard(
+  [
+    { id: "theme", label: "Tema & URL", icon: "lucide:palette" },
+    { id: "couple", label: "Mempelai", icon: "lucide:users" },
+    { id: "event", label: "Acara", icon: "lucide:calendar-days" },
+    { id: "content", label: "Konten", icon: "lucide:image" },
+    { id: "extras", label: "Finalisasi", icon: "lucide:sparkles" },
+  ],
+  validateStep,
+);
 
 const loading = ref(true);
 
 // --- Form State ---
 const {
-  form, submitting, toast, showToast,
-  populateForm, getSubmitPayload,
-  addLoveStory, removeLoveStory,
+  form,
+  submitting,
+  toast,
+  showToast,
+  populateForm,
+  getSubmitPayload,
+  addLoveStory,
+  removeLoveStory,
 } = useInvitationForm();
 
 // --- Slug Validation (with excludeId for edit mode) ---
 const slugRef = computed({
   get: () => form.slug,
-  set: (v) => { form.slug = v },
+  set: (v) => {
+    form.slug = v;
+  },
 });
 const excludeId = computed(() => route.params.id as string | undefined);
-const { slugStatus, slugSuggestions, handleSlugInput, applySuggestion } = useSlugValidation(slugRef, excludeId);
+const { slugStatus, slugSuggestions, handleSlugInput, applySuggestion } =
+  useSlugValidation(slugRef, excludeId);
 
 // --- Photo Upload ---
 const {
-  coverDragover, galleryDragover,
-  groomPhotoInput, bridePhotoInput, coverPhotoInput, loveStoryPhotoInput,
-  triggerUpload, handleSingleUpload, handleCoverDrop,
-  removeCoverPhoto, removeGroomPhoto, removeBridePhoto,
-  handleGalleryUpload, handleGalleryDrop, removeGalleryPhoto,
-  triggerLoveStoryPhotoUpload, handleLoveStoryPhotoUpload, removeLoveStoryPhoto,
-  cropModalOpen, cropImageSrc, cropAspectRatio, cropStencilShape,
-  handleCropConfirm, handleCropCancel,
+  coverDragover,
+  galleryDragover,
+  groomPhotoInput,
+  bridePhotoInput,
+  coverPhotoInput,
+  loveStoryPhotoInput,
+  triggerUpload,
+  handleSingleUpload,
+  handleCoverDrop,
+  removeCoverPhoto,
+  removeGroomPhoto,
+  removeBridePhoto,
+  handleGalleryUpload,
+  handleGalleryDrop,
+  removeGalleryPhoto,
+  triggerLoveStoryPhotoUpload,
+  handleLoveStoryPhotoUpload,
+  removeLoveStoryPhoto,
+  cropModalOpen,
+  cropImageSrc,
+  cropAspectRatio,
+  cropStencilShape,
+  handleCropConfirm,
+  handleCropCancel,
 } = usePhotoUpload(form, showToast);
 
 // --- Music Manager ---
 const {
-  showMusicModal, musicLibrary, musicLibraryLoading,
-  searchMusicQuery, filteredMusicLibrary, musicFileInput,
-  openMusicLibrary, selectMusicFromLibrary,
-  handleMusicUpload, removeMusic, restoreDefaultMusic,
-  isCurrentMusicDefault, currentDefaultMusicLabel,
+  showMusicModal,
+  musicLibrary,
+  musicLibraryLoading,
+  searchMusicQuery,
+  filteredMusicLibrary,
+  musicFileInput,
+  openMusicLibrary,
+  selectMusicFromLibrary,
+  handleMusicUpload,
+  removeMusic,
+  restoreDefaultMusic,
+  isCurrentMusicDefault,
+  currentDefaultMusicLabel,
 } = useMusicManager(form, showToast);
 
 // --- Preview Sync ---
@@ -1558,23 +2800,30 @@ function handleQuoteSelect(quoteStr: string) {
 
 // --- Love Story Template ---
 const showLoveStoryTemplateModal = ref(false);
-function handleLoveStoryTemplateSelect(stories: import('@/types/invitation').LoveStoryItem[]) {
+function handleLoveStoryTemplateSelect(
+  stories: import("@/types/invitation").LoveStoryItem[],
+) {
   form.love_story = stories;
   showLoveStoryTemplateModal.value = false;
-  showToast('success', 'Template kisah cinta berhasil diterapkan!');
+  showToast("success", "Template kisah cinta berhasil diterapkan!");
 }
 
 // --- Map Picker ---
 const showMapPickerModal = ref(false);
-const mapPickerTarget = ref<'akad' | 'resepsi'>('akad');
+const mapPickerTarget = ref<"akad" | "resepsi">("akad");
 
-function openMapPicker(target: 'akad' | 'resepsi') {
+function openMapPicker(target: "akad" | "resepsi") {
   mapPickerTarget.value = target;
   showMapPickerModal.value = true;
 }
 
-function handleMapLocationSelect(payload: { lat: number, lng: number, address: string, link: string }) {
-  if (mapPickerTarget.value === 'akad') {
+function handleMapLocationSelect(payload: {
+  lat: number;
+  lng: number;
+  address: string;
+  link: string;
+}) {
+  if (mapPickerTarget.value === "akad") {
     form.akad_address = payload.address;
     form.akad_map_url = payload.link;
   } else {
@@ -1584,11 +2833,16 @@ function handleMapLocationSelect(payload: { lat: number, lng: number, address: s
   showMapPickerModal.value = false;
 }
 
-function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue") {
+function selectTheme(
+  themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue",
+) {
   const oldTheme = form.theme;
   form.theme = themeId;
   form.gallery_type = getThemeGalleryDefault(themeId);
-  if (!form.music_url || (DEFAULT_MUSIC[oldTheme] && form.music_url === DEFAULT_MUSIC[oldTheme].url)) {
+  if (
+    !form.music_url ||
+    (DEFAULT_MUSIC[oldTheme] && form.music_url === DEFAULT_MUSIC[oldTheme].url)
+  ) {
     form.music_url = DEFAULT_MUSIC[themeId]?.url || "";
   }
   showThemeModal.value = false;
@@ -1603,14 +2857,14 @@ function getPhotoUrl(url: string) {
 async function handleSubmit() {
   // Validate ALL wizard steps before submitting
   for (let i = 0; i < wizard.steps.length; i++) {
-    const errors = validateStep(i)
+    const errors = validateStep(i);
     if (errors.length > 0) {
-      wizard.goToStepDirect(i)
-      wizard.stepErrors.value = errors
-      wizard.showStepErrors.value = true
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      showToast("error", errors[0] || "Terdapat error pada form")
-      return
+      wizard.goToStepDirect(i);
+      wizard.stepErrors.value = errors;
+      wizard.showStepErrors.value = true;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      showToast("error", errors[0] || "Terdapat error pada form");
+      return;
     }
   }
 
@@ -1657,5 +2911,3 @@ onMounted(async () => {
   border-color: #cbd5e1;
 }
 </style>
-
-

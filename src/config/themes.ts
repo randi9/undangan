@@ -1,194 +1,244 @@
 /**
  * Centralized Theme Registry
- * 
+ *
  * Single source of truth for ALL theme data used across:
  * - ThemeCatalogView (theme cards)
  * - CreateInvitationView / EditInvitationView (theme picker modal)
  * - InvitationView (theme config for rendering)
  */
 
-import type { ThemeConfig } from '@/types/theme'
+import type { ThemeConfig } from "@/types/theme";
 
 export interface ThemeRegistryEntry {
-  id: 'elegant' | 'minimalist' | 'floral' | 'elegant_blue' | 'floral_blue'
-  name: string
-  description: string
-  icon: string
-  color: string
-  defaultGalleryType: 'carousel' | 'masonry'
+  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue";
+  name: string;
+  thumbnail: string;
+  description: string;
+  icon: string;
+  color: string;
+  bgGradient: string;
+  sampleUrl: string;
+  defaultGalleryType: "carousel" | "masonry";
   /** Preview card styling for theme picker modals */
   previewStyle: {
-    bg: string
-    color: string
-    headerText: string
-    headerStyle: string
-    nameText: string
-    nameStyle: string
-  }
+    bg: string;
+    color: string;
+    headerText: string;
+    headerStyle: string;
+    nameText: string;
+    nameStyle: string;
+  };
   /** Full theme config for InvitationView rendering */
-  themeConfig: ThemeConfig
+  themeConfig: ThemeConfig;
 }
 
 export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
   elegant: {
-    id: 'elegant',
-    name: 'Elegant Gold',
-    description: 'Mewah dengan sentuhan emas klasik',
-    icon: 'solar:crown-bold-duotone',
-    color: '#c9a96e',
-    defaultGalleryType: 'masonry',
+    id: "elegant",
+    name: "Elegant Gold",
+    thumbnail:
+      "https://media.mengundanganda.com/floral/43498db7-3a42-4aaa-a066-a0322604ac92.webp",
+    description: "Mewah dengan sentuhan emas klasik",
+    icon: "solar:crown-bold-duotone",
+    color: "#c9a96e",
+    bgGradient: "linear-gradient(135deg, #8b6f4e 0%, #c9a96e 100%)",
+    sampleUrl: "",
+    defaultGalleryType: "masonry",
     previewStyle: {
-      bg: '#2c2417',
-      color: '#fff',
-      headerText: 'The Wedding Of',
-      headerStyle: "font-size: 8px; letter-spacing: 3px; color: #c9a96e; text-transform: uppercase;",
-      nameText: 'Romeo & Juliet',
-      nameStyle: "font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;",
+      bg: "#2c2417",
+      color: "#fff",
+      headerText: "The Wedding Of",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 3px; color: #c9a96e; text-transform: uppercase;",
+      nameText: "Romeo & Juliet",
+      nameStyle:
+        "font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;",
     },
     themeConfig: {
-      name: 'elegant',
-      bg: '#faf8f4',
-      surface: '#f5efe6',
-      primary: '#8b6f4e',
-      secondary: '#c9a96e',
-      text: '#3d3425',
-      textLight: '#7a6e5d',
+      name: "elegant",
+      bg: "#faf8f4",
+      surface: "#f5efe6",
+      primary: "#8b6f4e",
+      secondary: "#c9a96e",
+      text: "#3d3425",
+      textLight: "#7a6e5d",
       fontHeading: "'Playfair Display', serif",
       fontBody: "'Inter', sans-serif",
-      overlayGradient: 'linear-gradient(180deg, rgba(44,36,23,0.6) 0%, rgba(44,36,23,0.8) 100%)',
-      coverImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80',
+      overlayGradient:
+        "linear-gradient(180deg, rgba(44,36,23,0.6) 0%, rgba(44,36,23,0.8) 100%)",
+      coverImage:
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80",
     },
   },
   floral: {
-    id: 'floral',
-    name: 'Floral',
-    description: 'Natural dan romantis dengan motif bunga',
-    icon: 'solar:leaf-bold-duotone',
-    color: '#4a5d4e',
-    defaultGalleryType: 'carousel',
+    id: "floral",
+    name: "Floral",
+    thumbnail:
+      "https://media.mengundanganda.com/floral/24b44e21-d97b-4b62-bb88-e29eea9c8e18.webp",
+    description: "Natural dan romantis dengan motif bunga",
+    icon: "solar:leaf-bold-duotone",
+    color: "#4a5d4e",
+    bgGradient: "linear-gradient(135deg, #4a5d4e 0%, #8a9a5b 100%)",
+    sampleUrl: "",
+    defaultGalleryType: "carousel",
     previewStyle: {
-      bg: '#4a5d4e',
-      color: '#fff',
-      headerText: 'The Wedding',
-      headerStyle: "font-size: 8px; letter-spacing: 3px; color: #e6e0d4; text-transform: uppercase;",
-      nameText: 'Romeo & Juliet',
-      nameStyle: "font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; margin-top: 4px;",
+      bg: "#4a5d4e",
+      color: "#fff",
+      headerText: "The Wedding",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 3px; color: #e6e0d4; text-transform: uppercase;",
+      nameText: "Romeo & Juliet",
+      nameStyle:
+        "font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; margin-top: 4px;",
     },
     themeConfig: {
-      name: 'floral',
-      bg: '#fdfbf7',
-      surface: '#f4f6e9',
-      primary: '#4a5d4e',
-      secondary: '#8a9a5b',
-      text: '#3d4a40',
-      textLight: '#6b7a6e',
+      name: "floral",
+      bg: "#fdfbf7",
+      surface: "#f4f6e9",
+      primary: "#4a5d4e",
+      secondary: "#8a9a5b",
+      text: "#3d4a40",
+      textLight: "#6b7a6e",
       fontHeading: "'Great Vibes', cursive",
       fontBody: "'Inter', sans-serif",
-      overlayGradient: 'linear-gradient(180deg, rgba(74,93,78,0.5) 0%, rgba(74,93,78,0.8) 100%)',
-      coverImage: 'https://media.mengundanganda.com/tema%20floral/8a5a275c-909d-448b-8d1d-adaa5a7a39f3.webp',
+      overlayGradient:
+        "linear-gradient(180deg, rgba(74,93,78,0.5) 0%, rgba(74,93,78,0.8) 100%)",
+      coverImage:
+        "https://media.mengundanganda.com/tema%20floral/8a5a275c-909d-448b-8d1d-adaa5a7a39f3.webp",
     },
   },
   minimalist: {
-    id: 'minimalist',
-    name: 'Clean Minimalist',
-    description: 'Bersih dan modern dengan tipografi kuat',
-    icon: 'solar:minimalistic-magnifer-bold-duotone',
-    color: '#111111',
-    defaultGalleryType: 'masonry',
+    id: "minimalist",
+    name: "Clean Minimalist",
+    thumbnail:
+      "https://media.mengundanganda.com/floral/79f8508a-609c-4b27-9803-bfc1c2fbea16.webp",
+    description: "Bersih dan modern dengan tipografi kuat",
+    icon: "solar:minimalistic-magnifer-bold-duotone",
+    color: "#111111",
+    bgGradient: "linear-gradient(135deg, #111111 0%, #666666 100%)",
+    sampleUrl: "",
+    defaultGalleryType: "masonry",
     previewStyle: {
-      bg: '#f9f9f9',
-      color: '#111',
-      headerText: 'Wedding',
-      headerStyle: "font-size: 8px; letter-spacing: 5px; color: #666; text-transform: uppercase;",
-      nameText: 'R & J',
-      nameStyle: "font-family: 'Inter', sans-serif; font-weight: 300; font-size: 22px; margin-top: 4px; letter-spacing: -1px;",
+      bg: "#f9f9f9",
+      color: "#111",
+      headerText: "Wedding",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 5px; color: #666; text-transform: uppercase;",
+      nameText: "R & J",
+      nameStyle:
+        "font-family: 'Inter', sans-serif; font-weight: 300; font-size: 22px; margin-top: 4px; letter-spacing: -1px;",
     },
     themeConfig: {
-      name: 'minimalist',
-      bg: '#ffffff',
-      surface: '#f9f9f9',
-      primary: '#111111',
-      secondary: '#666666',
-      text: '#222222',
-      textLight: '#555555',
+      name: "minimalist",
+      bg: "#ffffff",
+      surface: "#f9f9f9",
+      primary: "#111111",
+      secondary: "#666666",
+      text: "#222222",
+      textLight: "#555555",
       fontHeading: "'Inter', sans-serif",
       fontBody: "'Inter', sans-serif",
-      overlayGradient: 'linear-gradient(180deg, rgba(17,17,17,0.3) 0%, rgba(17,17,17,0.7) 100%)',
-      coverImage: 'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=1080&q=80',
+      overlayGradient:
+        "linear-gradient(180deg, rgba(17,17,17,0.3) 0%, rgba(17,17,17,0.7) 100%)",
+      coverImage:
+        "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=1080&q=80",
     },
   },
   elegant_blue: {
-    id: 'elegant_blue',
-    name: 'Elegant Blue',
-    description: 'Elegan dengan nuansa biru navy',
-    icon: 'solar:diamond-bold-duotone',
-    color: '#1e3a8a',
-    defaultGalleryType: 'masonry',
+    id: "elegant_blue",
+    name: "Elegant Blue",
+    thumbnail:
+      "https://media.mengundanganda.com/floral/b308425f-94ec-4923-91b4-89a22eeef55d.webp",
+    description: "Elegan dengan nuansa biru navy",
+    icon: "solar:diamond-bold-duotone",
+    color: "#1e3a8a",
+    bgGradient: "linear-gradient(135deg, #1e3a8a 0%, #a8d0e6 100%)",
+    sampleUrl: "",
+    defaultGalleryType: "masonry",
     previewStyle: {
-      bg: '#1e3a8a',
-      color: '#fff',
-      headerText: 'The Wedding Of',
-      headerStyle: "font-size: 8px; letter-spacing: 3px; color: #A3B5C3; text-transform: uppercase;",
-      nameText: 'Romeo & Juliet',
-      nameStyle: "font-family: 'Parisienne', cursive; font-size: 28px; margin-top: 4px;",
+      bg: "#1e3a8a",
+      color: "#fff",
+      headerText: "The Wedding Of",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 3px; color: #A3B5C3; text-transform: uppercase;",
+      nameText: "Romeo & Juliet",
+      nameStyle:
+        "font-family: 'Parisienne', cursive; font-size: 28px; margin-top: 4px;",
     },
     themeConfig: {
-      name: 'elegant_blue',
-      bg: '#f8f9f9',
-      surface: '#F8FAFC',
-      primary: '#a8d0e6',
-      secondary: '#1E293B',
-      text: '#1E293B',
-      textLight: '#64748B',
-      fontHeading: 'Parisienne, cursive',
-      fontBody: 'Cormorant, serif',
-      overlayGradient: 'linear-gradient(180deg, rgba(30,41,59,0.4) 0%, rgba(30,41,59,0.85) 100%)',
-      coverImage: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=1080&q=80',
+      name: "elegant_blue",
+      bg: "#f8f9f9",
+      surface: "#F8FAFC",
+      primary: "#a8d0e6",
+      secondary: "#1E293B",
+      text: "#1E293B",
+      textLight: "#64748B",
+      fontHeading: "Parisienne, cursive",
+      fontBody: "Cormorant, serif",
+      overlayGradient:
+        "linear-gradient(180deg, rgba(30,41,59,0.4) 0%, rgba(30,41,59,0.85) 100%)",
+      coverImage:
+        "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=1080&q=80",
     },
   },
   floral_blue: {
-    id: 'floral_blue',
-    name: 'Floral Blue',
-    description: 'Floral romantis dengan nuansa biru dusty',
-    icon: 'solar:flowers-bold-duotone',
-    color: '#4a7c9b',
-    defaultGalleryType: 'carousel',
+    id: "floral_blue",
+    name: "Floral Blue",
+    thumbnail:
+      "https://media.mengundanganda.com/floral/24b44e21-d97b-4b62-bb88-e29eea9c8e18.webp",
+    description: "Floral romantis dengan nuansa biru dusty",
+    icon: "solar:flowers-bold-duotone",
+    color: "#4a7c9b",
+    bgGradient: "linear-gradient(135deg, #3b6b8a 0%, #6b8fa3 100%)",
+    sampleUrl: "",
+    defaultGalleryType: "carousel",
     previewStyle: {
-      bg: '#3b6b8a',
-      color: '#fff',
-      headerText: 'The Wedding',
-      headerStyle: "font-size: 8px; letter-spacing: 3px; color: #b8d4e3; text-transform: uppercase;",
-      nameText: 'Romeo & Juliet',
-      nameStyle: "font-family: 'Parisienne', cursive; font-size: 22px; margin-top: 4px;",
+      bg: "#3b6b8a",
+      color: "#fff",
+      headerText: "The Wedding",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 3px; color: #b8d4e3; text-transform: uppercase;",
+      nameText: "Romeo & Juliet",
+      nameStyle:
+        "font-family: 'Parisienne', cursive; font-size: 22px; margin-top: 4px;",
     },
     themeConfig: {
-      name: 'floral_blue',
-      bg: '#f0f4f8',
-      surface: '#e8eef4',
-      primary: '#4a7c9b',
-      secondary: '#6b8fa3',
-      text: '#2c3e50',
-      textLight: '#5a7a8a',
-      fontHeading: 'Parisienne, cursive',
-      fontBody: 'Cormorant, serif',
-      overlayGradient: 'linear-gradient(180deg, rgba(74,124,155,0.5) 0%, rgba(74,124,155,0.8) 100%)',
-      coverImage: 'https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_28658e27-e94d-40ca-b897-607ef8ea0d83.webp',
+      name: "floral_blue",
+      bg: "#f0f4f8",
+      surface: "#e8eef4",
+      primary: "#4a7c9b",
+      secondary: "#6b8fa3",
+      text: "#2c3e50",
+      textLight: "#5a7a8a",
+      fontHeading: "Parisienne, cursive",
+      fontBody: "Cormorant, serif",
+      overlayGradient:
+        "linear-gradient(180deg, rgba(74,124,155,0.5) 0%, rgba(74,124,155,0.8) 100%)",
+      coverImage:
+        "https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_28658e27-e94d-40ca-b897-607ef8ea0d83.webp",
     },
   },
-}
+};
 
 /** Helper: get gallery type default for a theme */
-export function getThemeGalleryDefault(themeId: string): 'carousel' | 'masonry' {
-  return THEME_REGISTRY[themeId]?.defaultGalleryType || 'carousel'
+export function getThemeGalleryDefault(
+  themeId: string,
+): "carousel" | "masonry" {
+  return THEME_REGISTRY[themeId]?.defaultGalleryType || "carousel";
 }
 
 /** Helper: get ThemeConfig for InvitationView */
 export function getThemeConfig(themeId: string): ThemeConfig {
-  return THEME_REGISTRY[themeId]?.themeConfig || THEME_REGISTRY['elegant']!.themeConfig
+  return (
+    THEME_REGISTRY[themeId]?.themeConfig ||
+    THEME_REGISTRY["elegant"]!.themeConfig
+  );
 }
 
 /** All available theme IDs */
-export const THEME_IDS = Object.keys(THEME_REGISTRY) as Array<ThemeRegistryEntry['id']>
+export const THEME_IDS = Object.keys(THEME_REGISTRY) as Array<
+  ThemeRegistryEntry["id"]
+>;
 
 /** All available themes as array (for iteration) */
-export const THEME_LIST = Object.values(THEME_REGISTRY)
+export const THEME_LIST = Object.values(THEME_REGISTRY);

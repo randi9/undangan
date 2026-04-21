@@ -31,20 +31,20 @@
             <div class="theme-preview-container">
               <div class="theme-preview-device">
                 <div class="theme-preview-notch"></div>
-                <div class="theme-preview-screen" :ref="(el) => setScreenRef(el as HTMLElement)">
-                  <iframe
-                    v-if="theme.sampleUrl"
-                    :src="theme.sampleUrl"
-                    class="theme-preview-iframe"
-                    :style="{ transform: `scale(${iframeScale})` }"
-                    loading="lazy"
-                    :title="'Preview tema ' + theme.name"
-                    sandbox="allow-scripts allow-same-origin"
-                  ></iframe>
-                  <div v-else class="theme-preview-placeholder">
-                    <Icon :icon="theme.icon" class="placeholder-icon" />
-                    <span class="placeholder-text">Preview akan tersedia</span>
+                <div class="theme-preview-screen">
+                  <!-- Fallback Placeholder (Selalu di bawah) -->
+                  <div class="theme-preview-placeholder">
+                    <Icon :icon="theme.icon" class="placeholder-icon" :style="{ color: theme.color }" />
+                    <span class="placeholder-text">{{ theme.name }}</span>
                   </div>
+                  <!-- Thumbnail Image -->
+                  <img
+                    :src="theme.thumbnail"
+                    @error="($event.target as HTMLImageElement).style.opacity = '0'"
+                    class="theme-preview-image"
+                    :alt="'Preview tema ' + theme.name"
+                    loading="lazy"
+                  />
                 </div>
               </div>
               <!-- Theme accent bar -->
@@ -114,34 +114,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, nextTick } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
 import { Icon } from "@iconify/vue";
 import AdminLayout from "@/components/admin/AdminLayout.vue";
+import { THEME_LIST } from "@/config/themes";
 
 const store = useInvitationStore();
 const authStore = useAuthStore();
 const toast = ref<{ type: string; message: string } | null>(null);
-
-// Dynamic iframe scaling
-const iframeScale = ref(0.5);
-const screenRefs: HTMLElement[] = [];
-let resizeObserver: ResizeObserver | null = null;
-
-function setScreenRef(el: HTMLElement | null) {
-  if (el && !screenRefs.includes(el)) screenRefs.push(el);
-}
-
-function updateIframeScale() {
-  if (screenRefs.length > 0) {
-    const el = screenRefs[0];
-    if (el) {
-      const width = el.clientWidth;
-      if (width > 0) iframeScale.value = width / 375;
-    }
-  }
-}
 
 const invitations = computed(() => store.invitations);
 
@@ -160,76 +142,10 @@ const firstTrialInvitationId = computed(() => {
   return trialInv ? trialInv.id : null;
 });
 
-const themes = [
-  {
-    id: 'elegant',
-    name: 'Elegant Gold',
-    description: 'Desain klasik premium dengan aksen emas dan font serif yang mewah. Cocok untuk acara formal dan mewah yang membutuhkan sentuhan kemewahan.',
-    color: '#c9a96e',
-    bgColor: '#2c2417',
-    bgGradient: 'linear-gradient(135deg, #2c2417, #5a4b3d)',
-    sampleUrl: 'https://elegant.mengundanganda.com',
-    icon: 'solar:crown-bold-duotone',
-  },
-  {
-    id: 'floral',
-    name: 'Floral',
-    description: 'Desain romantis dengan ornamen daun dan bunga, warna pastel lembut. Sempurna untuk nuansa garden party yang penuh keindahan alam.',
-    color: '#4a5d4e',
-    bgColor: '#4a5d4e',
-    bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
-    sampleUrl: 'https://floral.mengundanganda.com',
-    icon: 'solar:leaf-bold-duotone',
-  },
-  {
-    id: 'minimalist',
-    name: 'Clean Minimalist',
-    description: 'Tampilan bersih & modern dengan ruang putih luas dan font sans-serif tebal. Untuk pasangan yang mencintai kesederhanaan dan keanggunan modern.',
-    color: '#111111',
-    bgColor: '#f9f9f9',
-    bgGradient: 'linear-gradient(135deg, #1e293b, #475569)',
-    sampleUrl: 'https://minimalist.mengundanganda.com',
-    icon: 'solar:minimalistic-magnifer-bold-duotone',
-  },
-  {
-    id: 'elegant_blue',
-    name: 'Elegant Blue',
-    description: 'Desain elegan dengan nuansa biru dusty yang menenangkan dipadukan dengan aksen champagne gold.',
-    color: '#A3B5C3',
-    bgColor: '#1e3a8a',
-    bgGradient: 'linear-gradient(135deg, #1e3a8a, #A3B5C3)',
-    sampleUrl: 'https://elegant-blue.mengundanganda.com',
-    icon: 'solar:stars-bold-duotone',
-  },
-  {
-    id: 'floral_blue',
-    name: 'Floral Blue',
-    description: 'Perpaduan ornamen floral dengan palet biru yang segar dan elegan. Cocok untuk nuansa romantis dengan sentuhan modern.',
-    color: '#3b6b8a',
-    bgColor: '#3b6b8a',
-    bgGradient: 'linear-gradient(135deg, #3b6b8a, #b8d4e3)',
-    sampleUrl: 'https://floralblue.mengundanganda.com',
-    icon: 'solar:leaf-bold-duotone',
-  },
-];
+const themes = THEME_LIST;
 
 onMounted(async () => {
   await store.fetchInvitations();
-  nextTick(() => {
-    updateIframeScale();
-    // Watch for container resize
-    if (screenRefs.length > 0) {
-      const el = screenRefs[0];
-      if (el) {
-        resizeObserver = new ResizeObserver(() => updateIframeScale());
-        resizeObserver.observe(el);
-      }
-    }
-  });
-});
-
-onUnmounted(() => {
-  resizeObserver?.disconnect();
 });
 </script>
 
@@ -326,12 +242,18 @@ onUnmounted(() => {
   border-radius: 24px 24px 0 0;
 }
 
-.theme-preview-iframe {
-  width: 375px;
-  height: 812px;
+.theme-preview-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
   border: none;
   pointer-events: none;
-  transform-origin: top left;
+  z-index: 10;
+  transition: opacity 0.3s ease;
   background: #fff;
 }
 
