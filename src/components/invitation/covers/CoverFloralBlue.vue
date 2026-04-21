@@ -1,4 +1,3 @@
-beneru
 <template>
   <div
     :class="[
