@@ -249,24 +249,29 @@ async function extractInvitationIdFromRsvpRequest(request) {
 }
 
 function isSuspiciousApiBot(request, pathname) {
-  if (!pathname.startsWith("/api/")) return false;
-
-  const method = request.method;
-  if (!["POST", "PUT", "PATCH", "DELETE"].includes(method)) return false;
-
   const { score, verifiedBot } = getBotSignals(request);
+  
+  // Allow whitelisted/verified bots (e.g. Googlebot) completely
   if (verifiedBot) return false;
 
-  // If bot score is available, use it as primary signal
-  if (score !== null) {
-    return score <= 5;
+  // Use Cloudflare bot management score (0-100)
+  // Scores <= 5 generally mean malicious automated traffic (botnets, vulnerability scanners)
+  // We globally block them from ALL paths (saving static rendering & API hits)
+  if (score !== null && score <= 5) {
+    return true;
   }
 
-  // Fallback heuristic when Bot Management signal is unavailable
-  const ua = (request.headers.get("user-agent") || "").toLowerCase();
-  const looksLikeBot =
-    /(bot|crawler|spider|curl|python|wget|httpclient|scrapy)/.test(ua);
-  return looksLikeBot;
+  // Apply deeper heuristic only for critical writes
+  if (pathname.startsWith("/api/")) {
+    const method = request.method;
+    if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
+      const ua = (request.headers.get("user-agent") || "").toLowerCase();
+      const looksLikeBot = /(bot|crawler|spider|curl|python|wget|httpclient|scrapy)/.test(ua);
+      if (looksLikeBot) return true;
+    }
+  }
+  
+  return false;
 }
 
 function jsonError(status, body, extraHeaders = {}) {
@@ -333,11 +338,19 @@ function rewriteRedirectToSubdomain(response, originUrl, hostname) {
   return null;
 }
 
+const seoMetaCache = new Map();
+
 async function buildDynamicSeoMeta(subdomain) {
   let isChanged = false;
   let dynTitle = "Undangan Pernikahan";
   let dynDesc = "Kami mengundang Anda untuk hadir di acara pernikahan kami.";
   let dynImg = "https://media.mengundanganda.com/landing-page/og-image.webp";
+
+  const now = Date.now();
+  const cacheEntry = seoMetaCache.get(subdomain);
+  if (cacheEntry && cacheEntry.expires > now) {
+    return cacheEntry.data;
+  }
 
   try {
     const apiUrl = `https://${ORIGIN_HOST}/api/invitations/slug/${subdomain}?preview=true`;
@@ -359,7 +372,12 @@ async function buildDynamicSeoMeta(subdomain) {
     console.warn("[Worker SEO] Failed building dynamic meta:", err);
   }
 
-  return { isChanged, dynTitle, dynDesc, dynImg };
+  const result = { isChanged, dynTitle, dynDesc, dynImg };
+  if (isChanged) {
+    // Cache the resolved meta fields for 10 minutes to prevent API overload
+    seoMetaCache.set(subdomain, { data: result, expires: now + 10 * 60 * 1000 });
+  }
+  return result;
 }
 
 async function applyDynamicSeo(response, hostname, subdomain) {
@@ -472,7 +490,13 @@ export default {
       subdomain,
     );
 
-    const response = await fetch(originRequest);
+    // Apply strict Cloudflare edge caching for static assets
+    const isStaticAsset = /\.(js|css|webp|png|jpg|jpeg|svg|woff|woff2|ttf|ico|gif)(\?.*)?$/.test(url.pathname);
+    const fetchOptions = isStaticAsset
+      ? { cf: { cacheEverything: true, cacheTtl: 86400 } } // Cache di Cloudflare 24 Jam
+      : {};
+
+    const response = await fetch(originRequest, fetchOptions);
 
     // Handle redirect — rewrite Location header agar tetap di subdomain
     const redirectResponse = rewriteRedirectToSubdomain(
