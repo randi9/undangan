@@ -15,7 +15,7 @@
     </div>
 
     <!-- Bunga 3 Atas — sebelah kiri -->
-    <div ref="flowerTop3Ref" style="position: absolute; top: -50px; left: 0; right: 70px; display: flex; justify-content: center; z-index: 6; pointer-events: none; opacity: 0;">
+    <div ref="flowerTop3Ref" style="position: absolute; top: -50px; left: 0; right: 60px; display: flex; justify-content: center; z-index: 6; pointer-events: none; opacity: 0;">
       <img
         ref="flowerTop3ImgRef"
         src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_4d6cafd2-4a43-4616-a4ec-869c939b1a6d.webp"
@@ -25,7 +25,7 @@
     </div>
 
     <!-- Bunga 4 Atas — lebih kiri lagi -->
-    <div ref="flowerTop4Ref" style="position: absolute; top: -85px; left: 0; right: 180px; display: flex; justify-content: center; z-index: 7; pointer-events: none; opacity: 0;">
+    <div ref="flowerTop4Ref" style="position: absolute; top: -75px; left: 0; right: 150px; display: flex; justify-content: center; z-index: 7; pointer-events: none; opacity: 0;">
       <img
         ref="flowerTop4ImgRef"
         src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_d08596a5-88ad-4275-bbda-0a20c4e93f57.webp"
@@ -35,7 +35,7 @@
     </div>
 
     <!-- Bunga 5 Atas — paling kiri -->
-    <div ref="flowerTop5Ref" style="position: absolute; top: -10px; left: 25px; z-index: 8; pointer-events: none; opacity: 0;">
+    <div ref="flowerTop5Ref" style="position: absolute; top: -5px; left: 25px; z-index: 8; pointer-events: none; opacity: 0;">
       <img
         ref="flowerTop5ImgRef"
         src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_a6a577bf-f7cd-47c9-8d6f-ed243d09447b.webp"
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Bunga 6 Atas — lebih kiri lagi -->
-    <div ref="flowerTop6Ref" style="position: absolute; top: -5px; left: 0px; z-index: 9; pointer-events: none; opacity: 0;">
+    <div ref="flowerTop6Ref" style="position: absolute; top: -5px; left: -10px; z-index: 9; pointer-events: none; opacity: 0;">
       <img
         ref="flowerTop6ImgRef"
         src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_49b0c001-18f5-4b55-9ce0-9c57b3ec8eb3.webp"
@@ -65,12 +65,52 @@
     </div>
 
     <!-- Bunga 2 Atas -->
-    <div ref="flowerTop2Ref" style="position: absolute; top: -5px; left: 100px; right: 0; display: flex; justify-content: center; z-index: 4; pointer-events: none; opacity: 0;">
+    <div ref="flowerTop2Ref" style="position: absolute; top: -5px; left: 60px; right: 0; display: flex; justify-content: center; z-index: 4; pointer-events: none; opacity: 0;">
       <img
         ref="flowerTop2ImgRef"
         src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_8054f96f-c3c3-48e1-9282-88705e0e83ec.webp"
         style="width: clamp(50px, 15vw, 550px); max-width: none;"
         alt="Bunga Atas 2"
+      />
+    </div>
+
+    <!-- Bunga 7 Atas — di kanan bunga 2 -->
+    <div ref="flowerTop7Ref" style="position: absolute; top: -60px; left: 150px; right: 0; display: flex; justify-content: center; z-index: 10; pointer-events: none; opacity: 0;">
+      <img
+        ref="flowerTop7ImgRef"
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_36d19996-0c8b-4e4d-98b5-d0381cdc1d49.webp"
+        style="width: clamp(110px, 14vw, 450px); max-width: none;"
+        alt="Bunga Atas 7"
+      />
+    </div>
+
+    <!-- Bunga 8 Atas — lebih kanan -->
+    <div ref="flowerTop8Ref" style="position: absolute; top: 0px; left: 250px; right: 0; display: flex; justify-content: center; z-index: 11; pointer-events: none; opacity: 0;">
+      <img
+        ref="flowerTop8ImgRef"
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_a6e8b046-526f-48c7-bd09-82d9c9a3144b.webp"
+        style="width: clamp(60px, 12vw, 400px); max-width: none;"
+        alt="Bunga Atas 8"
+      />
+    </div>
+
+    <!-- Bunga 9 Atas — lebih kanan lagi -->
+    <div ref="flowerTop9Ref" style="position: absolute; top: -40px; left: 280px; right: 0; display: flex; justify-content: center; z-index: 12; pointer-events: none; opacity: 0;">
+      <img
+        ref="flowerTop9ImgRef"
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_d08596a5-88ad-4275-bbda-0a20c4e93f57.webp"
+        style="width: clamp(60px, 13vw, 420px); max-width: none;"
+        alt="Bunga Atas 9"
+      />
+    </div>
+
+    <!-- Bunga 10 Atas — paling kanan -->
+    <div ref="flowerTop10Ref" style="position: absolute; top: -20px; left: 360px; right: 0; display: flex; justify-content: center; z-index: 13; pointer-events: none; opacity: 0;">
+      <img
+        ref="flowerTop10ImgRef"
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_4d6cafd2-4a43-4616-a4ec-869c939b1a6d.webp"
+        style="width: clamp(90px, 14vw, 450px); max-width: none;"
+        alt="Bunga Atas 10"
       />
     </div>
 
@@ -81,6 +121,46 @@
         src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_8054f96f-c3c3-48e1-9282-88705e0e83ec.webp"
         style="width: clamp(50px, 15vw, 550px); max-width: none; transform-origin: center bottom;"
         alt="Bunga Bawah 2"
+      />
+    </div>
+
+    <!-- Bunga 7 Bawah — di kanan bunga 2 -->
+    <div ref="flowerBottom7Ref" style="position: absolute; bottom: -60px; left: 0; right: -150px; display: flex; justify-content: center; z-index: 10; pointer-events: none; opacity: 0;">
+      <img
+        ref="flowerBottom7ImgRef"
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_36d19996-0c8b-4e4d-98b5-d0381cdc1d49.webp"
+        style="width: clamp(110px, 14vw, 450px); max-width: none; transform-origin: center bottom;"
+        alt="Bunga Bawah 7"
+      />
+    </div>
+
+    <!-- Bunga 8 Bawah — lebih kanan -->
+    <div ref="flowerBottom8Ref" style="position: absolute; bottom: 0px; left: 0; right: -250px; display: flex; justify-content: center; z-index: 11; pointer-events: none; opacity: 0;">
+      <img
+        ref="flowerBottom8ImgRef"
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_a6e8b046-526f-48c7-bd09-82d9c9a3144b.webp"
+        style="width: clamp(60px, 12vw, 400px); max-width: none; transform-origin: center bottom;"
+        alt="Bunga Bawah 8"
+      />
+    </div>
+
+    <!-- Bunga 9 Bawah — lebih kanan lagi -->
+    <div ref="flowerBottom9Ref" style="position: absolute; bottom: -40px; left: 0; right: -280px; display: flex; justify-content: center; z-index: 12; pointer-events: none; opacity: 0;">
+      <img
+        ref="flowerBottom9ImgRef"
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_d08596a5-88ad-4275-bbda-0a20c4e93f57.webp"
+        style="width: clamp(60px, 13vw, 420px); max-width: none; transform-origin: center bottom;"
+        alt="Bunga Bawah 9"
+      />
+    </div>
+
+    <!-- Bunga 10 Bawah — paling kanan -->
+    <div ref="flowerBottom10Ref" style="position: absolute; bottom: -20px; left: 0; right: -360px; display: flex; justify-content: center; z-index: 13; pointer-events: none; opacity: 0;">
+      <img
+        ref="flowerBottom10ImgRef"
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_4d6cafd2-4a43-4616-a4ec-869c939b1a6d.webp"
+        style="width: clamp(90px, 14vw, 450px); max-width: none; transform-origin: center bottom;"
+        alt="Bunga Bawah 10"
       />
     </div>
 
@@ -105,7 +185,7 @@
     </div>
 
     <!-- Bunga 4 Bawah — lebih kiri lagi -->
-    <div ref="flowerBottom4Ref" style="position: absolute; bottom: -85px; left: 0; right: 150px; display: flex; justify-content: center; z-index: 7; pointer-events: none; opacity: 0;">
+    <div ref="flowerBottom4Ref" style="position: absolute; bottom: -75px; left: 0; right: 150px; display: flex; justify-content: center; z-index: 7; pointer-events: none; opacity: 0;">
       <img
         ref="flowerBottom4ImgRef"
         src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_d08596a5-88ad-4275-bbda-0a20c4e93f57.webp"
@@ -115,7 +195,7 @@
     </div>
 
     <!-- Bunga 5 Bawah — paling kiri -->
-    <div ref="flowerBottom5Ref" style="position: absolute; bottom: -10px; left: 25px; z-index: 8; pointer-events: none; opacity: 0;">
+    <div ref="flowerBottom5Ref" style="position: absolute; bottom: -5px; left: 25px; z-index: 8; pointer-events: none; opacity: 0;">
       <img
         ref="flowerBottom5ImgRef"
         src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_a6a577bf-f7cd-47c9-8d6f-ed243d09447b.webp"
@@ -125,7 +205,7 @@
     </div>
 
     <!-- Bunga 6 Bawah — lebih kiri lagi -->
-    <div ref="flowerBottom6Ref" style="position: absolute; bottom: -5px; left: 0px; z-index: 9; pointer-events: none; opacity: 0;">
+    <div ref="flowerBottom6Ref" style="position: absolute; bottom: -5px; left: -10px; z-index: 9; pointer-events: none; opacity: 0;">
       <img
         ref="flowerBottom6ImgRef"
         src="https://media.mengundanganda.com/floral-blue/cover%20section/flower/randidewi_49b0c001-18f5-4b55-9ce0-9c57b3ec8eb3.webp"
@@ -242,85 +322,113 @@ const flowerTop6Ref = ref<HTMLElement | null>(null);
 const flowerTop6ImgRef = ref<HTMLImageElement | null>(null);
 const flowerBottom6Ref = ref<HTMLElement | null>(null);
 const flowerBottom6ImgRef = ref<HTMLImageElement | null>(null);
+const flowerTop7Ref = ref<HTMLElement | null>(null);
+const flowerTop7ImgRef = ref<HTMLImageElement | null>(null);
+const flowerBottom7Ref = ref<HTMLElement | null>(null);
+const flowerBottom7ImgRef = ref<HTMLImageElement | null>(null);
+const flowerTop8Ref = ref<HTMLElement | null>(null);
+const flowerTop8ImgRef = ref<HTMLImageElement | null>(null);
+const flowerBottom8Ref = ref<HTMLElement | null>(null);
+const flowerBottom8ImgRef = ref<HTMLImageElement | null>(null);
+const flowerTop9Ref = ref<HTMLElement | null>(null);
+const flowerTop9ImgRef = ref<HTMLImageElement | null>(null);
+const flowerBottom9Ref = ref<HTMLElement | null>(null);
+const flowerBottom9ImgRef = ref<HTMLImageElement | null>(null);
+const flowerTop10Ref = ref<HTMLElement | null>(null);
+const flowerTop10ImgRef = ref<HTMLImageElement | null>(null);
+const flowerBottom10Ref = ref<HTMLElement | null>(null);
+const flowerBottom10ImgRef = ref<HTMLImageElement | null>(null);
 
 let entranceTl: gsap.core.Timeline | null = null;
 let swayTweens: gsap.core.Tween[] = [];
 
 onMounted(() => {
-  entranceTl = gsap.timeline();
+  // Ensure DOM is ready and refs are bound
+  setTimeout(() => {
+    entranceTl = gsap.timeline({ delay: 0.2 });
 
-  // Reset/Set initial state untuk menghindari konflik transform dengan CSS inline
-  const flowerList = [
-    { ref: flowerBottom1Ref, y: 150, x: 0, scaleY: 1, opacity: 0 },
-    { ref: flowerBottom2Ref, y: 150, x: 0, scaleY: 1, opacity: 0 },
-    { ref: flowerTop1Ref, y: -150, x: 0, scaleY: -1, opacity: 0 },
-    { ref: flowerTop2Ref, y: -150, x: 0, scaleY: -1, opacity: 0 },
-    { ref: flowerBottom3Ref, y: 150, x: 0, scaleY: 1, opacity: 0 },
-    { ref: flowerTop3Ref, y: -150, x: 0, scaleY: -1, opacity: 0 },
-    { ref: flowerBottom4Ref, y: 150, x: 0, scaleY: 1, opacity: 0 },
-    { ref: flowerTop4Ref, y: -150, x: 0, scaleY: -1, opacity: 0 },
-    { ref: flowerBottom5Ref, y: 150, x: 0, scaleY: 1, opacity: 0 },
-    { ref: flowerTop5Ref, y: -150, x: 0, scaleY: -1, opacity: 0 },
-    { ref: flowerBottom6Ref, y: 150, x: 0, scaleY: 1, opacity: 0 },
-    { ref: flowerTop6Ref, y: -150, x: 0, scaleY: -1, opacity: 0 }
-  ];
+    const flowerList = [
+      { ref: flowerBottom1Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerBottom2Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerTop1Ref, y: -150, x: 0, scaleY: -1 },
+      { ref: flowerTop2Ref, y: -150, x: 0, scaleY: -1 },
+      { ref: flowerBottom3Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerTop3Ref, y: -150, x: 0, scaleY: -1 },
+      { ref: flowerBottom4Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerTop4Ref, y: -150, x: 0, scaleY: -1 },
+      { ref: flowerBottom5Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerTop5Ref, y: -150, x: 0, scaleY: -1 },
+      { ref: flowerTop6Ref, y: -150, x: 0, scaleY: -1 },
+      { ref: flowerBottom6Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerBottom7Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerTop7Ref, y: -150, x: 0, scaleY: -1 },
+      { ref: flowerBottom8Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerTop8Ref, y: -150, x: 0, scaleY: -1 },
+      { ref: flowerBottom9Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerTop9Ref, y: -150, x: 0, scaleY: -1 },
+      { ref: flowerBottom10Ref, y: 150, x: 0, scaleY: 1 },
+      { ref: flowerTop10Ref, y: -150, x: 0, scaleY: -1 }
+    ];
 
-  flowerList.forEach(f => {
-    if (f.ref.value) {
-      gsap.set(f.ref.value, { 
-        y: f.y, 
-        x: f.x,
-        scaleY: f.scaleY, 
-        opacity: f.opacity,
-        transformOrigin: "center center"
-      });
-    }
-  });
+    // Set initial state and build entrance timeline
+    flowerList.forEach(f => {
+      if (f.ref.value) {
+        gsap.set(f.ref.value, { 
+          y: f.y, 
+          x: f.x,
+          scaleY: f.scaleY, 
+          opacity: 0,
+          transformOrigin: "center center"
+        });
 
-  // Animasi Entrance
-  flowerList.forEach(f => {
-    if (f.ref.value) {
-      // Ambil transform awal (flip/x)
-      const currentST = gsap.getProperty(f.ref.value, "scaleY");
-      const currentX = gsap.getProperty(f.ref.value, "x");
-      
-      entranceTl?.to(f.ref.value,
-        { y: 0, opacity: 1, duration: 2, ease: 'power3.out' },
-        0
-      );
-    }
-  });
+        entranceTl?.to(f.ref.value, {
+          y: 0,
+          opacity: 1,
+          duration: 2,
+          ease: 'power3.out'
+        }, 0);
+      }
+    });
 
-  // Animasi Sway untuk semua bunga
-  const swayConfigs = [
-    { el: flowerTop1ImgRef, rot: 5, dur: 3, origin: 'center bottom' },
-    { el: flowerTop2ImgRef, rot: -4, dur: 2, origin: 'center bottom' },
-    { el: flowerTop3ImgRef, rot: -4, dur: 3, origin: 'center bottom' },
-    { el: flowerTop4ImgRef, rot: 3, dur: 4, origin: 'center bottom' },
-    { el: flowerTop5ImgRef, rot: -5, dur: 5, origin: 'center bottom' },
-    { el: flowerTop6ImgRef, rot: 4, dur: 3, origin: 'center bottom' },
-    { el: flowerBottom1ImgRef, rot: 4, dur: 2, origin: 'center bottom' },
-    { el: flowerBottom2ImgRef, rot: -5, dur: 3, origin: 'center bottom' },
-    { el: flowerBottom3ImgRef, rot: 5, dur: 3, origin: 'center bottom' },
-    { el: flowerBottom4ImgRef, rot: -3, dur: 5, origin: 'center bottom' },
-    { el: flowerBottom5ImgRef, rot: 4, dur: 4, origin: 'center bottom' },
-    { el: flowerBottom6ImgRef, rot: -4, dur: 5, origin: 'center bottom' }
-  ];
+    // Swaying Animation
+    const swayConfigs = [
+      { el: flowerTop1ImgRef, rot: 5, dur: 3 },
+      { el: flowerTop2ImgRef, rot: -4, dur: 2 },
+      { el: flowerTop3ImgRef, rot: -4, dur: 3 },
+      { el: flowerTop4ImgRef, rot: 3, dur: 4 },
+      { el: flowerTop5ImgRef, rot: -5, dur: 5 },
+      { el: flowerTop6ImgRef, rot: 4, dur: 3 },
+      { el: flowerTop7ImgRef, rot: -4, dur: 5 },
+      { el: flowerTop8ImgRef, rot: 4, dur: 4 },
+      { el: flowerTop9ImgRef, rot: -3, dur: 5 },
+      { el: flowerTop10ImgRef, rot: 5, dur: 3 },
+      { el: flowerBottom1ImgRef, rot: 4, dur: 2 },
+      { el: flowerBottom2ImgRef, rot: -5, dur: 3 },
+      { el: flowerBottom3ImgRef, rot: 5, dur: 3 },
+      { el: flowerBottom4ImgRef, rot: -3, dur: 5 },
+      { el: flowerBottom5ImgRef, rot: 4, dur: 4 },
+      { el: flowerBottom6ImgRef, rot: -4, dur: 5 },
+      { el: flowerBottom7ImgRef, rot: 5, dur: 4 },
+      { el: flowerBottom8ImgRef, rot: -4, dur: 3 },
+      { el: flowerBottom9ImgRef, rot: 4, dur: 4 },
+      { el: flowerBottom10ImgRef, rot: -4, dur: 4 }
+    ];
 
-  swayConfigs.forEach(s => {
-    if (s.el.value) {
-      const tween = gsap.to(s.el.value, {
-        rotation: s.rot,
-        duration: s.dur,
-        ease: 'sine.inOut',
-        transformOrigin: s.origin,
-        yoyo: true,
-        repeat: -1,
-        delay: 1
-      });
-      swayTweens.push(tween);
-    }
-  });
+    swayConfigs.forEach(s => {
+      if (s.el.value) {
+        const tween = gsap.to(s.el.value, {
+          rotation: s.rot,
+          duration: s.dur,
+          ease: 'sine.inOut',
+          transformOrigin: 'center bottom',
+          yoyo: true,
+          repeat: -1,
+          delay: 1
+        });
+        swayTweens.push(tween);
+      }
+    });
+  }, 50); // Small delay to ensure everything is initialized
 });
 
 onUnmounted(() => {
