@@ -7,7 +7,7 @@
       <div class="sidebar-brand-text">Mengundang<span>Anda</span></div>
     </router-link>
 
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" :class="{ 'is-admin-nav': isAdmin }">
       <router-link to="/dashboard" class="sidebar-link" exact>
         <span class="material-symbols-rounded">dashboard</span>
         Dashboard

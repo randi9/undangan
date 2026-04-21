@@ -609,7 +609,7 @@ const themesData = [
     color: '#c9a96e',
     bgColor: '#2c2417',
     bgGradient: 'linear-gradient(135deg, #2c2417, #5a4b3d)',
-    sampleUrl: '',
+    sampleUrl: 'https://elegant.mengundanganda.com',
     icon: 'solar:crown-bold-duotone',
   },
   {
@@ -619,7 +619,7 @@ const themesData = [
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
     bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
-    sampleUrl: 'https://aku-ayang.mengundanganda.com',
+    sampleUrl: 'https://floral.mengundanganda.com',
     icon: 'solar:leaf-bold-duotone',
   },
   {
@@ -629,8 +629,28 @@ const themesData = [
     color: '#111111',
     bgColor: '#f9f9f9',
     bgGradient: 'linear-gradient(135deg, #1e293b, #475569)',
-    sampleUrl: '',
+    sampleUrl: 'https://minimalist.mengundanganda.com',
     icon: 'solar:minimalistic-magnifer-bold-duotone',
+  },
+  {
+    id: 'elegant_blue',
+    name: 'Elegant Blue',
+    description: 'Desain elegan dengan nuansa biru dusty yang menenangkan dipadukan dengan aksen champagne gold. Sempurna untuk nuansa mewah modern.',
+    color: '#A3B5C3',
+    bgColor: '#1e3a8a',
+    bgGradient: 'linear-gradient(135deg, #1e3a8a, #A3B5C3)',
+    sampleUrl: 'https://elegant-blue.mengundanganda.com',
+    icon: 'solar:stars-bold-duotone',
+  },
+  {
+    id: 'floral_blue',
+    name: 'Floral Blue',
+    description: 'Perpaduan ornamen floral dengan palet biru yang segar dan elegan. Cocok untuk pasangan yang menginginkan nuansa romantis dengan sentuhan modern.',
+    color: '#3b6b8a',
+    bgColor: '#3b6b8a',
+    bgGradient: 'linear-gradient(135deg, #3b6b8a, #b8d4e3)',
+    sampleUrl: 'https://floralblue.mengundanganda.com',
+    icon: 'solar:leaf-bold-duotone',
   },
 ]
 </script>
@@ -1802,7 +1822,7 @@ const themesData = [
 }
 .lp-pricing-features li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   font-size: 15px;
   color: var(--lp-text);
@@ -1811,6 +1831,8 @@ const themesData = [
 .check-icon {
   font-size: 22px;
   color: #94a3b8;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 .check-icon.accent {
   color: var(--lp-accent-hover);

@@ -60,13 +60,6 @@
           <div class="editor-form-area">
             <h1 class="admin-page-title" style="display: flex; justify-content: space-between; align-items: center;">
               <span style="display: flex; align-items: center; gap: 8px;"><Icon icon="lucide:pencil" style="color: var(--admin-primary);" /> Edit Undangan</span>
-              <button 
-                class="btn btn-outline btn-sm mobile-only" 
-                @click="previewPanel?.openMobilePreview()"
-                style="border-radius: 20px; font-weight: 600;"
-              >
-                👀 Preview
-              </button>
             </h1>
             <p class="admin-page-subtitle">
               {{ form.groom_name }} & {{ form.bride_name }}
@@ -491,7 +484,12 @@
                     <input v-model="form.akad_venue" class="form-input" maxlength="100" />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Alamat <span class="text-error" style="color: #dc2626;">*</span></label>
+                    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                      <span>Alamat <span class="text-error" style="color: #dc2626;">*</span></span>
+                      <button type="button" class="btn btn-outline btn-sm" @click="openMapPicker('akad')" style="font-size: 11.5px; height: auto; padding: 4px 8px; border-radius: 6px;">
+                        <Icon icon="lucide:map-pin" style="font-size: 14px; margin-right: 4px;" /> Cari di Peta
+                      </button>
+                    </label>
                     <textarea
                       v-model="form.akad_address"
                       class="form-input"
@@ -561,7 +559,12 @@
                     <input v-model="form.resepsi_venue" class="form-input" maxlength="100" />
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Alamat</label>
+                    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                      <span>Alamat</span>
+                      <button type="button" class="btn btn-outline btn-sm" @click="openMapPicker('resepsi')" style="font-size: 11.5px; height: auto; padding: 4px 8px; border-radius: 6px;">
+                        <Icon icon="lucide:map-pin" style="font-size: 14px; margin-right: 4px;" /> Cari di Peta
+                      </button>
+                    </label>
                     <textarea
                       v-model="form.resepsi_address"
                       class="form-input"
@@ -681,15 +684,20 @@
               @change="handleLoveStoryPhotoUpload"
             />
 
-            <button
-              type="button"
-              class="btn btn-outline"
-              @click="
-                form.love_story.push({ date: '', title: '', description: '', photo: '' })
-              "
-            >
-              + Tambah Cerita
-            </button>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button
+                type="button"
+                class="btn btn-outline"
+                @click="
+                  form.love_story.push({ date: '', title: '', description: '', photo: '' })
+                "
+              >
+                + Tambah Cerita
+              </button>
+              <button type="button" class="btn btn-outline" @click="showLoveStoryTemplateModal = true" style="display: flex; align-items: center; gap: 6px;">
+                <Icon icon="lucide:wand-2" style="font-size: 15px;" /> Pilih Template Cerita
+              </button>
+            </div>
           </div>
 
           <!-- Gallery -->
@@ -774,6 +782,11 @@
                 rows="3"
                 maxlength="500"
               ></textarea>
+              <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
+                <button type="button" class="btn btn-outline btn-sm" @click="showQuoteModal = true" style="font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                  <Icon icon="lucide:book-text" style="font-size: 15px;" /> Pilih dari Template
+                </button>
+              </div>
             </div>
           </div>
 
@@ -826,8 +839,21 @@
               </div>
               <div class="form-grid">
                 <div class="form-group">
-                  <label class="form-label">Nama Bank</label>
-                  <input v-model="bank.bank_name" class="form-input" placeholder="BCA" maxlength="50" />
+                  <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+                    Nama Bank / E-Wallet
+                  </label>
+                  <input v-model="bank.bank_name" class="form-input" placeholder="Contoh: BCA, Mandiri, GoPay" maxlength="50" />
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+                    <button type="button" @click="bank.bank_name = 'BCA'" class="bank-pill">BCA</button>
+                    <button type="button" @click="bank.bank_name = 'Mandiri'" class="bank-pill">Mandiri</button>
+                    <button type="button" @click="bank.bank_name = 'BNI'" class="bank-pill">BNI</button>
+                    <button type="button" @click="bank.bank_name = 'BRI'" class="bank-pill">BRI</button>
+                    <button type="button" @click="bank.bank_name = 'BSI'" class="bank-pill">BSI</button>
+                    <button type="button" @click="bank.bank_name = 'GoPay'" class="bank-pill">GoPay</button>
+                    <button type="button" @click="bank.bank_name = 'OVO'" class="bank-pill">OVO</button>
+                    <button type="button" @click="bank.bank_name = 'DANA'" class="bank-pill">DANA</button>
+                    <button type="button" @click="bank.bank_name = 'ShopeePay'" class="bank-pill">ShopeePay</button>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label class="form-label">No. Rekening</label>
@@ -1068,8 +1094,9 @@
     </div>
 
     <!-- Toast -->
-    <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
-      {{ toast.message }}
+    <div v-if="toast" :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']">
+      <Icon :icon="toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'" style="font-size: 18px; flex-shrink: 0;" />
+      <span>{{ toast.message }}</span>
     </div>
 
     <!-- Image Crop Modal -->
@@ -1080,6 +1107,27 @@
       :stencil-shape="cropStencilShape"
       @confirm="handleCropConfirm"
       @cancel="handleCropCancel"
+    />
+
+    <!-- Quote Library Modal -->
+    <QuoteLibraryModal
+      :show="showQuoteModal"
+      @close="showQuoteModal = false"
+      @select="handleQuoteSelect"
+    />
+
+    <!-- Love Story Template Modal -->
+    <LoveStoryTemplateModal
+      :show="showLoveStoryTemplateModal"
+      @close="showLoveStoryTemplateModal = false"
+      @select="handleLoveStoryTemplateSelect"
+    />
+
+    <!-- Map Picker Modal -->
+    <MapPickerModal
+      :show="showMapPickerModal"
+      @close="showMapPickerModal = false"
+      @select="handleMapLocationSelect"
     />
   </div>
 </template>
@@ -1374,6 +1422,9 @@ import { useMusicManager } from "@/composables/useMusicManager";
 import { useFormWizard } from "@/composables/useFormWizard";
 import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
 import ImageCropModal from "@/components/admin/ImageCropModal.vue";
+import QuoteLibraryModal from "@/components/admin/QuoteLibraryModal.vue";
+import MapPickerModal from "@/components/admin/MapPickerModal.vue";
+import LoveStoryTemplateModal from "@/components/admin/LoveStoryTemplateModal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -1498,6 +1549,41 @@ const previewPanel = ref<InstanceType<typeof LivePreviewPanel> | null>(null);
 const showThemeModal = ref(false);
 const themeList = THEME_LIST;
 
+// --- Quote Library ---
+const showQuoteModal = ref(false);
+function handleQuoteSelect(quoteStr: string) {
+  form.quote = quoteStr;
+  showQuoteModal.value = false;
+}
+
+// --- Love Story Template ---
+const showLoveStoryTemplateModal = ref(false);
+function handleLoveStoryTemplateSelect(stories: import('@/types/invitation').LoveStoryItem[]) {
+  form.love_story = stories;
+  showLoveStoryTemplateModal.value = false;
+  showToast('success', 'Template kisah cinta berhasil diterapkan!');
+}
+
+// --- Map Picker ---
+const showMapPickerModal = ref(false);
+const mapPickerTarget = ref<'akad' | 'resepsi'>('akad');
+
+function openMapPicker(target: 'akad' | 'resepsi') {
+  mapPickerTarget.value = target;
+  showMapPickerModal.value = true;
+}
+
+function handleMapLocationSelect(payload: { lat: number, lng: number, address: string, link: string }) {
+  if (mapPickerTarget.value === 'akad') {
+    form.akad_address = payload.address;
+    form.akad_map_url = payload.link;
+  } else {
+    form.resepsi_address = payload.address;
+    form.resepsi_map_url = payload.link;
+  }
+  showMapPickerModal.value = false;
+}
+
 function selectTheme(themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue") {
   const oldTheme = form.theme;
   form.theme = themeId;
@@ -1532,7 +1618,7 @@ async function handleSubmit() {
   try {
     const id = route.params.id as string;
     await store.updateInvitation(id, getSubmitPayload());
-    showToast("success", "Undangan berhasil diperbarui! 🎉");
+    showToast("success", "Undangan berhasil diperbarui!");
     setTimeout(() => router.push("/dashboard"), 1500);
   } catch (e: any) {
     showToast("error", e.message || "Gagal memperbarui undangan");
@@ -1551,5 +1637,25 @@ onMounted(async () => {
   loading.value = false;
 });
 </script>
+
+<style scoped>
+.bank-pill {
+  background: var(--admin-bg, #f1f5f9);
+  color: var(--admin-text-secondary, #64748b);
+  border: 1px solid var(--admin-border, #e2e8f0);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bank-pill:hover {
+  background: #e2e8f0;
+  color: var(--admin-text);
+  border-color: #cbd5e1;
+}
+</style>
 
 

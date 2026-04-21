@@ -260,16 +260,86 @@
       </div>
     </div>
 
+    <!-- Post-Create Guide Modal -->
+    <div v-if="showPostCreateGuide" class="guide-modal-overlay" @click.self="dismissPostCreateGuide">
+      <div class="guide-modal">
+        <button class="guide-modal-close" @click="dismissPostCreateGuide" title="Tutup panduan">
+          <Icon icon="lucide:x" />
+        </button>
+        <div class="guide-modal-header">
+          <div class="guide-modal-icon">
+            <Icon icon="lucide:party-popper" style="font-size: 22px;" />
+          </div>
+          <h2>Undangan Berhasil Dibuat!</h2>
+          <p>Berikut panduan tombol yang tersedia di kartu undangan Anda</p>
+        </div>
+        <div class="guide-modal-steps">
+          <div class="guide-step-card">
+            <div class="guide-step-icon" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #3b82f6;"><Icon icon="lucide:eye" style="font-size: 16px;" /></div>
+            <div class="guide-step-body">
+              <strong>Preview</strong>
+              <span>Lihat tampilan undangan Anda seperti yang dilihat tamu.</span>
+            </div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-icon" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); color: #16a34a;"><Icon icon="lucide:pencil" style="font-size: 16px;" /></div>
+            <div class="guide-step-body">
+              <strong>Edit</strong>
+              <span>Ubah data mempelai, tanggal, foto, dan semua isi undangan.</span>
+            </div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-icon" style="background: linear-gradient(135deg, #eef2ff, #e0e7ff); color: #6366f1;"><Icon icon="lucide:users" style="font-size: 16px;" /></div>
+            <div class="guide-step-body">
+              <strong>Tamu</strong>
+              <span>Kelola daftar tamu undangan dan pantau siapa yang sudah RSVP.</span>
+            </div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-icon" style="background: linear-gradient(135deg, #fdf4ff, #fae8ff); color: #a855f7;"><Icon icon="lucide:message-square" style="font-size: 16px;" /></div>
+            <div class="guide-step-body">
+              <strong>Ucapan</strong>
+              <span>Lihat dan kelola ucapan & doa dari tamu yang hadir.</span>
+            </div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-icon" style="background: linear-gradient(135deg, #fef2f2, #fecaca); color: #ef4444;"><Icon icon="lucide:trash-2" style="font-size: 16px;" /></div>
+            <div class="guide-step-body">
+              <strong>Hapus</strong>
+              <span>Hapus undangan secara permanen beserta semua datanya.</span>
+            </div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-icon" style="background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #d97706;"><Icon icon="lucide:zap" style="font-size: 16px;" /></div>
+            <div class="guide-step-body">
+              <strong>Upgrade</strong>
+              <span>Tingkatkan ke Premium agar tamu tak terbatas dan banner undangan dihilangkan.</span>
+            </div>
+          </div>
+        </div>
+        <div class="guide-modal-footer">
+          <div class="guide-modal-tip">
+            <Icon icon="lucide:lightbulb" style="color: #f59e0b; flex-shrink: 0;" />
+            <span>Klik <strong>link URL</strong> di kartu undangan untuk langsung menyalin link. Kirimkan ke tamu lewat WhatsApp!</span>
+          </div>
+          <button class="btn btn-primary" @click="dismissPostCreateGuide" style="width: 100%;">
+            <Icon icon="lucide:check-circle-2" style="font-size: 16px;" /> Oke, Saya Paham!
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast -->
-    <div v-if="toast" :class="['toast', `toast-${toast.type}`]">
-      {{ toast.message }}
+    <div v-if="toast" :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']">
+      <Icon :icon="toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'" style="font-size: 18px; flex-shrink: 0;" />
+      <span>{{ toast.message }}</span>
     </div>
   </AdminLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
 import type { Invitation } from "@/types/invitation";
@@ -279,12 +349,22 @@ import AppSkeleton from "@/components/ui/AppSkeleton.vue";
 import AdminLayout from "@/components/admin/AdminLayout.vue";
 
 const router = useRouter();
+const route = useRoute();
 const store = useInvitationStore();
 const authStore = useAuthStore();
 const searchQuery = ref("");
 const deleteTarget = ref<Invitation | null>(null);
 const toast = ref<{ type: string; message: string } | null>(null);
 const apiBase = import.meta.env.VITE_API_URL || "";
+
+// --- Post-Create Guide ---
+const showPostCreateGuide = ref(false);
+
+function dismissPostCreateGuide() {
+  showPostCreateGuide.value = false;
+  // Clean URL params
+  router.replace({ path: '/dashboard' });
+}
 
 const invitations = computed(() => store.invitations);
 
@@ -368,7 +448,7 @@ async function copyLink(slug: string) {
   const url = getInvitationUrl(slug);
   try {
     await navigator.clipboard.writeText(url);
-    showToast('success', '✅ Link berhasil disalin!');
+    showToast('success', 'Link berhasil disalin!');
   } catch {
     showToast('error', 'Gagal menyalin link');
   }
@@ -398,6 +478,11 @@ function showToast(type: string, message: string) {
 
 onMounted(async () => {
   await store.fetchInvitations();
+
+  // Show guide popup if user just created an invitation
+  if (route.query.just_created === '1') {
+    showPostCreateGuide.value = true;
+  }
 
   // Auto-verify Mayar payment if redirected back with licenseCode, transaction_id, or at least invitation_id
   const urlParams = new URLSearchParams(window.location.search);
@@ -430,7 +515,7 @@ onMounted(async () => {
       const data = await res.json();
       
       if (res.ok && (data.status === "ok" || data.status === "already_paid")) {
-        showToast("success", "🎉 Pembayaran berhasil diverifikasi! Undangan sudah aktif.");
+        showToast("success", "Pembayaran berhasil diverifikasi! Undangan sudah aktif.");
         // Refresh invitations to show updated status
         await store.fetchInvitations();
       } else {
@@ -446,3 +531,154 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style scoped>
+/* ===== Post-Create Guide Modal ===== */
+.guide-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.guide-modal {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+  animation: slideUp 0.35s ease-out;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.guide-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  transition: all 0.2s;
+  font-size: 18px;
+}
+.guide-modal-close:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+.guide-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.guide-modal-icon {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  color: #16a34a;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.guide-modal-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 6px;
+}
+.guide-modal-header p {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+.guide-modal-steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (max-width: 520px) {
+  .guide-modal {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+  .guide-modal-steps {
+    grid-template-columns: 1fr;
+  }
+}
+.guide-step-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+.guide-step-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+  transform: translateY(-1px);
+}
+.guide-step-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.guide-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.guide-step-body strong {
+  font-size: 13px;
+  color: #1e293b;
+}
+.guide-step-body span {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
+.guide-modal-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.guide-modal-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #64748b;
+  background: #fffbeb;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #fde68a;
+  line-height: 1.5;
+}
+</style>
+
