@@ -809,21 +809,22 @@ onMounted(() => {
         if (item.ref.value) {
           const offscreenY = item.scaleY === -1 ? -1000 : 1000;
 
-          // 1. Set posisi awal: jauh di bawah/atas, transparan, dan pastikan scaleY aslinya (agar bunga atas tetap terbalik)
-          gsap.set(item.ref.value, {
-            y: offscreenY,
-            opacity: 0,
-            scaleY: item.scaleY,
-          });
-
-          // 2. Animasikan ke posisi normal (y: 0)
-          gsap.to(item.ref.value, {
-            y: 0,
-            opacity: 1,
-            duration: 2,
-            ease: "power3.out",
-            delay: 0.2,
-          });
+          // Animasikan dari posisi offscreen (jauh di bawah/atas) ke posisi normal (y: 0) setiap kali dimuat
+          gsap.fromTo(
+            item.ref.value,
+            {
+              y: offscreenY,
+              opacity: 0,
+              scaleY: item.scaleY,
+            },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 2,
+              ease: "power3.out",
+              delay: 0.2,
+            },
+          );
         }
       });
 
