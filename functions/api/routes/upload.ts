@@ -1,6 +1,6 @@
 import { requireUser, unauthorized } from "../shared/auth";
 import { json, getEffectiveMethod } from "../shared/http";
-import { deleteR2Url, uploadToR2 } from "../shared/storage";
+import { deleteR2Url, uploadToR2, buildR2Client } from "../shared/storage";
 import type { ApiDispatcher } from "../types/api";
 
 async function handleUploadSingle(supabase: any, env: any, request: Request) {
@@ -56,6 +56,15 @@ export const dispatchUploadRoute: ApiDispatcher = async ({
     return await handleUploadMultiple(supabase, env, request);
   if (pathname === "upload/file" && method === "DELETE")
     return await handleUploadDelete(supabase, env, request);
+
+  if (pathname === "upload/debug" && method === "GET") {
+    try {
+      const s3Client = buildR2Client(env);
+      return json({ status: "S3 Client initialized successfully" });
+    } catch (err: any) {
+      return json({ error: `S3 Client init failed: ${err.message}`, stack: err.stack }, 500);
+    }
+  }
 
   return null;
 };

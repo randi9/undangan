@@ -4,7 +4,7 @@ import {
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 
-function buildR2Client(env: any) {
+export function buildR2Client(env: any) {
   return new S3Client({
     region: "auto",
     endpoint: `https://${env?.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
