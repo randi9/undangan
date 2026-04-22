@@ -620,48 +620,55 @@ async function handleInvitationDelete(
   request: Request,
   pathname: string,
 ) {
-  const user = await requireUser(supabase, request, env);
-  if (!user) return unauthorized();
+  try {
+    const user = await requireUser(supabase, request, env);
+    if (!user) return unauthorized();
 
-  const id = decodeURIComponent(pathname.slice("invitations/".length))
-    .trim()
-    .split("/")[0];
-  const { data: inv } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("id", id)
-    .single();
-  if (!inv) return json({ error: "Invitation not found" }, 404);
-  if (user.role !== "admin" && inv.owner_id !== user.id)
-    return json({ error: "Akses ditolak." }, 403);
+    const id = decodeURIComponent(pathname.slice("invitations/".length))
+      .trim()
+      .split("/")[0];
+    const { data: inv, error: fetchErr } = await supabase
+      .from("invitations")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (!inv) return json({ error: fetchErr ? fetchErr.message : "Invitation not found" }, 404);
+    if (user.role !== "admin" && inv.owner_id !== user.id)
+      return json({ error: "Akses ditolak." }, 403);
 
-  const { data: photos } = await supabase
-    .from("photos")
-    .select("url")
-    .eq("invitation_id", id);
+    const { data: photos } = await supabase
+      .from("photos")
+      .select("url")
+      .eq("invitation_id", id);
 
-  if (inv?.cover_photo) await deleteR2Url(env, inv.cover_photo).catch(() => {});
-  if (inv?.groom_photo) await deleteR2Url(env, inv.groom_photo).catch(() => {});
-  if (inv?.bride_photo) await deleteR2Url(env, inv.bride_photo).catch(() => {});
-  if (inv?.music_url) await deleteR2Url(env, inv.music_url).catch(() => {});
-  for (const photo of photos || []) {
-    if (photo?.url) await deleteR2Url(env, photo.url).catch(() => {});
+    if (inv?.cover_photo) await deleteR2Url(env, inv.cover_photo).catch(() => {});
+    if (inv?.groom_photo) await deleteR2Url(env, inv.groom_photo).catch(() => {});
+    if (inv?.bride_photo) await deleteR2Url(env, inv.bride_photo).catch(() => {});
+    if (inv?.music_url) await deleteR2Url(env, inv.music_url).catch(() => {});
+    for (const photo of photos || []) {
+      if (photo?.url) await deleteR2Url(env, photo.url).catch(() => {});
+    }
+
+    await supabase
+      .from("payment_logs")
+      .update({ invitation_id: null })
+      .eq("invitation_id", id)
+      .catch(() => {});
+
+    await supabase.from("invitation_views").delete().eq("invitation_id", id);
+    await supabase.from("photos").delete().eq("invitation_id", id);
+    await supabase.from("rsvps").delete().eq("invitation_id", id);
+    await supabase.from("guests").delete().eq("invitation_id", id);
+    
+    const { error: delError } = await supabase.from("invitations").delete().eq("id", id);
+    if (delError) {
+      return json({ error: `Supabase delete error: ${delError.message}` }, 500);
+    }
+
+    return json({ message: "Invitation deleted successfully" });
+  } catch (err: any) {
+    return json({ error: `Crash di backend: ${err?.message}`, _stack: err?.stack }, 500);
   }
-
-  await supabase
-    .from("payment_logs")
-    .update({ invitation_id: null })
-    .eq("invitation_id", id)
-    .catch(() => {});
-
-  await supabase.from("invitation_views").delete().eq("invitation_id", id);
-  await supabase.from("photos").delete().eq("invitation_id", id);
-  await supabase.from("rsvps").delete().eq("invitation_id", id);
-  await supabase.from("guests").delete().eq("invitation_id", id);
-  const { error } = await supabase.from("invitations").delete().eq("id", id);
-  if (error) throw error;
-
-  return json({ message: "Invitation deleted successfully" });
 }
 
 export const dispatchInvitationRoute: ApiDispatcher = async ({
