@@ -3,6 +3,8 @@ import {
   requireAdminUser,
   requireUser,
   unauthorized,
+  getClerkSecret,
+  getClerkUserIdFromRequest,
 } from "../shared/auth";
 import { json } from "../shared/http";
 import type { ApiDispatcher } from "../types/api";
@@ -257,6 +259,59 @@ export const dispatchAuthRoute: ApiDispatcher = async ({
   request,
   pathname,
 }) => {
+  // Temporary diagnostic endpoint — remove after debugging
+  if (pathname === "auth/debug-token" && request.method === "GET") {
+    const steps: Record<string, any> = {};
+
+    // Step 1: Check Authorization header
+    const authHeader = request.headers.get("authorization") || "";
+    steps.has_auth_header = Boolean(authHeader);
+    steps.auth_header_prefix = authHeader ? authHeader.substring(0, 30) + "..." : "MISSING";
+
+    // Step 2: Extract Clerk user ID from token
+    const clerkId = getClerkUserIdFromRequest(request);
+    steps.clerk_id = clerkId || "FAILED_TO_EXTRACT";
+
+    // Step 3: Check Clerk secret
+    const clerkSecret = getClerkSecret(env);
+    steps.clerk_secret_available = Boolean(clerkSecret);
+    steps.clerk_secret_prefix = clerkSecret ? clerkSecret.substring(0, 10) + "..." : "MISSING";
+
+    // Step 4: Try Clerk API
+    if (clerkSecret && clerkId) {
+      try {
+        const clerkUser = await clerkRequest(env, `/users/${clerkId}`, { method: "GET" });
+        steps.clerk_api = "✅ OK";
+        steps.clerk_username = clerkUser?.username || clerkUser?.id;
+      } catch (err: any) {
+        steps.clerk_api = `❌ FAILED: ${err?.message}`;
+      }
+    }
+
+    // Step 5: Try Supabase query
+    try {
+      const { data, error: dbError } = await supabase
+        .from("users")
+        .select("id, username, role")
+        .limit(1);
+      steps.supabase_query = dbError ? `❌ ${dbError.message}` : "✅ OK";
+      steps.supabase_users_count = data?.length ?? 0;
+    } catch (err: any) {
+      steps.supabase_query = `❌ ${err?.message}`;
+    }
+
+    // Step 6: Try full auth
+    try {
+      const user = await requireUser(supabase, request, env);
+      steps.full_auth = user ? "✅ OK" : "❌ RETURNED_NULL";
+      if (user) steps.auth_user = { id: user.id, username: user.username, role: user.role };
+    } catch (err: any) {
+      steps.full_auth = `❌ THREW: ${err?.message}`;
+    }
+
+    return json({ diagnostic: "auth-debug", steps });
+  }
+
   if (pathname === "auth/me" && request.method === "GET")
     return await handleMe(supabase, request, env);
   if (pathname === "auth/users" && request.method === "GET")
