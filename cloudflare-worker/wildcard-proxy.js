@@ -19,7 +19,7 @@ const BASE_DOMAIN = "mengundanganda.com";
 // ke domain yang sama di zona Cloudflare (www.mengundanganda.com) karena akan
 // menyebabkan infinite loop / 522 Connection Timed Out.
 // Solusi: Fetch langsung ke URL mentah Cloudflare Pages (.pages.dev)
-const ORIGIN_HOST = "mengundanganda.pages.dev";
+const ORIGIN_HOST = "undangan-8w2.pages.dev";
 
 // Subdomain yang TIDAK boleh di-proxy oleh Worker ini
 const EXCLUDED_SUBDOMAINS = new Set([
