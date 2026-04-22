@@ -22,16 +22,65 @@ function randomPassword() {
 async function handleMe(supabase: any, request: Request, env: any) {
   const user = await requireUser(supabase, request, env);
   if (!user) {
+    // Detailed step-by-step debug to find where auth fails
     const authHeader = request.headers.get("authorization") || "";
     const hasToken = authHeader.toLowerCase().startsWith("bearer ");
-    return json({
-      error: "Tidak terautentikasi.",
-      _debug: {
-        has_auth_header: Boolean(authHeader),
-        has_bearer_token: hasToken,
-        token_length: hasToken ? authHeader.slice(7).trim().length : 0,
-      },
-    }, 401);
+    const token = hasToken ? authHeader.slice(7).trim() : "";
+    const debugSteps: Record<string, any> = {
+      has_bearer_token: hasToken,
+      token_length: token.length,
+    };
+
+    // Step 1: Decode JWT
+    if (token) {
+      try {
+        const parts = token.split(".");
+        debugSteps.jwt_parts = parts.length;
+        if (parts.length >= 2) {
+          const payload = parts[1].replaceAll("-", "+").replaceAll("_", "/");
+          const padded = payload + "==".slice((payload.length + 3) % 4);
+          const decoded = JSON.parse(atob(padded));
+          debugSteps.jwt_sub = decoded.sub || "MISSING";
+          debugSteps.jwt_sid = decoded.sid ? "present" : "MISSING";
+          debugSteps.jwt_exp = decoded.exp;
+          debugSteps.jwt_expired = decoded.exp ? (decoded.exp * 1000 <= Date.now()) : "no_exp";
+          debugSteps.server_time = Math.floor(Date.now() / 1000);
+
+          // Step 2: Try Clerk API validation
+          const clerkSecret = getClerkSecret(env);
+          if (clerkSecret && decoded.sid) {
+            try {
+              const res = await fetch(`https://api.clerk.com/v1/sessions/${decoded.sid}`, {
+                headers: { Authorization: `Bearer ${clerkSecret}` },
+              });
+              const data = await res.json();
+              debugSteps.clerk_session_status = res.status;
+              debugSteps.clerk_session_active = data?.status;
+              debugSteps.clerk_session_user = data?.user_id;
+              debugSteps.clerk_user_match = data?.user_id === decoded.sub;
+            } catch (err: any) {
+              debugSteps.clerk_session_error = err?.message;
+            }
+          }
+
+          // Step 3: Try Supabase user lookup
+          if (decoded.sub) {
+            const { data: dbUser, error: dbErr } = await supabase
+              .from("users")
+              .select("id, username, role")
+              .eq("username", decoded.sub)
+              .maybeSingle();
+            debugSteps.supabase_user_found = Boolean(dbUser);
+            debugSteps.supabase_user = dbUser || null;
+            debugSteps.supabase_error = dbErr?.message || null;
+          }
+        }
+      } catch (err: any) {
+        debugSteps.decode_error = err?.message;
+      }
+    }
+
+    return json({ error: "Tidak terautentikasi.", _debug: debugSteps }, 401);
   }
 
   const { count } = await supabase
