@@ -250,7 +250,20 @@ async function extractInvitationIdFromRsvpRequest(request) {
 
 function isSuspiciousApiBot(request, pathname) {
   const { score, verifiedBot } = getBotSignals(request);
-  
+
+  // Uploads are legitimate browser-driven traffic and should not be blocked
+  // by bot heuristics; rate limiting already protects them.
+  if (pathname.startsWith("/api/upload/")) return false;
+
+  // Invitation edit/save requests are also legitimate browser actions.
+  // Keep them out of the bot heuristic and rely on auth + rate limiting.
+  if (
+    pathname.startsWith("/api/invitations/") &&
+    ["PUT", "PATCH", "DELETE", "POST"].includes(request.method)
+  ) {
+    return false;
+  }
+
   // Allow whitelisted/verified bots (e.g. Googlebot) completely
   if (verifiedBot) return false;
 
@@ -266,11 +279,12 @@ function isSuspiciousApiBot(request, pathname) {
     const method = request.method;
     if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
       const ua = (request.headers.get("user-agent") || "").toLowerCase();
-      const looksLikeBot = /(bot|crawler|spider|curl|python|wget|httpclient|scrapy)/.test(ua);
+      const looksLikeBot =
+        /(bot|crawler|spider|curl|python|wget|httpclient|scrapy)/.test(ua);
       if (looksLikeBot) return true;
     }
   }
-  
+
   return false;
 }
 
@@ -375,7 +389,10 @@ async function buildDynamicSeoMeta(subdomain) {
   const result = { isChanged, dynTitle, dynDesc, dynImg };
   if (isChanged) {
     // Cache the resolved meta fields for 10 minutes to prevent API overload
-    seoMetaCache.set(subdomain, { data: result, expires: now + 10 * 60 * 1000 });
+    seoMetaCache.set(subdomain, {
+      data: result,
+      expires: now + 10 * 60 * 1000,
+    });
   }
   return result;
 }
@@ -491,7 +508,10 @@ export default {
     );
 
     // Apply strict Cloudflare edge caching for static assets
-    const isStaticAsset = /\.(js|css|webp|png|jpg|jpeg|svg|woff|woff2|ttf|ico|gif)(\?.*)?$/.test(url.pathname);
+    const isStaticAsset =
+      /\.(js|css|webp|png|jpg|jpeg|svg|woff|woff2|ttf|ico|gif)(\?.*)?$/.test(
+        url.pathname,
+      );
     const fetchOptions = isStaticAsset
       ? { cf: { cacheEverything: true, cacheTtl: 86400 } } // Cache di Cloudflare 24 Jam
       : {};
