@@ -18,7 +18,8 @@ function decodeJwtPayload(token: string): unknown {
   if (parts.length < 2) return null;
   try {
     const payload = parts[1].replaceAll("-", "+").replaceAll("_", "/");
-    const padded = payload + "==".slice((payload.length + 3) % 4);
+    const padCount = (4 - (payload.length % 4)) % 4;
+    const padded = payload + "=".repeat(padCount);
     const text = atob(padded);
     return JSON.parse(text);
   } catch {

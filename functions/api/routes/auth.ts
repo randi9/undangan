@@ -38,7 +38,8 @@ async function handleMe(supabase: any, request: Request, env: any) {
         debugSteps.jwt_parts = parts.length;
         if (parts.length >= 2) {
           const payload = parts[1].replaceAll("-", "+").replaceAll("_", "/");
-          const padded = payload + "==".slice((payload.length + 3) % 4);
+          const padCount = (4 - (payload.length % 4)) % 4;
+          const padded = payload + "=".repeat(padCount);
           const decoded = JSON.parse(atob(padded));
           debugSteps.jwt_sub = decoded.sub || "MISSING";
           debugSteps.jwt_sid = decoded.sid ? "present" : "MISSING";
