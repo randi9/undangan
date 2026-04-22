@@ -54,6 +54,7 @@ export async function onRequest(context: any) {
       env?.SUPABASE_VITE_SUPABASE_URL ||
       "";
     const supabaseKey =
+      env?.SUPABASE_SECRET_KEY ||
       env?.SUPABASE_SERVICE_ROLE_KEY ||
       env?.SUPABASE_ANON_KEY ||
       env?.VITE_SUPABASE_ANON_KEY ||
