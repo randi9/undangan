@@ -21,7 +21,18 @@ function randomPassword() {
 
 async function handleMe(supabase: any, request: Request, env: any) {
   const user = await requireUser(supabase, request, env);
-  if (!user) return unauthorized();
+  if (!user) {
+    const authHeader = request.headers.get("authorization") || "";
+    const hasToken = authHeader.toLowerCase().startsWith("bearer ");
+    return json({
+      error: "Tidak terautentikasi.",
+      _debug: {
+        has_auth_header: Boolean(authHeader),
+        has_bearer_token: hasToken,
+        token_length: hasToken ? authHeader.slice(7).trim().length : 0,
+      },
+    }, 401);
+  }
 
   const { count } = await supabase
     .from("invitations")
