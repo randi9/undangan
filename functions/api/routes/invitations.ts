@@ -652,8 +652,7 @@ async function handleInvitationDelete(
     await supabase
       .from("payment_logs")
       .update({ invitation_id: null })
-      .eq("invitation_id", id)
-      .catch(() => {});
+      .eq("invitation_id", id);
 
     await supabase.from("invitation_views").delete().eq("invitation_id", id);
     await supabase.from("photos").delete().eq("invitation_id", id);
