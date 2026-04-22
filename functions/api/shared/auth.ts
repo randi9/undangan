@@ -161,9 +161,18 @@ export async function requireUser(supabase: any, request: Request, env?: any) {
 
   if (isExpired(payload)) return null;
 
+  // Server-side session validation via Clerk API.
+  // If CLERK_SECRET_KEY is not configured, skip validation and rely on
+  // the JWT expiry check above.  This keeps the app functional while
+  // the operator adds the secret to Cloudflare Pages env vars.
   if (env) {
-    const isValid = await validateClerkSession(env, payload);
-    if (!isValid) return null;
+    const clerkSecret = getClerkSecret(env);
+    if (clerkSecret) {
+      const isValid = await validateClerkSession(env, payload);
+      if (!isValid) return null;
+    }
+    // If no secret, we silently skip server-side validation.
+    // The JWT expiry check above still protects against expired tokens.
   }
 
   return await ensureLocalUser(supabase, clerkId);

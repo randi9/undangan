@@ -15,11 +15,17 @@ export const dispatchHealthRoute: ApiDispatcher = async ({ pathname, env }) => {
     env?.VITE_SUPABASE_ANON_KEY ||
     "";
 
+  const clerkSecret =
+    env?.CLERK_SECRET_KEY ||
+    env?.VITE_CLERK_SECRET_KEY ||
+    "";
+
   return json({
     status: "ok",
     timestamp: new Date().toISOString(),
     supabase_connected: Boolean(supabaseUrl && supabaseKey),
     supabase_url: supabaseUrl ? "✅" : "❌",
+    clerk_secret: clerkSecret ? "✅" : "❌ MISSING",
     runtime: "cloudflare-pages-functions",
   });
 };
