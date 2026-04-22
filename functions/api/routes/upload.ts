@@ -1,5 +1,5 @@
 import { requireUser, unauthorized } from "../shared/auth";
-import { json } from "../shared/http";
+import { json, getEffectiveMethod } from "../shared/http";
 import { deleteR2Url, uploadToR2 } from "../shared/storage";
 import type { ApiDispatcher } from "../types/api";
 
@@ -49,11 +49,12 @@ export const dispatchUploadRoute: ApiDispatcher = async ({
   request,
   pathname,
 }) => {
-  if (pathname === "upload/single" && request.method === "POST")
+  const method = getEffectiveMethod(request);
+  if (pathname === "upload/single" && method === "POST")
     return await handleUploadSingle(supabase, env, request);
-  if (pathname === "upload/multiple" && request.method === "POST")
+  if (pathname === "upload/multiple" && method === "POST")
     return await handleUploadMultiple(supabase, env, request);
-  if (pathname === "upload/file" && request.method === "DELETE")
+  if (pathname === "upload/file" && method === "DELETE")
     return await handleUploadDelete(supabase, env, request);
 
   return null;

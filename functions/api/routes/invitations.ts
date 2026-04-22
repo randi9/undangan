@@ -1,5 +1,5 @@
 import { requireUser, unauthorized } from "../shared/auth";
-import { json } from "../shared/http";
+import { getEffectiveMethod, json } from "../shared/http";
 import { deleteR2Url } from "../shared/storage";
 import type { ApiDispatcher } from "../types/api";
 
@@ -670,6 +670,8 @@ export const dispatchInvitationRoute: ApiDispatcher = async ({
   request,
   pathname,
 }) => {
+  const method = getEffectiveMethod(request);
+
   if (pathname === "invitations" && request.method === "GET")
     return (await handleInvitationList(supabase, request, env)) ?? null;
   if (pathname === "invitations" && request.method === "POST")
@@ -686,15 +688,15 @@ export const dispatchInvitationRoute: ApiDispatcher = async ({
     );
   }
 
-  if (pathname.startsWith("invitations/") && request.method === "GET")
+  if (pathname.startsWith("invitations/") && method === "GET")
     return (
       (await handleInvitationById(supabase, request, pathname, env)) ?? null
     );
-  if (pathname.startsWith("invitations/") && request.method === "PUT")
+  if (pathname.startsWith("invitations/") && method === "PUT")
     return (
       (await handleInvitationUpdate(supabase, request, pathname, env)) ?? null
     );
-  if (pathname.startsWith("invitations/") && request.method === "DELETE")
+  if (pathname.startsWith("invitations/") && method === "DELETE")
     return (
       (await handleInvitationDelete(supabase, env, request, pathname)) ?? null
     );

@@ -1,5 +1,5 @@
 import { requireUser, unauthorized } from "../shared/auth";
-import { json } from "../shared/http";
+import { json, getEffectiveMethod } from "../shared/http";
 import type { ApiDispatcher } from "../types/api";
 
 async function handleGuestsList(
@@ -110,13 +110,15 @@ export const dispatchGuestRoute: ApiDispatcher = async ({
   request,
   pathname,
 }) => {
-  if (pathname.endsWith("/bulk") && request.method === "POST")
+  const method = getEffectiveMethod(request);
+
+  if (pathname.endsWith("/bulk") && method === "POST")
     return await handleGuestsBulk(supabase, request, pathname, env);
 
   if (
     pathname.startsWith("guests/") &&
     pathname.split("/").length === 2 &&
-    request.method === "GET"
+    method === "GET"
   ) {
     return await handleGuestsList(supabase, request, pathname, env);
   }
@@ -124,7 +126,7 @@ export const dispatchGuestRoute: ApiDispatcher = async ({
   if (
     pathname.startsWith("guests/") &&
     pathname.split("/").length === 3 &&
-    request.method === "PUT"
+    method === "PUT"
   ) {
     return await handleGuestUpdate(supabase, request, pathname, env);
   }
@@ -132,7 +134,7 @@ export const dispatchGuestRoute: ApiDispatcher = async ({
   if (
     pathname.startsWith("guests/") &&
     pathname.split("/").length === 3 &&
-    request.method === "DELETE"
+    method === "DELETE"
   ) {
     return await handleGuestDelete(supabase, request, pathname, env);
   }

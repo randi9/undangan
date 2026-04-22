@@ -24,3 +24,16 @@ export function options(): Response {
 export function getPathname(request: Request) {
   return new URL(request.url).pathname.replace(/^\/api\/?/, "");
 }
+
+export function getEffectiveMethod(request: Request) {
+  const method = request.method.toUpperCase();
+  if (method === "POST") {
+    const override = request.headers.get("x-http-method-override");
+    if (override) return override.toUpperCase();
+    
+    const url = new URL(request.url);
+    const queryOverride = url.searchParams.get("_method");
+    if (queryOverride) return queryOverride.toUpperCase();
+  }
+  return method;
+}

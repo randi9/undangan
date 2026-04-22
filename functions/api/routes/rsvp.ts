@@ -1,4 +1,4 @@
-import { json } from "../shared/http";
+import { json, getEffectiveMethod } from "../shared/http";
 import { requireUser, unauthorized } from "../shared/auth";
 import type { ApiDispatcher } from "../types/api";
 
@@ -97,13 +97,14 @@ export const dispatchRsvpRoute: ApiDispatcher = async ({
   request,
   pathname,
 }) => {
-  if (pathname === "rsvp" && request.method === "POST")
+  const method = getEffectiveMethod(request);
+  if (pathname === "rsvp" && method === "POST")
     return await handleRsvpPost(supabase, request);
-  if (pathname.startsWith("rsvp/") && request.method === "GET")
+  if (pathname.startsWith("rsvp/") && method === "GET")
     return await handleRsvpList(supabase, pathname);
-  if (pathname.startsWith("rsvp/") && request.method === "PUT")
+  if (pathname.startsWith("rsvp/") && method === "PUT")
     return await handleRsvpUpdate(supabase, request, pathname, env);
-  if (pathname.startsWith("rsvp/") && request.method === "DELETE")
+  if (pathname.startsWith("rsvp/") && method === "DELETE")
     return await handleRsvpDelete(supabase, request, pathname, env);
 
   return null;
