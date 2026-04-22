@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { Invitation, CreateInvitationPayload, Guest } from '@/types/invitation'
 import { useAuthStore } from '@/stores/auth'
+import { compressImage, compressImages } from '@/utils/imageCompress'
 
 const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
 
@@ -158,8 +159,10 @@ export const useInvitationStore = defineStore('invitation', () => {
   }
 
   async function uploadPhoto(file: File, slug?: string): Promise<string> {
+    // Compress image client-side (replaces server-side sharp)
+    const compressed = await compressImage(file)
     const formData = new FormData()
-    formData.append('photo', file)
+    formData.append('photo', compressed)
     const slugParam = slug ? `?slug=${encodeURIComponent(slug)}` : ''
     const res = await fetch(`${API_BASE}/upload/single${slugParam}`, {
       method: 'POST',
@@ -192,8 +195,10 @@ export const useInvitationStore = defineStore('invitation', () => {
   }
 
   async function uploadPhotos(files: File[], slug?: string): Promise<Array<{ url: string; filename: string }>> {
+    // Compress all images client-side before upload
+    const compressed = await compressImages(files)
     const formData = new FormData()
-    files.forEach(file => formData.append('photos', file))
+    compressed.forEach(file => formData.append('photos', file))
     const slugParam = slug ? `?slug=${encodeURIComponent(slug)}` : ''
     const res = await fetch(`${API_BASE}/upload/multiple${slugParam}`, {
       method: 'POST',

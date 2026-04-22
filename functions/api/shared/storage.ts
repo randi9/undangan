@@ -16,44 +16,23 @@ function buildR2Client(env: any) {
   });
 }
 
-async function loadSharp() {
-  try {
-    const importer = new Function(
-      "return import('sharp')",
-    ) as () => Promise<any>;
-    const mod = await importer();
-    return mod?.default || mod || null;
-  } catch {
-    return null;
-  }
-}
-
-async function compressImage(buffer: ArrayBuffer | ArrayBufferLike) {
-  const sharp = await loadSharp();
-  if (!sharp) return Buffer.from(buffer);
-
-  try {
-    return await sharp(Buffer.from(buffer))
-      .resize({ width: 1920, withoutEnlargement: true })
-      .webp({ quality: 85 })
-      .toBuffer();
-  } catch {
-    return Buffer.from(buffer);
-  }
-}
-
 export async function uploadToR2(env: any, file: File, slug?: string) {
   const isImage = file.type.startsWith("image/");
   const isMusic = file.type.startsWith("audio/");
-  let buffer: Buffer = Buffer.from(await file.arrayBuffer());
+
+  // Use Uint8Array instead of Node.js Buffer (Cloudflare Workers compatible)
+  const arrayBuffer = await file.arrayBuffer();
+  const body = new Uint8Array(arrayBuffer);
+
   const extMatch = /\.[a-z0-9]+$/i.exec(file.name);
   let ext = extMatch?.[0] || (isImage ? ".jpg" : ".bin");
   let contentType = file.type || "application/octet-stream";
 
-  if (isImage) {
-    buffer = await compressImage(await file.arrayBuffer());
+  // Image compression is handled client-side (Canvas API in browser) before
+  // upload, so the file arrives already resized & converted to WebP.
+  // We just preserve the content type the browser sent.
+  if (isImage && file.type === "image/webp") {
     ext = ".webp";
-    contentType = "image/webp";
   }
 
   const filename = `${crypto.randomUUID()}${ext.replaceAll(/[^a-zA-Z0-9.]/g, "") || ".bin"}`;
@@ -68,7 +47,7 @@ export async function uploadToR2(env: any, file: File, slug?: string) {
     new PutObjectCommand({
       Bucket: bucket,
       Key: key,
-      Body: buffer,
+      Body: body,
       ContentType: contentType,
     }),
   );
