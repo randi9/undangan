@@ -45,7 +45,7 @@ const RATE_LIMIT_RULES = [
     name: "upload-write",
     methods: ["POST", "PUT", "PATCH", "DELETE"],
     pathRegex: /^\/api\/upload(?:\/|$)/,
-    limit: 12,
+    limit: 30,
     windowSec: 60,
   },
   {
@@ -251,6 +251,12 @@ async function extractInvitationIdFromRsvpRequest(request) {
 function isSuspiciousApiBot(request, pathname) {
   const { score, verifiedBot } = getBotSignals(request);
 
+  // Never block authenticated API requests — these are legitimate browser
+  // fetch() calls carrying a Clerk JWT.  Auth + rate-limiting already protect them.
+  if (pathname.startsWith("/api/") && request.headers.get("authorization")) {
+    return false;
+  }
+
   // Uploads are legitimate browser-driven traffic and should not be blocked
   // by bot heuristics; rate limiting already protects them.
   if (pathname.startsWith("/api/upload/")) return false;
@@ -268,9 +274,9 @@ function isSuspiciousApiBot(request, pathname) {
   if (verifiedBot) return false;
 
   // Use Cloudflare bot management score (0-100)
-  // Scores <= 5 generally mean malicious automated traffic (botnets, vulnerability scanners)
-  // We globally block them from ALL paths (saving static rendering & API hits)
-  if (score !== null && score <= 5) {
+  // Scores <= 2 generally mean clearly malicious automated traffic
+  // (Raised from 5 to reduce false-positives on legitimate browsers)
+  if (score !== null && score <= 2) {
     return true;
   }
 

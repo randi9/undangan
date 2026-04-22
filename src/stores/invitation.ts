@@ -117,8 +117,8 @@ export const useInvitationStore = defineStore('invitation', () => {
     error.value = null
     try {
       const res = await fetch(`${API_BASE}/invitations/${id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-HTTP-Method-Override': 'PUT', ...(await authHeaders()) },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         body: JSON.stringify(payload)
       })
       const data = await safeJson(res)
@@ -141,8 +141,8 @@ export const useInvitationStore = defineStore('invitation', () => {
     error.value = null
     try {
       const res = await fetch(`${API_BASE}/invitations/${id}`, {
-        method: 'POST',
-        headers: { 'X-HTTP-Method-Override': 'DELETE', ...(await authHeaders()) }
+        method: 'DELETE',
+        headers: await authHeaders()
       })
       if (!res.ok) {
         const data = await safeJson(res).catch(() => ({}))
@@ -211,8 +211,8 @@ export const useInvitationStore = defineStore('invitation', () => {
     if (!url) return
     const headersConfig = await authHeaders()
     const res = await fetch(`${API_BASE}/upload/file`, {
-      method: 'POST',
-      headers: { ...headersConfig, 'Content-Type': 'application/json', 'X-HTTP-Method-Override': 'DELETE' },
+      method: 'DELETE',
+      headers: { ...headersConfig, 'Content-Type': 'application/json' },
       body: JSON.stringify({ url })
     })
     if (!res.ok) {
@@ -260,8 +260,8 @@ export const useInvitationStore = defineStore('invitation', () => {
   async function updateGuestStatus(invitationId: string, guestId: string, is_sent: boolean) {
     try {
       const res = await fetch(`${API_BASE}/guests/${invitationId}/${guestId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-HTTP-Method-Override': 'PUT', ...(await authHeaders()) },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         body: JSON.stringify({ is_sent })
       })
       if (!res.ok) throw new Error('Failed to update guest status')
@@ -277,8 +277,8 @@ export const useInvitationStore = defineStore('invitation', () => {
   async function deleteGuest(invitationId: string, guestId: string) {
     try {
       const res = await fetch(`${API_BASE}/guests/${invitationId}/${guestId}`, {
-        method: 'POST',
-        headers: { 'X-HTTP-Method-Override': 'DELETE', ...(await authHeaders()) }
+        method: 'DELETE',
+        headers: await authHeaders()
       })
       if (!res.ok) throw new Error('Failed to delete guest')
       guests.value = guests.value.filter(g => g.id !== guestId)
@@ -291,8 +291,8 @@ export const useInvitationStore = defineStore('invitation', () => {
   async function updateRsvp(rsvpId: string, payload: { is_hidden?: boolean; reply_text?: string }) {
     try {
       const res = await fetch(`${API_BASE}/rsvp/${rsvpId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-HTTP-Method-Override': 'PUT', ...(await authHeaders()) },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         body: JSON.stringify(payload)
       })
       if (!res.ok) throw new Error('Failed to update RSVP')
@@ -305,8 +305,8 @@ export const useInvitationStore = defineStore('invitation', () => {
   async function deleteRsvp(rsvpId: string) {
     try {
       const res = await fetch(`${API_BASE}/rsvp/${rsvpId}`, {
-        method: 'POST',
-        headers: { 'X-HTTP-Method-Override': 'DELETE', ...(await authHeaders()) }
+        method: 'DELETE',
+        headers: await authHeaders()
       })
       if (!res.ok) throw new Error('Failed to delete RSVP')
     } catch (e: any) {
