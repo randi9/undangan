@@ -14,10 +14,12 @@
 
 const BASE_DOMAIN = "mengundanganda.com";
 
-// Vercel primary domain (yang tidak redirect)
-// Di Vercel: mengundanganda.com → 307 → www.mengundanganda.com
-// Jadi kita harus fetch dari www langsung agar tidak kena redirect loop
-const ORIGIN_HOST = "www.mengundanganda.com";
+// Vercel primary domain sudah TIDAK DIPAKAI.
+// Karena sekarang menggunakan Cloudflare Pages, Worker TIDAK BOLEH melakukan fetch
+// ke domain yang sama di zona Cloudflare (www.mengundanganda.com) karena akan
+// menyebabkan infinite loop / 522 Connection Timed Out.
+// Solusi: Fetch langsung ke URL mentah Cloudflare Pages (.pages.dev)
+const ORIGIN_HOST = "mengundanganda.pages.dev";
 
 // Subdomain yang TIDAK boleh di-proxy oleh Worker ini
 const EXCLUDED_SUBDOMAINS = new Set([
@@ -45,7 +47,7 @@ const RATE_LIMIT_RULES = [
     name: "upload-write",
     methods: ["POST", "PUT", "PATCH", "DELETE"],
     pathRegex: /^\/api\/upload(?:\/|$)/,
-    limit: 12,
+    limit: 30,
     windowSec: 60,
   },
   {
@@ -250,14 +252,33 @@ async function extractInvitationIdFromRsvpRequest(request) {
 
 function isSuspiciousApiBot(request, pathname) {
   const { score, verifiedBot } = getBotSignals(request);
-  
+
+  // Never block authenticated API requests — these are legitimate browser
+  // fetch() calls carrying a Clerk JWT.  Auth + rate-limiting already protect them.
+  if (pathname.startsWith("/api/") && request.headers.get("authorization")) {
+    return false;
+  }
+
+  // Uploads are legitimate browser-driven traffic and should not be blocked
+  // by bot heuristics; rate limiting already protects them.
+  if (pathname.startsWith("/api/upload/")) return false;
+
+  // Invitation edit/save requests are also legitimate browser actions.
+  // Keep them out of the bot heuristic and rely on auth + rate limiting.
+  if (
+    pathname.startsWith("/api/invitations/") &&
+    ["PUT", "PATCH", "DELETE", "POST"].includes(request.method)
+  ) {
+    return false;
+  }
+
   // Allow whitelisted/verified bots (e.g. Googlebot) completely
   if (verifiedBot) return false;
 
   // Use Cloudflare bot management score (0-100)
-  // Scores <= 5 generally mean malicious automated traffic (botnets, vulnerability scanners)
-  // We globally block them from ALL paths (saving static rendering & API hits)
-  if (score !== null && score <= 5) {
+  // Scores <= 2 generally mean clearly malicious automated traffic
+  // (Raised from 5 to reduce false-positives on legitimate browsers)
+  if (score !== null && score <= 2) {
     return true;
   }
 
@@ -266,11 +287,12 @@ function isSuspiciousApiBot(request, pathname) {
     const method = request.method;
     if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
       const ua = (request.headers.get("user-agent") || "").toLowerCase();
-      const looksLikeBot = /(bot|crawler|spider|curl|python|wget|httpclient|scrapy)/.test(ua);
+      const looksLikeBot =
+        /(bot|crawler|spider|curl|python|wget|httpclient|scrapy)/.test(ua);
       if (looksLikeBot) return true;
     }
   }
-  
+
   return false;
 }
 
@@ -375,7 +397,10 @@ async function buildDynamicSeoMeta(subdomain) {
   const result = { isChanged, dynTitle, dynDesc, dynImg };
   if (isChanged) {
     // Cache the resolved meta fields for 10 minutes to prevent API overload
-    seoMetaCache.set(subdomain, { data: result, expires: now + 10 * 60 * 1000 });
+    seoMetaCache.set(subdomain, {
+      data: result,
+      expires: now + 10 * 60 * 1000,
+    });
   }
   return result;
 }
@@ -491,7 +516,10 @@ export default {
     );
 
     // Apply strict Cloudflare edge caching for static assets
-    const isStaticAsset = /\.(js|css|webp|png|jpg|jpeg|svg|woff|woff2|ttf|ico|gif)(\?.*)?$/.test(url.pathname);
+    const isStaticAsset =
+      /\.(js|css|webp|png|jpg|jpeg|svg|woff|woff2|ttf|ico|gif)(\?.*)?$/.test(
+        url.pathname,
+      );
     const fetchOptions = isStaticAsset
       ? { cf: { cacheEverything: true, cacheTtl: 86400 } } // Cache di Cloudflare 24 Jam
       : {};

@@ -2,10 +2,6 @@ import "./assets/main.css";
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-
-import { clerkPlugin } from "@clerk/vue";
-
-import App from "./App.vue";
 import router from "./router";
 
 function shouldEnableClerk(pathname: string) {
@@ -25,17 +21,26 @@ if (clerkEnabled && !PUBLISHABLE_KEY) {
   throw new Error("Add your Clerk Publishable Key to the .env file");
 }
 
-const app = createApp(App);
+async function bootstrap() {
+  const RootComponent = clerkEnabled
+    ? (await import("./App.vue")).default
+    : (await import("./AppNoClerk.vue")).default;
 
-app.use(createPinia());
-app.use(router);
+  const app = createApp(RootComponent);
 
-if (clerkEnabled) {
-  app.use(clerkPlugin, {
-    publishableKey: PUBLISHABLE_KEY,
-    signInUrl: "/login",
-    signUpUrl: "/sign-up",
-  });
+  app.use(createPinia());
+  app.use(router);
+
+  if (clerkEnabled) {
+    const { clerkPlugin } = await import("@clerk/vue");
+    app.use(clerkPlugin, {
+      publishableKey: PUBLISHABLE_KEY,
+      signInUrl: "/login",
+      signUpUrl: "/sign-up",
+    });
+  }
+
+  app.mount("#app");
 }
 
-app.mount("#app");
+void bootstrap();
