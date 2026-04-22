@@ -14,10 +14,12 @@
 
 const BASE_DOMAIN = "mengundanganda.com";
 
-// Vercel primary domain (yang tidak redirect)
-// Di Vercel: mengundanganda.com → 307 → www.mengundanganda.com
-// Jadi kita harus fetch dari www langsung agar tidak kena redirect loop
-const ORIGIN_HOST = "www.mengundanganda.com";
+// Vercel primary domain sudah TIDAK DIPAKAI.
+// Karena sekarang menggunakan Cloudflare Pages, Worker TIDAK BOLEH melakukan fetch
+// ke domain yang sama di zona Cloudflare (www.mengundanganda.com) karena akan
+// menyebabkan infinite loop / 522 Connection Timed Out.
+// Solusi: Fetch langsung ke URL mentah Cloudflare Pages (.pages.dev)
+const ORIGIN_HOST = "mengundanganda.pages.dev";
 
 // Subdomain yang TIDAK boleh di-proxy oleh Worker ini
 const EXCLUDED_SUBDOMAINS = new Set([
