@@ -30,16 +30,16 @@
     <!-- Trees (Background layer) -->
     <div class="absolute inset-0 z-[15] pointer-events-none">
       <!-- Left side trees (berjejer ke kanan) -->
-      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: -10%; left: -75%; width: auto; height: 95dvh; z-index: 1;" data-opacity="1" alt="Tree" />
-      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: -5%; left: -50%; width: auto; height: 80dvh; z-index: 2;" data-opacity="1" alt="Tree" />
-      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 0%; left: -25%; width: auto; height: 65dvh; z-index: 3;" data-opacity="1" alt="Tree" />
-      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 5%; left: 0%; width: auto; height: 50dvh; z-index: 4;" data-opacity="1" alt="Tree" />
+      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 25%; left: -25%; width: auto; height: 45dvh; z-index: 4;" data-opacity="1" alt="Tree" />
+      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 25%; left: -15%; width: auto; height: 40dvh; z-index: 3;" data-opacity="1" alt="Tree" />
+      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 25%; left: -5%; width: auto; height: 35dvh; z-index: 2;" data-opacity="1" alt="Tree" />
+      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 25%; left: 10%; width: auto; height: 20dvh; z-index: 1;" data-opacity="1" alt="Tree" />
 
       <!-- Right side trees (berjejer ke kiri) -->
-      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: -10%; right: -75%; width: auto; height: 95dvh; transform: scaleX(-1); z-index: 1;" data-flipped="true" data-opacity="1" alt="Tree" />
-      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: -5%; right: -50%; width: auto; height: 80dvh; transform: scaleX(-1); z-index: 2;" data-flipped="true" data-opacity="1" alt="Tree" />
-      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 0%; right: -25%; width: auto; height: 65dvh; transform: scaleX(-1); z-index: 3;" data-flipped="true" data-opacity="1" alt="Tree" />
-      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 5%; right: 0%; width: auto; height: 50dvh; transform: scaleX(-1); z-index: 4;" data-flipped="true" data-opacity="1" alt="Tree" />
+      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 25%; right: -25%; width: auto; height: 45dvh; z-index: 4;" data-flipped="true" data-opacity="1" alt="Tree" />
+      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 25%; right: -15%; width: auto; height: 40dvh; z-index: 3;" data-flipped="true" data-opacity="1" alt="Tree" />
+      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 25%; right: -5%; width: auto; height: 35dvh; z-index: 2;" data-flipped="true" data-opacity="1" alt="Tree" />
+      <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_26b3b4da-bed4-4bc4-af6d-b939051e375f.webp" class="hero-tree absolute object-contain origin-bottom" style="bottom: 25%; right: 10%; width: auto; height: 20dvh; z-index: 1;" data-flipped="true" data-opacity="1" alt="Tree" />
     </div>
 
     <!-- Content Slot (names, date — from parent) -->
@@ -81,6 +81,7 @@ const cloud3 = ref<HTMLImageElement | null>(null);
 
 let entranceTimeline: gsap.core.Timeline | null = null;
 let cloudTweens: gsap.core.Tween[] = [];
+let treeTweens: gsap.core.Tween[] = [];
 
 onMounted(() => {
   const tl = gsap.timeline();
@@ -99,8 +100,11 @@ onMounted(() => {
     gsap.set(tree, {
       y: 200,
       opacity: 0,
-      scaleX: scaleX
+      scaleX: scaleX,
+      rotation: 0 // Explicitly set rotation to prevent CSS matrix parsing issues
     });
+
+    const pairIndex = index % 4;
 
     // Entrance animation
     tl.to(tree, {
@@ -108,7 +112,18 @@ onMounted(() => {
       opacity: targetOpacity,
       duration: 2.5 + Math.random() * 1.0, // Slowed down from 1.5
       ease: 'power2.out',
-    }, "treesStart+=" + (index * 0.25)); // Increased stagger for slower sequence
+    }, "treesStart+=" + (pairIndex * 0.25)); // Sync left and right using pairIndex
+
+    // Sway animation (slow wind effect)
+    const swayTween = gsap.to(tree, {
+      rotation: isFlipped ? -1.5 + Math.random() * -1.5 : 1.5 + Math.random() * 1.5,
+      duration: 4 + Math.random() * 3, // Very slow, varying duration
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+      delay: 2.5 + (pairIndex * 0.25) + Math.random() // Start swaying after entrance
+    });
+    treeTweens.push(swayTween);
   });
   
   if (animatedAsset.value) {
@@ -168,5 +183,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (entranceTimeline) entranceTimeline.kill();
   cloudTweens.forEach((t) => t.kill());
+  treeTweens.forEach((t) => t.kill());
 });
 </script>
