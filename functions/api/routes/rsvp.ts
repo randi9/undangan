@@ -2,6 +2,44 @@ import { json, getEffectiveMethod } from "../shared/http";
 import { requireUser, unauthorized } from "../shared/auth";
 import type { ApiDispatcher } from "../types/api";
 
+/**
+ * Verify that the authenticated user owns the invitation linked to this RSVP (or is admin).
+ * Looks up the RSVP first to get its invitation_id, then checks invitation ownership.
+ */
+async function requireRsvpOwner(
+  supabase: any,
+  request: Request,
+  env: any,
+  rsvpId: string,
+): Promise<{ user: any } | { response: Response }> {
+  const user = await requireUser(supabase, request, env);
+  if (!user) return { response: unauthorized() };
+
+  // Admin can manage any RSVP
+  if (user.role === "admin") return { user };
+
+  // Look up the RSVP to get its invitation_id
+  const { data: rsvp } = await supabase
+    .from("rsvps")
+    .select("invitation_id")
+    .eq("id", rsvpId)
+    .single();
+
+  if (!rsvp) return { response: json({ error: "RSVP tidak ditemukan." }, 404) };
+
+  // Verify the invitation belongs to the user
+  const { data: invitation } = await supabase
+    .from("invitations")
+    .select("owner_id")
+    .eq("id", rsvp.invitation_id)
+    .single();
+
+  if (!invitation) return { response: json({ error: "Undangan tidak ditemukan." }, 404) };
+  if (invitation.owner_id !== user.id) return { response: json({ error: "Akses ditolak." }, 403) };
+
+  return { user };
+}
+
 async function handleRsvpPost(supabase: any, request: Request) {
   const body = (await request.json()) as {
     invitation_id?: string;
@@ -55,9 +93,11 @@ async function handleRsvpUpdate(
   pathname: string,
   env: any,
 ) {
-  if (!(await requireUser(supabase, request, env))) return unauthorized();
-
   const id = decodeURIComponent(pathname.slice("rsvp/".length)).trim();
+
+  const authResult = await requireRsvpOwner(supabase, request, env, id);
+  if ("response" in authResult) return authResult.response;
+
   const body = await request.json();
 
   const updateData: any = {};
@@ -81,9 +121,10 @@ async function handleRsvpDelete(
   pathname: string,
   env: any,
 ) {
-  if (!(await requireUser(supabase, request, env))) return unauthorized();
-
   const id = decodeURIComponent(pathname.slice("rsvp/".length)).trim();
+
+  const authResult = await requireRsvpOwner(supabase, request, env, id);
+  if ("response" in authResult) return authResult.response;
 
   const { error } = await supabase.from("rsvps").delete().eq("id", id);
   if (error) throw error;
