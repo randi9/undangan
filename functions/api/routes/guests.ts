@@ -2,17 +2,46 @@ import { requireUser, unauthorized } from "../shared/auth";
 import { json, getEffectiveMethod } from "../shared/http";
 import type { ApiDispatcher } from "../types/api";
 
+/**
+ * Verify that the authenticated user owns the invitation (or is admin).
+ * Returns the user object if authorized, or a Response to return immediately.
+ */
+async function requireInvitationOwner(
+  supabase: any,
+  request: Request,
+  env: any,
+  invitationId: string,
+): Promise<{ user: any } | { response: Response }> {
+  const user = await requireUser(supabase, request, env);
+  if (!user) return { response: unauthorized() };
+
+  // Admin can access any invitation's guests
+  if (user.role === "admin") return { user };
+
+  const { data: invitation } = await supabase
+    .from("invitations")
+    .select("owner_id")
+    .eq("id", invitationId)
+    .single();
+
+  if (!invitation) return { response: json({ error: "Undangan tidak ditemukan." }, 404) };
+  if (invitation.owner_id !== user.id) return { response: json({ error: "Akses ditolak." }, 403) };
+
+  return { user };
+}
+
 async function handleGuestsList(
   supabase: any,
   request: Request,
   pathname: string,
   env: any,
 ) {
-  if (!(await requireUser(supabase, request, env))) return unauthorized();
-
   const invitationId = decodeURIComponent(pathname.slice("guests/".length))
     .trim()
     .split("/")[0];
+
+  const authResult = await requireInvitationOwner(supabase, request, env, invitationId);
+  if ("response" in authResult) return authResult.response;
 
   const { data, error } = await supabase
     .from("guests")
@@ -30,11 +59,12 @@ async function handleGuestsBulk(
   pathname: string,
   env: any,
 ) {
-  if (!(await requireUser(supabase, request, env))) return unauthorized();
-
   const invitationId = decodeURIComponent(
     pathname.slice("guests/".length).replace(/\/bulk$/, ""),
   ).trim();
+
+  const authResult = await requireInvitationOwner(supabase, request, env, invitationId);
+  if ("response" in authResult) return authResult.response;
 
   const body = await request.json();
   const guests = Array.isArray(body.guests) ? body.guests : [];
@@ -63,11 +93,12 @@ async function handleGuestUpdate(
   pathname: string,
   env: any,
 ) {
-  if (!(await requireUser(supabase, request, env))) return unauthorized();
-
   const parts = pathname.split("/");
   const invitationId = decodeURIComponent(parts[1] || "");
   const guestId = decodeURIComponent(parts[2] || "");
+
+  const authResult = await requireInvitationOwner(supabase, request, env, invitationId);
+  if ("response" in authResult) return authResult.response;
 
   const body = await request.json();
   const { data, error } = await supabase
@@ -88,11 +119,12 @@ async function handleGuestDelete(
   pathname: string,
   env: any,
 ) {
-  if (!(await requireUser(supabase, request, env))) return unauthorized();
-
   const parts = pathname.split("/");
   const invitationId = decodeURIComponent(parts[1] || "");
   const guestId = decodeURIComponent(parts[2] || "");
+
+  const authResult = await requireInvitationOwner(supabase, request, env, invitationId);
+  if ("response" in authResult) return authResult.response;
 
   const { error } = await supabase
     .from("guests")
