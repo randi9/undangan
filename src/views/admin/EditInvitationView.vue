@@ -2559,6 +2559,7 @@
 </style>
 
 <script setup lang="ts">
+// Cache buster comment: 1
 import { Icon } from "@iconify/vue";
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
