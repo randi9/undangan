@@ -600,6 +600,22 @@ async function handleInvitationUpdate(
   if (error) throw error;
 
   if (Array.isArray(body.photos)) {
+    // Fetch current photos to find which ones were removed
+    const { data: oldPhotos } = await supabase
+      .from("photos")
+      .select("url")
+      .eq("invitation_id", id);
+
+    const newUrls = new Set(
+      body.photos.map((p: any) => p.url || p).filter(Boolean),
+    );
+    // Delete R2 files for photos that are no longer in the new list
+    for (const old of oldPhotos || []) {
+      if (old.url && !newUrls.has(old.url)) {
+        await deleteR2Url(env, old.url).catch(() => {});
+      }
+    }
+
     await supabase.from("photos").delete().eq("invitation_id", id);
     const dbPhotos = body.photos.map((photo: any, idx: number) => ({
       id: crypto.randomUUID(),
@@ -647,6 +663,12 @@ async function handleInvitationDelete(
     if (inv?.music_url) await deleteR2Url(env, inv.music_url).catch(() => {});
     for (const photo of photos || []) {
       if (photo?.url) await deleteR2Url(env, photo.url).catch(() => {});
+    }
+
+    // Clean up love_story photos from R2
+    const loveStory = Array.isArray(inv?.love_story) ? inv.love_story : [];
+    for (const story of loveStory) {
+      if (story?.photo) await deleteR2Url(env, story.photo).catch(() => {});
     }
 
     await supabase
