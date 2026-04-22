@@ -830,9 +830,11 @@ onBeforeUnmount(() => {
           ref="heroOval"
           :class="[
             'flex flex-col gap-4 items-center justify-center mx-auto opacity-0 p-6 md:p-10 text-center relative z-10',
-            themeName !== 'elegant_blue'
+            !['elegant_blue', 'floral_blue'].includes(themeName)
               ? 'w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
-              : 'w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]',
+              : themeName === 'elegant_blue'
+                ? 'w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
+                : 'w-full max-w-[600px]'
           ]"
         >
           <img
