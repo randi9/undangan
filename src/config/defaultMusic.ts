@@ -12,7 +12,7 @@ export interface DefaultMusicEntry {
 
 export const DEFAULT_MUSIC: Record<string, DefaultMusicEntry> = {
   elegant: {
-    url: "https://music.mengundanganda.com/elegant/Aku%20Jeje%20-%20Lihat%20Kebunku%20Taman%20Bunga%20%23lyricvideo.mp3",
+    url: "https://music.mengundanganda.com/elegant/Aku%20Jeje%20-%20Lihat%20Kebunku%20Taman%20Bunga.mp3",
     label: "Aku Jeje - Lihat Kebunku Taman Bunga",
   },
   elegant_blue: {
