@@ -15,7 +15,7 @@ function generateOrderNumber(): string {
 /**
  * Send Telegram notification to admin (fire-and-forget)
  */
-function notifyTelegram(env: any, orderNumber: string, customerName: string, groomName: string, brideName: string, theme: string) {
+async function notifyTelegram(env: any, orderNumber: string, customerName: string, groomName: string, brideName: string, theme: string) {
   const tgToken = env.TELEGRAM_BOT_TOKEN;
   const tgChatId = env.TELEGRAM_CHAT_ID;
   if (!tgToken || !tgChatId) return;
@@ -32,14 +32,18 @@ function notifyTelegram(env: any, orderNumber: string, customerName: string, gro
     "Cek Dashboard untuk detail lebih lanjut.",
   ];
 
-  fetch("https://api.telegram.org/bot" + tgToken + "/sendMessage", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: tgChatId,
-      text: lines.join("\n"),
-    }),
-  }).catch((err) => console.error("Telegram notify failed:", err));
+  try {
+    await fetch("https://api.telegram.org/bot" + tgToken + "/sendMessage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: tgChatId,
+        text: lines.join("\n"),
+      }),
+    });
+  } catch (err) {
+    console.error("Telegram notify failed:", err);
+  }
 }
 
 /**
@@ -106,8 +110,8 @@ async function handleCreateOrder(supabase: any, request: Request, env: any) {
     return json({ error: error.message || "Gagal menyimpan order." }, 500);
   }
 
-  // Send Telegram notification (non-blocking, won't delay response)
-  notifyTelegram(env, orderNumber, customerName, groomName, brideName, theme);
+  // Send Telegram notification (awaited so Cloudflare doesn't kill it)
+  await notifyTelegram(env, orderNumber, customerName, groomName, brideName, theme);
 
   return json({
     id: data.id,
