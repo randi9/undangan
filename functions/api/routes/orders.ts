@@ -13,6 +13,36 @@ function generateOrderNumber(): string {
 }
 
 /**
+ * Send Telegram notification to admin (fire-and-forget)
+ */
+function notifyTelegram(env: any, orderNumber: string, customerName: string, groomName: string, brideName: string, theme: string) {
+  const tgToken = env.TELEGRAM_BOT_TOKEN;
+  const tgChatId = env.TELEGRAM_CHAT_ID;
+  if (!tgToken || !tgChatId) return;
+
+  const lines = [
+    "ORDER BARU MASUK!",
+    "",
+    "Nomor: " + orderNumber,
+    "Pemesan: " + customerName,
+    "Mempelai: " + groomName + " & " + brideName,
+    "Tema: " + theme,
+    "SLA: 1 Jam Kerja",
+    "",
+    "Cek Dashboard untuk detail lebih lanjut.",
+  ];
+
+  fetch("https://api.telegram.org/bot" + tgToken + "/sendMessage", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: tgChatId,
+      text: lines.join("\n"),
+    }),
+  }).catch((err) => console.error("Telegram notify failed:", err));
+}
+
+/**
  * POST /api/orders — Create a new order (public, no auth required)
  */
 async function handleCreateOrder(supabase: any, request: Request, env: any) {
@@ -76,30 +106,8 @@ async function handleCreateOrder(supabase: any, request: Request, env: any) {
     return json({ error: error.message || "Gagal menyimpan order." }, 500);
   }
 
-  // Send Telegram Notification (background)
-  const tgToken = env.TELEGRAM_BOT_TOKEN;
-  const tgChatId = env.TELEGRAM_CHAT_ID;
-
-  if (tgToken && tgChatId) {
-    // Fire and forget (don't await so we don't slow down the response)
-    const text = `🚨 *ORDER BARU MASUK!* 🚨\n\n` +
-                 `*Nomor:* \`${orderNumber}\`\n` +
-                 `*Pemesan:* ${customerName}\n` +
-                 `*Mempelai:* ${groomName} & ${brideName}\n` +
-                 `*Tema:* ${theme}\n` +
-                 `*SLA:* 1 Jam Kerja\n\n` +
-                 `_Cek Dashboard untuk detail lebih lanjut dan tunggu pembeli chat di WhatsApp._`;
-
-    fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: tgChatId,
-        text,
-        parse_mode: "Markdown",
-      }),
-    }).catch(err => console.error("Failed to send Telegram notification", err));
-  }
+  // Send Telegram notification (non-blocking, won't delay response)
+  notifyTelegram(env, orderNumber, customerName, groomName, brideName, theme);
 
   return json({
     id: data.id,
