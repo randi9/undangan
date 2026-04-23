@@ -1893,16 +1893,18 @@ const themesData = [
 .check-icon.jasa {
   color: #d97706;
 }
-.lp-btn-jasa {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #fff;
-  border-color: #f59e0b;
-  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+.lp-pricing-card .lp-btn.lp-btn-jasa {
+  background: transparent !important;
+  color: #d97706 !important;
+  border: 2px solid #f59e0b !important;
+  box-shadow: none !important;
 }
-.lp-btn-jasa:hover {
-  background: linear-gradient(135deg, #d97706, #b45309);
+.lp-pricing-card .lp-btn.lp-btn-jasa:hover {
+  background: #fffbeb !important;
+  color: #b45309 !important;
+  border-color: #d97706 !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(245, 158, 11, 0.4);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.15) !important;
 }
 
 /* --- CTA Section --- */

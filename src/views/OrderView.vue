@@ -313,7 +313,7 @@ if (typeof document !== 'undefined') {
 
 .order-page {
   --order-primary: #1e3a5f;
-  --order-accent: #2563eb;
+  --order-accent: #93c5fd;
   --order-accent-light: rgba(37, 99, 235, 0.08);
   --order-bg: #f8fafc;
   --order-card: #ffffff;
@@ -353,8 +353,9 @@ if (typeof document !== 'undefined') {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  font-weight: 700;
-  font-size: 18px;
+  font-family: var(--order-font-serif);
+  font-size: 22px;
+  font-weight: 600;
   color: var(--order-primary);
 }
 .order-logo-img {
