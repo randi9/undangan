@@ -2,9 +2,25 @@
   <section ref="sectionRef" class="relative min-h-[100dvh] w-full overflow-hidden">
     <!-- Quote Content -->
     <div class="absolute top-40 md:top-32 left-1/2 -translate-x-1/2 z-10 w-full px-6 max-w-[70vw] sm:max-w-[400px] md:max-w-[600px] text-center">
-      <blockquote v-if="quote" class="whitespace-pre-line text-base md:text-lg lg:text-xl italic font-light text-[#2c3e50] leading-relaxed tracking-wider drop-shadow-sm">
-        "{{ quote }}"
-      </blockquote>
+      <div v-if="quote" class="relative">
+        <!-- Decorative Top Quote -->
+        <div class="font-serif text-6xl md:text-8xl text-[#2c3e50] opacity-30 leading-none h-6 md:h-8 -mb-4 md:-mb-2 text-center">
+          &ldquo;
+        </div>
+        
+        <blockquote class="whitespace-pre-line text-base md:text-lg lg:text-xl italic font-light text-[#2c3e50] leading-relaxed tracking-wider drop-shadow-sm relative z-10">
+          {{ parsedQuote.text }}
+        </blockquote>
+        
+        <!-- Decorative Bottom Quote -->
+        <div class="font-serif text-6xl md:text-8xl text-[#2c3e50] opacity-30 leading-none h-8 md:h-12 mt-2 md:mt-4 text-center">
+          &rdquo;
+        </div>
+
+        <div v-if="parsedQuote.source" class="mt-6 md:mt-10 text-base md:text-lg font-semibold text-[#2c3e50] tracking-widest">
+          {{ parsedQuote.source }}
+        </div>
+      </div>
     </div>
 
     <!-- Floral Asset 1 -->
@@ -66,17 +82,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 
 gsap.registerPlugin(ScrollTrigger);
 
-defineProps<{
+const props = defineProps<{
   quote?: string;
   themeConfig?: ThemeConfig;
 }>();
+
+const parsedQuote = computed(() => {
+  if (!props.quote) return { text: '', source: '' };
+  
+  // Extract source enclosed in parentheses at the end of the text
+  const sourceRegex = /\s*(\([^)]+\))$/;
+  const match = props.quote.match(sourceRegex);
+  
+  if (match) {
+    const textPart = props.quote.replace(sourceRegex, '').replace(/^"|"$/g, '').trim();
+    return {
+      text: textPart,
+      source: match[1]
+    };
+  }
+  
+  return {
+    text: props.quote.replace(/^"|"$/g, '').trim(),
+    source: ''
+  };
+});
 
 const sectionRef = ref<HTMLElement | null>(null);
 let entranceTimeline: gsap.core.Timeline | null = null;
