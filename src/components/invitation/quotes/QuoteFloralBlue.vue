@@ -1,42 +1,67 @@
 <template>
-  <section ref="sectionRef" class="relative min-h-[100dvh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-    <!-- Background — Only Sky/Path Image -->
-    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-      <img
-        src="https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_28658e27-e94d-40ca-b897-607ef8ea0d83.webp"
-        alt="Quote Background"
-        class="min-w-full min-h-full w-full h-full object-cover object-center"
-      />
+  <section ref="sectionRef" class="relative min-h-[100dvh] w-full overflow-hidden">
+    <!-- Quote Content -->
+    <div class="absolute top-40 md:top-32 left-1/2 -translate-x-1/2 z-10 w-full px-6 max-w-[70vw] sm:max-w-[400px] md:max-w-[600px] text-center">
+      <blockquote v-if="quote" class="whitespace-pre-line text-base md:text-lg lg:text-xl italic font-light text-[#2c3e50] leading-relaxed tracking-wider drop-shadow-sm">
+        "{{ quote }}"
+      </blockquote>
     </div>
 
-    <!-- White Oval Container -->
-    <div 
-      ref="ovalContainer" 
-      class="absolute top-[47%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[22] bg-white/60 shadow-[0_10px_30px_rgba(0,0,0,0.1)] opacity-0 flex items-center justify-center p-12 md:p-16"
-      style="border-radius: 50%;"
-    >
-      <div ref="quoteContent" class="opacity-0 flex flex-col items-center justify-center text-center">
-         <blockquote v-if="quote" class="text-sm md:text-base lg:text-lg italic font-light text-[#2c3e50] leading-relaxed tracking-wider px-4">
-           "{{ quote }}"
-         </blockquote>
-      </div>
-    </div>
+    <!-- Floral Asset 1 -->
+    <img 
+      class="quote-floral"
+      src="https://media.mengundanganda.com/floral-blue/quotes%20section/randidewi_15b853ed-da02-460c-8a43-6cc6270e0e29.webp" 
+      alt="Floral Decor 1" 
+      style="position: absolute; bottom: -100px; left: 80px; width: 250px; height: auto; z-index: 5; transform-origin: bottom center;"
+    />
 
-    <!-- Butterflies -->
-    <div 
-      v-for="i in 12" 
-      :key="i"
-      :ref="el => { if(el) butterflies[i-1] = el as HTMLDivElement }" 
-      class="absolute top-[45%] left-[45%] -ml-6 sm:-ml-8 -mt-6 sm:-mt-8 z-[25] w-12 sm:w-16 h-12 sm:h-16 pointer-events-none drop-shadow-[0_5px_5px_rgba(0,0,0,0.15)] opacity-0" 
-      style="perspective: 800px;"
-    >
-      <div class="absolute inset-0" style="transform-style: preserve-3d;">
-        <img :ref="el => { if(el) wingRs[i-1] = el as HTMLImageElement }" src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_cc8322bb-688b-40ae-be5d-cd733175e104.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" alt="Butterfly Wing Right" />
-      </div>
-      <div class="absolute inset-0" style="transform: scaleX(-1); transform-style: preserve-3d;">
-        <img :ref="el => { if(el) wingLs[i-1] = el as HTMLImageElement }" src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_cc8322bb-688b-40ae-be5d-cd733175e104.webp" class="absolute left-[50%] top-0 h-[120%] w-auto max-w-none object-contain origin-left block" alt="Butterfly Wing Left" />
-      </div>
-    </div>
+    <!-- Floral Asset 2 -->
+    <img 
+      class="quote-floral"
+      src="https://media.mengundanganda.com/floral-blue/quotes%20section/randidewi_d28fa7d1-1c5f-4deb-9193-befd72c49a7b.webp" 
+      alt="Floral Decor 2" 
+      style="position: absolute; bottom: 170px; left: -90px; width: 180px; height: auto; z-index: 5; transform-origin: bottom center;"
+    />
+
+    <!-- Floral Asset 3 -->
+    <img 
+      class="quote-floral"
+      src="https://media.mengundanganda.com/floral-blue/quotes%20section/randidewi_be5d540b-47f0-4f99-96da-779b59d1e6b5.webp" 
+      alt="Floral Decor 3" 
+      style="position: absolute; bottom: 90px; left: 20px; width: 170px; height: auto; z-index: 5; transform-origin: bottom center;"
+    />
+
+    <!-- Floral Asset 4 -->
+    <img 
+      class="quote-floral"
+      src="https://media.mengundanganda.com/floral-blue/quotes%20section/randidewi_86d95fec-466c-4562-837d-f66b1d04c75f.webp" 
+      alt="Floral Decor 4" 
+      style="position: absolute; bottom: 70px; left: -50px; width: 170px; height: auto; z-index: 5; transform-origin: bottom center;"
+    />
+
+    <!-- Floral Asset 5 -->
+    <img 
+      class="quote-floral"
+      src="https://media.mengundanganda.com/floral-blue/quotes%20section/randidewi_a82836b3-40f1-4167-a663-18fc71e500f4.webp" 
+      alt="Floral Decor 5" 
+      style="position: absolute; bottom: -70px; left: -50px; width: 250px; height: auto; z-index: 5; transform-origin: bottom center;"
+    />
+
+    <!-- Floral Asset 6 -->
+    <img 
+      class="quote-floral"
+      src="https://media.mengundanganda.com/floral-blue/quotes%20section/randidewi_b9fca0ed-4cb7-41d1-98cc-86e741c3e592.webp" 
+      alt="Floral Decor 6" 
+      style="position: absolute; bottom: 0px; right: 150px; width: 200px; height: auto; z-index: 1; transform-origin: bottom center;"
+    />
+
+    <!-- Floral Asset 7 -->
+    <img 
+      class="quote-floral"
+      src="https://media.mengundanganda.com/floral-blue/quotes%20section/randidewi_776edb77-a094-48b7-b41a-037060d5ad28.webp" 
+      alt="Floral Decor 7" 
+      style="position: absolute; bottom: 250px; left: -100px; width: 180px; height: auto; z-index: 1; transform-origin: bottom center;"
+    />
   </section>
 </template>
 
@@ -48,86 +73,71 @@ import type { ThemeConfig } from '@/types/theme';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const props = defineProps<{
+defineProps<{
   quote?: string;
   themeConfig?: ThemeConfig;
 }>();
 
 const sectionRef = ref<HTMLElement | null>(null);
-const ovalContainer = ref<HTMLDivElement | null>(null);
-const quoteContent = ref<HTMLDivElement | null>(null);
-
-const butterflies = ref<HTMLDivElement[]>([]);
-const wingRs = ref<HTMLImageElement[]>([]);
-const wingLs = ref<HTMLImageElement[]>([]);
-
-let mainTimeline: gsap.core.Timeline | null = null;
+let entranceTimeline: gsap.core.Timeline | null = null;
+let swayTweens: gsap.core.Tween[] = [];
 
 onMounted(() => {
   if (!sectionRef.value) return;
 
-  // Butterfly helper
-  const setFlapSpeed = (speed: number, i?: number) => {
-    if (i !== undefined) {
-      if (!wingRs.value[i] || !wingLs.value[i]) return;
-      gsap.killTweensOf(wingRs.value[i]);
-      gsap.killTweensOf(wingLs.value[i]);
-      gsap.fromTo(wingRs.value[i], { rotationY: 10 }, { rotationY: 75, duration: speed, yoyo: true, repeat: -1, ease: "sine.inOut" });
-      gsap.fromTo(wingLs.value[i], { rotationY: 10 }, { rotationY: 75, duration: speed, yoyo: true, repeat: -1, ease: "sine.inOut" });
-    } else {
-      for (let j = 0; j < 12; j++) {
-        if (!wingRs.value[j] || !wingLs.value[j]) continue;
-        gsap.killTweensOf(wingRs.value[j]!);
-        gsap.killTweensOf(wingLs.value[j]!);
-        gsap.fromTo(wingRs.value[j]!, { rotationY: 10 }, { rotationY: 75, duration: speed, yoyo: true, repeat: -1, ease: "sine.inOut" });
-        gsap.fromTo(wingLs.value[j]!, { rotationY: 10 }, { rotationY: 75, duration: speed, yoyo: true, repeat: -1, ease: "sine.inOut" });
-      }
-    }
-  };
+  let florals = gsap.utils.toArray<HTMLImageElement>('.quote-floral');
 
-  const radiusX = Math.min(window.innerWidth * 0.35, 250);
-  const radiusY = Math.min(window.innerHeight * 0.3, 280);
-  if (ovalContainer.value) {
-    gsap.set(ovalContainer.value, { width: radiusX * 2.2, height: radiusY * 2.2 });
-  }
+  // Sort by z-index descending so higher index enters first
+  florals.sort((a, b) => {
+    const zA = parseInt(a.style.zIndex) || 0;
+    const zB = parseInt(b.style.zIndex) || 0;
+    return zB - zA;
+  });
 
-  // Animation Timeline
-  mainTimeline = gsap.timeline({
+  // Entrance Timeline
+  entranceTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: sectionRef.value,
-      start: "top center",
+      start: "top 25%", // Triggers when the section is about 75% opened in the viewport
       toggleActions: "play none none reverse"
     }
   });
 
-  // 1. Butterfly flight
-  mainTimeline.add(() => {
-    if (butterflies.value.length > 0) {
-      setFlapSpeed(0.12);
-      butterflies.value.forEach((wrap, i) => {
-        const theta = (i / 12) * Math.PI * 2;
-        const targetX = Math.cos(theta) * radiusX;
-        const targetY = Math.sin(theta) * radiusY;
-        const rot = (theta * 180 / Math.PI) - 90;
-        const startDistX = Math.cos(theta) * (radiusX + 800);
-        const startDistY = Math.sin(theta) * (radiusY + 800);
-        gsap.set(wrap, { x: startDistX, y: startDistY, rotation: rot, opacity: 1, scale: 0.5 });
-        gsap.to(wrap, { x: targetX, y: targetY, scale: 1, duration: 2.5, ease: "power2.out", onComplete: () => setFlapSpeed(0.8, i) });
-      });
-    }
-  }, "+=0.1");
+  florals.forEach((floral, index) => {
+    // Set initial state
+    gsap.set(floral, { y: 150, opacity: 0 });
 
-  // 2. Oval container
-  mainTimeline.to(ovalContainer.value, { opacity: 1, duration: 1.0, ease: "power2.out" }, "+=2.0");
+    // Sequential stagger based on sorted order
+    const delay = index * 0.3; // 0.3s between each flower's entrance
 
-  // 3. Quote content
-  mainTimeline.fromTo(quoteContent.value, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1.0, ease: "power2.out" }, "-=0.5");
+    // Staggered entrance
+    entranceTimeline!.to(floral, {
+      y: 0,
+      opacity: 1,
+      duration: 1.5 + Math.random() * 0.5, // 1.5s to 2.0s
+      ease: "power2.out"
+    }, delay);
+
+    // Continuous randomized sway
+    const swayDirection = Math.random() > 0.5 ? 1.5 : -1.5;
+    const swayAngle = 2 + Math.random() * 2; // 2 to 4 degrees
+    
+    const swayTween = gsap.to(floral, {
+      rotation: swayAngle * swayDirection,
+      duration: 1.5 + Math.random() * 1.5, // 1.5s to 3.0s (faster)
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+      delay: 1.5 + Math.random() * 1 // Start swaying after entrance
+    });
+    
+    swayTweens.push(swayTween);
+  });
 });
 
 onBeforeUnmount(() => {
-  if (mainTimeline) mainTimeline.kill();
-  wingRs.value.forEach(w => { if(w) gsap.killTweensOf(w) });
-  wingLs.value.forEach(w => { if(w) gsap.killTweensOf(w) });
+  if (entranceTimeline) entranceTimeline.kill();
+  swayTweens.forEach(t => t.kill());
 });
 </script>
 
