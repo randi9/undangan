@@ -75,6 +75,12 @@ if (subdomain) {
       component: () => import("@/views/PrivacyView.vue"),
       meta: { title: "Kebijakan Privasi - MengundangAnda" },
     },
+    {
+      path: "/order",
+      name: "order",
+      component: () => import("@/views/OrderView.vue"),
+      meta: { title: "Pesan Jasa Dibuatkan Undangan - MengundangAnda" },
+    },
 
     // === Dashboard (Protected) ===
     {
@@ -139,6 +145,16 @@ if (subdomain) {
       component: () => import("@/views/admin/VoucherManageView.vue"),
       meta: {
         title: "Kelola Voucher - MengundangAnda",
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
+    },
+    {
+      path: "/dashboard/orders",
+      name: "orders-manage",
+      component: () => import("@/views/admin/OrderManageView.vue"),
+      meta: {
+        title: "Kelola Pesanan - MengundangAnda",
         requiresAuth: true,
         requiresAdmin: true,
       },

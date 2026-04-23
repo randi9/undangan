@@ -291,6 +291,25 @@
             </ul>
             <a href="/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</a>
           </div>
+
+          <!-- Jasa Dibuatkan Plan -->
+          <div class="lp-pricing-card lp-pricing-jasa lp-reveal" style="transition-delay: 240ms;">
+            <div class="lp-jasa-badge">TERIMA JADI</div>
+            <div class="lp-pricing-header">
+              <h3>Jasa Dibuatkan</h3>
+              <div class="lp-pricing-price">Rp 99.000</div>
+              <p>Duduk manis, admin kami yang buatkan untuk Anda.</p>
+            </div>
+            <ul class="lp-pricing-features">
+              <li><Icon icon="solar:magic-stick-3-bold-duotone" class="check-icon jasa" /> <strong>Admin buatkan untuk Anda</strong></li>
+              <li><Icon icon="solar:crown-bold-duotone" class="check-icon jasa" /> Semua fitur Premium termasuk</li>
+              <li><Icon icon="solar:clock-circle-bold-duotone" class="check-icon jasa" /> Selesai dalam 1 jam</li>
+              <li><Icon icon="solar:refresh-circle-bold-duotone" class="check-icon jasa" /> 3x revisi gratis</li>
+              <li><Icon icon="solar:infinity-bold-duotone" class="check-icon jasa" /> Akses unlimited 1 tahun</li>
+              <li><Icon icon="solar:shield-check-bold-duotone" class="check-icon jasa" /> Tanpa branding platform</li>
+            </ul>
+            <a href="/order" class="lp-btn lp-btn-jasa lp-pricing-btn">Pesan Sekarang</a>
+          </div>
         </div>
       </div>
     </section>
@@ -425,11 +444,15 @@ const faqList = [
   },
   {
     q: 'Berapa harga paket premium MengundangAnda?',
-    a: 'Paket Premium hanya Rp 50.000 (sekali bayar) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform.'
+    a: 'Paket Premium hanya Rp 50.000 (sekali bayar, self-service) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform.'
+  },
+  {
+    q: 'Apa itu layanan Jasa Dibuatkan Undangan?',
+    a: 'Layanan Jasa Dibuatkan (Rp 99.000) adalah paket terima jadi. Anda cukup kirim data pernikahan, lalu admin kami yang akan membuatkan undangan digital premium untuk Anda. Selesai dalam 1 jam, dengan 3x revisi gratis dan semua fitur Premium sudah termasuk.'
   },
   {
     q: 'Fitur apa saja yang tersedia di MengundangAnda?',
-    a: 'Fitur lengkap meliputi: 4+ tema premium (Elegant Gold, Floral, Minimalist, Elegant Blue), RSVP & buku tamu, musik latar otomatis, countdown timer, galeri foto prewedding, love story timeline, amplop digital, peta lokasi Google Maps, dan kirim undangan via WhatsApp.'
+    a: 'Fitur lengkap meliputi: 5 tema premium (Elegant Gold, Floral, Minimalist, Elegant Blue, Floral Blue), RSVP & buku tamu, musik latar otomatis, countdown timer, galeri foto prewedding, love story timeline, amplop digital, peta lokasi Google Maps, dan kirim undangan via WhatsApp.'
   },
 ]
 
@@ -1684,9 +1707,9 @@ const themesData = [
 /* --- Pricing --- */
 .lp-pricing-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
-  max-width: 840px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1080px;
   margin: 0 auto;
 }
 
@@ -1835,6 +1858,51 @@ const themesData = [
   background: rgba(30, 58, 95, 0.04);
   border-color: var(--lp-text-light);
   color: var(--lp-primary);
+}
+
+/* --- Jasa Dibuatkan Card --- */
+.lp-pricing-jasa {
+  border: 2px solid #f59e0b;
+  background: linear-gradient(180deg, #fffbeb 0%, #ffffff 40%);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.1);
+}
+.lp-pricing-jasa:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(245, 158, 11, 0.18);
+  border-color: #d97706;
+}
+.lp-pricing-jasa .lp-pricing-header h3 {
+  color: #b45309;
+}
+.lp-jasa-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 6px 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+  z-index: 2;
+  white-space: nowrap;
+}
+.check-icon.jasa {
+  color: #d97706;
+}
+.lp-btn-jasa {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  border-color: #f59e0b;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+}
+.lp-btn-jasa:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(245, 158, 11, 0.4);
 }
 
 /* --- CTA Section --- */
@@ -2072,7 +2140,7 @@ const themesData = [
 
   .lp-pricing-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 32px;
   }
   .lp-pricing-premium {
     transform: none;

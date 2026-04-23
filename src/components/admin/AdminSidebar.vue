@@ -36,6 +36,10 @@
         <span class="material-symbols-rounded">confirmation_number</span>
         Voucher
       </router-link>
+      <router-link v-if="isAdmin" to="/dashboard/orders" class="sidebar-link">
+        <span class="material-symbols-rounded">receipt_long</span>
+        Pesanan
+      </router-link>
     </nav>
 
     <div class="sidebar-footer" style="padding: 1rem 0; border-top: 1px solid #e1e8f0; margin-top: auto;">

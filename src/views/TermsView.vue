@@ -125,7 +125,7 @@
         <section id="paket">
           <div class="legal-section-number">04</div>
           <h2>Paket Layanan & Harga</h2>
-          <div class="legal-comparison">
+          <div class="legal-comparison legal-comparison-3">
             <div class="legal-plan">
               <div class="legal-plan-header">
                 <h4>Paket Free</h4>
@@ -153,6 +153,21 @@
                 <li>Seluruh fitur editing dan Live Preview (tanpa batasan)</li>
                 <li><strong>Tanpa banner</strong> "Free" pada tampilan undangan</li>
                 <li>Prioritas dukungan teknis melalui email dan WhatsApp</li>
+              </ul>
+            </div>
+            <div class="legal-plan legal-plan-jasa">
+              <div class="legal-plan-badge legal-plan-badge-jasa">Terima Jadi</div>
+              <div class="legal-plan-header">
+                <h4>Jasa Dibuatkan</h4>
+                <span class="legal-plan-price">Rp 99.000 <small>sekali bayar</small></span>
+              </div>
+              <ul>
+                <li>Undangan <strong>dibuatkan oleh admin</strong> sesuai data yang diberikan</li>
+                <li>Seluruh fitur Paket Premium <strong>sudah termasuk</strong></li>
+                <li>Masa aktif undangan: <strong>1 (satu) tahun</strong></li>
+                <li>Pengerjaan selesai dalam <strong>1 (satu) jam</strong> kerja</li>
+                <li><strong>3 (tiga) kali</strong> revisi gratis</li>
+                <li>Komunikasi dan koordinasi melalui <strong>WhatsApp</strong></li>
               </ul>
             </div>
           </div>
@@ -686,6 +701,16 @@ onMounted(() => {
   border-color: rgba(59, 130, 246, 0.3);
   background: linear-gradient(180deg, #f8faff 0%, #fff 100%);
 }
+.legal-plan-jasa {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: linear-gradient(180deg, #fffbeb 0%, #fff 100%);
+}
+.legal-plan-jasa .legal-plan-header h4 {
+  color: #b45309;
+}
+.legal-comparison-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
 .legal-plan-badge {
   position: absolute;
   top: -10px;
@@ -699,6 +724,10 @@ onMounted(() => {
   text-transform: uppercase;
   padding: 4px 14px;
   border-radius: 99px;
+  white-space: nowrap;
+}
+.legal-plan-badge-jasa {
+  background: linear-gradient(90deg, #f59e0b, #d97706);
 }
 .legal-plan-header {
   margin-bottom: 16px;
@@ -845,6 +874,7 @@ onMounted(() => {
   .legal-hero { padding: 56px 24px 40px; }
   .legal-grid,
   .legal-comparison,
+  .legal-comparison-3,
   .legal-contact-grid {
     grid-template-columns: 1fr;
   }
