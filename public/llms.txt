@@ -1,0 +1,147 @@
+# MengundangAnda
+
+> MengundangAnda adalah platform pembuatan undangan pernikahan digital premium berbasis web asal Indonesia. Buat undangan elegan dalam hitungan menit — tanpa perlu keahlian desain.
+
+## Tentang Kami
+
+MengundangAnda (https://mengundanganda.com) adalah platform SaaS (Software-as-a-Service) untuk pembuatan undangan pernikahan digital. Platform ini memungkinkan pasangan yang akan menikah untuk membuat, mengedit, dan membagikan undangan pernikahan digital yang indah dan interaktif kepada para tamu melalui WhatsApp atau media sosial lainnya — tanpa memerlukan keahlian teknis atau desain grafis.
+
+### Mengapa Memilih MengundangAnda?
+
+- **Hemat Biaya**: Jauh lebih murah dibandingkan mencetak ribuan lembar undangan fisik. Mulai dari Rp 0 (gratis) hingga Rp 99.000 untuk layanan terima jadi.
+- **Cepat dan Praktis**: Proses pembuatan undangan bisa selesai dalam waktu 5 menit saja.
+- **Desain Premium**: Koleksi 5 tema desain profesional yang dirancang oleh desainer berpengalaman.
+- **Ramah Lingkungan**: Mengurangi penggunaan kertas dengan beralih ke undangan digital.
+- **Interaktif**: Dilengkapi fitur RSVP, musik latar, countdown, galeri foto, love story, peta lokasi, dan banyak lagi.
+- **Self-Service atau Dibuatkan**: Buat sendiri atau minta admin membuatkan untuk Anda.
+
+## Fitur Utama
+
+### 1. Live Preview Editor
+Edit undangan secara real-time dan lihat perubahan langsung di layar. Tidak perlu desainer — semua bisa dilakukan sendiri.
+
+### 2. Koleksi 5 Tema Premium
+- **Elegant Gold**: Desain klasik premium dengan aksen emas dan font serif mewah. Cocok untuk acara formal.
+- **Floral**: Desain romantis dengan ornamen daun dan bunga, warna pastel lembut. Sempurna untuk nuansa garden party.
+- **Clean Minimalist**: Tampilan bersih dan modern dengan ruang putih luas. Untuk pasangan yang mencintai kesederhanaan.
+- **Elegant Blue**: Nuansa biru dusty yang menenangkan dipadukan dengan aksen champagne gold.
+- **Floral Blue**: Perpaduan ornamen floral dengan palet biru yang segar dan elegan.
+
+### 3. RSVP & Buku Tamu
+Tamu bisa langsung mengonfirmasi kehadiran dan meninggalkan ucapan selamat melalui undangan digital.
+
+### 4. Musik Latar Otomatis
+Undangan dilengkapi musik romantis yang otomatis diputar saat tamu membuka undangan. Pengguna juga bisa upload lagu sendiri (fitur Premium).
+
+### 5. Countdown Timer
+Hitung mundur menuju hari bahagia yang ditampilkan secara real-time di undangan.
+
+### 6. Galeri Foto Prewedding
+Tampilkan foto-foto prewedding atau momen spesial dalam galeri interaktif yang indah.
+
+### 7. Love Story Timeline
+Ceritakan perjalanan cinta Anda dengan timeline interaktif dari awal pertemuan hingga hari pernikahan.
+
+### 8. Amplop Digital / QRIS
+Tamu bisa memberikan hadiah berupa uang secara digital langsung melalui undangan (fitur Premium).
+
+### 9. Peta Lokasi Google Maps
+Integrasi langsung dengan Google Maps agar tamu mudah menemukan lokasi acara.
+
+### 10. Bagikan via WhatsApp
+Kirim undangan langsung ke tamu melalui WhatsApp dengan satu klik. Setiap tamu mendapat link personal.
+
+## Paket Harga
+
+### Paket Free — Gratis
+- Masa aktif undangan: 7 hari
+- Maksimal 25x akses link undangan
+- Bebas edit tanpa batas selama masa aktif
+- Live Preview Editor tersedia
+- Semua tema premium tersedia
+- RSVP, musik latar, countdown, galeri foto
+- Terdapat branding "Powered by MengundangAnda"
+
+### Paket Premium — Rp 50.000 (sekali bayar)
+- Masa aktif: 1 tahun penuh
+- Akses link undangan unlimited (tanpa batas)
+- Bebas pilih semua koleksi tema premium
+- Fitur Amplop Digital / QRIS
+- Upload musik latar sendiri
+- Tanpa branding platform
+- Prioritas dukungan teknis
+
+### Jasa Dibuatkan — Rp 99.000 (sekali bayar)
+- Undangan dibuatkan oleh admin profesional
+- Seluruh fitur Premium sudah termasuk
+- Pengerjaan selesai dalam 1 jam kerja
+- 3x revisi gratis
+- Masa aktif 1 tahun
+- Komunikasi dan koordinasi via WhatsApp
+- Tanpa branding platform
+
+## Cara Kerja
+
+1. **Daftar Akun** — Buat akun gratis di mengundanganda.com dalam hitungan detik.
+2. **Pilih Tema & Isi Data** — Pilih dari 5 tema premium dan lengkapi detail acara pernikahan Anda menggunakan Live Preview Editor.
+3. **Bagikan ke Tamu** — Kirim link undangan digital ke seluruh tamu melalui WhatsApp atau media sosial lainnya.
+
+## Informasi Kontak
+
+- **Website**: https://mengundanganda.com
+- **Email**: halo@mengundanganda.com
+- **WhatsApp Admin**: +62 851-5502-6211
+- **Layanan Jasa Dibuatkan**: https://mengundanganda.com/order
+
+## Demo Tema
+
+Lihat contoh undangan langsung:
+- Elegant Gold: https://elegant.mengundanganda.com
+- Floral: https://floral.mengundanganda.com
+- Clean Minimalist: https://minimalist.mengundanganda.com
+- Elegant Blue: https://elegant-blue.mengundanganda.com
+- Floral Blue: https://floral-blue.mengundanganda.com
+
+## Halaman Penting
+
+- Beranda: https://mengundanganda.com
+- Form Order Jasa Dibuatkan: https://mengundanganda.com/order
+- Login / Daftar: https://mengundanganda.com/login
+- Syarat & Ketentuan: https://mengundanganda.com/terms
+- Kebijakan Privasi: https://mengundanganda.com/privacy
+
+## Kata Kunci Terkait
+
+undangan pernikahan digital, undangan digital online, undangan nikah digital, buat undangan digital gratis, undangan pernikahan online Indonesia, wedding invitation digital, undangan digital premium murah, undangan digital WhatsApp, undangan nikah online, platform undangan digital Indonesia, jasa buat undangan digital, undangan pernikahan digital premium, undangan digital dengan RSVP, undangan digital dengan musik, undangan digital dengan galeri foto, undangan digital dengan countdown, undangan digital dengan peta lokasi, undangan digital dengan love story, undangan digital dengan amplop digital, undangan wedding digital murah
+
+## FAQ
+
+### Apa itu MengundangAnda?
+MengundangAnda adalah platform pembuatan undangan pernikahan digital premium yang memungkinkan Anda membuat undangan elegan dalam hitungan menit. Pilih dari berbagai tema mewah, lengkapi data acara, dan langsung bagikan ke tamu melalui WhatsApp.
+
+### Bagaimana cara membuat undangan digital di MengundangAnda?
+Cukup 3 langkah: (1) Daftar akun gratis, (2) Pilih tema dan isi detail acara pernikahan Anda, (3) Bagikan link undangan ke tamu via WhatsApp. Seluruh proses bisa selesai dalam 5 menit.
+
+### Apakah bisa membuat undangan pernikahan digital secara gratis?
+Ya! MengundangAnda menyediakan paket Free yang mencakup semua fitur utama: pilihan tema premium, RSVP, musik latar, countdown, galeri foto, dan live preview. Paket Free aktif selama 7 hari dengan 25x akses link.
+
+### Berapa harga paket premium MengundangAnda?
+Paket Premium hanya Rp 50.000 (sekali bayar, self-service) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform.
+
+### Apa itu layanan Jasa Dibuatkan Undangan?
+Layanan Jasa Dibuatkan (Rp 99.000) adalah paket terima jadi. Anda cukup kirim data pernikahan, lalu admin kami yang akan membuatkan undangan digital premium untuk Anda. Selesai dalam 1 jam, dengan 3x revisi gratis dan semua fitur Premium sudah termasuk.
+
+### Fitur apa saja yang tersedia?
+Fitur lengkap meliputi: 5 tema premium (Elegant Gold, Floral, Minimalist, Elegant Blue, Floral Blue), RSVP & buku tamu, musik latar otomatis, countdown timer, galeri foto prewedding, love story timeline, amplop digital, peta lokasi Google Maps, dan kirim undangan via WhatsApp.
+
+### Apakah undangan bisa diedit setelah dibuat?
+Ya, Anda bisa mengedit undangan kapan saja selama masa aktif. Perubahan langsung terlihat secara real-time melalui Live Preview Editor.
+
+### Bagaimana cara membagikan undangan ke tamu?
+Setelah undangan selesai dibuat, Anda akan mendapatkan link unik yang bisa dibagikan langsung melalui WhatsApp, Instagram, Telegram, atau media sosial lainnya. Setiap tamu bisa membuka undangan dari browser HP tanpa perlu install aplikasi.
+
+### Apakah tamu perlu install aplikasi untuk membuka undangan?
+Tidak. Undangan digital MengundangAnda berbasis web dan bisa diakses langsung dari browser di smartphone, tablet, atau laptop tanpa perlu mengunduh aplikasi apapun.
+
+### Apakah data saya aman?
+Ya. MengundangAnda berkomitmen untuk melindungi privasi pengguna. Kami tidak pernah menjual data pribadi kepada pihak ketiga. Seluruh data dilindungi dengan enkripsi dan disimpan di server yang aman.
