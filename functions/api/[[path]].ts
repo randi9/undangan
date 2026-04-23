@@ -6,6 +6,7 @@ import { dispatchGuestRoute } from "./routes/guests";
 import { dispatchHealthRoute } from "./routes/health";
 import { dispatchInvitationRoute } from "./routes/invitations";
 import { dispatchMusicRoute } from "./routes/music";
+import { dispatchOrderRoute } from "./routes/orders";
 import { dispatchPaymentRoute } from "./routes/payment";
 import { dispatchRsvpRoute } from "./routes/rsvp";
 import { dispatchUploadRoute } from "./routes/upload";
@@ -20,6 +21,7 @@ const dispatchers: ApiDispatcher[] = [
   dispatchGuestRoute,
   dispatchMusicRoute,
   dispatchVoucherRoute,
+  dispatchOrderRoute,
   dispatchPaymentRoute,
   dispatchDebugRoute,
   dispatchUploadRoute,
