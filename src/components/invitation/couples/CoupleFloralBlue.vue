@@ -1,5 +1,5 @@
 <template>
-  <section id="couple-section-fb" ref="sectionRef" style="position: relative; width: 100%; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; background-color: #f0f0f0;">
+  <section id="couple-section-fb" ref="sectionRef" style="position: relative; width: 100%; height: 100dvh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; background-color: #f0f0f0;">
     <!-- Proportional Container that acts like object-fit: cover while allowing precise absolute positioning -->
     <div style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 177.778vw; min-height: 100vh; min-width: 56.25vh; transform: translate(-50%, -50%);">
       <!-- Background Image -->
@@ -131,6 +131,7 @@ onMounted(() => {
   gsap.registerPlugin(ScrollTrigger);
 
   ctx = gsap.context(() => {
+    // Pinned crossfade animation
     const crossfadeTl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
@@ -138,10 +139,6 @@ onMounted(() => {
         end: '+=400%',
         pin: true,
         scrub: true,
-        onEnter: () => { if (sectionRef.value) sectionRef.value.style.zIndex = '10'; },
-        onLeave: () => { if (sectionRef.value) sectionRef.value.style.zIndex = ''; },
-        onEnterBack: () => { if (sectionRef.value) sectionRef.value.style.zIndex = '10'; },
-        onLeaveBack: () => { if (sectionRef.value) sectionRef.value.style.zIndex = ''; },
       }
     });
 
@@ -175,13 +172,14 @@ onMounted(() => {
     // 7. Hold Bride Info so it doesn't immediately scroll away
     crossfadeTl.to({}, { duration: 2 });
 
+    // Floral entrance animations (non-pinning)
     const florals = gsap.utils.toArray('.couple-floral');
     const stem = gsap.utils.toArray('.couple-floral-stem')[0] as HTMLElement | undefined;
 
     const entranceTl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
-        start: "top 75%", // Triggers when 25% of the section is visible
+        start: "top 75%",
         toggleActions: "play none none reverse"
       }
     });
@@ -197,21 +195,19 @@ onMounted(() => {
     }
 
     florals.forEach((floral: any, index: number) => {
-      // Entrance pop-in (scale + opacity only to preserve exact y/x coordinates)
       entranceTl.from(floral, {
         scale: 0,
         opacity: 0,
         duration: 1.5 + Math.random() * 0.5,
         ease: "back.out(1.2)"
-      }, index * 0.2); // stagger by 0.2s
+      }, index * 0.2);
 
-      // Continuous random sway
       const swayDirection = Math.random() > 0.5 ? 1 : -1;
-      const swayAngle = 6 + Math.random() * 6; // 6 to 12 degrees (stronger sway)
+      const swayAngle = 6 + Math.random() * 6;
       
       gsap.to(floral, {
         rotation: `+=${swayAngle * swayDirection}`,
-        duration: 1.5 + Math.random() * 1.5, // 1.5s to 3s (faster sway)
+        duration: 1.5 + Math.random() * 1.5,
         ease: "sine.inOut",
         yoyo: true,
         repeat: -1,
@@ -227,5 +223,4 @@ onUnmounted(() => {
 </script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
-/* Removed the wavy masks to ensure the section connects directly to the previous one without empty spaces */
 </style>

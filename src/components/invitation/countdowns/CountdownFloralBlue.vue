@@ -174,7 +174,7 @@ onMounted(() => {
       { opacity: 0, y: '30%' },
       { opacity: 1, y: '0%', duration: 1.5, ease: 'power2.out', scrollTrigger: {
           trigger: sectionRef.value,
-          start: 'top 80%', // play when section is 20% visible
+          start: 'top 80%',
         } 
       }
     );
@@ -184,9 +184,9 @@ onMounted(() => {
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=400%', // Increased scroll length for more steps
+        end: '+=400%',
         pin: true,
-        scrub: 1, // Smooth scrubbing
+        scrub: 1,
       }
     });
 
@@ -218,7 +218,7 @@ onMounted(() => {
       tl.fromTo(firstEventRef, 
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 1, ease: 'power2.out' },
-        "<" // start at same time as zoom out
+        "<"
       );
   
       // Hold First Event
@@ -226,7 +226,6 @@ onMounted(() => {
       
       // SCROLL 4: Transition from First Event to Second Event (if both exist)
       if (hasAkad && hasResepsi) {
-        // Fade out Akad
         tl.to(akadRef.value, { 
           opacity: 0, 
           y: -30, 
@@ -234,17 +233,14 @@ onMounted(() => {
           ease: 'power2.in' 
         });
 
-        // Fade in Resepsi (Decor 2 remains visible)
         tl.fromTo(resepsiRef.value, 
           { opacity: 0, y: 30 },
           { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }
         );
         
-        // Hold Resepsi
         tl.to({}, { duration: 0.5 });
       }
     } else {
-      // If no events, just fade out countdown
       tl.to(countdownRef.value, { 
         opacity: 0, 
         scale: 1.1, 
