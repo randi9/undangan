@@ -135,9 +135,9 @@ onMounted(() => {
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=400%',
+        end: '+=800%',
         pin: true,
-        scrub: true,
+        scrub: 1, // Add smoothing so fast scrolling doesn't skip animations
       }
     });
 
@@ -151,7 +151,7 @@ onMounted(() => {
     crossfadeTl.to(groomInfoRef.value, { opacity: 1, ease: 'none', duration: 1 });
     
     // Hold Groom Info
-    crossfadeTl.to({}, { duration: 0.8 });
+    crossfadeTl.to({}, { duration: 1.5 });
 
     // 3. Fade out Groom Info
     crossfadeTl.to(groomInfoRef.value, { opacity: 0, ease: 'none', duration: 1 });
@@ -160,7 +160,7 @@ onMounted(() => {
     crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 1, ease: 'none', duration: 1 });
     
     // Hold Bride Photo
-    crossfadeTl.to({}, { duration: 0.8 });
+    crossfadeTl.to({}, { duration: 1.5 });
 
     // 5. Fade out Bride Photo & "The Bride"
     crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 0, ease: 'none', duration: 1 });
@@ -169,7 +169,7 @@ onMounted(() => {
     crossfadeTl.to(brideInfoRef.value, { opacity: 1, ease: 'none', duration: 1 });
 
     // 7. Hold Bride Info so it doesn't immediately scroll away
-    crossfadeTl.to({}, { duration: 1.5 });
+    crossfadeTl.to({}, { duration: 2 });
 
     const florals = gsap.utils.toArray('.couple-floral');
     const stem = gsap.utils.toArray('.couple-floral-stem')[0] as HTMLElement | undefined;
