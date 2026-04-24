@@ -1,5 +1,5 @@
 <template>
-  <section id="couple-section-fb" ref="sectionRef" style="position: relative; z-index: 2; width: 100%; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; background-color: #f0f0f0;">
+  <section id="couple-section-fb" ref="sectionRef" style="position: relative; width: 100%; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; background-color: #f0f0f0;">
     <!-- Proportional Container that acts like object-fit: cover while allowing precise absolute positioning -->
     <div style="position: absolute; top: 50%; left: 50%; width: 100vw; height: 177.778vw; min-height: 100vh; min-width: 56.25vh; transform: translate(-50%, -50%);">
       <!-- Background Image -->
@@ -137,7 +137,11 @@ onMounted(() => {
         start: 'top top',
         end: '+=400%',
         pin: true,
-        scrub: true, // Revert to true for lighter 1:1 scrolling
+        scrub: true,
+        onEnter: () => { if (sectionRef.value) sectionRef.value.style.zIndex = '10'; },
+        onLeave: () => { if (sectionRef.value) sectionRef.value.style.zIndex = ''; },
+        onEnterBack: () => { if (sectionRef.value) sectionRef.value.style.zIndex = '10'; },
+        onLeaveBack: () => { if (sectionRef.value) sectionRef.value.style.zIndex = ''; },
       }
     });
 
