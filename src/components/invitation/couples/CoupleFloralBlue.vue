@@ -135,11 +135,14 @@ onMounted(() => {
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=250%',
+        end: '+=400%',
         pin: true,
         scrub: true,
       }
     });
+
+    // Hold Groom Photo initially
+    crossfadeTl.to({}, { duration: 0.5 });
 
     // 1. Fade out Groom Photo & "The Groom"
     crossfadeTl.to([groomPhotoRef.value, groomTextRef.value], { opacity: 0, ease: 'none', duration: 1 });
@@ -147,17 +150,26 @@ onMounted(() => {
     // 2. Fade in Groom Info (Back of polaroid)
     crossfadeTl.to(groomInfoRef.value, { opacity: 1, ease: 'none', duration: 1 });
     
+    // Hold Groom Info
+    crossfadeTl.to({}, { duration: 0.8 });
+
     // 3. Fade out Groom Info
     crossfadeTl.to(groomInfoRef.value, { opacity: 0, ease: 'none', duration: 1 });
     
     // 4. Fade in Bride Photo & "The Bride"
     crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 1, ease: 'none', duration: 1 });
     
+    // Hold Bride Photo
+    crossfadeTl.to({}, { duration: 0.8 });
+
     // 5. Fade out Bride Photo & "The Bride"
     crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 0, ease: 'none', duration: 1 });
     
     // 6. Fade in Bride Info
     crossfadeTl.to(brideInfoRef.value, { opacity: 1, ease: 'none', duration: 1 });
+
+    // 7. Hold Bride Info so it doesn't immediately scroll away
+    crossfadeTl.to({}, { duration: 1.5 });
 
     const florals = gsap.utils.toArray('.couple-floral');
     const stem = gsap.utils.toArray('.couple-floral-stem')[0] as HTMLElement | undefined;
