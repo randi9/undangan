@@ -12,6 +12,10 @@
         <span class="material-symbols-rounded">dashboard</span>
         Dashboard
       </router-link>
+      <router-link to="/dashboard/analytics" class="sidebar-link">
+        <span class="material-symbols-rounded">analytics</span>
+        Statistik
+      </router-link>
       <router-link to="/dashboard/themes" class="sidebar-link">
         <span class="material-symbols-rounded">palette</span>
         Tema

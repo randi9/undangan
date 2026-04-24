@@ -90,6 +90,12 @@ if (subdomain) {
       meta: { title: "Dashboard - MengundangAnda", requiresAuth: true },
     },
     {
+      path: "/dashboard/analytics",
+      name: "analytics",
+      component: () => import("@/views/admin/AnalyticsView.vue"),
+      meta: { title: "Analitik - MengundangAnda", requiresAuth: true },
+    },
+    {
       path: "/dashboard/themes",
       name: "themes",
       component: () => import("@/views/admin/ThemeCatalogView.vue"),

@@ -148,7 +148,7 @@ async function handleUsersCreate(supabase: any, env: any, request: Request) {
     .toLowerCase();
   const password = String(body.password || randomPassword());
   const role = body.role === "admin" ? "admin" : "user";
-  const max_invitations = Math.max(1, Number(body.max_invitations) || 3);
+  const max_invitations = Math.max(1, Number(body.max_invitations) || 1);
   const clerkManagedPasswordHash = ["clerk", "managed"].join("_");
 
   const createParams: any = {

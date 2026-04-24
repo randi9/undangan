@@ -193,7 +193,7 @@ const form = ref({
   username: '',
   password: '',
   role: 'user' as 'admin' | 'user',
-  max_invitations: 3
+  max_invitations: 1
 })
 
 const deleteTarget = ref<UserItem | null>(null)
@@ -252,7 +252,7 @@ function openCreateModal() {
   isEditing.value = false
   editingId.value = null
   formError.value = null
-  form.value = { username: '', password: '', role: 'user', max_invitations: 3 }
+  form.value = { username: '', password: '', role: 'user', max_invitations: 1 }
   showModal.value = true
 }
 

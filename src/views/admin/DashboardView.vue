@@ -26,70 +26,7 @@
         </button>
       </div>
     </template>
-        <!-- Stats Skeleton Mode -->
-        <div v-if="store.loading" class="stats-grid">
-          <AppSkeleton v-for="i in 4" :key="`stat-skel-${i}`" height="90px" rounded="2xl" />
-        </div>
 
-        <!-- Stats -->
-        <div v-else class="stats-grid">
-          <div class="stat-card blue">
-            <div class="stat-header">
-              <div class="stat-icon-glow">
-                <Icon icon="ph:envelope-open-duotone" />
-              </div>
-            </div>
-            <div class="stat-body">
-              <div class="stat-value">{{ invitations.length }}</div>
-              <div class="stat-label">Total Undangan</div>
-            </div>
-            <div class="stat-deco">
-              <Icon icon="ph:envelope-open-duotone" />
-            </div>
-          </div>
-          <div class="stat-card pink">
-            <div class="stat-header">
-              <div class="stat-icon-glow">
-                <Icon icon="ph:eye-duotone" />
-              </div>
-            </div>
-            <div class="stat-body">
-              <div class="stat-value">{{ totalViews }}</div>
-              <div class="stat-label">Total Dilihat</div>
-            </div>
-            <div class="stat-deco">
-              <Icon icon="ph:eye-duotone" />
-            </div>
-          </div>
-          <div class="stat-card purple">
-            <div class="stat-header">
-              <div class="stat-icon-glow">
-                <Icon icon="ph:image-square-duotone" />
-              </div>
-            </div>
-            <div class="stat-body">
-              <div class="stat-value">{{ totalPhotos }}</div>
-              <div class="stat-label">Total Foto</div>
-            </div>
-            <div class="stat-deco">
-              <Icon icon="ph:image-square-duotone" />
-            </div>
-          </div>
-          <div class="stat-card emerald">
-            <div class="stat-header">
-              <div class="stat-icon-glow">
-                <Icon icon="ph:users-duotone" />
-              </div>
-            </div>
-            <div class="stat-body">
-              <div class="stat-value">{{ totalRsvps }}</div>
-              <div class="stat-label">Total RSVP</div>
-            </div>
-            <div class="stat-deco">
-              <Icon icon="ph:users-duotone" />
-            </div>
-          </div>
-        </div>
 
         <!-- Section Title -->
         <div class="section-header">
