@@ -84,9 +84,11 @@ export function usePhotoUpload(
     try {
       // Convert blob to File for upload
       const file = new File([blob], `cropped-${Date.now()}.webp`, { type: 'image/webp' })
+      console.log('[CropConfirm] Uploading cropped file:', field, 'size:', file.size)
 
       if (field === 'love_story') {
         const url = await store.uploadPhoto(file, form.slug || undefined)
+        console.log('[CropConfirm] Love story upload result:', url)
         const story = form.love_story[loveStoryPhotoTargetIndex]
         if (story) {
           if (story.photo) {
@@ -101,9 +103,11 @@ export function usePhotoUpload(
           await store.deleteFile(oldUrl).catch(() => {})
         }
         const url = await store.uploadPhoto(file, form.slug || undefined)
+        console.log('[CropConfirm] Upload result for', field, ':', url)
         form[field] = url
       }
-    } catch {
+    } catch (err) {
+      console.error('[CropConfirm] Upload failed:', err)
       showToast('error', 'Gagal upload foto')
     }
 

@@ -26,10 +26,7 @@
     <!-- Hero Section -->
     <LandingHeroCinematic />
 
-    <!-- Back to Top Arrow -->
-    <button class="lp-back-to-top" :class="{ visible: showBackToTop }" @click="scrollToTop" aria-label="Kembali ke atas">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-    </button>
+
 
     <!-- Social Proof Stats -->
     <section class="lp-stats" aria-label="Statistik" ref="statsRef">
@@ -412,6 +409,30 @@
         </div>
       </div>
     </footer>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+      <div class="mobile-nav-inner">
+        <a href="#" class="mobile-nav-item" :class="{ active: activeSection === 'beranda' }" @click="activeSection = 'beranda'">
+          <Icon icon="solar:home-smile-bold-duotone" />
+          <span>Beranda</span>
+        </a>
+        <a href="#tema" class="mobile-nav-item" :class="{ active: activeSection === 'tema' }" @click="activeSection = 'tema'">
+          <Icon icon="solar:gallery-bold-duotone" />
+          <span>Tema</span>
+        </a>
+        <a href="#harga" class="mobile-nav-item" :class="{ active: activeSection === 'harga' }" @click="activeSection = 'harga'">
+          <Icon icon="solar:tag-price-bold-duotone" />
+          <span>Harga</span>
+        </a>
+        <a href="/login" class="mobile-nav-item nav-cta">
+          <div class="cta-icon-wrapper">
+            <Icon icon="solar:magic-stick-3-bold-duotone" />
+          </div>
+          <span>Buat</span>
+        </a>
+      </div>
+    </nav>
   </div>
 </template>
 
@@ -423,7 +444,7 @@ import LandingHeroCinematic from '@/components/landing/LandingHeroCinematic.vue'
 const navScrolled = ref(false)
 const mobileMenuOpen = ref(false)
 const navHiddenMobile = ref(false)
-const showBackToTop = ref(false)
+const activeSection = ref('beranda')
 const scrollY = ref(0)
 const statsRef = ref<HTMLElement | null>(null)
 const prefersReducedMotion = ref(false)
@@ -475,12 +496,33 @@ function handleScroll() {
     navHiddenMobile.value = false
   }
 
-  // Show back-to-top button after passing hero section
-  showBackToTop.value = y > heroHeight
+  updateActiveSection()
 }
 
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+function updateActiveSection() {
+  const allSections = ['fitur', 'live-preview', 'tema', 'cara-kerja', 'testimoni', 'harga', 'faq']
+  let current = activeSection.value
+  
+  for (const id of allSections) {
+    const el = document.getElementById(id)
+    if (el) {
+      const rect = el.getBoundingClientRect()
+      // Section is active if it's in the middle of the viewport
+      if (rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.3) {
+        if (id === 'tema') current = 'tema'
+        else if (id === 'harga') current = 'harga'
+        else current = '' // Clear active if in a section not in bottom nav
+        break
+      }
+    }
+  }
+  
+  // If at the very top, Beranda is active
+  if (window.scrollY < window.innerHeight * 0.4) {
+    current = 'beranda'
+  }
+  
+  activeSection.value = current
 }
 
 // ---- Stats Counter Animation ----
@@ -2410,5 +2452,99 @@ const themesData = [
   }
   .lp-faq-answer { padding: 0 18px 16px; }
   .lp-faq-answer p { font-size: 13.5px; }
+}
+
+/* ===== Mobile Bottom Navigation ===== */
+.mobile-bottom-nav {
+  display: none; 
+}
+
+@media (max-width: 768px) {
+  /* Sembunyikan Navigasi Lama di Mobile */
+  .lp-nav-toggle,
+  .lp-nav-links {
+    display: none !important; 
+  }
+
+  /* Tampilkan dan Styling Bottom Nav */
+  .mobile-bottom-nav {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 0 16px 16px;
+  }
+
+  /* Center Logo on Mobile */
+  .lp-nav-inner {
+    justify-content: center !important;
+  }
+
+  .mobile-nav-inner {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border-radius: 24px;
+    padding: 8px 12px;
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    color: var(--admin-text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    flex: 1;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-nav-item svg {
+    font-size: 24px;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-nav-item.active {
+    color: var(--admin-primary);
+  }
+
+  .mobile-nav-item.active svg {
+    transform: translateY(-2px);
+  }
+
+  .mobile-nav-item.nav-cta .cta-icon-wrapper {
+    background: linear-gradient(135deg, var(--admin-primary), #2563eb);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -20px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    border: 3px solid #f8fafc;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-nav-item.nav-cta:hover .cta-icon-wrapper {
+    transform: scale(1.05);
+  }
+
+  .mobile-nav-item.nav-cta svg {
+    font-size: 20px;
+  }
+  
+  .landing main {
+    padding-bottom: 80px; 
+  }
 }
 </style>

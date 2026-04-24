@@ -22,7 +22,8 @@
             :stencil-component="activeStencil"
             :stencil-props="stencilProps"
             :default-size="defaultSize"
-            image-restriction="stencil"
+            image-restriction="fill-area"
+            :resize-image="{ adjustStencil: false, wheel: { ratio: 0.1 } }"
           />
         </div>
 
@@ -85,8 +86,14 @@ async function handleConfirm() {
   processing.value = true
 
   try {
-    const { canvas } = cropperRef.value.getResult()
-    if (!canvas) return
+    const result = cropperRef.value.getResult()
+    if (!result || !result.canvas) {
+      console.error('[ImageCropModal] getResult() returned no canvas:', result)
+      processing.value = false
+      return
+    }
+
+    const { canvas } = result
 
     const blob = await new Promise<Blob>((resolve, reject) => {
       canvas.toBlob(

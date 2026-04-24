@@ -36,9 +36,11 @@ export async function uploadToR2(env: any, file: File, slug?: string) {
     const filename = `${crypto.randomUUID()}${ext.replaceAll(/[^a-zA-Z0-9.]/g, "") || ".bin"}`;
     const key = slug ? `${slug}/${filename}` : filename;
     const bucket = isMusic ? "music" : "uploads";
-    const publicUrlBase = isMusic
+    const rawUrlBase = isMusic
       ? env?.R2_PUBLIC_URL_MUSIC || "https://music.mengundanganda.com"
       : env?.R2_PUBLIC_URL_UPLOADS || "https://media.mengundanganda.com";
+    // Ensure protocol prefix is always present
+    const publicUrlBase = rawUrlBase.startsWith("http") ? rawUrlBase : `https://${rawUrlBase}`;
 
     const s3Client = buildR2Client(env);
     await s3Client.send(
