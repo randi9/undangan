@@ -1,35 +1,108 @@
 <template>
-  <section ref="sectionRef" v-if="hasDate" style="padding-top:40px;" class="py-10 pb-[15%] overflow-hidden relative min-h-[66vh] flex flex-col items-center justify-start px-6 text-center bg-[var(--theme-surface)]">
+  <section v-if="hasDate || invitation.akad_venue || invitation.resepsi_venue" ref="sectionRef" class="relative min-h-[100dvh] overflow-hidden flex items-center justify-center">
     
-    <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/7180e6da-fcc2-44b7-b8d4-ffaa3f73b346.webp" class="absolute z-0 pointer-events-none cloud-sweep-fast" style="top: 2%; left: 0; width: clamp(200px, 40vw, 400px); filter: hue-rotate(180deg) saturate(0.5) brightness(1.2);" />
-    <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/9f8283e2-3722-4b71-8eb6-86b67cb8b9ef.webp" class="absolute z-0 pointer-events-none cloud-sweep-slow" style="top: 8%; left: 0; width: clamp(250px, 45vw, 450px); filter: hue-rotate(180deg) saturate(0.5) brightness(1.2);" />
-    
-    <div class="relative z-10 flex flex-col items-center w-full">
-    <h2 class="text-[40px] md:text-4xl text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">Menghitung Hari</h2>
-    <p style="font-size: 12px" class="text-[var(--theme-text-light)] md:text-base tracking-widest uppercase mt-3 mb-2">Menuju Momen Bahagia Kami</p>
-    
-    <div class="flex justify-center flex-wrap mx-auto relative z-10 w-full mt-10 md:mt-16 gap-3 md:gap-6 px-4 md:px-8" style="margin-top:100px">
-      <div class="flex flex-col items-center w-16 md:w-20 relative" v-for="(unit, idx) in countdownUnits" :key="idx">
-        <div class="relative z-10 text-[var(--theme-primary)]" style="display: flex; justify-content: center; font-size: clamp(2rem, 7vw, 4.5rem); font-weight: 300; margin-bottom: 0.8rem; font-family: 'Oswald', sans-serif;">
-          <CountdownDigit v-for="(digit, dIdx) in formatNumber(unit.value)" :key="`${unit.label}-${dIdx}`" :target="digit" :isIntersecting="isVisible" />
+    <!-- Background Layer (Sky) -->
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      <img
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_28658e27-e94d-40ca-b897-607ef8ea0d83.webp"
+        alt="Sky Background"
+        class="min-w-full min-h-full w-full h-full object-cover object-center"
+      />
+    </div>
+
+    <!-- Container for all content -->
+    <div class="relative z-10 w-full h-full flex items-center justify-center">
+      
+      <!-- LAYER 1: COUNTDOWN -->
+      <div ref="countdownRef" class="absolute inset-0 flex flex-col items-center justify-center text-center px-4" style="opacity: 1;">
+        <h2 class="text-3xl md:text-4xl mb-8 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
+          Menghitung Hari
+        </h2>
+        <div class="flex gap-4 md:gap-8 justify-center">
+          <div class="flex flex-col items-center">
+            <div class="text-4xl md:text-5xl font-bold text-[#2c3e50]" :style="{ fontFamily: themeConfig.fontHeading }">{{ countdown.days }}</div>
+            <div class="text-xs md:text-sm uppercase tracking-widest text-[#4a5c6a] mt-2">Hari</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="text-4xl md:text-5xl font-bold text-[#2c3e50]" :style="{ fontFamily: themeConfig.fontHeading }">{{ countdown.hours }}</div>
+            <div class="text-xs md:text-sm uppercase tracking-widest text-[#4a5c6a] mt-2">Jam</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="text-4xl md:text-5xl font-bold text-[#2c3e50]" :style="{ fontFamily: themeConfig.fontHeading }">{{ countdown.minutes }}</div>
+            <div class="text-xs md:text-sm uppercase tracking-widest text-[#4a5c6a] mt-2">Menit</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="text-4xl md:text-5xl font-bold text-[#2c3e50]" :style="{ fontFamily: themeConfig.fontHeading }">{{ countdown.seconds }}</div>
+            <div class="text-xs md:text-sm uppercase tracking-widest text-[#4a5c6a] mt-2">Detik</div>
+          </div>
         </div>
-        <div class="relative z-10 text-[var(--theme-text-light)]" style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.25rem; font-weight: 400;">{{ unit.label }}</div>
       </div>
-    </div>
-    </div>
-    
-    <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/2bf93382-fff2-4180-8fa5-d91e7ed668be.webp" class="absolute bottom-0 left-0 w-full h-auto pointer-events-none z-0 transform -scale-x-100" style="filter: hue-rotate(180deg) saturate(0.5) brightness(1.2);" alt="Floral Ornament Bottom" />
 
-    <div v-for="(g, i) in grasses" :key="'grass'+i" class="absolute pointer-events-none z-[1]" :style="{ left: g.left, bottom: g.bottom, transform: g.flip ? 'scaleX(-1)' : 'none' }">
-      <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/fe50069a-9362-4461-b606-1600648e50f1.webp" class="sway-grass drop-shadow-sm" :style="{ width: g.width, animationDuration: g.duration, animationDelay: g.delay, filter: 'hue-rotate(180deg) saturate(0.5) brightness(1.1)' }" />
-    </div>
+      <!-- LAYER 2: AKAD -->
+      <div ref="akadRef" class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none" style="opacity: 0;">
+        <div class="bg-white/40 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50 max-w-sm w-full mt-4 pointer-events-auto">
+          <h2 class="text-3xl md:text-4xl mb-4 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
+            Akad Nikah
+          </h2>
+          <p class="text-lg font-medium text-[#2c3e50] mb-2">{{ formatDateLong(invitation.akad_date) }}</p>
+          <p class="text-base text-[#4a5c6a] mb-4">{{ invitation.akad_time }}</p>
+          <p class="font-bold text-[#1e293b] text-xl mb-1">{{ invitation.akad_venue }}</p>
+          <p class="text-sm text-[#4a5c6a] italic leading-snug">{{ invitation.akad_address }}</p>
+          
+          <div class="mt-6 flex gap-3 justify-center">
+            <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="px-5 py-2.5 bg-[#4a5c6a] text-white rounded-full text-xs font-semibold tracking-wide hover:bg-[#2c3e50] transition-colors shadow-md">
+              Buka Maps
+            </a>
+            <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="px-5 py-2.5 bg-white text-[#4a5c6a] border border-[#4a5c6a] rounded-full text-xs font-semibold tracking-wide hover:bg-gray-50 transition-colors shadow-md">
+              Ingatkan
+            </a>
+          </div>
+        </div>
+      </div>
 
-    <div v-for="(d, i) in dandelions" :key="'dandelion'+i" class="absolute pointer-events-none z-[2]" :style="{ left: d.left, bottom: d.bottom, transform: d.flip ? 'scaleX(-1)' : 'none' }">
-      <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/7e196439-ea2b-4325-a844-ebff3113d147.webp" class="sway-dandelion drop-shadow-sm" :style="{ width: d.width, animationDuration: d.duration, animationDelay: d.delay, filter: 'hue-rotate(180deg) saturate(0.5) brightness(1.1)' }" />
-    </div>
+      <!-- LAYER 3: RESEPSI -->
+      <div ref="resepsiRef" class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none" style="opacity: 0;">
+        <div class="bg-white/40 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50 max-w-sm w-full mt-4 pointer-events-auto">
+          <h2 class="text-3xl md:text-4xl mb-4 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
+            Resepsi
+          </h2>
+          <p class="text-lg font-medium text-[#2c3e50] mb-2">{{ formatDateLong(invitation.resepsi_date) }}</p>
+          <p class="text-base text-[#4a5c6a] mb-4">{{ invitation.resepsi_time }}</p>
+          <p class="font-bold text-[#1e293b] text-xl mb-1">{{ invitation.resepsi_venue }}</p>
+          <p class="text-sm text-[#4a5c6a] italic leading-snug">{{ invitation.resepsi_address }}</p>
+          
+          <div class="mt-6 flex gap-3 justify-center">
+            <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="px-5 py-2.5 bg-[#4a5c6a] text-white rounded-full text-xs font-semibold tracking-wide hover:bg-[#2c3e50] transition-colors shadow-md">
+              Buka Maps
+            </a>
+            <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="px-5 py-2.5 bg-white text-[#4a5c6a] border border-[#4a5c6a] rounded-full text-xs font-semibold tracking-wide hover:bg-gray-50 transition-colors shadow-md">
+              Ingatkan
+            </a>
+          </div>
+        </div>
+      </div>
 
-    <div v-for="(seed, index) in imgSeeds" :key="'imgSeed'+index" class="absolute pointer-events-none z-[10] drift-path" :style="{ left: seed.left, bottom: seed.bottom, width: seed.size, animationDuration: seed.duration, animationDelay: seed.delay, '--tx': seed.tx, '--ty': seed.ty }">
-      <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/ffe221ad-761e-40cf-8a87-5ab68e81c721.webp" class="w-full h-auto seed-wobble" :style="{ animationDuration: seed.wobble, filter: 'hue-rotate(180deg) saturate(0.5)' }" />
+      <!-- Decor Container for Zooming -->
+      <div ref="decorContainerRef" class="absolute inset-0 pointer-events-none z-20" style="transform-origin: 50% 80%;">
+        <!-- Event Decoration -->
+        <img
+          ref="eventDecorRef"
+          src="https://media.mengundanganda.com/floral-blue/event%20section/randidewi_8903c563-e7ae-47f8-93c1-751c9a0581cf.webp"
+          alt="Decoration"
+          class="absolute bottom-0 left-0 w-full object-cover object-bottom"
+          style="opacity: 0;"
+        />
+  
+        <!-- Resepsi Decoration -->
+        <img
+          ref="resepsiDecorRef"
+          src="https://media.mengundanganda.com/floral-blue/event%20section/randidewi_9ff09159-90b3-416a-bad5-a99a71be6993.webp"
+          alt="Resepsi Decoration"
+          class="absolute bottom-0 left-0 w-full object-cover object-bottom"
+          style="opacity: 0;"
+        />
+      </div>
+
     </div>
   </section>
 </template>
@@ -39,140 +112,152 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
-import CountdownDigit from './CountdownDigit.vue';
+import type { Invitation } from '@/types/invitation';
+import { generateGoogleCalendarUrl } from '@/utils/calendar';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const grasses = [
-  { left: '15%', bottom: '20%', width: 'clamp(40px, 12vw, 110px)', duration: '2.4s', delay: '0.7s', flip: true },
-  { left: '26%', bottom: '22%', width: 'clamp(50px, 6vw, 60px)', duration: '1.6s', delay: '1.2s', flip: true },
-  { left: '38%', bottom: '17%', width: 'clamp(40px, 10vw, 90px)', duration: '2.1s', delay: '0.4s', flip: true },
-  { left: '55%', bottom: '12%', width: 'clamp(50px, 14vw, 120px)', duration: '2.6s', delay: '1.5s', flip: false },
-  { left: '70%', bottom: '15%', width: 'clamp(45px, 7vw, 70px)', duration: '1.7s', delay: '0.9s', flip: true },
-  { left: '82%', bottom: '10%', width: 'clamp(65px, 11vw, 100px)', duration: '2.3s', delay: '0.2s', flip: false },
-  { left: '92%', bottom: '12%', width: 'clamp(55px, 9vw, 85px)', duration: '1.9s', delay: '1.1s', flip: true },
-  { left: '5%', bottom: '18%', width: 'clamp(35px, 5vw, 50px)', duration: '1.8s', delay: '0.3s', flip: false },
-  { left: '46%', bottom: '14%', width: 'clamp(33px, 5vw, 48px)', duration: '1.8s', delay: '0.2s', flip: false },
-  { left: '60%', bottom: '19%', width: 'clamp(40px, 6vw, 55px)', duration: '2.2s', delay: '0.6s', flip: false },
-];
-
-const dandelions = [
-  { left: '8%', bottom: '26%', width: 'clamp(50px, 7vw, 65px)', duration: '3.2s', delay: '0.5s', flip: false },
-  { left: '20%', bottom: '24%', width: 'clamp(55px, 9vw, 85px)', duration: '4.1s', delay: '1.2s', flip: true },
-  { left: '42%', bottom: '23%', width: 'clamp(35px, 5vw, 55px)', duration: '2.8s', delay: '2.0s', flip: false },
-  { left: '60%', bottom: '19%', width: 'clamp(65px, 11vw, 95px)', duration: '4.6s', delay: '0.8s', flip: true },
-  { left: '80%', bottom: '17%', width: 'clamp(45px, 8vw, 75px)', duration: '3.5s', delay: '1.8s', flip: false },
-];
-
-const imgSeeds = [
-  { left: '-15%', bottom: '5%', size: '18px', duration: '16s', delay: '0s', wobble: '1.2s', tx: '95vw', ty: '-60vh' },
-  { left: '2%', bottom: '15%', size: '24px', duration: '16s', delay: '0.2s', wobble: '2s', tx: '110vw', ty: '-50vh' },
-  { left: '18%', bottom: '2%', size: '20px', duration: '16s', delay: '0.6s', wobble: '1.8s', tx: '90vw', ty: '-45vh' },
-  { left: '45%', bottom: '18%', size: '26px', duration: '16s', delay: '8s', wobble: '1.6s', tx: '80vw', ty: '-55vh' },
-  { left: '35%', bottom: '5%', size: '20px', duration: '16s', delay: '8.1s', wobble: '1.9s', tx: '85vw', ty: '-50vh' },
-];
 
 const props = defineProps<{
   countdown: { days: number; hours: number; minutes: number; seconds: number };
   themeConfig: ThemeConfig;
   hasDate: boolean;
+  invitation: Invitation;
 }>();
 
-const countdownUnits = [
-  { get value() { return props.countdown.days }, label: 'Hari' },
-  { get value() { return props.countdown.hours }, label: 'Jam' },
-  { get value() { return props.countdown.minutes }, label: 'Menit' },
-  { get value() { return props.countdown.seconds }, label: 'Detik' },
-];
-
 const sectionRef = ref<HTMLElement | null>(null);
-const isVisible = ref(false);
-let observer: IntersectionObserver | null = null;
+const countdownRef = ref<HTMLElement | null>(null);
+const akadRef = ref<HTMLElement | null>(null);
+const resepsiRef = ref<HTMLElement | null>(null);
+const decorContainerRef = ref<HTMLElement | null>(null);
+const eventDecorRef = ref<HTMLElement | null>(null);
+const resepsiDecorRef = ref<HTMLElement | null>(null);
+
 let ctx: gsap.Context | null = null;
 
-onMounted(() => {
-  observer = new IntersectionObserver((entries) => {
-    const entry = entries[0];
-    if (!entry) return;
-    if (entry.isIntersecting) {
-      isVisible.value = true;
-      if (observer && sectionRef.value) observer.unobserve(sectionRef.value);
-    }
-  }, { threshold: 0.3 });
+function formatDateLong(dateStr?: string) { 
+  if (!dateStr) return ''; 
+  return new Date(dateStr).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); 
+}
 
-  if (sectionRef.value) {
-    observer.observe(sectionRef.value);
-    ctx = gsap.context(() => {
-      gsap.to(sectionRef.value, {
-        scrollTrigger: { trigger: sectionRef.value, start: "top top", end: "bottom top", scrub: true },
-        y: () => (sectionRef.value?.offsetHeight || 0) * 0.5,
-        scale: 1.1, opacity: 0, filter: "blur(5px)", ease: "none"
+function getAkadCalendarUrl() { 
+  return generateGoogleCalendarUrl({ 
+    title: `Akad Nikah ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`, 
+    date: props.invitation.akad_date!, 
+    time: props.invitation.akad_time, 
+    venue: props.invitation.akad_venue, 
+    address: props.invitation.akad_address, 
+    description: `Undangan Pernikahan ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}` 
+  }); 
+}
+
+function getResepsiCalendarUrl() { 
+  return generateGoogleCalendarUrl({ 
+    title: `Resepsi ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`, 
+    date: props.invitation.resepsi_date!, 
+    time: props.invitation.resepsi_time, 
+    venue: props.invitation.resepsi_venue, 
+    address: props.invitation.resepsi_address, 
+    description: `Undangan Pernikahan ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}` 
+  }); 
+}
+
+onMounted(() => {
+  if (!sectionRef.value) return;
+
+  ctx = gsap.context(() => {
+    // Determine active event layers (if missing data, skip them)
+    const hasAkad = !!props.invitation.akad_venue;
+    const hasResepsi = !!props.invitation.resepsi_venue;
+    
+    // Independent entrance animation for the first decor (shows with Countdown)
+    gsap.fromTo(eventDecorRef.value,
+      { opacity: 0, y: '30%' },
+      { opacity: 1, y: '0%', duration: 1.5, ease: 'power2.out', scrollTrigger: {
+          trigger: sectionRef.value,
+          start: 'top 80%', // play when section is 20% visible
+        } 
+      }
+    );
+
+    // Create the pinned timeline
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.value,
+        start: 'top top',
+        end: '+=400%', // Increased scroll length for more steps
+        pin: true,
+        scrub: 1, // Smooth scrubbing
+      }
+    });
+
+    // SCROLL 1: Zoom in to couple
+    const firstEventRef = hasAkad ? akadRef.value : (hasResepsi ? resepsiRef.value : null);
+    
+    if (firstEventRef) {
+      // Fade out countdown & zoom container
+      tl.to(countdownRef.value, { 
+        opacity: 0, 
+        scale: 1.1, 
+        duration: 1, 
+        ease: 'power1.inOut' 
       });
-    }, sectionRef.value);
-  }
+      tl.to(decorContainerRef.value, { scale: 2.2, duration: 1, ease: 'power1.inOut' }, "<");
+
+      // Hold zoom momentarily
+      tl.to({}, { duration: 0.2 });
+
+      // SCROLL 2: Crossfade Decors while zoomed
+      tl.to(eventDecorRef.value, { opacity: 0, duration: 1, ease: 'none' });
+      tl.fromTo(resepsiDecorRef.value, { opacity: 0 }, { opacity: 1, duration: 1, ease: 'none' }, "<");
+
+      // Hold crossfaded image momentarily
+      tl.to({}, { duration: 0.2 });
+
+      // SCROLL 3: Zoom out & Fade in First Event
+      tl.to(decorContainerRef.value, { scale: 1, duration: 1, ease: 'power1.inOut' });
+      tl.fromTo(firstEventRef, 
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1, ease: 'power2.out' },
+        "<" // start at same time as zoom out
+      );
+  
+      // Hold First Event
+      tl.to({}, { duration: 0.5 });
+      
+      // SCROLL 4: Transition from First Event to Second Event (if both exist)
+      if (hasAkad && hasResepsi) {
+        // Fade out Akad
+        tl.to(akadRef.value, { 
+          opacity: 0, 
+          y: -30, 
+          duration: 1, 
+          ease: 'power2.in' 
+        });
+
+        // Fade in Resepsi (Decor 2 remains visible)
+        tl.fromTo(resepsiRef.value, 
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }
+        );
+        
+        // Hold Resepsi
+        tl.to({}, { duration: 0.5 });
+      }
+    } else {
+      // If no events, just fade out countdown
+      tl.to(countdownRef.value, { 
+        opacity: 0, 
+        scale: 1.1, 
+        duration: 1, 
+        ease: 'power1.inOut' 
+      });
+      tl.to(eventDecorRef.value, { opacity: 0, duration: 1, ease: 'none' }, "<");
+    }
+
+  }, sectionRef.value);
 });
 
 onUnmounted(() => {
-  if (observer) observer.disconnect();
-  ctx?.revert();
+  if (ctx) ctx.revert();
 });
-
-const formatNumber = (num: number) => {
-  const safe = isNaN(num) ? 0 : num;
-  return safe.toString().padStart(2, '0').split('');
-};
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400&display=swap');
-
-.sway-grass {
-  transform-origin: bottom center;
-  animation-name: grass-sway;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
-  mask-image: linear-gradient(to top, transparent 0%, black 30%);
-}
-@keyframes grass-sway {
-  0% { transform: rotate(-5deg); filter: brightness(0.95); }
-  100% { transform: rotate(5deg); filter: brightness(1.05); }
-}
-
-.sway-dandelion {
-  transform-origin: bottom center;
-  animation-name: dandelion-sway;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
-  mask-image: linear-gradient(to top, transparent 0%, black 30%);
-}
-@keyframes dandelion-sway {
-  0% { transform: rotate(-12deg); }
-  100% { transform: rotate(18deg); }
-}
-
-.drift-path { animation: float-drift linear infinite; opacity: 0; }
-.seed-wobble { animation: wobble ease-in-out infinite alternate; transform-origin: bottom center; }
-
-@keyframes float-drift {
-  0% { transform: translate(0, 0); opacity: 0; }
-  10% { opacity: 0.35; }
-  35% { opacity: 0.35; }
-  45% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
-  100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
-}
-@keyframes wobble {
-  0% { transform: rotate(-10deg); }
-  100% { transform: rotate(15deg); }
-}
-
-.cloud-sweep-fast { animation: cloud-sweep 40s linear infinite; animation-delay: -3s; }
-.cloud-sweep-slow { animation: cloud-sweep 75s linear infinite; animation-delay: -50s; }
-@keyframes cloud-sweep {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100vw); }
-}
-</style>

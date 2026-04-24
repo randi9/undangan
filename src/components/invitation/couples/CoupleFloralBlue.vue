@@ -81,20 +81,20 @@
 
         <!-- Groom Info (Back of Polaroid) -->
         <div ref="groomInfoRef" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; opacity: 0; z-index: 10;">
-          <h2 :style="{ fontFamily: themeConfig.fontHeading }" style="font-size: 2.2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; text-align: center; line-height: 1.2;">
+          <h2 style="font-family: 'Caveat', cursive; font-size: 2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; text-align: center; line-height: 1.1;">
             {{ invitation.groom_full_name }}
           </h2>
-          <p :style="{ fontFamily: themeConfig.fontBody }" style="font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.4; text-align: center; margin: 0;">
+          <p style="font-family: 'Caveat', cursive; font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.2; text-align: center; margin: 0;">
             Putra dari Bpk. {{ invitation.groom_father }} &amp;<br>Ibu {{ invitation.groom_mother }}
           </p>
         </div>
 
         <!-- Bride Info (Back of Polaroid) -->
         <div ref="brideInfoRef" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; opacity: 0; z-index: 10;">
-          <h2 :style="{ fontFamily: themeConfig.fontHeading }" style="font-size: 2.2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; text-align: center; line-height: 1.2;">
+          <h2 style="font-family: 'Caveat', cursive; font-size: 2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; text-align: center; line-height: 1.1;">
             {{ invitation.bride_full_name }}
           </h2>
-          <p :style="{ fontFamily: themeConfig.fontBody }" style="font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.4; text-align: center; margin: 0;">
+          <p style="font-family: 'Caveat', cursive; font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.2; text-align: center; margin: 0;">
             Putri dari Bpk. {{ invitation.bride_father }} &amp;<br>Ibu {{ invitation.bride_mother }}
           </p>
         </div>
@@ -210,5 +210,6 @@ onUnmounted(() => {
 });
 </script>
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
 /* Removed the wavy masks to ensure the section connects directly to the previous one without empty spaces */
 </style>
