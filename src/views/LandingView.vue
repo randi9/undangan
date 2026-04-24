@@ -263,7 +263,7 @@
               <p>Coba buat undangan & lihat hasilnya langsung.</p>
             </div>
             <ul class="lp-pricing-features">
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Masa aktif 7 hari</li>
+              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Masa aktif 1 bulan</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Maksimal 25x akses undangan</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Bebas edit tanpa batas</li>
               <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Live preview editor</li>
@@ -303,7 +303,7 @@
             <ul class="lp-pricing-features">
               <li><Icon icon="solar:magic-stick-3-bold-duotone" class="check-icon jasa" /> <strong>Admin buatkan untuk Anda</strong></li>
               <li><Icon icon="solar:crown-bold-duotone" class="check-icon jasa" /> Semua fitur Premium termasuk</li>
-              <li><Icon icon="solar:clock-circle-bold-duotone" class="check-icon jasa" /> Selesai dalam 1 jam</li>
+              <li><Icon icon="solar:clock-circle-bold-duotone" class="check-icon jasa" /> Selesai dalam 30 menit</li>
               <li><Icon icon="solar:refresh-circle-bold-duotone" class="check-icon jasa" /> 3x revisi gratis</li>
               <li><Icon icon="solar:infinity-bold-duotone" class="check-icon jasa" /> Akses unlimited 1 tahun</li>
               <li><Icon icon="solar:shield-check-bold-duotone" class="check-icon jasa" /> Tanpa branding platform</li>
@@ -391,7 +391,7 @@
         </div>
         <div class="lp-footer-links">
           <h4>Kontak</h4>
-          <a href="mailto:halo@mengundanganda.com">halo@mengundanganda.com</a>
+          <a href="mailto:chatkita@mengundanganda.com">chatkita@mengundanganda.com</a>
           <a href="#">Instagram</a>
           <a href="#">WhatsApp</a>
         </div>
@@ -440,7 +440,7 @@ const faqList = [
   },
   {
     q: 'Apakah bisa membuat undangan pernikahan digital secara gratis?',
-    a: 'Ya! MengundangAnda menyediakan paket Free yang mencakup semua fitur utama: pilihan tema premium, RSVP, musik latar, countdown, galeri foto, dan live preview. Paket Free aktif selama 2 hari dengan 20x akses link.'
+    a: 'Ya! MengundangAnda menyediakan paket Free yang mencakup semua fitur utama: pilihan tema premium, RSVP, musik latar, countdown, galeri foto, dan live preview. Paket Free aktif selama 1 bulan dengan 25x akses link.'
   },
   {
     q: 'Berapa harga paket premium MengundangAnda?',

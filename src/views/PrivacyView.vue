@@ -298,7 +298,7 @@
               <p>Menolak pemrosesan data untuk tujuan tertentu yang tidak esensial</p>
             </div>
           </div>
-          <p>Untuk menggunakan hak-hak Anda, kirim email ke <a href="mailto:halo@mengundanganda.com">halo@mengundanganda.com</a> dengan subjek "<strong>Permintaan Hak Privasi</strong>". Kami akan merespons dalam waktu <strong>14 hari kerja</strong>.</p>
+          <p>Untuk menggunakan hak-hak Anda, kirim email ke <a href="mailto:chatkami@mengundanganda.com">chatkami@mengundanganda.com</a> dengan subjek "<strong>Permintaan Hak Privasi</strong>". Kami akan merespons dalam waktu <strong>14 hari kerja</strong>.</p>
         </section>
 
         <section id="retensi">
@@ -385,10 +385,10 @@
           <h2>Hubungi Kami</h2>
           <p>Jika Anda memiliki pertanyaan, kekhawatiran, atau permintaan terkait privasi dan perlindungan data, jangan ragu untuk menghubungi kami:</p>
           <div class="legal-contact-grid">
-            <a href="mailto:halo@mengundanganda.com" class="legal-contact-card">
+            <a href="mailto:chatkami@mengundanganda.com" class="legal-contact-card">
               <Icon icon="solar:letter-bold-duotone" class="legal-contact-icon" />
               <span class="legal-contact-label">Email Privasi</span>
-              <span class="legal-contact-value">halo@mengundanganda.com</span>
+              <span class="legal-contact-value">chatkami@mengundanganda.com</span>
             </a>
             <a href="https://mengundanganda.com" class="legal-contact-card">
               <Icon icon="solar:global-bold-duotone" class="legal-contact-icon" />
