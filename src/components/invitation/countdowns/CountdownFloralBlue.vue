@@ -1,5 +1,5 @@
 <template>
-  <section v-if="hasDate || invitation.akad_venue || invitation.resepsi_venue" ref="sectionRef" class="relative min-h-[100dvh] overflow-hidden flex items-center justify-center">
+  <section v-if="hasDate || invitation.akad_venue || invitation.resepsi_venue" ref="sectionRef" class="relative min-h-[100dvh] overflow-hidden flex items-center justify-center z-[10]">
     
     <!-- Background Layer (Sky) -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
