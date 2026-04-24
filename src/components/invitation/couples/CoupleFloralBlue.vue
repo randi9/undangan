@@ -78,26 +78,26 @@
         <div ref="brideTextRef" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 18%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #4a5c6a; opacity: 0;" :style="{ fontFamily: themeConfig.fontHeading }">
           The Bride
         </div>
-      </div>
 
-      <!-- Groom Details (Outside Polaroid) -->
-      <div ref="groomDetailsRef" style="position: absolute; bottom: 3%; left: 50%; transform: translateX(-50%); width: 75%; max-width: 350px; text-align: center; z-index: 10; background: rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 1.5rem 1rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
-        <h2 :style="{ fontFamily: themeConfig.fontHeading }" style="font-size: 2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; line-height: 1.2; text-shadow: 0 2px 4px rgba(255,255,255,0.8);">
-          {{ invitation.groom_full_name }}
-        </h2>
-        <p :style="{ fontFamily: themeConfig.fontBody }" style="font-size: 0.95rem; font-weight: 600; color: #2c3e50; letter-spacing: 0.05em; line-height: 1.4; text-shadow: 0 1px 3px rgba(255,255,255,0.9);">
-          Putra dari Bpk. {{ invitation.groom_father }} &amp;<br>Ibu {{ invitation.groom_mother }}
-        </p>
-      </div>
+        <!-- Groom Info (Back of Polaroid) -->
+        <div ref="groomInfoRef" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; opacity: 0; z-index: 10;">
+          <h2 :style="{ fontFamily: themeConfig.fontHeading }" style="font-size: 2.2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; text-align: center; line-height: 1.2;">
+            {{ invitation.groom_full_name }}
+          </h2>
+          <p :style="{ fontFamily: themeConfig.fontBody }" style="font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.4; text-align: center; margin: 0;">
+            Putra dari Bpk. {{ invitation.groom_father }} &amp;<br>Ibu {{ invitation.groom_mother }}
+          </p>
+        </div>
 
-      <!-- Bride Details (Outside Polaroid) -->
-      <div ref="brideDetailsRef" style="position: absolute; bottom: 3%; left: 50%; transform: translateX(-50%); width: 75%; max-width: 350px; text-align: center; z-index: 10; opacity: 0; background: rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 1.5rem 1rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
-        <h2 :style="{ fontFamily: themeConfig.fontHeading }" style="font-size: 2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; line-height: 1.2; text-shadow: 0 2px 4px rgba(255,255,255,0.8);">
-          {{ invitation.bride_full_name }}
-        </h2>
-        <p :style="{ fontFamily: themeConfig.fontBody }" style="font-size: 0.95rem; font-weight: 600; color: #2c3e50; letter-spacing: 0.05em; line-height: 1.4; text-shadow: 0 1px 3px rgba(255,255,255,0.9);">
-          Putri dari Bpk. {{ invitation.bride_father }} &amp;<br>Ibu {{ invitation.bride_mother }}
-        </p>
+        <!-- Bride Info (Back of Polaroid) -->
+        <div ref="brideInfoRef" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; opacity: 0; z-index: 10;">
+          <h2 :style="{ fontFamily: themeConfig.fontHeading }" style="font-size: 2.2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; text-align: center; line-height: 1.2;">
+            {{ invitation.bride_full_name }}
+          </h2>
+          <p :style="{ fontFamily: themeConfig.fontBody }" style="font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.4; text-align: center; margin: 0;">
+            Putri dari Bpk. {{ invitation.bride_father }} &amp;<br>Ibu {{ invitation.bride_mother }}
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -122,8 +122,8 @@ const bridePhotoRef = ref<HTMLElement | null>(null);
 const brideTextRef = ref<HTMLElement | null>(null);
 const groomPhotoRef = ref<HTMLElement | null>(null);
 const groomTextRef = ref<HTMLElement | null>(null);
-const groomDetailsRef = ref<HTMLElement | null>(null);
-const brideDetailsRef = ref<HTMLElement | null>(null);
+const groomInfoRef = ref<HTMLElement | null>(null);
+const brideInfoRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context;
 
@@ -135,25 +135,29 @@ onMounted(() => {
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=100%',
+        end: '+=250%',
         pin: true,
         scrub: true,
       }
     });
 
-    // 1. Fade out groom completely
-    crossfadeTl.to([groomPhotoRef.value, groomTextRef.value, groomDetailsRef.value], {
-      opacity: 0,
-      ease: 'none',
-      duration: 1
-    });
-
-    // 2. Fade in bride
-    crossfadeTl.to([bridePhotoRef.value, brideTextRef.value, brideDetailsRef.value], {
-      opacity: 1,
-      ease: 'none',
-      duration: 1
-    });
+    // 1. Fade out Groom Photo & "The Groom"
+    crossfadeTl.to([groomPhotoRef.value, groomTextRef.value], { opacity: 0, ease: 'none', duration: 1 });
+    
+    // 2. Fade in Groom Info (Back of polaroid)
+    crossfadeTl.to(groomInfoRef.value, { opacity: 1, ease: 'none', duration: 1 });
+    
+    // 3. Fade out Groom Info
+    crossfadeTl.to(groomInfoRef.value, { opacity: 0, ease: 'none', duration: 1 });
+    
+    // 4. Fade in Bride Photo & "The Bride"
+    crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 1, ease: 'none', duration: 1 });
+    
+    // 5. Fade out Bride Photo & "The Bride"
+    crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 0, ease: 'none', duration: 1 });
+    
+    // 6. Fade in Bride Info
+    crossfadeTl.to(brideInfoRef.value, { opacity: 1, ease: 'none', duration: 1 });
 
     const florals = gsap.utils.toArray('.couple-floral');
     const stem = gsap.utils.toArray('.couple-floral-stem')[0] as HTMLElement | undefined;
