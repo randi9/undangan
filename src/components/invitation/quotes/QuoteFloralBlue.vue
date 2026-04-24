@@ -1,5 +1,5 @@
 <template>
-  <section ref="sectionRef" class="relative min-h-[100dvh] w-full overflow-hidden">
+  <section ref="sectionRef" class="relative min-h-[100dvh] w-full overflow-hidden" style="z-index: 1;">
     <!-- Quote Content -->
     <div class="absolute top-40 md:top-32 left-1/2 -translate-x-1/2 z-10 w-full px-6 max-w-[70vw] sm:max-w-[400px] md:max-w-[600px] text-center">
       <div v-if="quote" class="relative">
