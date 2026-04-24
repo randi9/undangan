@@ -135,38 +135,38 @@ onMounted(() => {
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=800%',
+        end: '+=400%',
         pin: true,
-        scrub: 1, // Add smoothing so fast scrolling doesn't skip animations
+        scrub: true, // Revert to true for lighter 1:1 scrolling
       }
     });
 
     // Hold Groom Photo initially
-    crossfadeTl.to({}, { duration: 0.5 });
+    crossfadeTl.to({}, { duration: 2 });
 
     // 1. Fade out Groom Photo & "The Groom"
-    crossfadeTl.to([groomPhotoRef.value, groomTextRef.value], { opacity: 0, ease: 'none', duration: 1 });
+    crossfadeTl.to([groomPhotoRef.value, groomTextRef.value], { opacity: 0, ease: 'none', duration: 0.5 });
     
     // 2. Fade in Groom Info (Back of polaroid)
-    crossfadeTl.to(groomInfoRef.value, { opacity: 1, ease: 'none', duration: 1 });
+    crossfadeTl.to(groomInfoRef.value, { opacity: 1, ease: 'none', duration: 0.5 });
     
     // Hold Groom Info
-    crossfadeTl.to({}, { duration: 1.5 });
+    crossfadeTl.to({}, { duration: 2 });
 
     // 3. Fade out Groom Info
-    crossfadeTl.to(groomInfoRef.value, { opacity: 0, ease: 'none', duration: 1 });
+    crossfadeTl.to(groomInfoRef.value, { opacity: 0, ease: 'none', duration: 0.5 });
     
     // 4. Fade in Bride Photo & "The Bride"
-    crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 1, ease: 'none', duration: 1 });
+    crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 1, ease: 'none', duration: 0.5 });
     
     // Hold Bride Photo
-    crossfadeTl.to({}, { duration: 1.5 });
+    crossfadeTl.to({}, { duration: 2 });
 
     // 5. Fade out Bride Photo & "The Bride"
-    crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 0, ease: 'none', duration: 1 });
+    crossfadeTl.to([bridePhotoRef.value, brideTextRef.value], { opacity: 0, ease: 'none', duration: 0.5 });
     
     // 6. Fade in Bride Info
-    crossfadeTl.to(brideInfoRef.value, { opacity: 1, ease: 'none', duration: 1 });
+    crossfadeTl.to(brideInfoRef.value, { opacity: 1, ease: 'none', duration: 0.5 });
 
     // 7. Hold Bride Info so it doesn't immediately scroll away
     crossfadeTl.to({}, { duration: 2 });
