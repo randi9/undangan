@@ -302,10 +302,10 @@
           <h2>Hubungi Kami</h2>
           <p>Untuk pertanyaan, klarifikasi, atau permintaan terkait Syarat & Ketentuan ini, Anda dapat menghubungi kami melalui:</p>
           <div class="legal-contact-grid">
-            <a href="mailto:halo@mengundanganda.com" class="legal-contact-card">
+            <a href="mailto:chatkami@mengundanganda.com" class="legal-contact-card">
               <Icon icon="solar:letter-bold-duotone" class="legal-contact-icon" />
               <span class="legal-contact-label">Email</span>
-              <span class="legal-contact-value">halo@mengundanganda.com</span>
+              <span class="legal-contact-value">chatkami@mengundanganda.com</span>
             </a>
             <a href="https://mengundanganda.com" class="legal-contact-card">
               <Icon icon="solar:global-bold-duotone" class="legal-contact-icon" />

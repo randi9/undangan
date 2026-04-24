@@ -54,9 +54,14 @@
           <h1>Jasa Dibuatkan Undangan</h1>
           <p class="order-header-sub">Isi data di bawah ini, lalu kami yang akan membuatkan undangan digital premium untuk Anda. Terima jadi, tanpa ribet!</p>
           <div class="order-price-badge">
-            <span class="order-price-currency">Rp</span>
-            <span class="order-price-amount">99.000</span>
-            <span class="order-price-note">sekali bayar • termasuk semua fitur Premium</span>
+            <div class="order-price-main">
+              <span class="order-price-currency">Rp</span>
+              <span class="order-price-amount">99.000</span>
+            </div>
+            <div class="order-price-note">
+              <span class="order-price-once">Sekali bayar</span>
+              <span class="order-price-premium">All-in Premium Features</span>
+            </div>
           </div>
         </div>
 
@@ -69,13 +74,13 @@
             </h2>
             <div class="order-field">
               <label for="customerName">Nama Lengkap <span class="required">*</span></label>
-              <input id="customerName" v-model="form.customerName" type="text" placeholder="Nama Anda" required />
+              <input id="customerName" v-model="form.customerName" type="text" placeholder="Nama Anda" required maxlength="100" />
             </div>
             <div class="order-field">
               <label for="customerPhone">Nomor WhatsApp <span class="required">*</span></label>
               <div class="order-phone-input">
                 <span class="order-phone-prefix">+62</span>
-                <input id="customerPhone" v-model="form.customerPhone" type="tel" placeholder="81234567890" required pattern="[0-9]{9,13}" />
+                <input id="customerPhone" v-model="form.customerPhone" type="tel" placeholder="81234567890" required pattern="[0-9]{9,13}" maxlength="15" />
               </div>
               <span class="order-field-hint">Kami akan menghubungi Anda via nomor ini</span>
             </div>
@@ -90,11 +95,11 @@
             <div class="order-field-row">
               <div class="order-field">
                 <label for="groomName">Nama Mempelai Pria <span class="required">*</span></label>
-                <input id="groomName" v-model="form.groomName" type="text" placeholder="Contoh: Ahmad" required />
+                <input id="groomName" v-model="form.groomName" type="text" placeholder="Contoh: Ahmad" required maxlength="50" />
               </div>
               <div class="order-field">
                 <label for="brideName">Nama Mempelai Wanita <span class="required">*</span></label>
-                <input id="brideName" v-model="form.brideName" type="text" placeholder="Contoh: Siti" required />
+                <input id="brideName" v-model="form.brideName" type="text" placeholder="Contoh: Siti" required maxlength="50" />
               </div>
             </div>
             <div class="order-field-row">
@@ -112,11 +117,11 @@
             </div>
             <div class="order-field">
               <label for="location">Lokasi Acara</label>
-              <input id="location" v-model="form.location" type="text" placeholder="Contoh: Gedung Serbaguna, Jl. Merdeka No. 10" />
+              <input id="location" v-model="form.location" type="text" placeholder="Contoh: Gedung Serbaguna, Jl. Merdeka No. 10" maxlength="200" />
             </div>
             <div class="order-field">
               <label for="notes">Catatan Tambahan</label>
-              <textarea id="notes" v-model="form.notes" rows="3" placeholder="Request khusus, informasi tambahan, dsb."></textarea>
+              <textarea id="notes" v-model="form.notes" rows="3" placeholder="Request khusus, informasi tambahan, dsb." maxlength="500"></textarea>
             </div>
           </div>
 
@@ -313,7 +318,7 @@ if (typeof document !== 'undefined') {
 
 .order-page {
   --order-primary: #1e3a5f;
-  --order-accent: #2563eb;
+  --order-accent: #93c5fd;
   --order-accent-light: rgba(37, 99, 235, 0.08);
   --order-bg: #f8fafc;
   --order-card: #ffffff;
@@ -353,8 +358,9 @@ if (typeof document !== 'undefined') {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  font-weight: 700;
-  font-size: 18px;
+  font-family: var(--order-font-serif);
+  font-size: 22px;
+  font-weight: 600;
   color: var(--order-primary);
 }
 .order-logo-img {
@@ -436,32 +442,60 @@ if (typeof document !== 'undefined') {
 
 .order-price-badge {
   display: inline-flex;
-  flex-wrap: wrap;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 2px;
   background: linear-gradient(135deg, #1e3a5f, #2563eb);
   color: white;
-  padding: 14px 28px;
+  padding: 16px 32px;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+  animation: pulse-price 2.5s infinite;
+}
+
+@keyframes pulse-price {
+  0% { box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25); }
+  50% { box-shadow: 0 8px 36px rgba(37, 99, 235, 0.45); transform: translateY(-1px); }
+  100% { box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25); }
+}
+
+.order-price-main {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
 }
 .order-price-currency {
   font-size: 1rem;
   font-weight: 500;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 .order-price-amount {
   font-family: var(--order-font-serif);
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
+  line-height: 1;
 }
 .order-price-note {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.order-price-once {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+.order-price-premium {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 20px;
   font-size: 0.75rem;
-  opacity: 0.7;
-  width: 100%;
-  text-align: center;
-  margin-top: 2px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
 }
 
 /* Form */
@@ -767,7 +801,7 @@ if (typeof document !== 'undefined') {
     font-size: 1.5rem;
   }
   .order-price-amount {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
 }
 </style>

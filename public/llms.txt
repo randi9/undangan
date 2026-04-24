@@ -89,7 +89,7 @@ Kirim undangan langsung ke tamu melalui WhatsApp dengan satu klik. Setiap tamu m
 ## Informasi Kontak
 
 - **Website**: https://mengundanganda.com
-- **Email**: halo@mengundanganda.com
+- **Email**: chatkami@mengundanganda.com
 - **WhatsApp Admin**: +62 851-5502-6211
 - **Layanan Jasa Dibuatkan**: https://mengundanganda.com/order
 

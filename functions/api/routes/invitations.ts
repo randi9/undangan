@@ -481,7 +481,7 @@ async function handleInvitationCreate(
   const trialExpiresAt =
     isAdminCreated || isUserPremium
       ? null
-      : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
   const paidAtValue = getInvitationPaidAtValue(
     isUserPremium,
