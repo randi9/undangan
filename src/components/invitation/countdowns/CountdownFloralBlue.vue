@@ -101,6 +101,24 @@
           class="absolute bottom-0 left-0 w-full object-cover object-bottom"
           style="opacity: 0;"
         />
+        
+        <!-- Perintilan Decoration (Kiri) -->
+        <img
+          ref="perintilanLeftRef"
+          src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_faf82055-5411-4c9c-86a3-407bcc4faa65.webp"
+          alt="Perintilan Kiri"
+          class="absolute z-30 pointer-events-none"
+          style="bottom: 0%; left: 0%; width: 50%; opacity: 0;"
+        />
+
+        <!-- Perintilan Decoration (Kanan) -->
+        <img
+          ref="perintilanRightRef"
+          src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_faf82055-5411-4c9c-86a3-407bcc4faa65.webp"
+          alt="Perintilan Kanan"
+          class="absolute z-30 pointer-events-none"
+          style="bottom: 0%; right: 0%; width: 50%; opacity: 0; transform: scaleX(-1);"
+        />
       </div>
 
     </div>
@@ -131,6 +149,8 @@ const resepsiRef = ref<HTMLElement | null>(null);
 const decorContainerRef = ref<HTMLElement | null>(null);
 const eventDecorRef = ref<HTMLElement | null>(null);
 const resepsiDecorRef = ref<HTMLElement | null>(null);
+const perintilanLeftRef = ref<HTMLElement | null>(null);
+const perintilanRightRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
 
@@ -219,6 +239,16 @@ onMounted(() => {
       tl.fromTo(firstEventRef, 
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 1, ease: 'power2.out' },
+        "<"
+      );
+      tl.fromTo(perintilanLeftRef.value,
+        { opacity: 0 },
+        { opacity: 1, duration: 1, ease: 'power1.inOut' },
+        "<"
+      );
+      tl.fromTo(perintilanRightRef.value,
+        { opacity: 0 },
+        { opacity: 1, duration: 1, ease: 'power1.inOut' },
         "<"
       );
   
