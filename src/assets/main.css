@@ -670,7 +670,7 @@ select {
 /* Invitation List */
 .invitation-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
 }
 
@@ -693,14 +693,14 @@ select {
 
 .invitation-card-cover-wrapper {
   overflow: hidden;
-  height: 220px;
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius-md);
   margin: 12px 12px 0;
 }
 
 .invitation-card-cover {
   width: 100%;
-  height: 220px;
+  height: 100%;
   object-fit: cover;
   background: linear-gradient(135deg, #e8ecf4, #d1d5e0);
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2261,4 +2261,202 @@ textarea.form-input {
   background: var(--inv-secondary);
   color: var(--inv-primary);
   box-shadow: 0 4px 15px rgba(212, 165, 116, 0.4);
+}
+/* Sidebar Collapsed State */
+.sidebar-collapsed .admin-sidebar {
+  width: 80px;
+  transition: width 0.3s ease;
+}
+.sidebar-collapsed .admin-main {
+  margin-left: 80px;
+  transition: margin-left 0.3s ease;
+}
+.sidebar-collapsed .sidebar-link {
+  justify-content: center;
+  padding: 12px;
+}
+.sidebar-collapsed .sidebar-link .material-symbols-rounded {
+  margin-right: 0;
+}
+.sidebar-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--admin-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+.sidebar-toggle-btn:hover {
+  background: var(--admin-surface-hover);
+  color: var(--admin-text);
+}
+.admin-sidebar, .admin-main {
+  transition: width 0.3s ease, margin-left 0.3s ease;
+}
+
+/* Filter Toolbar */
+.filter-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: var(--admin-surface);
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--admin-border);
+  margin-bottom: 24px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-group--right {
+  margin-left: auto;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-item label {
+  font-size: 13px;
+  color: var(--admin-text-secondary);
+  font-weight: 500;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-solid);
+  color: var(--admin-text);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.filter-select:hover {
+  border-color: var(--admin-primary);
+}
+
+.filter-select:focus {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 2px var(--admin-primary-glow);
+}
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--admin-border);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: var(--admin-text-secondary);
+}
+
+.pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination-current {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--admin-text);
+}
+
+@media (max-width: 768px) {
+  .filter-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    gap: 16px;
+  }
+  .filter-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .filter-item {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .filter-select {
+    width: 100%;
+  }
+  .filter-group--right {
+    margin-left: 0;
+    justify-content: flex-start;
+    border-top: 1px solid var(--admin-border);
+    padding-top: 16px;
+  }
+  .filter-group--right button.btn {
+    width: 100%;
+    margin-right: 0 !important;
+    margin-bottom: 12px;
+    justify-content: center;
+  }
+  .pagination-controls {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+  .pagination-buttons {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.desktop-only {
+  display: flex !important;
+}
+
+.mobile-only {
+  display: none !important;
+}
+
+.mobile-filter-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.filter-modal {
+  width: 90%;
+  max-width: 400px;
+  padding: 24px;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-only {
+    display: flex !important;
+  }
 }

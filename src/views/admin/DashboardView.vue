@@ -31,8 +31,143 @@
         <!-- Section Title -->
         <div class="section-header">
           <div>
-            <h1 class="admin-page-title">Daftar Undangan</h1>
-            <p class="admin-page-subtitle">Kelola semua undangan pernikahan yang telah dibuat</p>
+            <h1 v-if="authStore.isAdmin" class="admin-page-title">Semua Undangan</h1>
+            <h1 v-else class="admin-page-title">Undangan Saya</h1>
+            
+            <p v-if="authStore.isAdmin" class="admin-page-subtitle">Pantau dan kelola seluruh undangan yang terdaftar di sistem</p>
+            <p v-else class="admin-page-subtitle">Kelola detail undangan, daftar tamu, dan ucapan untuk hari bahagia Anda</p>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar Desktop & Mobile Toggle -->
+        <div v-if="invitations.length > 0" class="filter-controls-container">
+          <!-- Desktop Toolbar -->
+          <div class="filter-toolbar desktop-only">
+          <div class="filter-group">
+            <div class="filter-item">
+              <label>Urutan:</label>
+              <select v-model="sortOrder" class="filter-select">
+                <option value="newest">Terbaru</option>
+                <option value="oldest">Terlama</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>Status:</label>
+              <select v-model="akadStatusFilter" class="filter-select">
+                <option value="all">Semua Status</option>
+                <option value="upcoming">Belum Akad</option>
+                <option value="past">Selesai Akad</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label>Waktu:</label>
+              <select v-model="timeFilter" class="filter-select">
+                <option value="all">Semua Waktu</option>
+                <option value="this_month">Bulan Ini</option>
+                <option value="next_month">Bulan Depan</option>
+                <option value="this_year">Tahun Ini</option>
+              </select>
+            </div>
+          </div>
+          <div class="filter-group filter-group--right">
+            <button 
+              v-if="searchQuery || sortOrder !== 'newest' || akadStatusFilter !== 'all' || timeFilter !== 'all'"
+              @click="resetFilters" 
+              class="btn btn-outline btn-sm"
+              style="margin-right: 8px;"
+            >
+              <span class="material-symbols-rounded" style="font-size:16px;">refresh</span>
+              Reset Filter
+            </button>
+            <div class="filter-item">
+              <label>Tampilkan:</label>
+              <select v-model="itemsPerPage" class="filter-select">
+                <option :value="5">5</option>
+                <option :value="10">10</option>
+                <option :value="20">20</option>
+                <option :value="50">50</option>
+              </select>
+            </div>
+          </div>
+          </div>
+          
+          <!-- Mobile Filter Button -->
+          <div class="mobile-filter-bar mobile-only">
+            <button class="btn btn-outline" @click="showFilterModal = true" style="flex: 1; justify-content: center;">
+              <span class="material-symbols-rounded" style="font-size:18px;">tune</span>
+              Filter & Urutkan
+            </button>
+            <button 
+              v-if="searchQuery || sortOrder !== 'newest' || akadStatusFilter !== 'all' || timeFilter !== 'all'"
+              @click="resetFilters" 
+              class="btn btn-danger btn-icon"
+              title="Reset Filter"
+            >
+              <span class="material-symbols-rounded" style="font-size:18px;">close</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Modal (Mobile) -->
+        <div v-if="showFilterModal" class="modal-overlay" @click.self="showFilterModal = false">
+          <div class="modal-content filter-modal">
+            <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--admin-border); padding-bottom: 16px; margin-bottom: 16px;">
+              <span style="display:flex; align-items:center; gap:8px;">
+                <span class="material-symbols-rounded" style="font-size:20px;">tune</span> Filter
+              </span>
+              <button class="btn-icon" @click="showFilterModal = false">
+                <span class="material-symbols-rounded" style="font-size:20px;">close</span>
+              </button>
+            </div>
+            
+            <div class="filter-modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+              <div class="filter-item" style="flex-direction: column; align-items: stretch;">
+                <label>Urutan:</label>
+                <select v-model="sortOrder" class="filter-select">
+                  <option value="newest">Terbaru</option>
+                  <option value="oldest">Terlama</option>
+                </select>
+              </div>
+              <div class="filter-item" style="flex-direction: column; align-items: stretch;">
+                <label>Status:</label>
+                <select v-model="akadStatusFilter" class="filter-select">
+                  <option value="all">Semua Status</option>
+                  <option value="upcoming">Belum Akad</option>
+                  <option value="past">Selesai Akad</option>
+                </select>
+              </div>
+              <div class="filter-item" style="flex-direction: column; align-items: stretch;">
+                <label>Waktu:</label>
+                <select v-model="timeFilter" class="filter-select">
+                  <option value="all">Semua Waktu</option>
+                  <option value="this_month">Bulan Ini</option>
+                  <option value="next_month">Bulan Depan</option>
+                  <option value="this_year">Tahun Ini</option>
+                </select>
+              </div>
+              <div class="filter-item" style="flex-direction: column; align-items: stretch;">
+                <label>Tampilkan:</label>
+                <select v-model="itemsPerPage" class="filter-select">
+                  <option :value="5">5</option>
+                  <option :value="10">10</option>
+                  <option :value="20">20</option>
+                  <option :value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 24px;">
+              <button 
+                @click="resetFilters(); showFilterModal = false" 
+                class="btn btn-outline"
+                style="flex: 1;"
+              >
+                Reset
+              </button>
+              <button class="btn btn-primary" @click="showFilterModal = false" style="flex: 2;">
+                Terapkan
+              </button>
+            </div>
           </div>
         </div>
 
@@ -41,8 +176,8 @@
           <AppSkeleton v-for="i in 3" :key="`inv-skel-${i}`" height="300px" rounded="2xl" />
         </div>
 
-        <!-- Empty State -->
-        <div v-else-if="filteredInvitations.length === 0 && !searchQuery" class="empty-state">
+        <!-- Empty State (No invitations at all) -->
+        <div v-else-if="invitations.length === 0" class="empty-state">
           <div class="empty-icon">
             <span class="material-symbols-rounded" style="font-size:64px;color:var(--admin-primary)">mail</span>
           </div>
@@ -60,8 +195,8 @@
           </div>
         </div>
 
-        <!-- Search Empty -->
-        <div v-else-if="filteredInvitations.length === 0 && searchQuery" class="empty-state">
+        <!-- Search/Filter Empty -->
+        <div v-else-if="processedInvitations.length === 0" class="empty-state">
           <div class="empty-icon">
             <span class="material-symbols-rounded" style="font-size:64px;color:var(--admin-text-secondary)">search_off</span>
           </div>
@@ -74,7 +209,7 @@
         <!-- Invitation Grid -->
         <div v-else class="invitation-grid">
           <div
-            v-for="invitation in filteredInvitations"
+            v-for="invitation in paginatedInvitations"
             :key="invitation.id"
             class="invitation-card"
           >
@@ -172,6 +307,34 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div v-if="totalPages > 1" class="pagination-controls">
+          <div class="pagination-info">
+            Menampilkan {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+            {{ Math.min(currentPage * itemsPerPage, processedInvitations.length) }} 
+            dari {{ processedInvitations.length }} undangan
+          </div>
+          <div class="pagination-buttons">
+            <button 
+              class="btn btn-outline btn-sm" 
+              :disabled="currentPage === 1" 
+              @click="prevPage"
+            >
+              <span class="material-symbols-rounded" style="font-size:16px;">chevron_left</span>
+              Sebelumnya
+            </button>
+            <span class="pagination-current">Hal {{ currentPage }} dari {{ totalPages }}</span>
+            <button 
+              class="btn btn-outline btn-sm" 
+              :disabled="currentPage === totalPages" 
+              @click="nextPage"
+            >
+              Selanjutnya
+              <span class="material-symbols-rounded" style="font-size:16px;">chevron_right</span>
+            </button>
           </div>
         </div>
     <!-- Delete Modal -->
@@ -275,7 +438,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
@@ -296,6 +459,22 @@ const apiBase = import.meta.env.VITE_API_URL || "";
 
 // --- Post-Create Guide ---
 const showPostCreateGuide = ref(false);
+
+// --- Filter & Pagination State ---
+const sortOrder = ref<'newest' | 'oldest'>('newest');
+const akadStatusFilter = ref<'all' | 'upcoming' | 'past'>('all');
+const timeFilter = ref<'all' | 'this_month' | 'next_month' | 'this_year'>('all');
+const itemsPerPage = ref<5 | 10 | 20 | 50>(10);
+const currentPage = ref(1);
+const showFilterModal = ref(false);
+
+function resetFilters() {
+  searchQuery.value = "";
+  sortOrder.value = "newest";
+  akadStatusFilter.value = "all";
+  timeFilter.value = "all";
+  currentPage.value = 1;
+}
 
 function dismissPostCreateGuide() {
   showPostCreateGuide.value = false;
@@ -320,16 +499,88 @@ const firstTrialInvitationId = computed(() => {
   return trialInv ? trialInv.id : null;
 });
 
-const filteredInvitations = computed(() => {
-  if (!searchQuery.value) return invitations.value;
-  const query = searchQuery.value.toLowerCase();
-  return invitations.value.filter(
-    (i) =>
-      i.groom_name.toLowerCase().includes(query) ||
-      i.bride_name.toLowerCase().includes(query) ||
-      i.slug.toLowerCase().includes(query),
-  );
+const processedInvitations = computed(() => {
+  let result = [...invitations.value];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 1. Search
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    result = result.filter(
+      (i) =>
+        i.groom_name.toLowerCase().includes(query) ||
+        i.bride_name.toLowerCase().includes(query) ||
+        i.slug.toLowerCase().includes(query),
+    );
+  }
+
+  // 2. Filter Status Akad
+  if (akadStatusFilter.value !== 'all') {
+    result = result.filter(inv => {
+      if (!inv.akad_date) return akadStatusFilter.value === 'upcoming'; // Anggap yg belum diset sebagai upcoming
+      const akadDate = new Date(inv.akad_date);
+      akadDate.setHours(0, 0, 0, 0);
+      return akadStatusFilter.value === 'upcoming' 
+        ? akadDate >= today 
+        : akadDate < today;
+    });
+  }
+
+  // 3. Filter Waktu (berdasarkan akad_date)
+  if (timeFilter.value !== 'all') {
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    
+    result = result.filter(inv => {
+      if (!inv.akad_date) return false;
+      const akadDate = new Date(inv.akad_date);
+      const akadMonth = akadDate.getMonth();
+      const akadYear = akadDate.getFullYear();
+      
+      if (timeFilter.value === 'this_month') {
+        return akadMonth === currentMonth && akadYear === currentYear;
+      } else if (timeFilter.value === 'next_month') {
+        const nextMonth = (currentMonth + 1) % 12;
+        const yearOffset = currentMonth === 11 ? 1 : 0;
+        return akadMonth === nextMonth && akadYear === (currentYear + yearOffset);
+      } else if (timeFilter.value === 'this_year') {
+        return akadYear === currentYear;
+      }
+      return true;
+    });
+  }
+
+  // 4. Sorting
+  result.sort((a, b) => {
+    const timeA = new Date(a.created_at || 0).getTime();
+    const timeB = new Date(b.created_at || 0).getTime();
+    return sortOrder.value === 'newest' ? timeB - timeA : timeA - timeB;
+  });
+
+  return result;
 });
+
+const totalPages = computed(() => Math.ceil(processedInvitations.value.length / itemsPerPage.value));
+
+const paginatedInvitations = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return processedInvitations.value.slice(start, end);
+});
+
+// Reset page to 1 when filters change
+watch([searchQuery, sortOrder, akadStatusFilter, timeFilter, itemsPerPage], () => {
+  currentPage.value = 1;
+});
+
+function prevPage() {
+  if (currentPage.value > 1) currentPage.value--;
+}
+
+function nextPage() {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+}
 
 const totalPhotos = computed(() =>
   invitations.value.reduce((sum, i) => sum + (i.photo_count || 0), 0),
