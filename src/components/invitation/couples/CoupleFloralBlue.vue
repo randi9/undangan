@@ -136,10 +136,9 @@ onMounted(() => {
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: () => "+=" + (window.innerHeight * 4),
+        end: '+=400%',
         pin: true,
-        scrub: true,
-        invalidateOnRefresh: true, // Recalculate on resize
+        scrub: 0.5,
       }
     });
 
