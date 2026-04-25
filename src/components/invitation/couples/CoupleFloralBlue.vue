@@ -139,6 +139,7 @@ onMounted(() => {
         end: '+=400%',
         pin: true,
         scrub: 0.5,
+        refreshPriority: 10,
       }
     });
 

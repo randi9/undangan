@@ -108,7 +108,7 @@
           src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_faf82055-5411-4c9c-86a3-407bcc4faa65.webp"
           alt="Perintilan Kiri"
           class="absolute z-30 pointer-events-none"
-          style="bottom: 0%; left: 0%; width: 50%; opacity: 0;"
+          style="bottom: 10%; left: -8%; height: 70%; opacity: 0;"
         />
 
         <!-- Perintilan Decoration (Kanan) -->
@@ -117,7 +117,25 @@
           src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_faf82055-5411-4c9c-86a3-407bcc4faa65.webp"
           alt="Perintilan Kanan"
           class="absolute z-30 pointer-events-none"
-          style="bottom: 0%; right: 0%; width: 50%; opacity: 0; transform: scaleX(-1);"
+          style="bottom: 10%; right: -8%; height: 70%; opacity: 0; transform: scaleX(-1);"
+        />
+
+        <!-- Perintilan Top Decoration (Kiri) -->
+        <img
+          ref="perintilanTopLeftRef"
+          src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_f47b576c-7d61-42b3-9aa5-2a119383c3ca.webp"
+          alt="Perintilan Atas Kiri"
+          class="absolute z-30 pointer-events-none"
+          style="top: 0%; left: 0%; width: 60%; opacity: 0; transform: rotate(10deg);"
+        />
+
+        <!-- Perintilan Top Decoration (Kanan) -->
+        <img
+          ref="perintilanTopRightRef"
+          src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_f47b576c-7d61-42b3-9aa5-2a119383c3ca.webp"
+          alt="Perintilan Atas Kanan"
+          class="absolute z-30 pointer-events-none"
+          style="top: 0%; right: 0%; width: 60%; opacity: 0; transform: scaleX(-1) rotate(10deg);"
         />
       </div>
 
@@ -151,6 +169,8 @@ const eventDecorRef = ref<HTMLElement | null>(null);
 const resepsiDecorRef = ref<HTMLElement | null>(null);
 const perintilanLeftRef = ref<HTMLElement | null>(null);
 const perintilanRightRef = ref<HTMLElement | null>(null);
+const perintilanTopLeftRef = ref<HTMLElement | null>(null);
+const perintilanTopRightRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
 
@@ -207,6 +227,7 @@ onMounted(() => {
         end: '+=400%',
         pin: true,
         scrub: 1,
+        refreshPriority: 5,
       }
     });
 
@@ -240,12 +261,12 @@ onMounted(() => {
         { opacity: 1, y: 0, duration: 1, ease: 'power2.out' },
         "<"
       );
-      tl.fromTo(perintilanLeftRef.value,
-        { opacity: 0 },
-        { opacity: 1, duration: 1, ease: 'power1.inOut' },
-        "<"
-      );
-      tl.fromTo(perintilanRightRef.value,
+      tl.fromTo([
+          perintilanLeftRef.value, 
+          perintilanRightRef.value, 
+          perintilanTopLeftRef.value, 
+          perintilanTopRightRef.value
+        ],
         { opacity: 0 },
         { opacity: 1, duration: 1, ease: 'power1.inOut' },
         "<"
