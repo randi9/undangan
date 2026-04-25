@@ -19,6 +19,12 @@
           </div>
         </div>
 
+        <!-- Limit Warning -->
+        <div v-if="hasReachedLimit" class="theme-limit-warning" style="margin-top: 0; margin-bottom: 32px;">
+          <span class="material-symbols-rounded" style="font-size:20px;vertical-align:-4px">info</span>
+          Anda telah mencapai batas undangan. Hubungi admin untuk menambah kuota atau hapus undangan yang tidak digunakan.
+        </div>
+
         <!-- Theme Grid -->
         <div class="theme-catalog-grid">
           <div
@@ -100,11 +106,7 @@
           </div>
         </div>
 
-        <!-- Limit Warning -->
-        <div v-if="hasReachedLimit" class="theme-limit-warning">
-          <span class="material-symbols-rounded" style="font-size:20px;vertical-align:-4px">info</span>
-          Anda telah mencapai batas undangan. Hubungi admin untuk menambah kuota atau hapus undangan yang tidak digunakan.
-        </div>
+        
       <!-- Toast -->
     <div v-if="toast" :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']">
       <Icon :icon="toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'" style="font-size: 18px; flex-shrink: 0;" />

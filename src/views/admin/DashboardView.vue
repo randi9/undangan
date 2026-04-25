@@ -15,11 +15,11 @@
         <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
         {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
       </div>
-      <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="btn btn-primary">
+      <router-link v-if="authStore.isAdmin && !hasReachedLimit" to="/dashboard/create" class="btn btn-primary">
         <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
         Buat Undangan Baru
       </router-link>
-      <div v-else-if="hasReachedLimit" class="limit-reached-block">
+      <div v-else-if="authStore.isAdmin && hasReachedLimit" class="limit-reached-block">
         <button class="btn btn-primary btn-disabled" disabled>
           <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">block</span>
           Buat Undangan Baru
@@ -40,7 +40,7 @@
         </div>
 
         <!-- Filter Toolbar Desktop & Mobile Toggle -->
-        <div v-if="invitations.length > 0" class="filter-controls-container">
+        <div v-if="authStore.isAdmin && invitations.length > 0" class="filter-controls-container">
           <!-- Desktop Toolbar -->
           <div class="filter-toolbar desktop-only">
           <div class="filter-group">
