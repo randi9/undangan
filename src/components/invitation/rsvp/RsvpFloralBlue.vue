@@ -1,27 +1,7 @@
 <template>
-  <section style="position: relative; max-width: 100%; margin: 0 auto; text-align: center; z-index: 10; overflow: hidden; background-color: rgba(204, 225, 245, 0.6);">
-    
-    <div ref="mistOverlay" style="position: absolute; top: -1px; left: 0; right: 0; height: 180px; background: linear-gradient(to bottom, rgba(204, 225, 245, 0.6) 0%, rgba(204, 225, 245, 0.6) 30%, transparent 100%); z-index: 30; pointer-events: none;"></div>
+  <section style="position: relative; max-width: 100%; margin: 0 auto; text-align: center; z-index: 10; overflow: hidden; background-color: transparent;">
     
     <div ref="rsvpWrapper" style="position: relative; padding: 48px 24px 100px; max-width: 1024px; margin: 0 auto; z-index: 10;">
-    
-    <div style="position: absolute; top: 0; left: 0; right: 0; width: 100%; height: 0; pointer-events: none;">
-        <div style="position: absolute; left: -10px; top: -50px; z-index: 5;">
-          <div ref="decorTopLeft">
-            <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" style="width: clamp(180px, 28vw, 280px); transform: scaleX(-1); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" alt="Decor Left" />
-          </div>
-        </div>
-        <div style="position: absolute; left: 50%; transform: translateX(-50%); top: -30px; z-index: 6;">
-          <div ref="decorTopCenter">
-            <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_01297b2b-dbbe-4b77-aedd-58249a231062.webp" style="width: clamp(100px, 35vw, 300px); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" alt="Decor Center" />
-          </div>
-        </div>
-        <div style="position: absolute; right: -10px; top: -50px; z-index: 5;">
-          <div ref="decorTopRight">
-            <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" style="width: clamp(180px, 28vw, 280px); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" alt="Decor Right" />
-          </div>
-        </div>
-    </div>
 
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 64px; position: relative;">
       <h2 style="font-size: clamp(36px, 6vw, 60px); font-weight: bold; margin-bottom: 16px; color: var(--theme-primary); position: relative; z-index: 10; margin-top: 70px; letter-spacing: 0.025em; text-shadow: 0 1px 2px rgba(0,0,0,0.05);" :style="{ fontFamily: themeConfig.fontHeading }">RSVP</h2>
@@ -32,8 +12,7 @@
     
     <div style="display: flex; flex-wrap: wrap; gap: 32px; text-align: left; align-items: stretch; justify-content: center;">
       <!-- Input Form -->
-      <div style="flex: 1; min-width: min(100%, 350px); background-color: rgba(255, 255, 255, 0.9); padding: 32px; border-radius: 32px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center;">
-        <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/cf584d49-6790-4bb8-971f-89cdc91c6e00.webp" style="position: absolute; top: -48px; right: -48px; width: 160px; opacity: 0.5; transform: rotate(45deg); pointer-events: none; z-index: 0; filter: hue-rotate(180deg) saturate(0.5);" />
+      <div style="flex: 1; min-width: min(100%, 350px); padding: 0; position: relative; display: flex; flex-direction: column; justify-content: center;">
         
         <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; margin-top: 0; color: var(--theme-primary); display: flex; align-items: center; gap: 12px; position: relative; z-index: 10;" :style="{ fontFamily: themeConfig.fontHeading }">Konfirmasi Kehadiran</h3>
         
@@ -74,8 +53,7 @@
       
       <!-- Messages -->
       <div style="flex: 1; min-width: min(100%, 350px); display: flex; flex-direction: column; height: 600px;">
-        <div style="background-color: rgba(255,255,255,0.6); padding: 32px; border-radius: 32px; border: 1px solid rgba(0,0,0,0.05); flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; overflow: hidden; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-sizing: border-box;">
-          <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/38c7b2f4-88da-4e1c-9457-5b84781baea5.webp" style="position: absolute; bottom: -40px; left: -40px; width: 160px; opacity: 0.5; pointer-events: none; z-index: 0; filter: hue-rotate(180deg) saturate(0.5);" />
+        <div style="padding: 0; flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; box-sizing: border-box;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; position: relative; z-index: 10;">
             <h3 style="font-size: 24px; font-weight: bold; margin: 0; color: var(--theme-primary);" :style="{ fontFamily: themeConfig.fontHeading }">Buku Tamu</h3>
             <span style="background-color: white; color: var(--theme-primary); box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); padding: 6px 16px; border-radius: 9999px; font-size: 14px; font-weight: bold;">{{ rsvpMessages.length }} Pesan</span>
@@ -113,21 +91,7 @@
         </div>
       </div>
     </div>
-  </div>
-
-    <!-- Bottom Decorations -->
-    <div style="position: absolute; bottom: 0; left: 0; right: 0; width: 100%; height: 0; pointer-events: none;">
-        <div style="position: absolute; left: 10px; bottom: -75px; z-index: 5;">
-          <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" style="width: clamp(180px, 28vw, 280px); transform: scaleX(-1) scaleY(-1); filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" alt="Decor Bottom Left" />
-        </div>
-        <div style="position: absolute; left: 50%; transform: translateX(-50%); bottom: -20px; z-index: 6;">
-          <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_01297b2b-dbbe-4b77-aedd-58249a231062.webp" style="width: clamp(100px, 20vw, 150px); transform: scaleY(-1); filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" alt="Decor Bottom Center" />
-        </div>
-        <div style="position: absolute; right: 10px; bottom: -75px; z-index: 5;">
-          <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" style="width: clamp(180px, 28vw, 280px); transform: scaleY(-1); filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" alt="Decor Bottom Right" />
-        </div>
     </div>
-
   </section>
 </template>
 
@@ -145,15 +109,11 @@ const emit = defineEmits<{ (e: 'submitRsvp', form: { guest_name: string; attenda
 
 const form = reactive({ guest_name: '', attendance: 'hadir' as 'hadir' | 'tidak_hadir', guest_count: 1, message: '' });
 const rsvpWrapper = ref<HTMLElement | null>(null);
-const mistOverlay = ref<HTMLElement | null>(null);
 let ctx: gsap.Context | null = null;
 
 onMounted(() => {
   if (!rsvpWrapper.value) return;
   ctx = gsap.context(() => {
-    if (mistOverlay.value) {
-      gsap.to(mistOverlay.value, { opacity: 0, scrollTrigger: { trigger: mistOverlay.value, start: 'top 60%', end: 'top 20%', scrub: 0.5 } });
-    }
     gsap.from(rsvpWrapper.value, { y: 80, opacity: 0, duration: 1.5, ease: 'power3.out', scrollTrigger: { trigger: rsvpWrapper.value, start: 'top 85%', toggleActions: 'play none none none' } });
   });
 });

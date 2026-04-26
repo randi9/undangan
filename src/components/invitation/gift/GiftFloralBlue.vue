@@ -1,22 +1,9 @@
 <template>
   <section ref="sectionRef" v-if="bankList.length > 0" style="position: relative; padding: 50px 0 220px; max-width: 100%; overflow: hidden; margin: 0 auto; text-align: center; z-index: 10;">
     
-    <div style="position: absolute; top: 100px; bottom: 100px; left: 50%; width: 150vw; transform: translateX(-50%); background-color: rgba(204, 225, 245, 0.6); border-radius: 50%; z-index: -1;"></div>
+    <!-- Background removed for transparent effect -->
     
-    <!-- Top Decorations -->
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_d151064b-d520-429e-b5c9-32b7276bf585.webp" style="position: absolute; top: 120px; left: -20px; transform: scaleX(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 3; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_d151064b-d520-429e-b5c9-32b7276bf585.webp" style="position: absolute; top: 120px; right: -20px; width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 3; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" style="position: absolute; top: 80px; left: 80px; transform: scaleX(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 4; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" style="position: absolute; top: 80px; right: 80px; width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 4; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_ce378e24-3552-41ff-b345-5776c2cfa1ff.webp" style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: clamp(200px, 30vw, 300px); pointer-events: none; z-index: 5; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-         
-    <!-- Bottom Decorations -->
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_d151064b-d520-429e-b5c9-32b7276bf585.webp" style="position: absolute; bottom: 120px; left: -20px; transform: scaleX(-1) scaleY(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 3; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_d151064b-d520-429e-b5c9-32b7276bf585.webp" style="position: absolute; bottom: 120px; right: -20px; transform: scaleY(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 3; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" style="position: absolute; bottom: 80px; left: 80px; transform: scaleX(-1) scaleY(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 4; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" style="position: absolute; bottom: 80px; right: 80px; transform: scaleY(-1); width: clamp(120px, 25vw, 250px); pointer-events: none; z-index: 4; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_ce378e24-3552-41ff-b345-5776c2cfa1ff.webp" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) scaleY(-1); width: clamp(200px, 30vw, 300px); pointer-events: none; z-index: 5; filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15)) hue-rotate(180deg) saturate(0.5) brightness(1.1);" class="gift-fb-decor" alt="" />
-    
+
     <div style="max-width: 1024px; margin: 0 auto; padding: 0 24px; position: relative;">
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 64px; position: relative;">
       <h2 style="font-size: clamp(36px, 6vw, 60px); margin-bottom: 16px; color: var(--theme-primary); position: relative; z-index: 10; margin-top: 140px; letter-spacing: 0.025em; text-shadow: 0 1px 2px rgba(0,0,0,0.05);" :style="{ fontFamily: themeConfig.fontHeading }">Wedding Gift</h2>
@@ -27,9 +14,7 @@
     
     <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; align-items: stretch;">
       <div v-for="(bank, index) in bankList" :key="index" style="flex: 1; min-width: 300px; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
-        <div style="width: 100%; aspect-ratio: 1.58; background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(232, 238, 244, 0.85) 100%); padding: 24px; border-radius: 16px; box-shadow: 0 12px 36px -8px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,1); border: 1px solid rgba(255,255,255,0.6); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; text-align: left; backdrop-filter: blur(8px); z-index: 10;">
-          <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/cf584d49-6790-4bb8-971f-89cdc91c6e00.webp" style="position: absolute; top: -20px; right: -20px; width: 140px; opacity: 0.15; transform: rotate(15deg); pointer-events: none; z-index: 0; filter: hue-rotate(180deg) saturate(0.5);" />
-          <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/38c7b2f4-88da-4e1c-9457-5b84781baea5.webp" style="position: absolute; bottom: -20px; left: -20px; width: 140px; opacity: 0.15; pointer-events: none; z-index: 0; filter: hue-rotate(180deg) saturate(0.5);" />
+        <div style="width: 100%; aspect-ratio: 1.58; padding: 24px; position: relative; display: flex; flex-direction: column; justify-content: space-between; text-align: left; z-index: 10;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1;">
             <div style="width: 44px; height: 32px; background: linear-gradient(135deg, #7ab3d4 0%, #4a7c9b 100%); border-radius: 6px; position: relative; overflow: hidden; box-shadow: inset 0 1px 3px rgba(255,255,255,0.4), 0 1px 2px rgba(0,0,0,0.1);">
               <div style="position: absolute; top: 0; bottom: 0; left: 12px; width: 1px; background: rgba(0,0,0,0.15);"></div>
