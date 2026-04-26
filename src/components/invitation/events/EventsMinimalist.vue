@@ -77,6 +77,24 @@
           </a>
         </div>
       </div>
+      
+      <!-- Live Streaming -->
+      <div v-if="invitation.streaming_enabled && invitation.streaming_url" ref="streamCard" class="md:col-span-2 p-8 md:p-12 rounded-[2rem] bg-white border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] text-center opacity-0 translate-y-10 transition-transform duration-500 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)] group mt-4">
+        <Icon icon="ph:video-camera-light" class="w-10 h-10 mb-6 text-gray-400 group-hover:text-gray-800 transition-colors mx-auto" />
+        <h3 class="text-2xl font-medium tracking-wide text-gray-800 mb-4" :style="{ fontFamily: themeConfig.fontHeading }">Live Streaming</h3>
+        <p class="text-sm md:text-base text-gray-500 font-light leading-relaxed max-w-2xl mx-auto mb-8">
+          Bagi keluarga & sahabat yang berhalangan hadir secara langsung, Anda dapat mengikuti prosesi acara kami secara virtual melalui tautan berikut:
+        </p>
+        <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg border border-gray-100 mt-6 mx-auto max-w-2xl bg-gray-50">
+          <iframe 
+            :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
+            class="absolute top-0 left-0 w-full h-full"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -88,6 +106,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation } from '@/types/invitation';
 import { generateGoogleCalendarUrl } from '@/utils/calendar';
+import { getEmbedUrl } from '@/utils/streaming';
 import { Icon } from '@iconify/vue';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -101,6 +120,7 @@ const eventsSection = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
 const akadCard = ref<HTMLElement | null>(null);
 const resepsiCard = ref<HTMLElement | null>(null);
+const streamCard = ref<HTMLElement | null>(null);
 
 function getAkadCalendarUrl() {
   return generateGoogleCalendarUrl({
@@ -152,6 +172,9 @@ onMounted(() => {
   }
   if (resepsiCard.value) {
     tl.to(resepsiCard.value, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, "-=0.8");
+  }
+  if (streamCard.value) {
+    tl.to(streamCard.value, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }, "-=0.8");
   }
 });
 

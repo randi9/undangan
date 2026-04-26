@@ -124,6 +124,9 @@ function buildInvitationUpdateData(body: any) {
     "banks",
     "wa_message",
     "gallery_type",
+    "streaming_enabled",
+    "streaming_platform",
+    "streaming_url",
   ];
 
   for (const f of fields) {
@@ -525,6 +528,9 @@ async function handleInvitationCreate(
     wa_message: body.wa_message || "",
     banks: Array.isArray(body.banks) ? body.banks : [],
     gallery_type: body.gallery_type || "carousel",
+    streaming_enabled: body.streaming_enabled || false,
+    streaming_platform: body.streaming_platform || "youtube",
+    streaming_url: body.streaming_url || "",
     payment_status: paymentStatus,
     trial_expires_at: trialExpiresAt,
     view_count: 0,

@@ -74,6 +74,9 @@ export interface Invitation {
   music_url?: string;
   wa_message?: string;
   gallery_type?: 'carousel' | 'masonry';
+  streaming_enabled?: boolean;
+  streaming_platform?: string;
+  streaming_url?: string;
   photos?: Photo[];
   rsvps?: Rsvp[];
   photo_count?: number;
@@ -126,5 +129,8 @@ export interface CreateInvitationPayload {
   music_url?: string;
   wa_message?: string;
   gallery_type?: 'carousel' | 'masonry';
+  streaming_enabled?: boolean;
+  streaming_platform?: string;
+  streaming_url?: string;
   photos?: Photo[];
 }

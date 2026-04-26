@@ -1124,6 +1124,52 @@
                 </div>
               </div>
 
+              <!-- Live Streaming -->
+              <div class="form-section">
+                <h3 class="form-section-title">
+                  <Icon
+                    icon="lucide:video"
+                    style="color: var(--admin-primary)"
+                  />
+                  Live Streaming
+                </h3>
+                <p class="form-section-subtitle">
+                  Tautkan siaran langsung acara Anda (opsional)
+                </p>
+
+                <div class="form-group" style="margin-top: 16px;">
+                  <label class="form-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input
+                      type="checkbox"
+                      v-model="form.streaming_enabled"
+                      style="width: 18px; height: 18px;"
+                    />
+                    Aktifkan Fitur Live Streaming
+                  </label>
+                </div>
+
+                <div v-if="form.streaming_enabled" style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px; background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">Platform</label>
+                    <select v-model="form.streaming_platform" class="form-input">
+                      <option value="youtube">YouTube</option>
+                      <option value="instagram">Instagram</option>
+                      <option value="zoom">Zoom</option>
+                      <option value="meet">Google Meet</option>
+                      <option value="other">Lainnya</option>
+                    </select>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">URL / Link Live Streaming</label>
+                    <input
+                      v-model="form.streaming_url"
+                      class="form-input"
+                      placeholder="https://..."
+                    />
+                  </div>
+                </div>
+              </div>
+
               <!-- Wizard Nav Step 3 -->
               <div class="wizard-nav">
                 <div class="wizard-nav-left">
@@ -2894,8 +2940,9 @@ function selectTheme(
   themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue",
 ) {
   const oldTheme = form.theme;
+  const hasLoveStoryPhotos = form.love_story && form.love_story.some(story => story.photo);
 
-  if (oldTheme && oldTheme !== themeId) {
+  if (oldTheme && oldTheme !== themeId && hasLoveStoryPhotos) {
     const isConfirmed = window.confirm(
       "Perhatian: Anda mengganti tema undangan.\n\n" +
       "Setiap tema memiliki desain dan rasio foto yang berbeda-beda pada fitur Love Story. " +

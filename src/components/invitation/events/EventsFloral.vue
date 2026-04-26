@@ -90,18 +90,36 @@
           </div>
         </div>
 
+        <!-- TAB 3: LIVE STREAMING -->
+        <div v-if="invitation.streaming_enabled && invitation.streaming_url" ref="streamRef" class="absolute inset-0 flex flex-col items-center justify-center px-6 pb-6 pt-2 text-center translate-y-[-2%]" style="opacity: 0;">
+          <h3 class="text-2xl md:text-2xl font-medium drop-shadow-md tracking-[0.15em]" :style="{ fontFamily: themeConfig.fontHeading, color: 'white', marginTop: '-10px', marginBottom: '4px' }">Live Streaming</h3>
+          <img src="https://media.mengundanganda.com/tema%20floral/quotes%20section/sashkeh_f229438c-f0ae-4381-9521-b52bd72d0308.webp" style="width: clamp(144px, 20vw, 176px); opacity: 0.9; margin-top: -70px; margin-bottom: -35px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); pointer-events: none;" alt="Decoration" />
+          <div class="space-y-1 text-[11px] md:text-sm font-medium" style="color: white; text-shadow: 1px 1px 4px rgba(0,0,0,0.6);">
+            <p class="mt-4 mb-2 opacity-90 leading-snug">Ikuti prosesi acara kami secara virtual.</p>
+          </div>
+          <div style="width: 100%; max-width: 280px; aspect-ratio: 16/9; margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1.5px solid rgba(255,255,255,0.3); box-shadow: 0px 4px 10px rgba(0,0,0,0.3); pointer-events: auto;">
+            <iframe 
+              :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
+              style="width: 100%; height: 100%; border: none;"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation } from '@/types/invitation';
 import { generateGoogleCalendarUrl } from '@/utils/calendar';
+import { getEmbedUrl } from '@/utils/streaming';
 import { Icon } from '@iconify/vue';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -149,11 +167,12 @@ const overlayRef = ref<HTMLElement | null>(null);
 const boardRef = ref<HTMLElement | null>(null);
 const akadRef = ref<HTMLElement | null>(null);
 const resepsiRef = ref<HTMLElement | null>(null);
+const streamRef = ref<HTMLElement | null>(null);
 const titleRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
 let currentStep = 0;
-const totalSteps = 3; // 0 (Awal), 1 (Zoom+Akad), 2 (Resepsi)
+const totalSteps = computed(() => (props.invitation.streaming_enabled && props.invitation.streaming_url) ? 4 : 3);
 let isAnimating = false;
 let isTrapActive = false;
 let pendingRelease: 'down' | 'up' | null = null;
@@ -199,10 +218,22 @@ function animateToStep(targetStep: number, onDone: () => void) {
       .to(resepsiRef.value, { opacity: 0, duration: 0.4 })
       .to(akadRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
   }
+  else if (targetStep === 3 && currentStep === 2) {
+    // 2 -> 3: Resepsi ke Stream
+    gsap.timeline({ onComplete: onDone })
+      .to(resepsiRef.value, { opacity: 0, duration: 0.4 })
+      .to(streamRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
+  }
+  else if (targetStep === 2 && currentStep === 3) {
+    // 3 -> 2: Stream kembali ke Resepsi
+    gsap.timeline({ onComplete: onDone })
+      .to(streamRef.value, { opacity: 0, duration: 0.4 })
+      .to(resepsiRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
+  }
   else if (targetStep === 0 && currentStep === 1) {
     // 1 -> 0: Zoom Out dahulu, BARU teks muncul di akhir
     const tl = gsap.timeline({ onComplete: onDone });
-    tl.to([akadRef.value, resepsiRef.value, boardRef.value], { opacity: 0, duration: 0.4 }, 0);
+    tl.to([akadRef.value, resepsiRef.value, streamRef.value], { opacity: 0, duration: 0.4 }, 0);
     tl.to(bgRef.value, { scale: 1, duration: 1.8, ease: 'power2.inOut' }, 0.2);
     tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)', duration: 1.8, ease: 'power2.inOut' }, 0.2);
     tl.to(titleRef.value, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 1.8);
@@ -220,7 +251,7 @@ function processStep(direction: 1 | -1) {
   const nextStep = currentStep + direction;
 
   // Keluar ke bawah: sudah di step terakhir, scroll down
-  if (nextStep >= totalSteps) {
+  if (nextStep >= totalSteps.value) {
     pendingRelease = 'down';
     isTrapActive = false;
     unfreezeScroll();
@@ -255,21 +286,29 @@ function resetToInitial() {
   gsap.set(titleRef.value, { opacity: 1 });
   gsap.set(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)' });
   gsap.set(boardRef.value, { opacity: 0 });
-  gsap.set(akadRef.value, { opacity: 0 });
-  gsap.set(resepsiRef.value, { opacity: 0 });
+  gsap.set(akadRef.value, { opacity: 0, pointerEvents: 'none' });
+  gsap.set(resepsiRef.value, { opacity: 0, pointerEvents: 'none' });
+  if (streamRef.value) gsap.set(streamRef.value, { opacity: 0, pointerEvents: 'none' });
 }
 
 // Mengembalikan ke state akhir (saat masuk ulang dari arah bawah)
 function resetToFinal() {
-  currentStep = totalSteps - 1; // step 2
+  currentStep = totalSteps.value - 1; // step 2 or 3
   isAnimating = false;
   pendingRelease = null;
   gsap.set(bgRef.value, { scale: 3.5 });
   gsap.set(titleRef.value, { opacity: 0 });
   gsap.set(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)' });
   gsap.set(boardRef.value, { opacity: 1 });
-  gsap.set(akadRef.value, { opacity: 0 });
-  gsap.set(resepsiRef.value, { opacity: 1 });
+  gsap.set(akadRef.value, { opacity: 0, pointerEvents: 'none' });
+  
+  if (totalSteps.value === 4) {
+    gsap.set(resepsiRef.value, { opacity: 0, pointerEvents: 'none' });
+    if (streamRef.value) gsap.set(streamRef.value, { opacity: 1, pointerEvents: 'auto' });
+  } else {
+    gsap.set(resepsiRef.value, { opacity: 1, pointerEvents: 'auto' });
+    if (streamRef.value) gsap.set(streamRef.value, { opacity: 0, pointerEvents: 'none' });
+  }
 }
 
 // ---- SCROLL HANDLERS ----

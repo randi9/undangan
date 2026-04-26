@@ -33,6 +33,9 @@ export interface InvitationFormData {
   music_url: string
   gallery_type: 'carousel' | 'masonry'
   photos: Photo[]
+  streaming_enabled: boolean
+  streaming_platform: string
+  streaming_url: string
 }
 
 function createEmptyForm(theme?: string): InvitationFormData {
@@ -67,6 +70,9 @@ function createEmptyForm(theme?: string): InvitationFormData {
     music_url: DEFAULT_MUSIC[themeId]?.url || '',
     gallery_type: getThemeGalleryDefault(themeId),
     photos: [],
+    streaming_enabled: false,
+    streaming_platform: 'youtube',
+    streaming_url: '',
   }
 }
 
@@ -136,6 +142,9 @@ export function useInvitationForm(initialTheme?: string) {
     form.music_url = data.music_url || ''
     form.gallery_type = data.gallery_type || getThemeGalleryDefault(data.theme || 'elegant')
     form.photos = data.photos || []
+    form.streaming_enabled = data.streaming_enabled || false
+    form.streaming_platform = data.streaming_platform || 'youtube'
+    form.streaming_url = data.streaming_url || ''
   }
 
   /** Get cleaned payload ready for API submission */

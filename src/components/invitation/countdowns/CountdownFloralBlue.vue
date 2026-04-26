@@ -105,6 +105,24 @@
             </div>
           </div>
 
+          <!-- LAYER 4: STREAM -->
+          <div v-if="invitation.streaming_enabled && invitation.streaming_url" ref="streamRef" class="row-start-1 col-start-1 flex flex-col items-center justify-center text-center pointer-events-none" style="visibility: hidden; opacity: 0;">
+            <h2 class="text-3xl md:text-4xl mb-2 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
+              Live Streaming
+            </h2>
+            <p class="text-xs font-medium text-[#2c3e50] mb-4 max-w-xs md:max-w-md mx-auto leading-relaxed">Ikuti prosesi acara kami secara virtual.</p>
+            
+            <div class="relative w-full max-w-[280px] md:max-w-md aspect-video rounded-xl overflow-hidden shadow-lg border border-black/10 mt-2 pointer-events-auto bg-black/10">
+              <iframe 
+                :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
+                class="absolute top-0 left-0 w-full h-full"
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -289,6 +307,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation } from '@/types/invitation';
 import { generateGoogleCalendarUrl } from '@/utils/calendar';
+import { getEmbedUrl } from '@/utils/streaming';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -303,6 +322,7 @@ const sectionRef = ref<HTMLElement | null>(null);
 const countdownRef = ref<HTMLElement | null>(null);
 const akadRef = ref<HTMLElement | null>(null);
 const resepsiRef = ref<HTMLElement | null>(null);
+const streamRef = ref<HTMLElement | null>(null);
 const overlayRef = ref<HTMLElement | null>(null);
 const decorBgRef = ref<HTMLElement | null>(null);
 const decorFgRef = ref<HTMLElement | null>(null);
@@ -370,6 +390,7 @@ onMounted(() => {
     // Determine active event layers (if missing data, skip them)
     const hasAkad = !!props.invitation.akad_venue;
     const hasResepsi = !!props.invitation.resepsi_venue;
+    const hasStream = !!(props.invitation.streaming_enabled && props.invitation.streaming_url);
     
     // Independent entrance animation for the first decor (shows with Countdown)
     gsap.fromTo(eventDecorRef.value,
@@ -386,7 +407,7 @@ onMounted(() => {
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=400%',
+        end: hasStream ? '+=500%' : '+=400%',
         pin: true,
         scrub: 1,
         refreshPriority: 5,
@@ -556,6 +577,23 @@ onMounted(() => {
           { autoAlpha: 1, duration: 1, ease: 'power2.inOut' }
         );
         
+        tl.to({}, { duration: 0.5 });
+      }
+
+      // SCROLL 5: Transition to Stream (if exists)
+      if (hasStream) {
+        const prevEventRef = (hasAkad && hasResepsi) ? resepsiRef.value : (hasResepsi ? resepsiRef.value : (hasAkad ? akadRef.value : null));
+        if (prevEventRef) {
+          tl.to(prevEventRef, { 
+            autoAlpha: 0, 
+            duration: 1, 
+            ease: 'power2.inOut' 
+          });
+        }
+        tl.fromTo(streamRef.value, 
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 1, ease: 'power2.inOut' }
+        );
         tl.to({}, { duration: 0.5 });
       }
     } else {

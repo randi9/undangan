@@ -73,6 +73,24 @@
           </div>
         </div>
 
+        <!-- Stream Content -->
+        <div v-if="invitation.streaming_enabled && invitation.streaming_url" ref="streamInfo" class="absolute inset-0 pt-[15%] pb-[10%] px-4 flex flex-col items-center justify-center text-[#304851] will-change-[opacity,transform] opacity-0 z-20" style="transform: translateY(15px);">
+          <Icon icon="ph:video-camera-duotone" class="w-6 h-6 md:w-8 md:h-8 mb-2 opacity-80" />
+          <h3 class="text-3xl md:text-4xl font-bold mb-2" :style="{ fontFamily: themeConfig.fontHeading }">Live Streaming</h3>
+          <p class="text-[0.6rem] md:text-xs opacity-90 max-w-[280px] md:max-w-md px-6 py-2 w-full shrink-0 text-center leading-relaxed">
+            Ikuti acara kami secara virtual.
+          </p>
+          <div class="relative w-full max-w-[260px] md:max-w-sm aspect-video rounded-lg overflow-hidden shadow-md border border-[#304851]/20 mt-2 pointer-events-auto bg-black/5">
+            <iframe 
+              :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
+              class="absolute top-0 left-0 w-full h-full"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
       </div>
 
       <!-- Envelope Front Pockets SVG -->
@@ -154,6 +172,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation } from '@/types/invitation';
 import { generateGoogleCalendarUrl } from '@/utils/calendar';
+import { getEmbedUrl } from '@/utils/streaming';
 import { Icon } from '@iconify/vue';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
@@ -177,6 +196,7 @@ const coverPaperImg = ref<HTMLImageElement | null>(null);
 const eventPaperImg = ref<HTMLImageElement | null>(null);
 const akadInfo = ref<HTMLElement | null>(null);
 const resepsiInfo = ref<HTMLElement | null>(null);
+const streamInfo = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context;
 
@@ -195,12 +215,15 @@ onMounted(() => {
     if (eventPaperImg.value) gsap.set(eventPaperImg.value, { autoAlpha: 1 });
     gsap.set(akadInfo.value, { autoAlpha: 0, y: 15 });
     gsap.set(resepsiInfo.value, { autoAlpha: 0, y: 15 });
+    if (streamInfo.value) gsap.set(streamInfo.value, { autoAlpha: 0, y: 15 });
+
+    const hasStream = props.invitation.streaming_enabled && props.invitation.streaming_url;
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=350%', // Increased scroll distance for more natural feel
+        end: hasStream ? '+=450%' : '+=350%', // Increased scroll distance for more natural feel
         pin: true,
         pinSpacing: true,
         scrub: 0.5, 
@@ -259,6 +282,18 @@ onMounted(() => {
 
     t += 0.8;
     tl.addLabel('step4', t); // RESEPSI INFO VISIBLE
+
+    if (hasStream) {
+      tl.to({}, { duration: 0.6 }, t); // longer read time for Resepsi
+      t += 0.6;
+      
+      // --- PHASE 4: Resepsi fades, Stream fades in ---
+      tl.to(resepsiInfo.value, { autoAlpha: 0, y: -15, duration: 0.5, ease: 'power1.inOut' }, t);
+      tl.to(streamInfo.value, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power1.out' }, t + 0.3);
+
+      t += 0.8;
+      tl.addLabel('step5', t); // STREAM INFO VISIBLE
+    }
 
     tl.to({}, { duration: 0.3 }, t); // buffer before unpinning
 

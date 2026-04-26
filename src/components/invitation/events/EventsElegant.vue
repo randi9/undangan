@@ -72,6 +72,24 @@
           </a>
         </div>
       </div>
+      
+      <!-- Live Streaming -->
+      <div v-if="invitation.streaming_enabled && invitation.streaming_url" class="md:col-span-2 p-8 md:p-10 rounded-2xl bg-[var(--theme-surface)] border border-black/5 shadow-sm text-center relative overflow-hidden group hover:shadow-md transition-shadow">
+        <Icon icon="ph:video-camera-duotone" class="w-12 h-12 mx-auto mb-4 text-[var(--theme-secondary)]" />
+        <h3 class="text-2xl font-bold text-[var(--theme-primary)] mb-3" :style="{ fontFamily: themeConfig.fontHeading }">Live Streaming</h3>
+        <p class="text-sm md:text-base text-[var(--theme-text-light)] mb-8 max-w-2xl mx-auto">
+          Bagi keluarga & sahabat yang berhalangan hadir secara langsung, Anda dapat mengikuti prosesi acara kami secara virtual melalui tautan berikut:
+        </p>
+        <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg border border-black/10 mt-6 mx-auto max-w-2xl bg-black/5">
+          <iframe 
+            :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
+            class="absolute top-0 left-0 w-full h-full"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -80,6 +98,7 @@
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation } from '@/types/invitation';
 import { generateGoogleCalendarUrl } from '@/utils/calendar';
+import { getEmbedUrl } from '@/utils/streaming';
 import { Icon } from '@iconify/vue';
 
 const props = defineProps<{
