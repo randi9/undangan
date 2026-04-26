@@ -21,6 +21,12 @@
           <div class="absolute top-[-12px] left-1/2 -translate-x-1/2 w-14 h-6 bg-[#9ca3af] opacity-80 shadow-sm" :style="{ transform: i % 2 === 0 ? 'rotate(3deg)' : 'rotate(-2deg)' }"></div>
           <img :src="resolveAssetUrl(story.photo, apiBase)" :alt="story.title" class="w-full h-auto object-cover aspect-square border border-gray-200" />
         </div>
+        <div class="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-[var(--theme-secondary)] border-4 border-[var(--theme-surface)] -translate-x-[7px] md:-translate-x-1/2 mt-0.5 md:mt-0 z-10"></div>
+        <div class="md:w-1/2 md:pl-12 text-left w-full pl-12 md:pl-0">
+          <h4 class="font-bold text-lg text-[var(--theme-primary)] mb-2">{{ story.title }}</h4>
+          <img v-if="story.photo" :src="resolveAssetUrl(story.photo, apiBase)" :alt="story.title" 
+               class="w-full aspect-square rounded-lg mb-3 object-cover shadow-sm" style="border: 1px solid rgba(74,124,155,0.2);" />
+          <p class="text-sm text-[var(--theme-text-light)] leading-relaxed whitespace-pre-line">{{ story.description }}</p>
 
         <!-- Text Card (Notebook style) on BOTTOM -->
         <div class="relative z-0 w-full bg-[#fcfbf9] shadow-md border border-gray-200"
