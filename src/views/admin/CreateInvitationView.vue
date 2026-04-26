@@ -2894,6 +2894,21 @@ function selectTheme(
   themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue",
 ) {
   const oldTheme = form.theme;
+
+  if (oldTheme && oldTheme !== themeId) {
+    const isConfirmed = window.confirm(
+      "Perhatian: Anda mengganti tema undangan.\n\n" +
+      "Setiap tema memiliki desain dan rasio foto yang berbeda-beda pada fitur Love Story. " +
+      "Foto yang sudah diunggah sebelumnya mungkin akan otomatis ter-crop oleh sistem menyesuaikan tema baru.\n\n" +
+      "Lanjutkan ganti tema?"
+    );
+    
+    if (!isConfirmed) {
+      showThemeModal.value = false;
+      return;
+    }
+  }
+
   form.theme = themeId;
   form.gallery_type = getThemeGalleryDefault(themeId);
   // Auto-switch default music when switching themes

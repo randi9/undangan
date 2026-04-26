@@ -40,7 +40,7 @@
           <h4 class="font-bold text-xl md:hidden mb-2" :style="{ color: 'var(--theme-primary)' }">{{ story.title }}</h4>
           <!-- Photo on mobile -->
           <img v-if="story.photo" :src="resolveAssetUrl(story.photo, apiBase)" :alt="story.title" 
-               class="md:hidden w-full rounded-xl mb-3 object-cover shadow-sm" style="max-height: 200px; border: 1px solid rgba(201,169,110,0.2);" />
+               class="md:hidden w-full aspect-[4/3] rounded-xl mb-3 object-cover shadow-sm" style="border: 1px solid rgba(201,169,110,0.2);" />
         </div>
         
         <!-- Center Gold Diamond Node -->
@@ -66,7 +66,7 @@
           <h4 class="font-bold text-xl mb-3 hidden md:block" :style="{ color: 'var(--theme-primary)' }">{{ story.title }}</h4>
           <!-- Photo on desktop -->
           <img v-if="story.photo" :src="resolveAssetUrl(story.photo, apiBase)" :alt="story.title" 
-               class="hidden md:block w-full rounded-xl mb-4 object-cover shadow-sm" style="max-height: 220px; border: 1px solid rgba(201,169,110,0.2);" />
+               class="hidden md:block w-full aspect-[4/3] rounded-xl mb-4 object-cover shadow-sm" style="border: 1px solid rgba(201,169,110,0.2);" />
           <p class="text-sm leading-relaxed whitespace-pre-line" :style="{ color: 'var(--theme-text-light)' }">{{ story.description }}</p>
         </div>
       </div>

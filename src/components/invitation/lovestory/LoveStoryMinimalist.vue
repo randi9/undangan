@@ -27,7 +27,7 @@
           <div v-if="story.photo" class="rounded-xl overflow-hidden shadow-sm border border-gray-100 mb-4 group inline-block relative max-w-full">
              <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none"></div>
              <img :src="resolveAssetUrl(story.photo, apiBase)" :alt="story.title" 
-                  class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" style="max-height: 240px;" />
+                  class="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105" />
           </div>
           <p class="text-[13px] md:text-sm text-gray-500 font-light leading-loose whitespace-pre-line text-justify md:text-left">{{ story.description }}</p>
         </div>

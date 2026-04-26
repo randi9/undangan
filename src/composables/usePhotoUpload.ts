@@ -65,7 +65,22 @@ export function usePhotoUpload(
       const dataUrl = await readFileAsDataURL(file)
       const config = CROP_CONFIG[field]
       cropImageSrc.value = dataUrl
-      cropAspectRatio.value = config.aspectRatio
+      
+      if (field === 'love_story') {
+        const theme = form.theme || 'minimalist'
+        if (theme === 'elegant' || theme === 'elegant_blue') {
+          cropAspectRatio.value = 4 / 3
+        } else if (theme === 'floral_blue') {
+          cropAspectRatio.value = 1 / 1
+        } else if (theme === 'floral') {
+          cropAspectRatio.value = 3 / 2
+        } else {
+          cropAspectRatio.value = 16 / 9
+        }
+      } else {
+        cropAspectRatio.value = config.aspectRatio
+      }
+      
       cropStencilShape.value = config.stencilShape
       pendingCropField = field
       pendingOldUrl = oldUrl
