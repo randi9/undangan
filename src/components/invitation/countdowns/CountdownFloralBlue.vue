@@ -239,24 +239,6 @@
           style="bottom: -5%; right: 30%; width: 35%; opacity: 0; transform: scaleX(-1);"
         />
 
-        <!-- Perintilan Decoration 2 (Bawah Kiri) - Original -->
-        <img
-          ref="perintilanBottomLeft2Ref"
-          src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_440e2069-208a-4663-bd4d-2cb27f4425ce.webp"
-          alt="Perintilan Bawah Kiri 2"
-          class="absolute z-20 pointer-events-none"
-          style="bottom: -5%; left: 15%; width: 45%; opacity: 0;"
-        />
-
-        <!-- Perintilan Decoration 2 (Bawah Kanan) - Mirrored -->
-        <img
-          ref="perintilanBottomRight2Ref"
-          src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_440e2069-208a-4663-bd4d-2cb27f4425ce.webp"
-          alt="Perintilan Bawah Kanan 2"
-          class="absolute z-20 pointer-events-none"
-          style="bottom: -5%; right: 15%; width: 45%; opacity: 0; transform: scaleX(-1);"
-        />
-
         <!-- Perintilan Decoration 3 (Bawah Kiri) - Original -->
         <img
           ref="perintilanBottomLeft3Ref"
@@ -275,23 +257,6 @@
           style="bottom: -5%; right: 0%; width: 45%; opacity: 0; transform: scaleX(-1);"
         />
 
-        <!-- Perintilan Decoration 4 (Bawah Kiri) - Original -->
-        <img
-          ref="perintilanBottomLeft4Ref"
-          src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_ebad68d9-7475-4814-9e1a-9ce95c63eac5.webp"
-          alt="Perintilan Bawah Kiri 4"
-          class="absolute z-20 pointer-events-none"
-          style="bottom: -5%; left: -5%; width: 45%; opacity: 0;"
-        />
-
-        <!-- Perintilan Decoration 4 (Bawah Kanan) - Mirrored -->
-        <img
-          ref="perintilanBottomRight4Ref"
-          src="https://media.mengundanganda.com/floral-blue/event%20section/perintilan/randidewi_ebad68d9-7475-4814-9e1a-9ce95c63eac5.webp"
-          alt="Perintilan Bawah Kanan 4"
-          class="absolute z-20 pointer-events-none"
-          style="bottom: -5%; right: -5%; width: 45%; opacity: 0; transform: scaleX(-1);"
-        />
 
         <!-- Perintilan Decoration 5 (Bawah Kiri) - Original -->
         <img
