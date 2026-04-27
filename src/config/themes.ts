@@ -42,7 +42,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     icon: "solar:crown-bold-duotone",
     color: "#c9a96e",
     bgGradient: "linear-gradient(135deg, #8b6f4e 0%, #c9a96e 100%)",
-    sampleUrl: "",
+    sampleUrl: "/sample/elegant",
     defaultGalleryType: "masonry",
     previewStyle: {
       bg: "#2c2417",
@@ -79,7 +79,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     icon: "solar:leaf-bold-duotone",
     color: "#4a5d4e",
     bgGradient: "linear-gradient(135deg, #4a5d4e 0%, #8a9a5b 100%)",
-    sampleUrl: "",
+    sampleUrl: "/sample/floral",
     defaultGalleryType: "carousel",
     previewStyle: {
       bg: "#4a5d4e",
@@ -116,7 +116,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     icon: "solar:minimalistic-magnifer-bold-duotone",
     color: "#111111",
     bgGradient: "linear-gradient(135deg, #111111 0%, #666666 100%)",
-    sampleUrl: "",
+    sampleUrl: "/sample/minimalist",
     defaultGalleryType: "masonry",
     previewStyle: {
       bg: "#f9f9f9",
@@ -153,7 +153,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     icon: "solar:diamond-bold-duotone",
     color: "#1e3a8a",
     bgGradient: "linear-gradient(135deg, #1e3a8a 0%, #a8d0e6 100%)",
-    sampleUrl: "",
+    sampleUrl: "/sample/elegant_blue",
     defaultGalleryType: "masonry",
     previewStyle: {
       bg: "#1e3a8a",
@@ -190,7 +190,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     icon: "solar:flowers-bold-duotone",
     color: "#4a7c9b",
     bgGradient: "linear-gradient(135deg, #3b6b8a 0%, #6b8fa3 100%)",
-    sampleUrl: "",
+    sampleUrl: "/sample/floral_blue",
     defaultGalleryType: "carousel",
     previewStyle: {
       bg: "#3b6b8a",

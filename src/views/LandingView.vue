@@ -144,7 +144,6 @@
                 <a
                   v-if="theme.sampleUrl"
                   :href="theme.sampleUrl"
-                  target="_blank"
                   class="btn btn-outline btn-sm lp-theme-btn"
                 >
                   <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span>
@@ -654,7 +653,7 @@ const themesData = [
     color: '#c9a96e',
     bgColor: '#2c2417',
     bgGradient: 'linear-gradient(135deg, #2c2417, #5a4b3d)',
-    sampleUrl: 'https://elegant.mengundanganda.com',
+    sampleUrl: '/sample/elegant',
     icon: 'solar:crown-bold-duotone',
   },
   {
@@ -665,7 +664,7 @@ const themesData = [
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
     bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
-    sampleUrl: 'https://floral.mengundanganda.com',
+    sampleUrl: '/sample/floral',
     icon: 'solar:leaf-bold-duotone',
   },
   {
@@ -676,7 +675,7 @@ const themesData = [
     color: '#111111',
     bgColor: '#f9f9f9',
     bgGradient: 'linear-gradient(135deg, #1e293b, #475569)',
-    sampleUrl: 'https://minimalist.mengundanganda.com',
+    sampleUrl: '/sample/minimalist',
     icon: 'solar:minimalistic-magnifer-bold-duotone',
   },
   {
@@ -687,7 +686,7 @@ const themesData = [
     color: '#A3B5C3',
     bgColor: '#1e3a8a',
     bgGradient: 'linear-gradient(135deg, #1e3a8a, #A3B5C3)',
-    sampleUrl: 'https://elegant-blue.mengundanganda.com',
+    sampleUrl: '/sample/elegant_blue',
     icon: 'solar:stars-bold-duotone',
   },
   {
@@ -698,7 +697,7 @@ const themesData = [
     color: '#3b6b8a',
     bgColor: '#3b6b8a',
     bgGradient: 'linear-gradient(135deg, #3b6b8a, #b8d4e3)',
-    sampleUrl: 'https://floralblue.mengundanganda.com',
+    sampleUrl: '/sample/floral_blue',
     icon: 'solar:leaf-bold-duotone',
   },
 ]
