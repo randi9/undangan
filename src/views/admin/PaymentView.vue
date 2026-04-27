@@ -749,4 +749,5 @@ onMounted(() => {
   justify-content: center;
   gap: 8px;
 }
+
 </style>

@@ -4,7 +4,7 @@ import { json } from "../shared/http";
 import type { ApiDispatcher } from "../types/api";
 
 const MAYAR_PAYMENT_LINK =
-  "https://mengundanganda.myr.id/pl/mengundang-anda-premium-akses";
+  "https://mengundanganda.myr.id/pl/mengundang-anda-premium-akses/";
 
 async function handlePaymentCreateInvoice(
   supabase: any,
@@ -33,22 +33,23 @@ async function handlePaymentCreateInvoice(
   const separator = String(basePaymentLink).includes("?") ? "&" : "?";
   const paymentUrl = `${basePaymentLink}${separator}invitation_id=${invitation_id}`;
 
-  await supabase
-    .from("payment_logs")
-    .upsert(
-      [
-        {
-          invitation_id,
-          user_id: user.id,
-          amount: PAYMENT_AMOUNT,
-          status: "pending",
-          mayar_payment_url: paymentUrl,
-          mayar_invoice_id: `pending:${invitation_id}`,
-        },
-      ],
-      { onConflict: "invitation_id" },
-    )
-    .catch(() => {});
+  try {
+    await supabase
+      .from("payment_logs")
+      .upsert(
+        [
+          {
+            invitation_id,
+            user_id: user.id,
+            amount: PAYMENT_AMOUNT,
+            status: "pending",
+            mayar_payment_url: paymentUrl,
+            mayar_invoice_id: `pending:${invitation_id}`,
+          },
+        ],
+        { onConflict: "invitation_id" },
+      );
+  } catch { /* ignore logging errors */ }
 
   return json({
     payment_url: paymentUrl,
@@ -57,6 +58,7 @@ async function handlePaymentCreateInvoice(
     status: "created",
   });
 }
+
 
 async function handlePaymentVerifyLicense(
   supabase: any,
