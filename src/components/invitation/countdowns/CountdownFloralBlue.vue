@@ -62,66 +62,79 @@
       </div>
 
       <!-- TEXT OVERLAY (Full Screen, Does NOT Zoom) -->
-      <div ref="overlayRef" class="absolute inset-0 z-[15] bg-white/30 pointer-events-auto flex items-center justify-center px-6" style="visibility: hidden; opacity: 0;">
-        <div class="grid w-full max-w-sm">
+      <div ref="overlayRef" class="absolute inset-0 z-[15] pointer-events-auto flex items-center justify-center px-6 pb-[8vh]" style="visibility: hidden; opacity: 0;">
+        <div class="grid w-full max-w-[320px]">
           
           <!-- LAYER 2: AKAD -->
-          <div ref="akadRef" class="row-start-1 col-start-1 flex flex-col items-center justify-center text-center pointer-events-none" style="visibility: hidden; opacity: 0;">
-            <h2 class="text-3xl md:text-4xl mb-4 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
-              Akad Nikah
-            </h2>
-            <p class="text-lg font-medium text-[#2c3e50] mb-2">{{ formatDateLong(invitation.akad_date) }}</p>
-            <p class="text-base text-[#4a5c6a] mb-4">{{ invitation.akad_time }}</p>
-            <p class="font-bold text-[#1e293b] text-xl mb-1">{{ invitation.akad_venue }}</p>
-            <p class="text-sm text-[#4a5c6a] italic leading-snug">{{ invitation.akad_address }}</p>
-            
-            <div class="mt-6 flex gap-3 justify-center">
-              <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="px-5 py-2.5 bg-[#4a5c6a] text-white rounded-full text-xs font-semibold tracking-wide hover:bg-[#2c3e50] transition-colors shadow-md pointer-events-auto">
-                Buka Maps
-              </a>
-              <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="px-5 py-2.5 bg-white text-[#4a5c6a] border border-[#4a5c6a] rounded-full text-xs font-semibold tracking-wide hover:bg-gray-50 transition-colors shadow-md pointer-events-auto">
-                Ingatkan
-              </a>
+          <div ref="akadRef" class="row-start-1 col-start-1 flex flex-col items-center justify-center pointer-events-none" style="visibility: hidden; opacity: 0;">
+            <div style="background: rgba(255,255,255,0.55); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); border: 1px solid rgba(255,255,255,0.7); border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.3) inset; padding: 28px 24px 22px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%;" class="pointer-events-auto">
+              <h2 class="text-4xl md:text-5xl mb-2 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
+                Akad Nikah
+              </h2>
+              <p class="text-sm font-semibold text-[#2c3e50] mb-0.5">{{ formatDateLong(invitation.akad_date) }}</p>
+              <p class="text-xs font-medium tracking-[0.15em] uppercase text-[#4a5c6a]/80 mb-3">{{ invitation.akad_time }} WIB</p>
+              <div style="width: 32px; height: 1px; background: rgba(44,62,80,0.15); margin-bottom: 12px; border-radius: 1px;"></div>
+              <p class="font-bold text-[#1e293b] text-base mb-1">{{ invitation.akad_venue }}</p>
+              <p class="text-xs text-[#4a5c6a] leading-relaxed px-1">{{ invitation.akad_address }}</p>
+              
+              <div style="display: flex; gap: 10px; width: 100%; margin-top: 18px;">
+                <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(14, 165, 233, 0.9); backdrop-filter: blur(8px); color: white; border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;">
+                  <Icon icon="ph:map-pin-fill" style="font-size: 15px;" />
+                  Buka Maps
+                </a>
+                <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15); transition: all 0.2s;">
+                  <Icon icon="ph:calendar-plus-fill" style="font-size: 15px;" />
+                  Ingatkan
+                </a>
+              </div>
             </div>
           </div>
 
           <!-- LAYER 3: RESEPSI -->
-          <div ref="resepsiRef" class="row-start-1 col-start-1 flex flex-col items-center justify-center text-center pointer-events-none" style="visibility: hidden; opacity: 0;">
-            <h2 class="text-3xl md:text-4xl mb-4 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
-              Resepsi
-            </h2>
-            <p class="text-lg font-medium text-[#2c3e50] mb-2">{{ formatDateLong(invitation.resepsi_date) }}</p>
-            <p class="text-base text-[#4a5c6a] mb-4">{{ invitation.resepsi_time }}</p>
-            <p class="font-bold text-[#1e293b] text-xl mb-1">{{ invitation.resepsi_venue }}</p>
-            <p class="text-sm text-[#4a5c6a] italic leading-snug">{{ invitation.resepsi_address }}</p>
-            
-            <div class="mt-6 flex gap-3 justify-center">
-              <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="px-5 py-2.5 bg-[#4a5c6a] text-white rounded-full text-xs font-semibold tracking-wide hover:bg-[#2c3e50] transition-colors shadow-md pointer-events-auto">
-                Buka Maps
-              </a>
-              <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="px-5 py-2.5 bg-white text-[#4a5c6a] border border-[#4a5c6a] rounded-full text-xs font-semibold tracking-wide hover:bg-gray-50 transition-colors shadow-md pointer-events-auto">
-                Ingatkan
-              </a>
+          <div ref="resepsiRef" class="row-start-1 col-start-1 flex flex-col items-center justify-center pointer-events-none" style="visibility: hidden; opacity: 0;">
+            <div style="background: rgba(255,255,255,0.55); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); border: 1px solid rgba(255,255,255,0.7); border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.3) inset; padding: 28px 24px 22px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%;" class="pointer-events-auto">
+              <h2 class="text-4xl md:text-5xl mb-2 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
+                Resepsi
+              </h2>
+              <p class="text-sm font-semibold text-[#2c3e50] mb-0.5">{{ formatDateLong(invitation.resepsi_date) }}</p>
+              <p class="text-xs font-medium tracking-[0.15em] uppercase text-[#4a5c6a]/80 mb-3">{{ invitation.resepsi_time }} WIB</p>
+              <div style="width: 32px; height: 1px; background: rgba(44,62,80,0.15); margin-bottom: 12px; border-radius: 1px;"></div>
+              <p class="font-bold text-[#1e293b] text-base mb-1">{{ invitation.resepsi_venue }}</p>
+              <p class="text-xs text-[#4a5c6a] leading-relaxed px-1">{{ invitation.resepsi_address }}</p>
+              
+              <div style="display: flex; gap: 10px; width: 100%; margin-top: 18px;">
+                <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(14, 165, 233, 0.9); backdrop-filter: blur(8px); color: white; border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;">
+                  <Icon icon="ph:map-pin-fill" style="font-size: 15px;" />
+                  Buka Maps
+                </a>
+                <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15); transition: all 0.2s;">
+                  <Icon icon="ph:calendar-plus-fill" style="font-size: 15px;" />
+                  Ingatkan
+                </a>
+              </div>
             </div>
           </div>
 
           <!-- LAYER 4: STREAM -->
-          <div v-if="invitation.streaming_enabled && invitation.streaming_url" ref="streamRef" class="row-start-1 col-start-1 flex flex-col items-center justify-center text-center pointer-events-none" style="visibility: hidden; opacity: 0;">
-            <h2 class="text-3xl md:text-4xl mb-2 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
-              Live Streaming
-            </h2>
-            <p class="text-xs font-medium text-[#2c3e50] mb-4 max-w-xs md:max-w-md mx-auto leading-relaxed">Ikuti prosesi acara kami secara virtual.</p>
-            
-            <div class="relative w-full max-w-[280px] md:max-w-md aspect-video rounded-xl overflow-hidden shadow-lg border border-black/10 mt-2 pointer-events-auto bg-black/10">
-              <iframe 
-                :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
-                class="absolute top-0 left-0 w-full h-full"
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen>
-              </iframe>
+          <div v-if="invitation.streaming_enabled && invitation.streaming_url" ref="streamRef" class="row-start-1 col-start-1 flex flex-col items-center justify-center pointer-events-none" style="visibility: hidden; opacity: 0;">
+            <div style="background: rgba(255,255,255,0.55); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); border: 1px solid rgba(255,255,255,0.7); border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.3) inset; padding: 28px 24px 22px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%;" class="pointer-events-auto">
+              <h2 class="text-4xl md:text-5xl mb-2 font-bold" :style="{ fontFamily: themeConfig.fontHeading, color: themeConfig.primary || '#1e293b' }">
+                Live Streaming
+              </h2>
+              <p class="text-xs font-medium text-[#2c3e50] mb-4 leading-relaxed px-2">Ikuti prosesi acara kami secara virtual.</p>
+              
+              <div class="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/50" style="box-shadow: 0 4px 16px rgba(0,0,0,0.1) inset;">
+                <iframe 
+                  :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
+                  class="absolute top-0 left-0 w-full h-full"
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowfullscreen>
+                </iframe>
+              </div>
             </div>
           </div>
+
 
         </div>
       </div>
@@ -302,6 +315,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import { Icon } from '@iconify/vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';

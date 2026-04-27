@@ -626,7 +626,7 @@
               fontSize:
                 groomName.length + brideName.length > 14
                   ? 'clamp(36px, 10vw, 64px)'
-                  : 'lamp(52px, 14vw, 90px)',
+                  : 'clamp(52px, 14vw, 90px)',
               fontWeight: '500',
               lineHeight: '1.1',
               filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))',
