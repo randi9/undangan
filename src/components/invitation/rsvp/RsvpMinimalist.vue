@@ -17,8 +17,8 @@
     <div ref="formRef" class="bg-white p-8 md:p-12 rounded-[2rem] shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-gray-100 text-left mb-16 opacity-0 translate-y-10">
       <form @submit.prevent="onSubmit" class="space-y-6">
         <div>
-          <label class="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-3">Nama Lengkap</label>
-          <input v-model="form.guest_name" type="text" placeholder="Masukkan nama Anda" required class="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/50 text-gray-700 focus:bg-white focus:border-gray-300 focus:ring-4 focus:ring-gray-100 outline-none transition-all placeholder-gray-400 font-light" />
+          <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+          <input v-model="form.guest_name" type="text" maxlength="50" placeholder="Masukkan nama Anda" required class="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/50 text-gray-700 focus:bg-white focus:border-gray-300 focus:ring-4 focus:ring-gray-100 outline-none transition-all font-light" />
         </div>
         
         <div>
@@ -34,13 +34,20 @@
         </div>
         
         <div v-show="form.attendance === 'hadir'">
-          <label class="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-3">Jumlah Tamu</label>
-          <input v-model.number="form.guest_count" type="number" min="1" max="10" placeholder="1" class="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/50 text-gray-700 focus:bg-white focus:border-gray-300 focus:ring-4 focus:ring-gray-100 outline-none transition-all font-light" />
+          <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Tamu</label>
+          <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50/50 overflow-hidden transition-all focus-within:bg-white focus-within:border-gray-300 focus-within:ring-4 focus-within:ring-gray-100">
+            <button type="button" @click="form.guest_count = Math.max(1, form.guest_count - 1)" class="w-14 h-14 flex items-center justify-center text-xl text-gray-500 hover:bg-gray-100 transition-colors">−</button>
+            <div class="flex-1 flex justify-center items-center">
+              <input v-model.number="form.guest_count" type="number" min="1" max="10" class="w-10 text-center bg-transparent border-none font-medium text-gray-700 outline-none appearance-none" style="-moz-appearance: textfield;" />
+              <span class="text-sm font-medium text-gray-500 ml-1">Orang</span>
+            </div>
+            <button type="button" @click="form.guest_count = Math.min(10, form.guest_count + 1)" class="w-14 h-14 flex items-center justify-center text-xl text-gray-500 hover:bg-gray-100 transition-colors">+</button>
+          </div>
         </div>
         
         <div>
-          <label class="block text-xs uppercase tracking-widest text-gray-400 font-semibold mb-3">Ucapan &amp; Doa</label>
-          <textarea v-model="form.message" rows="4" placeholder="Tuliskan pesan bahagia untuk kedua mempelai..." class="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/50 text-gray-700 focus:bg-white focus:border-gray-300 focus:ring-4 focus:ring-gray-100 outline-none transition-all resize-y font-light leading-relaxed"></textarea>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Ucapan &amp; Doa</label>
+          <textarea v-model="form.message" rows="3" maxlength="500" placeholder="Tulis doa untuk kedua mempelai" class="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/50 text-gray-700 focus:bg-white focus:border-gray-300 focus:ring-4 focus:ring-gray-100 outline-none transition-all font-light resize-y"></textarea>
         </div>
         
         <button type="submit" :disabled="submitting" class="w-full py-4 mt-4 rounded-xl bg-gray-900 text-white font-medium text-sm uppercase tracking-widest hover:bg-gray-800 disabled:opacity-50 transition-all shadow-[0_8px_20px_rgba(0,0,0,0.1)]">
@@ -58,19 +65,19 @@
       <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2 pb-4 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
         <div v-for="(msg, i) in rsvpMessages" :key="msg.id" class="p-6 bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-50 hover:border-gray-100 transition-colors">
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 mb-4">
-            <span class="font-medium text-gray-800 text-sm tracking-wide">{{ msg.guest_name }}</span>
+            <span class="font-medium text-gray-800 text-sm tracking-wide break-words max-w-full">{{ msg.guest_name }}</span>
             <span class="text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-md font-semibold" :class="msg.attendance === 'hadir' ? 'bg-gray-100 text-gray-700 border border-gray-200' : 'bg-red-50 text-red-600 border border-red-100'">
               {{ msg.attendance === 'hadir' ? 'Hadir' : 'Absen' }}
               <span v-if="msg.attendance === 'hadir' && msg.guest_count > 1">({{ msg.guest_count }})</span>
             </span>
           </div>
-          <p class="text-sm text-gray-500 font-light leading-relaxed break-words whitespace-pre-wrap">{{ msg.message }}</p>
+          <p class="text-sm text-gray-500 font-light leading-relaxed whitespace-pre-wrap" style="word-break: break-word; overflow-wrap: anywhere;">{{ msg.message }}</p>
           <div v-if="msg.reply_text" class="mt-4 bg-gray-50/80 p-4 rounded-xl border border-gray-100">
             <div class="flex items-center gap-2 text-[9px] uppercase tracking-widest font-bold text-gray-400 mb-2">
               <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
               Balasan Mempelai
             </div>
-            <p class="text-[13px] text-gray-600 font-light leading-relaxed whitespace-pre-wrap">{{ msg.reply_text }}</p>
+            <p class="text-[13px] text-gray-600 font-light leading-relaxed whitespace-pre-wrap" style="word-break: break-word; overflow-wrap: anywhere;">{{ msg.reply_text }}</p>
           </div>
         </div>
       </div>

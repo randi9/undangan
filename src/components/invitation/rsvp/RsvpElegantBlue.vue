@@ -24,7 +24,7 @@
         <!-- Nama -->
         <div class="form-field-wrapper" style="margin-bottom: 32px;">
           <label style="display: block; color: rgba(4,26,51,0.7); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 500; margin-bottom: 8px;">Nama Lengkap</label>
-          <input v-model="form.guest_name" type="text" placeholder="Ketik nama Anda..." required
+          <input v-model="form.guest_name" type="text" maxlength="50" placeholder="Ketik nama Anda..." required
             style="width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(4,26,51,0.15); color: #041a33; font-size: 0.9rem; padding: 8px 0; outline: none; font-weight: 300;" />
           <div class="animated-border" style="position: absolute; bottom: 0; left: 0; height: 1.5px; width: 100%; background: #041a33; box-shadow: 0 0 10px rgba(4,26,51,0.3); z-index: 10; transform: scaleX(0); transform-origin: left center;"></div>
         </div>
@@ -57,21 +57,21 @@
         <!-- Jumlah Tamu -->
         <div v-show="form.attendance === 'hadir'" class="form-field-wrapper" style="margin-bottom: 32px; transition: all 0.3s;">
           <label style="display: block; color: rgba(4,26,51,0.7); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 500; margin-bottom: 8px;">Jumlah Tamu</label>
-          <select v-model.number="form.guest_count"
-            style="width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(4,26,51,0.15); color: #041a33; font-size: 0.9rem; padding: 8px 0; outline: none; font-weight: 300; appearance: none; cursor: pointer;">
-            <option value="1" style="color: #041a33;">1 Orang</option>
-            <option value="2" style="color: #041a33;">2 Orang</option>
-            <option value="3" style="color: #041a33;">3 Orang</option>
-            <option value="4" style="color: #041a33;">4 Orang</option>
-            <option value="5" style="color: #041a33;">5+ Orang</option>
-          </select>
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(4,26,51,0.15); padding: 4px 0;">
+            <button type="button" @click="form.guest_count = Math.max(1, form.guest_count - 1)" style="width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; font-size: 18px; color: #041a33; background: transparent; border: none; cursor: pointer;">−</button>
+            <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
+              <input v-model.number="form.guest_count" type="number" min="1" max="10" class="no-spin" style="width: 30px; text-align: center; border: none; background: transparent; color: #041a33; font-size: 0.9rem; font-weight: 600; outline: none; -moz-appearance: textfield; appearance: textfield;" />
+              <span style="color: rgba(4,26,51,0.7); font-size: 0.75rem; margin-left: 4px;">Orang</span>
+            </div>
+            <button type="button" @click="form.guest_count = Math.min(10, form.guest_count + 1)" style="width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; font-size: 18px; color: #041a33; background: transparent; border: none; cursor: pointer;">+</button>
+          </div>
           <div class="animated-border" style="position: absolute; bottom: 0; left: 0; height: 1.5px; width: 100%; background: #041a33; box-shadow: 0 0 10px rgba(4,26,51,0.3); z-index: 10; transform: scaleX(0); transform-origin: left center;"></div>
         </div>
 
         <!-- Pesan -->
         <div class="form-field-wrapper" style="margin-bottom: 40px;">
           <label style="display: block; color: rgba(4,26,51,0.7); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 500; margin-bottom: 8px;">Pesan & Doa</label>
-          <textarea v-model="form.message" rows="3" placeholder="Tuliskan ucapan terindah..."
+          <textarea v-model="form.message" rows="3" maxlength="500" placeholder="Tuliskan ucapan terindah..."
             style="width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(4,26,51,0.15); color: #041a33; font-size: 0.9rem; padding: 8px 0; outline: none; font-weight: 300; resize: none; line-height: 1.6; font-family: inherit;"></textarea>
           <div class="animated-border" style="position: absolute; bottom: 0; left: 0; height: 1.5px; width: 100%; background: #041a33; box-shadow: 0 0 10px rgba(4,26,51,0.3); z-index: 10; transform: scaleX(0); transform-origin: left center;"></div>
         </div>
@@ -118,7 +118,7 @@
           </div>
 
           <!-- Message -->
-          <p style="color: rgba(4,26,51,0.7); font-size: 0.78rem; line-height: 1.7; font-style: italic; font-weight: 300; white-space: pre-wrap; word-break: break-word; margin: 0;">"{{ msg.message }}"</p>
+          <p style="color: rgba(4,26,51,0.7); font-size: 0.78rem; line-height: 1.7; font-style: italic; font-weight: 300; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; margin: 0;">"{{ msg.message }}"</p>
 
           <!-- Reply -->
           <div v-if="msg.reply_text" style="margin-top: 12px; padding: 12px; background: rgba(4,26,51,0.05); border-radius: 0 8px 8px 8px; border-left: 2px solid rgba(4,26,51,0.2);">
@@ -126,7 +126,7 @@
               <Icon icon="ph:paper-plane-right-duotone" style="width: 12px; height: 12px; color: rgba(4,26,51,0.6);" />
               <span style="font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(4,26,51,0.6);">Balasan Mempelai</span>
             </div>
-            <p style="font-size: 0.75rem; color: rgba(4,26,51,0.85); font-weight: 300; white-space: pre-wrap; word-break: break-word; line-height: 1.6; margin: 0;">{{ msg.reply_text }}</p>
+            <p style="font-size: 0.75rem; color: rgba(4,26,51,0.85); font-weight: 300; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; line-height: 1.6; margin: 0;">{{ msg.reply_text }}</p>
           </div>
         </div>
 

@@ -35,7 +35,7 @@
         <form @submit.prevent="onSubmit" class="space-y-5 relative z-10">
           <div>
             <label class="block text-xs font-bold uppercase tracking-wider mb-2" :style="{ color: 'var(--theme-text)' }">Nama Lengkap</label>
-            <input v-model="form.guest_name" type="text" placeholder="Masukkan nama Anda" required 
+            <input v-model="form.guest_name" type="text" maxlength="50" placeholder="Masukkan nama Anda" required 
                    class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 outline-none transition-all placeholder-gray-400 focus:bg-white focus:ring-2 focus:border-transparent custom-focus"
                    :style="{ '--focus-ring-color': 'var(--theme-secondary)' } as any" />
           </div>
@@ -58,14 +58,19 @@
           
           <div v-show="form.attendance === 'hadir'">
             <label class="block text-xs font-bold uppercase tracking-wider mb-2" :style="{ color: 'var(--theme-text)' }">Jumlah Tamu</label>
-            <select v-model.number="form.guest_count" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white outline-none transition-all appearance-none cursor-pointer">
-              <option v-for="n in 5" :key="n" :value="n">{{ n }} Orang</option>
-            </select>
+            <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 overflow-hidden transition-all focus-within:bg-white focus-within:ring-2" :style="{ '--tw-ring-color': 'var(--theme-secondary)' } as any">
+              <button type="button" @click="form.guest_count = Math.max(1, form.guest_count - 1)" class="w-12 h-12 flex items-center justify-center text-xl text-gray-500 hover:bg-gray-100 transition-colors">−</button>
+              <div class="flex-1 flex justify-center items-center">
+                <input v-model.number="form.guest_count" type="number" min="1" max="10" class="w-10 text-center bg-transparent border-none font-semibold text-gray-700 outline-none appearance-none" style="-moz-appearance: textfield;" />
+                <span class="text-sm font-medium text-gray-500 ml-1">Orang</span>
+              </div>
+              <button type="button" @click="form.guest_count = Math.min(10, form.guest_count + 1)" class="w-12 h-12 flex items-center justify-center text-xl text-gray-500 hover:bg-gray-100 transition-colors">+</button>
+            </div>
           </div>
           
           <div>
             <label class="block text-xs font-bold uppercase tracking-wider mb-2" :style="{ color: 'var(--theme-text)' }">Ucapan &amp; Doa</label>
-            <textarea v-model="form.message" rows="3" placeholder="Tulis doa untuk kedua mempelai" 
+            <textarea v-model="form.message" rows="3" maxlength="500" placeholder="Tulis doa untuk kedua mempelai" 
                       class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white outline-none transition-all resize-y placeholder-gray-400"></textarea>
           </div>
           
@@ -99,7 +104,7 @@
               
               <div class="flex-1">
                 <div class="flex flex-wrap justify-between items-start gap-2 mb-1">
-                  <span class="font-bold text-gray-800">{{ msg.guest_name }}</span>
+                  <span class="font-bold text-gray-800 break-words max-w-full">{{ msg.guest_name }}</span>
                   <span class="text-[10px] px-2 py-0.5 rounded uppercase tracking-wider font-bold" 
                         :class="msg.attendance === 'hadir' ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-red-50 text-red-500 border border-red-100'">
                     {{ msg.attendance === 'hadir' ? 'Hadir' : 'Absen' }}
@@ -107,7 +112,7 @@
                   </span>
                 </div>
                 
-                <p class="text-sm text-gray-600 leading-relaxed break-words whitespace-pre-wrap mb-1 italic font-light">"{{ msg.message }}"</p>
+                <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap mb-1 italic font-light" style="word-break: break-word; overflow-wrap: anywhere;">"{{ msg.message }}"</p>
                 
                 <div class="text-[10px] text-gray-400 mt-2">{{ formatDate(msg.created_at || new Date().toISOString()) }}</div>
                 
@@ -122,7 +127,7 @@
                     </svg>
                     <span class="text-[10px] uppercase tracking-widest font-bold" :style="{ color: 'var(--theme-primary)' }">Balasan Mempelai</span>
                   </div>
-                  <p class="text-[13px] text-gray-700 leading-relaxed font-medium">{{ msg.reply_text }}</p>
+                  <p class="text-[13px] text-gray-700 leading-relaxed font-medium whitespace-pre-wrap" style="word-break: break-word; overflow-wrap: anywhere;">{{ msg.reply_text }}</p>
                 </div>
               </div>
             </div>
