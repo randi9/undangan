@@ -82,7 +82,8 @@ async function searchLocation() {
   if (!searchQuery.value.trim()) return;
   isSearching.value = true;
   try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery.value)}&limit=5`);
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery.value)}&limit=5&accept-language=id&email=hello@mengundanganda.com`);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
     searchResults.value = data;
   } catch (error) {
@@ -112,10 +113,13 @@ async function reverseGeocode(lat: number, lng: number) {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 6000); // 6s timeout for mobile
-    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=id&email=hello@mengundanganda.com`, {
       signal: controller.signal
     });
     clearTimeout(timeout);
+    
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    
     const data = await res.json();
     if (data && data.display_name) {
       selectedAddress.value = data.display_name;
@@ -125,6 +129,7 @@ async function reverseGeocode(lat: number, lng: number) {
     }
   } catch (error) {
     console.error("Reverse geocoding error", error);
+    // If reverse geocoding fails, fallback to coordinates
     selectedAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   } finally {
     isSearching.value = false;
