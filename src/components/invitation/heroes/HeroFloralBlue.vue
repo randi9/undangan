@@ -162,6 +162,7 @@ onMounted(() => {
   const butterflyEls = gsap.utils.toArray<HTMLDivElement>('.butterfly-container');
   butterflyEls.forEach((bContainer, index) => {
     const config = butterfliesConfig[index];
+    if (!config) return;
     const bLeft = bContainer.querySelector('.butterfly-left');
     const bRight = bContainer.querySelector('.butterfly-right');
 

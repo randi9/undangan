@@ -78,11 +78,11 @@
               <p class="text-xs text-[#4a5c6a] leading-relaxed px-1">{{ invitation.akad_address }}</p>
               
               <div style="display: flex; gap: 10px; width: 100%; margin-top: 18px;">
-                <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(14, 165, 233, 0.9); backdrop-filter: blur(8px); color: white; border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;">
+                <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: var(--theme-primary); backdrop-filter: blur(8px); color: white; border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;">
                   <Icon icon="ph:map-pin-fill" style="font-size: 15px;" />
                   Buka Maps
                 </a>
-                <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15); transition: all 0.2s;">
+                <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); color: var(--theme-primary); border: 1px solid var(--theme-primary); border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s;">
                   <Icon icon="ph:calendar-plus-fill" style="font-size: 15px;" />
                   Ingatkan
                 </a>
@@ -103,11 +103,11 @@
               <p class="text-xs text-[#4a5c6a] leading-relaxed px-1">{{ invitation.resepsi_address }}</p>
               
               <div style="display: flex; gap: 10px; width: 100%; margin-top: 18px;">
-                <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(14, 165, 233, 0.9); backdrop-filter: blur(8px); color: white; border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;">
+                <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: var(--theme-primary); backdrop-filter: blur(8px); color: white; border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;">
                   <Icon icon="ph:map-pin-fill" style="font-size: 15px;" />
                   Buka Maps
                 </a>
-                <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.3); border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15); transition: all 0.2s;">
+                <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); color: var(--theme-primary); border: 1px solid var(--theme-primary); border-radius: 14px; font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.2s;">
                   <Icon icon="ph:calendar-plus-fill" style="font-size: 15px;" />
                   Ingatkan
                 </a>

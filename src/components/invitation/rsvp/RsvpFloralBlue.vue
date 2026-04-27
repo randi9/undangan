@@ -30,7 +30,7 @@
             <form @submit.prevent="onSubmit" style="display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 10; margin: 0;">
               <div>
                 <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #374151;">Nama Lengkap</label>
-                <input v-model="form.guest_name" type="text" placeholder="Masukkan nama Anda" required class="custom-input" style="width: 100%; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.7); outline: none; transition: all 0.3s; font-size: 15px; box-sizing: border-box;" />
+                <input v-model="form.guest_name" type="text" maxlength="50" placeholder="Masukkan nama Anda" required class="custom-input" style="width: 100%; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.7); outline: none; transition: all 0.3s; font-size: 15px; box-sizing: border-box;" />
               </div>
               <div>
                 <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #374151;">Apakah Anda akan hadir?</label>
@@ -52,7 +52,7 @@
               </div>
               <div>
                 <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #374151;">Ucapan &amp; Doa</label>
-                <textarea v-model="form.message" rows="3" placeholder="Tulis doa untuk kedua mempelai" class="custom-input" style="width: 100%; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.7); outline: none; transition: all 0.3s; resize: vertical; font-size: 15px; box-sizing: border-box;"></textarea>
+                <textarea v-model="form.message" rows="3" maxlength="500" placeholder="Tulis doa untuk kedua mempelai" class="custom-input" style="width: 100%; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.1); background-color: rgba(255,255,255,0.7); outline: none; transition: all 0.3s; resize: vertical; font-size: 15px; box-sizing: border-box;"></textarea>
               </div>
               <div style="padding-top: 12px;">
                 <button type="submit" :disabled="submitting" :style="submitting ? 'opacity: 0.7; cursor: not-allowed;' : 'cursor: pointer;'" style="width: 100%; padding: 16px; border-radius: 16px; background-color: var(--theme-primary); color: white; border: none; font-weight: 600; font-size: 18px; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); outline: none;">
@@ -84,7 +84,7 @@
                         {{ msg.guest_name.charAt(0).toUpperCase() }}
                       </div>
                       <div style="display: flex; flex-direction: column;">
-                        <h4 style="font-weight: bold; color: #1f2937; font-size: 16px; line-height: 1.2; margin: 0;">{{ msg.guest_name }}</h4>
+                        <h4 style="font-weight: bold; color: #1f2937; font-size: 16px; line-height: 1.2; margin: 0; word-break: break-word;">{{ msg.guest_name }}</h4>
                         <span style="font-size: 12px; font-weight: 600; margin-top: 4px; display: inline-flex; align-items: center; gap: 6px;" :style="msg.attendance === 'hadir' ? 'color: var(--theme-primary);' : 'color: #6b7280;'">
                           <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%;" :style="msg.attendance === 'hadir' ? 'background-color: var(--theme-primary);' : 'background-color: #9ca3af;'"></span>
                           {{ msg.attendance === 'hadir' ? 'Akan Hadir' : 'Berhalangan' }}
@@ -93,10 +93,10 @@
                       </div>
                     </div>
                   </div>
-                  <p style="font-size: 14px; color: #4b5563; line-height: 1.6; margin: 12px 0 0 0; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.03); white-space: pre-wrap;">{{ msg.message }}</p>
+                  <p style="font-size: 14px; color: #4b5563; line-height: 1.6; margin: 12px 0 0 0; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.03); white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere;">{{ msg.message }}</p>
                   <div v-if="msg.reply_text" style="background-color: rgba(74, 124, 155, 0.05); padding: 12px 16px; border-radius: 12px; margin-top: 12px; border-left: 3px solid var(--theme-primary);">
                     <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; color: var(--theme-primary); margin-bottom: 4px;">Balasan Mempelai</div>
-                    <p style="font-size: 13px; color: #4b5563; margin: 0; line-height: 1.5; white-space: pre-wrap;">{{ msg.reply_text }}</p>
+                    <p style="font-size: 13px; color: #4b5563; margin: 0; line-height: 1.5; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere;">{{ msg.reply_text }}</p>
                   </div>
                 </div>
               </div>
