@@ -93,7 +93,6 @@
               <a
                 v-if="theme.sampleUrl"
                 :href="theme.sampleUrl"
-                target="_blank"
                 class="pt-btn pt-btn-outline"
               >
                 <span class="material-symbols-rounded" style="font-size:15px;vertical-align:-3px">visibility</span>

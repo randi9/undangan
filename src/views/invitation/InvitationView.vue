@@ -36,6 +36,11 @@ import type { ThemeConfig } from "@/types/theme";
 import { resolveAssetUrl } from "@/utils/url";
 import { Icon } from "@iconify/vue";
 
+// --- PROPS (optional static data for sample pages) ---
+const props = defineProps<{
+  staticData?: Invitation | null;
+}>();
+
 // --- ASYNC COMPONENT MAPS ---
 const coverComponents: Record<string, Component> = {
   elegant: defineAsyncComponent(
@@ -577,6 +582,21 @@ async function handleSubmitRsvp(form: {
   if (!form.guest_name || !form.attendance) return;
   rsvpSubmitting.value = true;
 
+  // In sample/static mode, mock the RSVP submission locally
+  if (props.staticData) {
+    setTimeout(() => {
+      rsvpMessages.value.unshift({
+        guest_name: form.guest_name,
+        attendance: form.attendance,
+        guest_count: form.guest_count,
+        message: form.message,
+        created_at: new Date().toISOString(),
+      });
+      rsvpSubmitting.value = false;
+    }, 800);
+    return;
+  }
+
   try {
     const res = await fetch(`${apiBase}/api/rsvp`, {
       method: "POST",
@@ -608,6 +628,18 @@ onMounted(async () => {
   // Hide scrollbar when inside iframe (desktop phone frame)
   if (isInsideIframe) {
     document.documentElement.classList.add("hide-scrollbar");
+  }
+
+  // -- STATIC SAMPLE MODE --
+  // If static data is provided via prop, use it directly without API fetch
+  if (props.staticData) {
+    invitation.value = props.staticData;
+    rsvpMessages.value = props.staticData.rsvps || [];
+    updateCountdown();
+    countdownTimer = setInterval(updateCountdown, 1000);
+    loading.value = false;
+    nextTick(() => preloadAllAssets());
+    return;
   }
 
   const slug =

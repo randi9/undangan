@@ -82,6 +82,12 @@ if (subdomain) {
       meta: { title: "Pesan Jasa Dibuatkan Undangan - MengundangAnda" },
     },
     {
+      path: "/sample/:themeId",
+      name: "sample-invitation",
+      component: () => import("@/views/invitation/SampleInvitationView.vue"),
+      meta: { title: "Contoh Undangan - MengundangAnda" },
+    },
+    {
       path: "/themes",
       name: "public-themes",
       component: () => import("@/views/PublicThemesView.vue"),
