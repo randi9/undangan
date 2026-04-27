@@ -7,12 +7,30 @@
       <div style="width: 100vw; margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));">
         <div style="background-color: rgba(255, 255, 255, 0.95); width: 100%; padding: 180px 24px; position: relative; display: flex; flex-direction: column; align-items: center; -webkit-mask: radial-gradient(55% 120px at 50% 0%, transparent 99%, black 100%) top / 100% 50% no-repeat, radial-gradient(55% 120px at 50% 100%, transparent 99%, black 100%) bottom / 100% 50% no-repeat; mask: radial-gradient(55% 120px at 50% 0%, transparent 99%, black 100%) top / 100% 50% no-repeat, radial-gradient(55% 120px at 50% 100%, transparent 99%, black 100%) bottom / 100% 50% no-repeat;">
         
-        <!-- Top Right Floral -->
+        <!-- Floral Decors (Alternating) -->
         <img
-          ref="floralTopRight"
+          class="rsvp-floral right-floral"
           src="https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_f8410655-ccd6-40c3-b4b8-c159eea1b01b.webp"
           alt="Floral Decor"
           style="position: absolute; top: 100px; right: -150px; width: 350px; height: auto; z-index: 0; opacity: 0.6; pointer-events: none; transform-origin: top right;"
+        />
+        <img
+          class="rsvp-floral left-floral"
+          src="https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_f8410655-ccd6-40c3-b4b8-c159eea1b01b.webp"
+          alt="Floral Decor"
+          style="position: absolute; top: 400px; left: 200px; width: 350px; height: auto; z-index: 0; opacity: 0.6; pointer-events: none; transform: scaleX(-1); transform-origin: top left;"
+        />
+        <img
+          class="rsvp-floral right-floral"
+          src="https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_f8410655-ccd6-40c3-b4b8-c159eea1b01b.webp"
+          alt="Floral Decor"
+          style="position: absolute; top: 750px; right: -150px; width: 350px; height: auto; z-index: 0; opacity: 0.6; pointer-events: none; transform-origin: top right;"
+        />
+        <img
+          class="rsvp-floral left-floral"
+          src="https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_f8410655-ccd6-40c3-b4b8-c159eea1b01b.webp"
+          alt="Floral Decor"
+          style="position: absolute; bottom: 150px; left: 200px; width: 350px; height: auto; z-index: 0; opacity: 0.6; pointer-events: none; transform: scaleX(-1); transform-origin: bottom left;"
         />
         
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 60px; position: relative; width: 100%; max-width: 1024px; text-align: center;">
@@ -22,9 +40,9 @@
           </p>
         </div>
         
-        <div style="display: flex; flex-wrap: wrap; gap: 48px; text-align: left; align-items: stretch; justify-content: center; width: 100%; max-width: 1024px; margin: 0 auto;">
+        <div style="display: flex; flex-wrap: wrap; gap: 48px; text-align: left; align-items: stretch; justify-content: center; width: 100%; max-width: 1024px; margin: 0 auto; padding: 0; box-sizing: border-box;">
           <!-- Input Form -->
-          <div style="flex: 1; min-width: min(100%, 350px); padding: 0; position: relative; display: flex; flex-direction: column; justify-content: center;">
+          <div style="flex: 1; min-width: min(100%, 320px); padding: clamp(16px, 4vw, 32px); background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 24px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07); border: 1px solid rgba(255, 255, 255, 0.2); position: relative; display: flex; flex-direction: column; justify-content: flex-start; box-sizing: border-box;">
             <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; margin-top: 0; color: var(--theme-primary); display: flex; align-items: center; gap: 12px; position: relative; z-index: 10;" :style="{ fontFamily: themeConfig.fontHeading }">Konfirmasi Kehadiran</h3>
             
             <form @submit.prevent="onSubmit" style="display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 10; margin: 0;">
@@ -64,7 +82,7 @@
 
 
           <!-- Messages -->
-          <div style="flex: 1; min-width: min(100%, 350px); display: flex; flex-direction: column; height: 600px;">
+          <div style="flex: 1; min-width: min(100%, 320px); display: flex; flex-direction: column; height: 600px; padding: clamp(16px, 4vw, 32px); background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 24px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07); border: 1px solid rgba(255, 255, 255, 0.2); box-sizing: border-box;">
             <div style="padding: 0; flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; box-sizing: border-box;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; position: relative; z-index: 10;">
                 <h3 style="font-size: 24px; font-weight: bold; margin: 0; color: var(--theme-primary);" :style="{ fontFamily: themeConfig.fontHeading }">Buku Tamu</h3>
@@ -77,7 +95,7 @@
                  <p style="font-weight: 500; color: var(--theme-text-light); margin: 0; line-height: 1.5;">Belum ada ucapan.<br/>Jadilah yang pertama untuk memberikan doa!</p>
               </div>
               <div v-else style="flex: 1; overflow-y: auto; padding-right: 12px; margin: 0; display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 10; scroll-behavior: smooth;" class="custom-scroll">
-                <div v-for="(msg, index) in rsvpMessages" :key="msg.id" style="padding: 20px; background-color: rgba(255,255,255,0.95); border-radius: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); position: relative; display: block; box-sizing: border-box;">
+                <div v-for="(msg, index) in rsvpMessages" :key="msg.id" style="padding: 20px; background-color: #f8fafc; border-radius: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); position: relative; display: block; box-sizing: border-box;">
                   <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                     <div style="display: flex; align-items: center; gap: 14px;">
                       <div style="width: 44px; height: 44px; min-width: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--theme-primary), #1a4364); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;">
@@ -123,7 +141,6 @@ const emit = defineEmits<{ (e: 'submitRsvp', form: { guest_name: string; attenda
 
 const form = reactive({ guest_name: '', attendance: 'hadir' as 'hadir' | 'tidak_hadir', guest_count: 1, message: '' });
 const rsvpWrapper = ref<HTMLElement | null>(null);
-const floralTopRight = ref<HTMLImageElement | null>(null);
 let ctx: gsap.Context | null = null;
 
 onMounted(() => {
@@ -131,22 +148,40 @@ onMounted(() => {
   ctx = gsap.context(() => {
     gsap.from(rsvpWrapper.value, { y: 80, opacity: 0, duration: 1.5, ease: 'power3.out', scrollTrigger: { trigger: rsvpWrapper.value, start: 'top 85%', toggleActions: 'play none none none' } });
 
-    if (floralTopRight.value) {
-      gsap.from(floralTopRight.value, {
+    const rightFlorals = gsap.utils.toArray('.right-floral');
+    rightFlorals.forEach((el) => {
+      gsap.from(el as HTMLElement, {
         scale: 0.5,
         x: 100,
-        y: -100,
+        y: -50,
         opacity: 0,
         duration: 1.5,
         ease: 'back.out(1.2)',
-        delay: 0.3,
         scrollTrigger: {
-          trigger: rsvpWrapper.value,
-          start: 'top 85%',
+          trigger: el as HTMLElement,
+          start: 'top 95%',
           toggleActions: 'play none none none'
         }
       });
-    }
+    });
+
+    const leftFlorals = gsap.utils.toArray('.left-floral');
+    leftFlorals.forEach((el) => {
+      gsap.from(el as HTMLElement, {
+        scaleX: -0.5,
+        scaleY: 0.5,
+        x: -100,
+        y: 50,
+        opacity: 0,
+        duration: 1.5,
+        ease: 'back.out(1.2)',
+        scrollTrigger: {
+          trigger: el as HTMLElement,
+          start: 'top 95%',
+          toggleActions: 'play none none none'
+        }
+      });
+    });
   });
 });
 onUnmounted(() => { ctx?.revert(); });
