@@ -78,14 +78,31 @@ function setMarker(lat: number, lng: number) {
   }
 }
 
+function formatPhotonAddress(properties: any) {
+  const parts = [];
+  if (properties.name) parts.push(properties.name);
+  if (properties.street && properties.street !== properties.name) parts.push(properties.street);
+  if (properties.district && properties.district !== properties.name) parts.push(properties.district);
+  if (properties.city && properties.city !== properties.district && properties.city !== properties.name) parts.push(properties.city);
+  if (properties.state && properties.state !== properties.city) parts.push(properties.state);
+  return parts.join(', ');
+}
+
 async function searchLocation() {
   if (!searchQuery.value.trim()) return;
   isSearching.value = true;
   try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery.value)}&limit=5&accept-language=id&email=hello@mengundanganda.com`);
+    const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(searchQuery.value)}&limit=5`);
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
-    searchResults.value = data;
+    if (data && data.features) {
+      searchResults.value = data.features.map((f: any) => ({
+        place_id: f.properties.osm_id || Math.random().toString(),
+        lat: f.geometry.coordinates[1],
+        lon: f.geometry.coordinates[0],
+        display_name: formatPhotonAddress(f.properties) || 'Lokasi'
+      }));
+    }
   } catch (error) {
     console.error("Geocoding error", error);
   } finally {
@@ -113,7 +130,7 @@ async function reverseGeocode(lat: number, lng: number) {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 6000); // 6s timeout for mobile
-    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=id&email=hello@mengundanganda.com`, {
+    const res = await fetch(`https://photon.komoot.io/reverse?lon=${lng}&lat=${lat}`, {
       signal: controller.signal
     });
     clearTimeout(timeout);
@@ -121,12 +138,16 @@ async function reverseGeocode(lat: number, lng: number) {
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     
     const data = await res.json();
-    if (data && data.display_name) {
-      selectedAddress.value = data.display_name;
-      searchQuery.value = data.display_name;
-    } else {
-      selectedAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    if (data && data.features && data.features.length > 0) {
+      const address = formatPhotonAddress(data.features[0].properties);
+      if (address) {
+        selectedAddress.value = address;
+        searchQuery.value = address;
+        return;
+      }
     }
+    // Fallback if no valid address
+    selectedAddress.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   } catch (error) {
     console.error("Reverse geocoding error", error);
     // If reverse geocoding fails, fallback to coordinates
