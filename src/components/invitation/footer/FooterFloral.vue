@@ -4,20 +4,7 @@
     <!-- Background Gradient -->
     <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(to bottom, #ffffff, #eefcf2); z-index: 0;"></div>
     
-    <!-- Floral Corner Bottom Left -->
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" 
-         style="position: absolute; bottom: -40px; left: -40px; width: clamp(180px, 40vw, 250px); opacity: 0.4; transform: scaleX(-1) scaleY(-1); pointer-events: none; z-index: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" 
-         alt="" />
-         
-    <!-- Floral Corner Bottom Right -->
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_48c178dd-6258-42fd-9ac9-b76b30ef3f76.webp" 
-         style="position: absolute; bottom: -40px; right: -40px; width: clamp(180px, 40vw, 250px); opacity: 0.4; transform: scaleY(-1); pointer-events: none; z-index: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" 
-         alt="" />
-
-    <!-- Center Top Floral Decor -->
-    <img src="https://media.mengundanganda.com/tema%20floral/rsvp/randidewi_febdf7bf-6b49-40da-954d-b0fd0e4902de.webp" 
-         style="position: absolute; top: -40px; left: 50%; transform: translateX(-50%); width: 220px; opacity: 0.35; pointer-events: none; z-index: 0;" 
-         alt="" />
+    
 
     <div style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin-top: 20px;">
       <p style="font-size: clamp(34px, 8vw, 48px); margin-bottom: 16px; color: #2d5a27; font-weight: 600; letter-spacing: 0.02em; margin-top: 0;" :style="{ fontFamily: themeConfig.fontHeading }">

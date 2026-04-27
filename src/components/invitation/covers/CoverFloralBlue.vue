@@ -12,7 +12,7 @@
         class="min-w-full min-h-full w-full h-full object-cover object-center scale-110 opacity-100"
       />
       <!-- White Overlay -->
-      <div class="absolute inset-0 bg-white/40"></div>
+      <div class="absolute inset-0 bg-white/60"></div>
       <div
         class="absolute inset-0 bg-gradient-to-b from-[#2c5f82]/20 via-[#2c5f82]/10 to-[#2c5f82]/80"
       ></div>
