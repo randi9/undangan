@@ -7,6 +7,14 @@
       <div style="width: 100vw; margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));">
         <div style="background-color: rgba(255, 255, 255, 0.95); width: 100%; padding: 180px 24px; position: relative; display: flex; flex-direction: column; align-items: center; -webkit-mask: radial-gradient(55% 120px at 50% 0%, transparent 99%, black 100%) top / 100% 50% no-repeat, radial-gradient(55% 120px at 50% 100%, transparent 99%, black 100%) bottom / 100% 50% no-repeat; mask: radial-gradient(55% 120px at 50% 0%, transparent 99%, black 100%) top / 100% 50% no-repeat, radial-gradient(55% 120px at 50% 100%, transparent 99%, black 100%) bottom / 100% 50% no-repeat;">
         
+        <!-- Top Right Floral -->
+        <img
+          ref="floralTopRight"
+          src="https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_f8410655-ccd6-40c3-b4b8-c159eea1b01b.webp"
+          alt="Floral Decor"
+          style="position: absolute; top: 100px; right: -150px; width: 350px; height: auto; z-index: 0; opacity: 0.6; pointer-events: none; transform-origin: top right;"
+        />
+        
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 60px; position: relative; width: 100%; max-width: 1024px; text-align: center;">
           <h2 style="font-size: clamp(56px, 10vw, 90px); font-weight: 800; margin-bottom: 16px; color: var(--theme-primary); position: relative; z-index: 10; letter-spacing: 0.025em; text-shadow: 0 1px 2px rgba(0,0,0,0.05);" :style="{ fontFamily: themeConfig.fontHeading }">Reservation</h2>
           <p style="color: var(--theme-text-light); font-size: clamp(14px, 3vw, 16px); margin-top: 8px; max-width: 512px; margin-left: auto; margin-right: auto; line-height: 1.625;">
@@ -115,6 +123,7 @@ const emit = defineEmits<{ (e: 'submitRsvp', form: { guest_name: string; attenda
 
 const form = reactive({ guest_name: '', attendance: 'hadir' as 'hadir' | 'tidak_hadir', guest_count: 1, message: '' });
 const rsvpWrapper = ref<HTMLElement | null>(null);
+const floralTopRight = ref<HTMLImageElement | null>(null);
 let ctx: gsap.Context | null = null;
 
 onMounted(() => {
@@ -122,6 +131,22 @@ onMounted(() => {
   ctx = gsap.context(() => {
     gsap.from(rsvpWrapper.value, { y: 80, opacity: 0, duration: 1.5, ease: 'power3.out', scrollTrigger: { trigger: rsvpWrapper.value, start: 'top 85%', toggleActions: 'play none none none' } });
 
+    if (floralTopRight.value) {
+      gsap.from(floralTopRight.value, {
+        scale: 0.5,
+        x: 100,
+        y: -100,
+        opacity: 0,
+        duration: 1.5,
+        ease: 'back.out(1.2)',
+        delay: 0.3,
+        scrollTrigger: {
+          trigger: rsvpWrapper.value,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      });
+    }
   });
 });
 onUnmounted(() => { ctx?.revert(); });
