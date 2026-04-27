@@ -171,6 +171,14 @@
             </div>
           </div>
         </div>
+        <!-- CTA: Lihat Semua Tema -->
+        <div class="lp-themes-cta lp-reveal" style="transition-delay: 600ms;">
+          <a href="/themes" class="lp-btn lp-btn-themes-cta">
+            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">palette</span>
+            Lihat Semua Koleksi Tema
+            <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">arrow_forward</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -1560,6 +1568,31 @@ const themesData = [
 .lp-theme-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* --- Themes CTA Button --- */
+.lp-themes-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.lp-btn-themes-cta {
+  background: var(--lp-bg);
+  color: var(--lp-accent-hover);
+  border: 2px solid var(--lp-accent-hover);
+  gap: 10px;
+  font-size: 15px;
+  padding: 14px 36px;
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.1);
+}
+
+.lp-btn-themes-cta:hover {
+  background: var(--lp-accent-hover);
+  color: #fff;
+  border-color: var(--lp-accent-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(59, 130, 246, 0.35);
 }
 
 /* --- Steps Timeline --- */

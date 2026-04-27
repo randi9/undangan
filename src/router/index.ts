@@ -81,6 +81,12 @@ if (subdomain) {
       component: () => import("@/views/OrderView.vue"),
       meta: { title: "Pesan Jasa Dibuatkan Undangan - MengundangAnda" },
     },
+    {
+      path: "/themes",
+      name: "public-themes",
+      component: () => import("@/views/PublicThemesView.vue"),
+      meta: { title: "Koleksi Tema Undangan - MengundangAnda" },
+    },
 
     // === Dashboard (Protected) ===
     {
