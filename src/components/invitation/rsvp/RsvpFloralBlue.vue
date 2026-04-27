@@ -30,7 +30,7 @@
           class="rsvp-floral left-floral"
           src="https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_f8410655-ccd6-40c3-b4b8-c159eea1b01b.webp"
           alt="Floral Decor"
-          style="position: absolute; bottom: 150px; left: 200px; width: 350px; height: auto; z-index: 0; opacity: 0.6; pointer-events: none; transform: scaleX(-1); transform-origin: bottom left;"
+          style="position: absolute; bottom: 100px; left: 200px; width: 350px; height: auto; z-index: 0; opacity: 0.6; pointer-events: none; transform: scaleX(-1); transform-origin: bottom left;"
         />
         
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 60px; position: relative; width: 100%; max-width: 1024px; text-align: center;">
