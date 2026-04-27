@@ -1,6 +1,6 @@
 <template>
-  <section v-if="photos && photos.length > 0" style="position: relative; width: 100%; padding: 64px 24px 120px; text-align: center; background-color: transparent; overflow: hidden; z-index: 20; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center;">
-    <h2 :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)', fontSize: 'clamp(36px, 6vw, 60px)', marginBottom: '32px', position: 'relative', zIndex: 10, letterSpacing: '0.025em', textShadow: '0 1px 2px rgba(0,0,0,0.05)' }">Our Gallery</h2>
+  <section v-if="photos && photos.length > 0" style="position: relative; width: 100%; padding: 64px 24px 32px; text-align: center; background-color: transparent; overflow: hidden; z-index: 20;">
+    <h2 :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)', fontSize: 'clamp(56px, 10vw, 90px)', fontWeight: '800', marginBottom: '32px', position: 'relative', zIndex: 10, letterSpacing: '0.025em', textShadow: '0 1px 2px rgba(0,0,0,0.05)' }">Our Gallery</h2>
     
     <div style="max-width: 42rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; position: relative; z-index: 10; width: 100%;">
       <div @touchstart="onTouchStart" @touchend="onTouchEnd" style="width: 80%; max-width: 320px; margin: 0 auto; aspect-ratio: 4 / 5; border-radius: 0.75rem; overflow: hidden; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); background-color: #f3f4f6;">

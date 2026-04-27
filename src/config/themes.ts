@@ -210,7 +210,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       secondary: "#6b8fa3",
       text: "#2c3e50",
       textLight: "#5a7a8a",
-      fontHeading: "Parisienne, cursive",
+      fontHeading: "'Great Vibes', cursive",
       fontBody: "Cormorant, serif",
       overlayGradient:
         "linear-gradient(180deg, rgba(74,124,155,0.5) 0%, rgba(74,124,155,0.8) 100%)",
