@@ -1,5 +1,13 @@
 <template>
   <section ref="sectionRef" class="relative min-h-[100dvh] w-full overflow-hidden bg-white">
+    <!-- Background — full cover -->
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-50">
+      <img
+        src="https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_28658e27-e94d-40ca-b897-607ef8ea0d83.webp"
+        alt="Quote Background"
+        class="min-w-full min-h-full w-full h-full object-cover object-center"
+      />
+    </div>
     <!-- Quote Content -->
     <div class="absolute top-40 md:top-32 left-1/2 -translate-x-1/2 z-10 w-full px-6 max-w-[70vw] sm:max-w-[400px] md:max-w-[600px] text-center">
       <div v-if="quote" class="relative">

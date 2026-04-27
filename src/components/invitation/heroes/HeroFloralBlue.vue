@@ -59,6 +59,22 @@
       alt="Hero Bottom Decor 2"
       class="absolute bottom-[-10px] left-0 w-full h-auto max-w-none z-30 pointer-events-none object-cover object-bottom"
     />
+
+    <!-- Butterflies -->
+    <div
+      v-for="b in butterfliesConfig"
+      :key="b.id"
+      class="butterfly-container absolute z-[40] pointer-events-none flex justify-center w-[40px] h-[40px] opacity-0"
+      :style="`bottom: ${b.bottom}; ${b.horizontal}; perspective: 300px; transform-style: preserve-3d;`"
+    >
+      <div class="butterfly-left w-1/2 h-full origin-right">
+        <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_eee2a456-5544-48be-af54-13d254482903.webp" class="w-full h-full object-contain object-right" style="transform: scaleX(-1);" alt="Left Wing" />
+      </div>
+      <div class="butterfly-right w-1/2 h-full origin-left">
+        <img src="https://media.mengundanganda.com/floral-blue/hero%20section/randidewi_eee2a456-5544-48be-af54-13d254482903.webp" class="w-full h-full object-contain object-left" alt="Right Wing" />
+      </div>
+    </div>
+
   </section>
 </template>
 
@@ -74,12 +90,27 @@ const sectionRef = ref<HTMLElement | null>(null);
 const heroContent = ref<HTMLDivElement | null>(null);
 const animatedAsset = ref<HTMLImageElement | null>(null);
 
+const butterfliesConfig = [
+  // Right side
+  { id: 1, side: 'right', bottom: '15%', horizontal: 'right: 18%', scale: 0.6, delay: 0, startX: -200, startY: 300, startRot: -20, endRot: 15 },
+  { id: 2, side: 'right', bottom: '18%', horizontal: 'right: 15%', scale: 1.0, delay: 0.2, startX: -250, startY: 350, startRot: -25, endRot: 5 },
+  { id: 3, side: 'right', bottom: '16%', horizontal: 'right: 24%', scale: 0.8, delay: 0.4, startX: -180, startY: 280, startRot: -15, endRot: 10 },
+  { id: 4, side: 'right', bottom: '20%', horizontal: 'right: 7%', scale: 0.9, delay: 0.6, startX: -300, startY: 320, startRot: -22, endRot: -5 },
+
+  // Left side
+  { id: 5, side: 'left', bottom: '15%', horizontal: 'left: 18%', scale: 0.6, delay: 0.1, startX: 200, startY: 300, startRot: 20, endRot: -15 },
+  { id: 6, side: 'left', bottom: '18%', horizontal: 'left: 15%', scale: 1.0, delay: 0.3, startX: 250, startY: 350, startRot: 25, endRot: -5 },
+  { id: 7, side: 'left', bottom: '16%', horizontal: 'left: 24%', scale: 0.8, delay: 0.5, startX: 180, startY: 280, startRot: 15, endRot: -10 },
+  { id: 8, side: 'left', bottom: '20%', horizontal: 'left: 7%', scale: 0.9, delay: 0.7, startX: 300, startY: 320, startRot: 22, endRot: 5 },
+];
+
 const cloud1 = ref<HTMLImageElement | null>(null);
 const cloud2 = ref<HTMLImageElement | null>(null);
 
 let entranceTimeline: gsap.core.Timeline | null = null;
 let cloudTweens: gsap.core.Tween[] = [];
 let treeTweens: gsap.core.Tween[] = [];
+let butterflyTweens: gsap.core.Tween[] = [];
 
 onMounted(() => {
   const tl = gsap.timeline();
@@ -126,11 +157,63 @@ onMounted(() => {
   // Cloud animations
   if (cloud1.value) cloudTweens.push(gsap.to(cloud1.value, { x: 100, duration: 30, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
   if (cloud2.value) cloudTweens.push(gsap.to(cloud2.value, { x: -120, duration: 35, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+
+  // Butterfly animation
+  const butterflyEls = gsap.utils.toArray<HTMLDivElement>('.butterfly-container');
+  butterflyEls.forEach((bContainer, index) => {
+    const config = butterfliesConfig[index];
+    const bLeft = bContainer.querySelector('.butterfly-left');
+    const bRight = bContainer.querySelector('.butterfly-right');
+
+    const flapSpeedFast = 0.04 + Math.random() * 0.02;
+
+    // Set initial slight rotation so wings aren't completely flat when open
+    gsap.set(bLeft, { rotateY: -10 });
+    gsap.set(bRight, { rotateY: 10 });
+
+    const flapLeft = gsap.to(bLeft, {
+      rotateY: 65,
+      duration: flapSpeedFast,
+      yoyo: true,
+      repeat: -1,
+      ease: "sine.inOut"
+    });
+    
+    const flapRight = gsap.to(bRight, {
+      rotateY: -65,
+      duration: flapSpeedFast,
+      yoyo: true,
+      repeat: -1,
+      ease: "sine.inOut"
+    });
+
+    butterflyTweens.push(flapLeft, flapRight);
+
+    tl.fromTo(bContainer,
+      { y: config.startY, x: config.startX, opacity: 0, rotation: config.startRot, scale: config.scale * 1.5 },
+      {
+        y: 0,
+        x: 0,
+        opacity: 1,
+        rotation: config.endRot,
+        scale: config.scale,
+        duration: 3.5 + Math.random() * 0.5,
+        ease: "power2.out",
+        onComplete: () => {
+          // Smoothly slow down the flapping using timeScale
+          gsap.to([flapLeft, flapRight], { timeScale: 0.15 + Math.random() * 0.1, duration: 1 });
+          // Butterfly lands completely still (no sway animation)
+        }
+      },
+      "treesStart+=" + (1.5 + config.delay)
+    );
+  });
 });
 
 onBeforeUnmount(() => {
   if (entranceTimeline) entranceTimeline.kill();
   cloudTweens.forEach((t) => t.kill());
   treeTweens.forEach((t) => t.kill());
+  butterflyTweens.forEach((t) => t.kill());
 });
 </script>
