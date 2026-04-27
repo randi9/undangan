@@ -7,9 +7,9 @@
   >
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
       <img
-        src="https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_28658e27-e94d-40ca-b897-607ef8ea0d83.webp"
+        src="https://media.mengundanganda.com/floral-blue/randidewi_b6067503-cc9c-40b2-8adf-deaf357fa954.webp"
         alt="Cover Background"
-        class="min-w-full min-h-full w-full h-full object-cover object-center scale-110"
+        class="min-w-full min-h-full w-full h-full object-cover object-center scale-110 opacity-100"
       />
       <div
         class="absolute inset-0 bg-gradient-to-b from-[#2c5f82]/20 via-[#2c5f82]/10 to-[#2c5f82]/80"

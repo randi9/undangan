@@ -135,7 +135,7 @@ onMounted(() => {
   entranceTimeline = gsap.timeline({
     scrollTrigger: {
       trigger: sectionRef.value,
-      start: "top 25%", // Triggers when the section is about 75% opened in the viewport
+      start: "top 50%", // Triggers when the section is about 50% opened in the viewport
       toggleActions: "play none none reverse"
     }
   });
