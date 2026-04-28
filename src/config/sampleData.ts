@@ -156,7 +156,12 @@ export const SAMPLE_INVITATIONS: Record<string, Invitation> = {
       { url: 'https://media.mengundanganda.com/contohfloralblue/john_8c936982-a0d1-4816-aadc-5a5698232bbd.webp', caption: '' },
     ],
     streaming_enabled: true,
-    streaming_url: 'https://youtu.be/kY9CpANAjos?si=DctHDw5EuXavKk3P'
+    streaming_url: 'https://youtu.be/kY9CpANAjos?si=DctHDw5EuXavKk3P',
+    bank_holder: 'Johnathan Smith',
+    banks: [
+      { bank_name: 'BCA', bank_account: '1234567890', bank_holder: 'Johnathan Smith' },
+      { bank_name: 'Mandiri', bank_account: '0987654321', bank_holder: 'Sarah Anderson' },
+    ],
   }),
   elegant: createSampleInvitation('elegant'),
   floral: createSampleInvitation('floral'),
