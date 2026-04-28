@@ -40,6 +40,27 @@ async function bootstrap() {
     });
   }
 
+  // --- Global Error Handler ---
+  // Catches unhandled errors in components to prevent blank white pages
+  app.config.errorHandler = (err, instance, info) => {
+    console.error("[Vue Error]", err, "\nComponent:", instance, "\nInfo:", info);
+
+    // Show a user-friendly toast if possible
+    const errorEl = document.getElementById("global-error-toast");
+    if (errorEl) {
+      errorEl.textContent = "Terjadi kesalahan. Coba refresh halaman.";
+      errorEl.style.display = "flex";
+      setTimeout(() => {
+        errorEl.style.display = "none";
+      }, 5000);
+    }
+  };
+
+  // Catch unhandled promise rejections (e.g. failed API calls)
+  window.addEventListener("unhandledrejection", (event) => {
+    console.error("[Unhandled Rejection]", event.reason);
+  });
+
   app.mount("#app");
 }
 

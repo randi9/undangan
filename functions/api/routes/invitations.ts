@@ -1,6 +1,7 @@
 import { requireUser, unauthorized } from "../shared/auth";
 import { getEffectiveMethod, json } from "../shared/http";
 import { deleteR2Url } from "../shared/storage";
+import { rateLimit, getClientIp } from "../shared/rateLimit";
 import type { ApiDispatcher } from "../types/api";
 
 function parseLoveStory(value: unknown) {
@@ -216,10 +217,11 @@ async function bumpInvitationView(
   invitation: any,
   request: Request,
 ) {
-  const viewerIp =
-    request.headers.get("cf-connecting-ip") ||
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    "unknown";
+  const viewerIp = getClientIp(request);
+
+  // Rate limit: 60 view bumps per IP per 10 minutes
+  const limited = rateLimit(`view:${viewerIp}`, 60, 10 * 60 * 1000);
+  if (limited) return;
 
   const { data: existingView } = await supabase
     .from("invitation_views")
@@ -230,10 +232,17 @@ async function bumpInvitationView(
 
   if (existingView) return;
 
+  // Detect device type and referrer for analytics
+  const ua = request.headers.get("user-agent") || "";
+  const isMobile = /Mobile|Android|iPhone|iPad/i.test(ua);
+  const referer = request.headers.get("referer") || "";
+
   await supabase.from("invitation_views").insert([
     {
       invitation_id: invitation.id,
       viewer_ip: viewerIp,
+      device_type: isMobile ? "mobile" : "desktop",
+      referer_url: referer.slice(0, 500),
     },
   ]);
 
