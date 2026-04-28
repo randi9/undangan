@@ -1,49 +1,12 @@
 <template>
-  <section style="position: relative; max-width: 100%; margin: 0 auto; text-align: center; z-index: 10; overflow: hidden; background-color: rgba(213, 245, 204, 0.6);">
+  <section style="position: relative; max-width: 100%; margin: 0 auto; text-align: center; z-index: 10; overflow: hidden; background-color: #fffaf2;">
     
     <!-- OVERLAY TRANSISI MIST / KABUT (Untuk melembutkan perpindahan warna Gallery ke RSVP) -->
-    <!-- Overlay ini diletakkan di atas layer bunga agar batas keras terpotongnya bunga tertutup kabut -->
-    <div ref="mistOverlay" style="position: absolute; top: -1px; left: 0; right: 0; height: 180px; background: linear-gradient(to bottom, rgba(213, 245, 204, 0.6) 0%, rgba(213, 245, 204, 0.6) 30%, transparent 100%); z-index: 30; pointer-events: none;"></div>
+    <div ref="mistOverlay" style="position: absolute; top: -1px; left: 0; right: 0; height: 180px; background: linear-gradient(to bottom, #fffaf2 0%, #fffaf2 30%, transparent 100%); z-index: 30; pointer-events: none;"></div>
     
     <!-- BUNGKUSAN KONTEN UTAMA YANG DIANIMASIKAN -->
     <div ref="rsvpWrapper" style="position: relative; padding: 48px 24px 100px; max-width: 1024px; margin: 0 auto; z-index: 10;">
     
-    <!-- ============================================== -->
-    <!-- DEKORASI BUNGA BAGIAN ATAS (TOP DECORATIONS)   -->
-    <!-- ============================================== -->
-    <!-- PANDUAN MENGOTAK-NGATIK POSISI: 
-         - Ubah nilai "top: ..." untuk menaikkan/menurunkan posisi keseluruhan set bunga
-         - Ubah nilai "left: ..." atau "right: ..." pada masing-masing pembungkus untuk menggeser ke samping
-         - Ubah nilai "width: clamp(...)" pada gambar "img" untuk memperbesar/memperkecil skalanya
-    -->
-    <div style="position: absolute; top: 0; left: 0; right: 0; width: 100%; height: 0; pointer-events: none;">
-        
-        <!-- KIRI -->
-        <div style="position: absolute; left: -10px; top: -50px; z-index: 5;">
-          <div ref="decorTopLeft">
-            <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" 
-                 style="width: clamp(180px, 28vw, 280px); transform: scaleX(-1); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" alt="Decor Left" />
-          </div>
-        </div>
-        
-        <!-- TENGAH -->
-        <div style="position: absolute; left: 50%; transform: translateX(-50%); top: -30px; z-index: 6;">
-          <div ref="decorTopCenter">
-            <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_01297b2b-dbbe-4b77-aedd-58249a231062.webp" 
-                 style="width: clamp(100px, 35vw, 300px); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" alt="Decor Center" />
-          </div>
-        </div>
-        
-        <!-- KANAN -->
-        <div style="position: absolute; right: -10px; top: -50px; z-index: 5;">
-          <div ref="decorTopRight">
-            <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" 
-                 style="width: clamp(180px, 28vw, 280px); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));" alt="Decor Right" />
-          </div>
-        </div>
-
-    </div>
-    <!-- ============================================== -->
     <!-- Header with Floral Ornament -->
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 64px; position: relative;">
       <h2 style="font-size: clamp(36px, 6vw, 60px); font-weight: bold; margin-bottom: 16px; color: var(--theme-primary); position: relative; z-index: 10; margin-top: 70px; letter-spacing: 0.025em; text-shadow: 0 1px 2px rgba(0,0,0,0.05);" 
@@ -176,39 +139,6 @@
       </div>
     </div>
   </div>
-
-    <!-- ============================================== -->
-    <!-- DEKORASI BUNGA BAGIAN BAWAH (BOTTOM DECORATIONS) -->
-    <!-- ============================================== -->
-    <!-- Posisi bottom: 0 agar menempel tepat di garis bawah area RSVP -->
-    <div style="position: absolute; bottom: 0; left: 0; right: 0; width: 100%; height: 0; pointer-events: none; ">
-        
-        <!-- KIRI BAWAH (di-flip terhadap sumbu X -> ke atas) -->
-        <div style="position: absolute; left: 10px; bottom: -75px; z-index: 5;">
-          <div>
-            <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" 
-                 style="width: clamp(180px, 28vw, 280px); transform: scaleX(-1) scaleY(-1); filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" alt="Decor Bottom Left" />
-          </div>
-        </div>
-        
-        <!-- TENGAH BAWAH (di-flip terhadap sumbu X -> ke atas) -->
-        <div style="position: absolute; left: 50%; transform: translateX(-50%); bottom: -20px; z-index: 6;">
-          <div>
-            <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_01297b2b-dbbe-4b77-aedd-58249a231062.webp" 
-                 style="width: clamp(100px, 20vw, 150px); transform: scaleY(-1); filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" alt="Decor Bottom Center" />
-          </div>
-        </div>
-        
-        <!-- KANAN BAWAH (di-flip terhadap sumbu X -> ke atas) -->
-        <div style="position: absolute; right: 10px; bottom: -75px; z-index: 5;">
-          <div>
-            <img src="https://media.mengundanganda.com/tema%20floral/rsvp/sashkeh_5a4f8c12-0a17-4bc8-8639-a527f7c3038e.webp" 
-                 style="width: clamp(180px, 28vw, 280px); transform: scaleY(-1); filter: drop-shadow(0 -4px 10px rgba(0,0,0,0.15));" alt="Decor Bottom Right" />
-          </div>
-        </div>
-
-    </div>
-    <!-- ============================================== -->
 
   </section>
 </template>

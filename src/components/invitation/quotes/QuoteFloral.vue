@@ -1,15 +1,6 @@
 <template>
   <section ref="sectionRef" v-if="quote" class="relative overflow-visible z-0 bg-[#ffdfd4]/20">
-    
-    <!-- Background Image -->
-    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-      <img
-        src="https://media.mengundanganda.com/tema%20floral/quotes%20section/6cd02fb2-7e3f-47a4-b2d6-9f3ea8a653be.webp"
-        alt="Quotes Background"
-        class="min-w-full min-h-full w-full h-full object-cover object-center scale-[1.15]"
-      />
-      <div class="absolute inset-0 bg-[#ffdfd4]/10 mix-blend-multiply"></div>
-    </div>
+
     
 
     
@@ -17,7 +8,7 @@
     <div class="relative w-full min-h-[100dvh] flex flex-col items-center justify-center py-12 md:py-24 px-6 text-center">
       
       <!-- Margin bottom palsu (250px) agar komposisi di tengah layar sempurna dan tidak akan menyentuh bagian Footer! -->
-      <div class="relative w-[250px] md:w-[420px] lg:w-[480px] max-w-[80vw] aspect-[2/3] mx-auto z-10 flex items-center justify-center mb-[250px] md:mb-[350px]">
+      <div class="relative w-[250px] md:w-[420px] lg:w-[480px] max-w-[80vw] aspect-[2/3] mx-auto z-10 flex items-center justify-center mb-[250px] md:mb-[350px] -translate-y-[10vh] md:-translate-y-[15vh]">
       
       <!-- Top Corner Flowers (Behind) -->
       <div class="absolute top-[5%] md:top-[8%] -left-[100px] md:-left-[160px] lg:-left-[200px] z-[5] scale-x-[-1]">

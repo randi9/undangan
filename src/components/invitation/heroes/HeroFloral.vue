@@ -25,7 +25,7 @@
     </div>
 
     <!-- Intro Text (Inside Arch) -->
-    <div ref="archText" class="absolute inset-0 z-[5] flex items-center justify-center px-6 pointer-events-none pb-[20vh] opacity-0">
+    <div ref="archText" class="absolute inset-0 z-[5] flex items-center justify-center px-6 pointer-events-none pb-[20dvh] opacity-0">
       <h2 class="text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold text-[#3d4a40] text-center uppercase">
         <div class="block">STEP INTO OUR</div>
         <div class="block mt-2">BEAUTIFUL BEGINNING...</div>
@@ -237,10 +237,10 @@ onMounted(() => {
   gsap.set(archText.value, { opacity: 0 });
 
   // Play Sequence
-  tl.to(archText.value, { opacity: 1, duration: 1.5, delay: 0.5 }) // Fade in smoothly
-    .to(archText.value, { opacity: 1, duration: 1.0 }) // Hold text (delay before fading out)
-    .to(archText.value, { opacity: 0, duration: 1.0 }) // Fade out smoothly
-    .to(sceneWrapper.value, { scale: 1.0, duration: 2.5, ease: 'power2.inOut' }) // Zoom out Scene (Background + Flowers)
+  tl.to(archText.value, { opacity: 1, duration: 0.8, delay: 0.2 }) // Fade in smoothly
+    .to(archText.value, { opacity: 1, duration: 0.6 }) // Hold text (delay before fading out)
+    .to(archText.value, { opacity: 0, duration: 0.6 }) // Fade out smoothly
+    .to(sceneWrapper.value, { scale: 1.0, duration: 1.8, ease: 'power2.inOut' }) // Zoom out Scene (Background + Flowers)
     .addLabel("zoomEnd")
     .to(petalsContainer.value, { 
       opacity: 1, 
@@ -253,8 +253,8 @@ onMounted(() => {
         spawnTimer = gsap.delayedCall(3.2, startSpawningLoop);
       }
     }, "zoomEnd-=0.5")
-    // Wait ~1.5 seconds after zoom out, then reveal hero content (names/glassmorphism oval)
-    .to(heroContent.value, { opacity: 1, y: 0, duration: 1.8, ease: 'power3.out' }, "zoomEnd+=1.5");
+    // Wait slightly after zoom out, then reveal hero content (names/glassmorphism oval)
+    .to(heroContent.value, { opacity: 1, y: 0, duration: 1.5, ease: 'power3.out' }, "zoomEnd+=0.5");
 });
 
 onBeforeUnmount(() => {

@@ -3,6 +3,9 @@
     <!-- Full width floral image sticking to bottom -->
     <img src="https://media.mengundanganda.com/tema%20floral/gallery%20section/ca980a43-47c7-431c-910d-c676e749a8fe.webp" style="position: absolute; bottom: 0; left: 0; width: 100%; height: auto; outline: none; pointer-events: none; z-index: 0;" />
     
+    <!-- Container Putih (Overlay) -->
+    <div style="position: absolute; inset: 0; background-color: rgba(255, 255, 255, 0.7); z-index: 1; pointer-events: none;"></div>
+    
     <!-- Top Right Decoration -->
     <img src="https://media.mengundanganda.com/tema%20floral/gallery%20section/enneggg_7bc7e912-01fb-486e-b873-66803c7e63ae.webp" style="position: absolute; top: 0; right: 0; width: clamp(120px, 25vw, 200px); height: auto; pointer-events: none; z-index: 1;" />
     

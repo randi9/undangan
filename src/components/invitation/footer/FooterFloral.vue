@@ -1,8 +1,8 @@
 <template>
-  <footer style="padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background-color: #ffffff;">
+  <footer style="padding: 100px 24px 60px; text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background-color: #fffaf2;">
     
     <!-- Background Gradient -->
-    <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(to bottom, #ffffff, #eefcf2); z-index: 0;"></div>
+    <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(to bottom, #fffaf2, #fffaf2); z-index: 0;"></div>
     
     
 
