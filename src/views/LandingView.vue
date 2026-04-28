@@ -646,17 +646,6 @@ const testimonials = [
 
 const themesData = [
   {
-    id: 'elegant',
-    name: 'Elegant Gold',
-    thumbnail: 'https://media.mengundanganda.com/floral/43498db7-3a42-4aaa-a066-a0322604ac92.webp',
-    description: 'Desain klasik premium dengan aksen emas dan font serif yang mewah. Cocok untuk acara formal dan mewah yang membutuhkan sentuhan kemewahan.',
-    color: '#c9a96e',
-    bgColor: '#2c2417',
-    bgGradient: 'linear-gradient(135deg, #2c2417, #5a4b3d)',
-    sampleUrl: '/sample/elegant',
-    icon: 'solar:crown-bold-duotone',
-  },
-  {
     id: 'floral',
     name: 'Floral',
     thumbnail: 'https://media.mengundanganda.com/floral/24b44e21-d97b-4b62-bb88-e29eea9c8e18.webp',
@@ -666,17 +655,6 @@ const themesData = [
     bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
     sampleUrl: '/sample/floral',
     icon: 'solar:leaf-bold-duotone',
-  },
-  {
-    id: 'minimalist',
-    name: 'Clean Minimalist',
-    thumbnail: 'https://media.mengundanganda.com/floral/79f8508a-609c-4b27-9803-bfc1c2fbea16.webp',
-    description: 'Tampilan bersih & modern dengan ruang putih luas dan font sans-serif tebal. Untuk pasangan yang mencintai kesederhanaan dan keanggunan modern.',
-    color: '#111111',
-    bgColor: '#f9f9f9',
-    bgGradient: 'linear-gradient(135deg, #1e293b, #475569)',
-    sampleUrl: '/sample/minimalist',
-    icon: 'solar:minimalistic-magnifer-bold-duotone',
   },
   {
     id: 'elegant_blue',

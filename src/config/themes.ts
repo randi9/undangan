@@ -19,6 +19,8 @@ export interface ThemeRegistryEntry {
   bgGradient: string;
   sampleUrl: string;
   defaultGalleryType: "carousel" | "masonry";
+  /** If true, theme is hidden from all catalog/picker UIs but still works for existing invitations */
+  hidden?: boolean;
   /** Preview card styling for theme picker modals */
   previewStyle: {
     bg: string;
@@ -35,6 +37,7 @@ export interface ThemeRegistryEntry {
 export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
   elegant: {
     id: "elegant",
+    hidden: true,
     name: "Elegant Gold",
     thumbnail:
       "https://media.mengundanganda.com/floral/43498db7-3a42-4aaa-a066-a0322604ac92.webp",
@@ -109,6 +112,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
   },
   minimalist: {
     id: "minimalist",
+    hidden: true,
     name: "Clean Minimalist",
     thumbnail:
       "https://media.mengundanganda.com/floral/79f8508a-609c-4b27-9803-bfc1c2fbea16.webp",
@@ -240,5 +244,8 @@ export const THEME_IDS = Object.keys(THEME_REGISTRY) as Array<
   ThemeRegistryEntry["id"]
 >;
 
-/** All available themes as array (for iteration) */
-export const THEME_LIST = Object.values(THEME_REGISTRY);
+/** All themes including hidden (for internal use like InvitationView) */
+export const THEME_LIST_ALL = Object.values(THEME_REGISTRY);
+
+/** Visible themes only (for catalogs, pickers, landing page) */
+export const THEME_LIST = THEME_LIST_ALL.filter((t) => !t.hidden);
