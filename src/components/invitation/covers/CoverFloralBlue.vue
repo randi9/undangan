@@ -665,42 +665,36 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 270px;
-            height: 240px;
+            width: 300px;
+            height: 300px;
           "
         >
           <img
-            src="https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_9e2676f0-4d38-494e-b308-c2cd49af5c46.webp"
+            src="https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_8d24a56b-9d96-4184-b87e-b925812bd067.webp"
             style="
               position: absolute;
               top: 50%;
               left: 50%;
               transform: translate(-50%, -50%);
-              width: 250px;
-              height: 250px;
+              width: 280px;
+              height: 280px;
               object-fit: contain;
               z-index: 20;
               pointer-events: none;
             "
-            alt="Love Frame Overlay"
+            alt="Circle Frame Overlay"
           />
           <div style="filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.15)); z-index: 10; position: relative;">
             <img
               :src="coverImage"
               style="
                 display: block;
-                width: 215px;
-                height: 195px;
+                width: 240px;
+                height: 240px;
                 object-fit: cover;
-                transform: translateY(-2px);
-                -webkit-mask-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIgMyAyMCAxOC4zNSI+PHBhdGggZD0iTTEyIDIxLjM1bC0xLjQ1LTEuMzJDNS40IDE1LjM2IDIgMTIuMjggMiA4LjUgMiA1LjQyIDQuNDIgMyA3LjUgM2MxLjc0IDAgMy40MS44MSA0LjUgMi4wOUMxMy4wOSAzLjgxIDE0Ljc2IDMgMTYuNSAzIDE5LjU4IDMgMjIgNS40MiAyMiA4LjVjMCAzLjc4LTMuNCA2Ljg2LTguNTUgMTEuNTRTMTIgMjEuMzV6Ii8+PC9zdmc+');
-                mask-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjIgMyAyMCAxOC4zNSI+PHBhdGggZD0iTTEyIDIxLjM1bC0xLjQ1LTEuMzJDNS40IDE1LjM2IDIgMTIuMjggMiA4LjUgMiA1LjQyIDQuNDIgMyA3LjUgM2MxLjc0IDAgMy40MS44MSA0LjUgMi4wOUMxMy4wOSAzLjgxIDE0Ljc2IDMgMTYuNSAzIDE5LjU4IDMgMjIgNS40MiAyMiA4LjVjMCAzLjc4LTMuNCA2Ljg2LTguNTUgMTEuNTRTMTIgMjEuMzV6Ii8+PC9zdmc+');
-                -webkit-mask-size: 100% 100%;
-                mask-size: 100% 100%;
-                -webkit-mask-repeat: no-repeat;
-                mask-repeat: no-repeat;
-                -webkit-mask-position: center;
-                mask-position: center;
+                border-radius: 50%;
+                -webkit-mask-image: radial-gradient(circle, black 50%, transparent 78%);
+                mask-image: radial-gradient(circle, black 50%, transparent 78%);
               "
               alt="Cover Photo"
             />
