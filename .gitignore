@@ -17,6 +17,7 @@ coverage
 # Environment files
 .env
 .env.*
+.dev.vars
 server/.env
 server/.env.*
 !.env.example
