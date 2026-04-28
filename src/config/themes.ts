@@ -53,7 +53,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       headerText: "The Wedding Of",
       headerStyle:
         "font-size: 8px; letter-spacing: 3px; color: #c9a96e; text-transform: uppercase;",
-      nameText: "Romeo & Juliet",
+      nameText: "John & Sarah",
       nameStyle:
         "font-family: 'Great Vibes', cursive; font-size: 22px; margin-top: 4px;",
     },
@@ -90,7 +90,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       headerText: "The Wedding",
       headerStyle:
         "font-size: 8px; letter-spacing: 3px; color: #e6e0d4; text-transform: uppercase;",
-      nameText: "Romeo & Juliet",
+      nameText: "John & Sarah",
       nameStyle:
         "font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; margin-top: 4px;",
     },
@@ -128,7 +128,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       headerText: "Wedding",
       headerStyle:
         "font-size: 8px; letter-spacing: 5px; color: #666; text-transform: uppercase;",
-      nameText: "R & J",
+      nameText: "J & S",
       nameStyle:
         "font-family: 'Inter', sans-serif; font-weight: 300; font-size: 22px; margin-top: 4px; letter-spacing: -1px;",
     },
@@ -165,7 +165,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       headerText: "The Wedding Of",
       headerStyle:
         "font-size: 8px; letter-spacing: 3px; color: #A3B5C3; text-transform: uppercase;",
-      nameText: "Romeo & Juliet",
+      nameText: "John & Sarah",
       nameStyle:
         "font-family: 'Parisienne', cursive; font-size: 28px; margin-top: 4px;",
     },
@@ -202,7 +202,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       headerText: "The Wedding",
       headerStyle:
         "font-size: 8px; letter-spacing: 3px; color: #b8d4e3; text-transform: uppercase;",
-      nameText: "Romeo & Juliet",
+      nameText: "John & Sarah",
       nameStyle:
         "font-family: 'Parisienne', cursive; font-size: 22px; margin-top: 4px;",
     },
