@@ -1,5 +1,5 @@
 <template>
-  <section ref="sectionRef" v-if="hasDate" style="padding-top:40px;" class="py-10 pb-[15%] overflow-hidden relative min-h-[66vh] flex flex-col items-center justify-start px-6 text-center bg-[var(--theme-surface)]">
+  <section ref="sectionRef" v-if="hasDate" style="padding-top:40px;" class="py-10 pb-[5%] overflow-hidden relative min-h-[50dvh] flex flex-col items-center justify-start px-6 text-center bg-[var(--theme-surface)]">
     
     <!-- Awan Kiri (Muncul sedikit dari kiri, Gerak Pelan Biasa) -->
     <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/7180e6da-fcc2-44b7-b8d4-ffaa3f73b346.webp" 
@@ -69,24 +69,27 @@
     </div>
     </div>
     
-    <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/2bf93382-fff2-4180-8fa5-d91e7ed668be.webp" class="absolute bottom-0 left-0 w-full h-auto pointer-events-none z-0 transform -scale-x-100" alt="Floral Ornament Bottom" />
+    <!-- Grass Wrapper (Pushed down to cut the bottom) -->
+    <div class="absolute inset-0 pointer-events-none translate-y-[20%] md:translate-y-[25%]">
+      <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/2bf93382-fff2-4180-8fa5-d91e7ed668be.webp" class="absolute bottom-0 left-0 w-full h-auto pointer-events-none z-0 transform -scale-x-100" alt="Floral Ornament Bottom" />
 
-    <!-- Grass Assets Overlay -->
-    <div v-for="(g, i) in grasses" :key="'grass'+i"
-         class="absolute pointer-events-none z-[1]"
-         :style="{ left: g.left, bottom: g.bottom, transform: g.flip ? 'scaleX(-1)' : 'none' }">
-         <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/fe50069a-9362-4461-b606-1600648e50f1.webp" 
-              class="sway-grass drop-shadow-sm" 
-              :style="{ width: g.width, animationDuration: g.duration, animationDelay: g.delay }" />
-    </div>
+      <!-- Grass Assets Overlay -->
+      <div v-for="(g, i) in grasses" :key="'grass'+i"
+           class="absolute pointer-events-none z-[1]"
+           :style="{ left: g.left, bottom: g.bottom, transform: g.flip ? 'scaleX(-1)' : 'none' }">
+           <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/fe50069a-9362-4461-b606-1600648e50f1.webp" 
+                class="sway-grass drop-shadow-sm" 
+                :style="{ width: g.width, animationDuration: g.duration, animationDelay: g.delay }" />
+      </div>
 
-    <!-- Dandelion Assets Overlay -->
-    <div v-for="(d, i) in dandelions" :key="'dandelion'+i"
-         class="absolute pointer-events-none z-[2]"
-         :style="{ left: d.left, bottom: d.bottom, transform: d.flip ? 'scaleX(-1)' : 'none' }">
-         <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/7e196439-ea2b-4325-a844-ebff3113d147.webp" 
-              class="sway-dandelion drop-shadow-sm" 
-              :style="{ width: d.width, animationDuration: d.duration, animationDelay: d.delay }" />
+      <!-- Dandelion Assets Overlay -->
+      <div v-for="(d, i) in dandelions" :key="'dandelion'+i"
+           class="absolute pointer-events-none z-[2]"
+           :style="{ left: d.left, bottom: d.bottom, transform: d.flip ? 'scaleX(-1)' : 'none' }">
+           <img src="https://media.mengundanganda.com/tema%20floral/coundown%20section/7e196439-ea2b-4325-a844-ebff3113d147.webp" 
+                class="sway-dandelion drop-shadow-sm" 
+                :style="{ width: d.width, animationDuration: d.duration, animationDelay: d.delay }" />
+      </div>
     </div>
 
     <!-- Dandelion Image Seeds Overlay -->
@@ -155,32 +158,32 @@ const dandelions = [
 // Array konfigurasi benih gambar (melayang terstruktur per-grup, tebaran area luas)
 const imgSeeds = [
   // GRUP 1: Terbang secara acak dari tepi luar kiri membentang menuju tengah
-  { left: '-15%', bottom: '5%',  size: '18px', duration: '16s', delay: '0s',   wobble: '1.2s', tx: '95vw',  ty: '-60vh' },
-  { left: '2%',   bottom: '15%', size: '24px', duration: '16s', delay: '0.2s', wobble: '2s',   tx: '110vw', ty: '-50vh' },
-  { left: '-8%',  bottom: '22%', size: '15px', duration: '16s', delay: '0.4s', wobble: '1.5s', tx: '85vw',  ty: '-70vh' },
-  { left: '18%',  bottom: '2%',  size: '20px', duration: '16s', delay: '0.6s', wobble: '1.8s', tx: '90vw',  ty: '-45vh' },
-  { left: '22%',  bottom: '28%', size: '16px', duration: '16s', delay: '0.1s', wobble: '2.2s', tx: '105vw', ty: '-65vh' },
-  { left: '-5%',  bottom: '18%', size: '12px', duration: '16s', delay: '0.3s', wobble: '1.3s', tx: '82vw',  ty: '-55vh' },
-  { left: '30%',  bottom: '10%', size: '14px', duration: '16s', delay: '0.8s', wobble: '2.4s', tx: '95vw',  ty: '-72vh' },
-  { left: '8%',   bottom: '0%',  size: '22px', duration: '16s', delay: '0.5s', wobble: '1.7s', tx: '98vw',  ty: '-48vh' },
-  { left: '-2%',  bottom: '24%', size: '17px', duration: '16s', delay: '0.7s', wobble: '2.1s', tx: '115vw', ty: '-62vh' },
-  { left: '15%',  bottom: '12%', size: '19px', duration: '16s', delay: '0.9s', wobble: '1.6s', tx: '88vw',  ty: '-58vh' },
-  { left: '25%',  bottom: '5%',  size: '13px', duration: '16s', delay: '0.4s', wobble: '1.4s', tx: '98vw',  ty: '-68vh' },
-  { left: '-12%', bottom: '26%', size: '21px', duration: '16s', delay: '0.2s', wobble: '1.9s', tx: '100vw', ty: '-52vh' },
+  { left: '-15%', bottom: '5%',  size: '18px', duration: '16s', delay: '0s',   wobble: '1.2s', tx: '95vw',  ty: '-60dvh' },
+  { left: '2%',   bottom: '15%', size: '24px', duration: '16s', delay: '0.2s', wobble: '2s',   tx: '110vw', ty: '-50dvh' },
+  { left: '-8%',  bottom: '22%', size: '15px', duration: '16s', delay: '0.4s', wobble: '1.5s', tx: '85vw',  ty: '-70dvh' },
+  { left: '18%',  bottom: '2%',  size: '20px', duration: '16s', delay: '0.6s', wobble: '1.8s', tx: '90vw',  ty: '-45dvh' },
+  { left: '22%',  bottom: '28%', size: '16px', duration: '16s', delay: '0.1s', wobble: '2.2s', tx: '105vw', ty: '-65dvh' },
+  { left: '-5%',  bottom: '18%', size: '12px', duration: '16s', delay: '0.3s', wobble: '1.3s', tx: '82vw',  ty: '-55dvh' },
+  { left: '30%',  bottom: '10%', size: '14px', duration: '16s', delay: '0.8s', wobble: '2.4s', tx: '95vw',  ty: '-72dvh' },
+  { left: '8%',   bottom: '0%',  size: '22px', duration: '16s', delay: '0.5s', wobble: '1.7s', tx: '98vw',  ty: '-48dvh' },
+  { left: '-2%',  bottom: '24%', size: '17px', duration: '16s', delay: '0.7s', wobble: '2.1s', tx: '115vw', ty: '-62dvh' },
+  { left: '15%',  bottom: '12%', size: '19px', duration: '16s', delay: '0.9s', wobble: '1.6s', tx: '88vw',  ty: '-58dvh' },
+  { left: '25%',  bottom: '5%',  size: '13px', duration: '16s', delay: '0.4s', wobble: '1.4s', tx: '98vw',  ty: '-68dvh' },
+  { left: '-12%', bottom: '26%', size: '21px', duration: '16s', delay: '0.2s', wobble: '1.9s', tx: '100vw', ty: '-52dvh' },
 
   // GRUP 2: Terbang menyebar dari area tengah layar bawah mengisi gap ruang
-  { left: '45%',  bottom: '18%', size: '26px', duration: '16s', delay: '8s',   wobble: '1.6s', tx: '80vw',  ty: '-55vh' },
-  { left: '15%',  bottom: '25%', size: '16px', duration: '16s', delay: '8.3s', wobble: '2.5s', tx: '70vw',  ty: '-65vh' },
-  { left: '35%',  bottom: '5%',  size: '20px', duration: '16s', delay: '8.1s', wobble: '1.9s', tx: '85vw',  ty: '-50vh' },
-  { left: '55%',  bottom: '20%', size: '14px', duration: '16s', delay: '8.5s', wobble: '1.4s', tx: '90vw',  ty: '-75vh' },
-  { left: '28%',  bottom: '10%', size: '18px', duration: '16s', delay: '8.2s', wobble: '2.1s', tx: '75vw',  ty: '-60vh' },
-  { left: '5%',   bottom: '22%', size: '15px', duration: '16s', delay: '8.4s', wobble: '1.8s', tx: '82vw',  ty: '-58vh' },
-  { left: '42%',  bottom: '4%',  size: '13px', duration: '16s', delay: '8.8s', wobble: '1.5s', tx: '65vw',  ty: '-68vh' },
-  { left: '50%',  bottom: '28%', size: '22px', duration: '16s', delay: '8.6s', wobble: '2.3s', tx: '95vw',  ty: '-52vh' },
-  { left: '18%',  bottom: '15%', size: '17px', duration: '16s', delay: '8.7s', wobble: '1.7s', tx: '78vw',  ty: '-62vh' },
-  { left: '38%',  bottom: '2%',  size: '19px', duration: '16s', delay: '8.9s', wobble: '2.0s', tx: '88vw',  ty: '-56vh' },
-  { left: '-5%',  bottom: '12%', size: '16px', duration: '16s', delay: '8.2s', wobble: '1.4s', tx: '72vw',  ty: '-70vh' },
-  { left: '20%',  bottom: '24%', size: '21px', duration: '16s', delay: '8.4s', wobble: '2.4s', tx: '84vw',  ty: '-48vh' }
+  { left: '45%',  bottom: '18%', size: '26px', duration: '16s', delay: '8s',   wobble: '1.6s', tx: '80vw',  ty: '-55dvh' },
+  { left: '15%',  bottom: '25%', size: '16px', duration: '16s', delay: '8.3s', wobble: '2.5s', tx: '70vw',  ty: '-65dvh' },
+  { left: '35%',  bottom: '5%',  size: '20px', duration: '16s', delay: '8.1s', wobble: '1.9s', tx: '85vw',  ty: '-50dvh' },
+  { left: '55%',  bottom: '20%', size: '14px', duration: '16s', delay: '8.5s', wobble: '1.4s', tx: '90vw',  ty: '-75dvh' },
+  { left: '28%',  bottom: '10%', size: '18px', duration: '16s', delay: '8.2s', wobble: '2.1s', tx: '75vw',  ty: '-60dvh' },
+  { left: '5%',   bottom: '22%', size: '15px', duration: '16s', delay: '8.4s', wobble: '1.8s', tx: '82vw',  ty: '-58dvh' },
+  { left: '42%',  bottom: '4%',  size: '13px', duration: '16s', delay: '8.8s', wobble: '1.5s', tx: '65vw',  ty: '-68dvh' },
+  { left: '50%',  bottom: '28%', size: '22px', duration: '16s', delay: '8.6s', wobble: '2.3s', tx: '95vw',  ty: '-52dvh' },
+  { left: '18%',  bottom: '15%', size: '17px', duration: '16s', delay: '8.7s', wobble: '1.7s', tx: '78vw',  ty: '-62dvh' },
+  { left: '38%',  bottom: '2%',  size: '19px', duration: '16s', delay: '8.9s', wobble: '2.0s', tx: '88vw',  ty: '-56dvh' },
+  { left: '-5%',  bottom: '12%', size: '16px', duration: '16s', delay: '8.2s', wobble: '1.4s', tx: '72vw',  ty: '-70dvh' },
+  { left: '20%',  bottom: '24%', size: '21px', duration: '16s', delay: '8.4s', wobble: '2.4s', tx: '84vw',  ty: '-48dvh' }
 ];
 
 const props = defineProps<{

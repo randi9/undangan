@@ -8,11 +8,11 @@
     ">
       <!-- Base color mathing standard theme bg to hide straight lines underneath -->
       <div class="absolute inset-0" style="background-color: var(--theme-bg, #ffffff);"></div>
-      <!-- Overlay matching the pink couple section -->
-      <div class="absolute inset-0 bg-[#fbebeb]"></div>
+      <!-- Overlay matching the couple section -->
+      <div class="absolute inset-0" style="background-color: #fffaf2;"></div>
       
       <!-- Seamless Damask Pattern Offset -->
-      <svg class="absolute inset-0 w-full h-[40px] opacity-[0.1]">
+      <svg class="absolute inset-0 w-full h-[40px] opacity-[0.05]">
         <defs>
           <!-- Using y="-5" seamlessly aligns this pattern with y="-45" below it since this is elevated by 40px -->
           <pattern id="damask-extender" x="-45" y="-5" width="180" height="180" patternUnits="userSpaceOnUse">
@@ -27,7 +27,7 @@
       </svg>
     </div>
 
-    <!-- MAIN BACKGROUND WRAPPER (Includes pink bg + damask) -->
+    <!-- MAIN BACKGROUND WRAPPER (Includes bg + damask) -->
     <!-- Extends 40px below the element to drape over CountdownFloral -->
     <div class="absolute top-0 left-0 w-full h-[calc(100%+40px)] z-[0] pointer-events-none" style="
       -webkit-mask-image: 
@@ -43,11 +43,11 @@
       -webkit-mask-repeat: no-repeat, no-repeat;
       mask-repeat: no-repeat, no-repeat;
     ">
-      <div class="absolute inset-0 bg-[#fbebeb]"></div>
+      <div class="absolute inset-0" style="background-color: #fffaf2;"></div>
       
       <!-- Damask Background Overlay (Using SVG Pattern for precise spacing and flipping) -->
       <!-- Pattern is naturally seamless up to the extended height! -->
-      <svg class="absolute inset-0 w-full h-full opacity-[0.1]">
+      <svg class="absolute inset-0 w-full h-full opacity-[0.05]">
         <defs>
           <pattern id="damask-flip" x="-45" y="-45" width="180" height="180" patternUnits="userSpaceOnUse">
             <image href="https://media.mengundanganda.com/fd166631-b96a-455b-9159-e0a9cfccc7b5.webp" x="30" y="30" width="120" height="120" />
