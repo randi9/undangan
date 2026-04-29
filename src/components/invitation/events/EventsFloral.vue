@@ -171,241 +171,65 @@ const streamRef = ref<HTMLElement | null>(null);
 const titleRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
-let currentStep = 0;
-const totalSteps = computed(() => (props.invitation.streaming_enabled && props.invitation.streaming_url) ? 4 : 3);
-let isAnimating = false;
-let isTrapActive = false;
-let pendingRelease: 'down' | 'up' | null = null;
-
-// Debounce untuk mencegah dobel trigger
-let lastStepTime = 0;
-const STEP_COOLDOWN = 300; // ms minimum antar step
-
-function freezeScroll() {
-  if (document.body.style.overflow === 'hidden') return;
-  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-  document.body.style.paddingRight = `${scrollbarWidth}px`;
-  document.body.style.overflow = 'hidden';
-}
-
-function unfreezeScroll() {
-  document.body.style.overflow = '';
-  document.body.style.paddingRight = '';
-}
-
-// ---------------------------------------------
-// ANIMASI PER STEP
-// ---------------------------------------------
-function animateToStep(targetStep: number, onDone: () => void) {
-  if (targetStep === 1 && currentStep === 0) {
-    // 0 -> 1: Teks hilang (0-0.5s), BARU Zoom In (0.5s)
-    const tl = gsap.timeline({ onComplete: onDone });
-    tl.to(titleRef.value, { opacity: 0, duration: 0.5, ease: 'power2.out' }, 0);
-    tl.to(bgRef.value, { scale: 3.5, duration: 2.0, ease: 'power2.inOut' }, 0.5);
-    tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)', duration: 2.0, ease: 'power2.inOut' }, 0.5);
-    tl.to(boardRef.value, { opacity: 1, duration: 0.5, ease: 'power1.out' }, 1.5);
-    tl.to(akadRef.value, { opacity: 1, duration: 0.8 }, 2.3);
-  } 
-  else if (targetStep === 2 && currentStep === 1) {
-    // 1 -> 2: Akad ke Resepsi
-    gsap.timeline({ onComplete: onDone })
-      .to(akadRef.value, { opacity: 0, duration: 0.4 })
-      .to(resepsiRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
-  } 
-  else if (targetStep === 1 && currentStep === 2) {
-    // 2 -> 1: Resepsi kembali ke Akad
-    gsap.timeline({ onComplete: onDone })
-      .to(resepsiRef.value, { opacity: 0, duration: 0.4 })
-      .to(akadRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
-  }
-  else if (targetStep === 3 && currentStep === 2) {
-    // 2 -> 3: Resepsi ke Stream
-    gsap.timeline({ onComplete: onDone })
-      .to(resepsiRef.value, { opacity: 0, duration: 0.4 })
-      .to(streamRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
-  }
-  else if (targetStep === 2 && currentStep === 3) {
-    // 3 -> 2: Stream kembali ke Resepsi
-    gsap.timeline({ onComplete: onDone })
-      .to(streamRef.value, { opacity: 0, duration: 0.4 })
-      .to(resepsiRef.value, { opacity: 1, duration: 0.8 }, '+=0.1');
-  }
-  else if (targetStep === 0 && currentStep === 1) {
-    // 1 -> 0: Zoom Out dahulu, BARU teks muncul di akhir
-    const tl = gsap.timeline({ onComplete: onDone });
-    tl.to([akadRef.value, resepsiRef.value, streamRef.value], { opacity: 0, duration: 0.4 }, 0);
-    tl.to(bgRef.value, { scale: 1, duration: 1.8, ease: 'power2.inOut' }, 0.2);
-    tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)', duration: 1.8, ease: 'power2.inOut' }, 0.2);
-    tl.to(titleRef.value, { opacity: 1, duration: 0.6, ease: 'power2.out' }, 1.8);
-  }
-  else {
-    onDone();
-  }
-}
-
-function processStep(direction: 1 | -1) {
-  const now = Date.now();
-  if (now - lastStepTime < STEP_COOLDOWN) return;
-  if (isAnimating) return;
-
-  const nextStep = currentStep + direction;
-
-  // Keluar ke bawah: sudah di step terakhir, scroll down
-  if (nextStep >= totalSteps.value) {
-    pendingRelease = 'down';
-    isTrapActive = false;
-    unfreezeScroll();
-    isAnimating = false;
-    return;
-  }
-  // Keluar ke atas: sudah di step 0, scroll up
-  if (nextStep < 0) {
-    pendingRelease = 'up';
-    isTrapActive = false;
-    unfreezeScroll();
-    isAnimating = false;
-    return;
-  }
-
-  lastStepTime = now;
-  isAnimating = true;
-  pendingRelease = null;
-
-  animateToStep(nextStep, () => {
-    currentStep = nextStep;
-    isAnimating = false;
-  });
-}
-
-// Mengembalikan semua animasi ke state awal (saat masuk ulang dari arah atas)
-function resetToInitial() {
-  currentStep = 0;
-  isAnimating = false;
-  pendingRelease = null;
-  gsap.set(bgRef.value, { scale: 1 });
-  gsap.set(titleRef.value, { opacity: 1 });
-  gsap.set(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0)' });
-  gsap.set(boardRef.value, { opacity: 0 });
-  gsap.set(akadRef.value, { opacity: 0, pointerEvents: 'none' });
-  gsap.set(resepsiRef.value, { opacity: 0, pointerEvents: 'none' });
-  if (streamRef.value) gsap.set(streamRef.value, { opacity: 0, pointerEvents: 'none' });
-}
-
-// Mengembalikan ke state akhir (saat masuk ulang dari arah bawah)
-function resetToFinal() {
-  currentStep = totalSteps.value - 1; // step 2 or 3
-  isAnimating = false;
-  pendingRelease = null;
-  gsap.set(bgRef.value, { scale: 3.5 });
-  gsap.set(titleRef.value, { opacity: 0 });
-  gsap.set(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)' });
-  gsap.set(boardRef.value, { opacity: 1 });
-  gsap.set(akadRef.value, { opacity: 0, pointerEvents: 'none' });
-  
-  if (totalSteps.value === 4) {
-    gsap.set(resepsiRef.value, { opacity: 0, pointerEvents: 'none' });
-    if (streamRef.value) gsap.set(streamRef.value, { opacity: 1, pointerEvents: 'auto' });
-  } else {
-    gsap.set(resepsiRef.value, { opacity: 1, pointerEvents: 'auto' });
-    if (streamRef.value) gsap.set(streamRef.value, { opacity: 0, pointerEvents: 'none' });
-  }
-}
-
-// ---- SCROLL HANDLERS ----
-
-function handleWheel(e: WheelEvent) {
-  if (!isTrapActive) return;
-  
-  const dir: 1 | -1 = e.deltaY > 0 ? 1 : -1;
-
-  // Jika sudah mentok dan arah sesuai, biarkan native scroll
-  if (pendingRelease === 'down' && dir === 1) return;
-  if (pendingRelease === 'up' && dir === -1) return;
-
-  // Kalau user balik arah dari pending release, cancel release
-  if (pendingRelease && ((pendingRelease === 'down' && dir === -1) || (pendingRelease === 'up' && dir === 1))) {
-    pendingRelease = null;
-  }
-
-  // Wajib preventDefault saat trap aktif agar tidak ada scroll native/geser
-  e.preventDefault();
-  e.stopPropagation();
-  processStep(dir);
-}
-
-let touchStartY = 0;
-let touchHandled = false;
-
-function handleTouchStart(e: TouchEvent) {
-  touchStartY = e.touches?.[0]?.clientY || 0;
-  touchHandled = false;
-}
-
-function handleTouchMove(e: TouchEvent) {
-  if (!isTrapActive || !e.touches?.length) return;
-
-  const currentY = e.touches[0]?.clientY ?? 0;
-  const deltaY = touchStartY - currentY;
-  const dir: 1 | -1 = deltaY > 0 ? 1 : -1;
-
-  // Jika pending release searah, biarkan native
-  if (pendingRelease === 'down' && dir === 1) return;
-  if (pendingRelease === 'up' && dir === -1) return;
-
-  // Cancel release jika arah balik
-  if (pendingRelease && ((pendingRelease === 'down' && dir === -1) || (pendingRelease === 'up' && dir === 1))) {
-    pendingRelease = null;
-  }
-
-  e.preventDefault();
-
-  if (Math.abs(deltaY) > 40 && !touchHandled) {
-    touchHandled = true;
-    processStep(dir);
-    touchStartY = currentY;
-  }
-}
+const hasStream = computed(() => props.invitation.streaming_enabled && props.invitation.streaming_url);
 
 onMounted(() => {
   if (!sectionRef.value) return;
 
-  window.addEventListener('wheel', handleWheel, { passive: false });
-  window.addEventListener('touchstart', handleTouchStart, { passive: true });
-  window.addEventListener('touchmove', handleTouchMove, { passive: false });
-
   ctx = gsap.context(() => {
-    ScrollTrigger.create({
-      trigger: sectionRef.value,
-      start: 'top top',
-      // Hanya detect transisi saat boundary viewport dilewati, tidak menggunakan mode pin GSAP
-      onEnter: () => {
-        if (!isTrapActive && pendingRelease !== 'down') {
-          isTrapActive = true;
-          pendingRelease = null;
-          freezeScroll();
-          window.scrollTo({ top: sectionRef.value?.offsetTop ?? 0 }); // Instan framing presisi
-          resetToInitial();
-        }
-      },
-      onLeaveBack: () => {
-        if (!isTrapActive && pendingRelease !== 'up') {
-          isTrapActive = true;
-          pendingRelease = null;
-          freezeScroll();
-          window.scrollTo({ top: sectionRef.value?.offsetTop ?? 0 });
-          resetToFinal();
-        }
+    // Initial states
+    gsap.set(akadRef.value, { opacity: 0, pointerEvents: 'none' });
+    gsap.set(resepsiRef.value, { opacity: 0, pointerEvents: 'none' });
+    if (streamRef.value) gsap.set(streamRef.value, { opacity: 0, pointerEvents: 'none' });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.value,
+        start: 'top top',
+        end: hasStream.value ? '+=250%' : '+=150%',
+        pin: true,
+        scrub: true,
+        anticipatePin: 1,
       }
     });
-  });
+
+    // SCROLL 1: Zoom In
+    tl.to(titleRef.value, { opacity: 0, duration: 0.3, ease: 'power1.inOut' });
+    tl.to(bgRef.value, { scale: 3.5, duration: 0.8, ease: 'power2.inOut' }, "<0.1");
+    tl.to(overlayRef.value, { backgroundColor: 'rgba(0,0,0,0.5)', duration: 0.8, ease: 'power2.inOut' }, "<");
+    tl.to(boardRef.value, { opacity: 1, duration: 0.3, ease: 'power1.inOut' }, "-=0.3");
+    
+    // Show Akad
+    tl.to(akadRef.value, { opacity: 1, pointerEvents: 'auto', duration: 0.4 }, "-=0.1");
+    tl.to({}, { duration: 0.3 }); // hold
+
+    // SCROLL 2: Akad -> Resepsi
+    if (props.invitation.resepsi_venue) {
+      tl.to(akadRef.value, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
+      tl.to(resepsiRef.value, { opacity: 1, pointerEvents: 'auto', duration: 0.3 }, "<");
+      tl.to({}, { duration: 0.3 }); // hold
+    }
+
+    // SCROLL 3: Resepsi -> Stream
+    if (hasStream.value) {
+      const prevRef = props.invitation.resepsi_venue ? resepsiRef.value : akadRef.value;
+      if (prevRef) {
+        tl.to(prevRef, { opacity: 0, pointerEvents: 'none', duration: 0.3 });
+      }
+      tl.to(streamRef.value, { opacity: 1, pointerEvents: 'auto', duration: 0.3 }, "<");
+      tl.to({}, { duration: 0.3 }); // hold
+    }
+
+    // Prevent premature triggering by refreshing ScrollTrigger after components mount and load
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 500);
+
+  }, sectionRef.value);
 });
 
 onUnmounted(() => {
-  unfreezeScroll();
   ctx?.revert();
-  window.removeEventListener('wheel', handleWheel);
-  window.removeEventListener('touchstart', handleTouchStart);
-  window.removeEventListener('touchmove', handleTouchMove);
 });
 </script>
 
