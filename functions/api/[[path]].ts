@@ -1,5 +1,6 @@
 import { getSupabase } from "../_lib/supabase";
 import { getPathname, json, options } from "./shared/http";
+import { ValidationError } from "./shared/validation";
 import { dispatchAuthRoute } from "./routes/auth";
 import { dispatchDebugRoute } from "./routes/debug";
 import { dispatchGuestRoute } from "./routes/guests";
@@ -75,6 +76,10 @@ export async function onRequest(context: any) {
     const supabase = getSupabase(env);
     return await dispatchApiRequest(supabase, env, request, pathname);
   } catch (err: any) {
+    // Zod validation errors → 400
+    if (err instanceof ValidationError) {
+      return json({ error: err.message, issues: err.issues }, 400);
+    }
     return json({ error: err?.message || "Server error" }, 500);
   }
 }

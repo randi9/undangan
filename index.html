@@ -213,6 +213,10 @@
     </script>
   </head>
   <body>
+    <!-- Global error toast (rendered outside Vue for resilience) -->
+    <div id="global-error-toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99999;background:#dc2626;color:#fff;padding:12px 24px;border-radius:12px;font-family:system-ui,sans-serif;font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,0.18);align-items:center;gap:8px;max-width:90vw;">
+      Terjadi kesalahan. Coba refresh halaman.
+    </div>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
     <noscript>

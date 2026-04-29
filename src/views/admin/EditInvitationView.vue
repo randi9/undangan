@@ -35,8 +35,8 @@
     </header>
 
     <div class="editor-container">
-      <!-- Skeletons while Loading (Editor Form Array) -->
-      <div v-if="loading" class="editor-layout">
+      <!-- Skeletons while Loading (Editor Form Array) — edit mode only -->
+      <div v-if="isEditMode && loading" class="editor-layout">
         <div class="editor-form-area" style="width: 100%">
           <div
             style="
@@ -153,17 +153,115 @@
                 align-items: center;
               "
             >
-              <span style="display: flex; align-items: center; gap: 8px"
+              <span v-if="isEditMode" style="display: flex; align-items: center; gap: 8px"
                 ><Icon
                   icon="lucide:pencil"
                   style="color: var(--admin-primary)"
                 />
                 Edit Undangan</span
               >
+              <span v-else style="display: flex; align-items: center; gap: 8px"
+                ><Icon
+                  icon="lucide:sparkles"
+                  style="color: var(--admin-primary)"
+                />
+                Buat Undangan Baru</span
+              >
             </h1>
             <p class="admin-page-subtitle">
-              {{ form.groom_name }} & {{ form.bride_name }}
+              <template v-if="isEditMode">{{ form.groom_name }} & {{ form.bride_name }}</template>
+              <template v-else>Isi informasi di bawah untuk membuat undangan pernikahan</template>
             </p>
+
+            <!-- Onboarding Guide Popup Modal (create mode only) -->
+            <div
+              v-if="!isEditMode && showGuide"
+              class="guide-modal-overlay"
+              @click.self="dismissGuide"
+            >
+              <div class="guide-modal">
+                <button
+                  class="guide-modal-close"
+                  @click="dismissGuide"
+                  title="Tutup panduan"
+                >
+                  <Icon icon="lucide:x" />
+                </button>
+                <div class="guide-modal-header">
+                  <div class="guide-modal-icon">
+                    <Icon icon="lucide:book-open" style="font-size: 22px" />
+                  </div>
+                  <h2>Panduan Membuat Undangan</h2>
+                  <p>
+                    Ikuti langkah-langkah berikut untuk membuat undangan
+                    pernikahan digital Anda
+                  </p>
+                </div>
+                <div class="guide-modal-steps">
+                  <div class="guide-step-card">
+                    <div class="guide-step-num">1</div>
+                    <div class="guide-step-body">
+                      <strong>Pilih Tema & Buat URL</strong>
+                      <span
+                        >Pilih desain undangan, lalu buat alamat unik, contoh:
+                        <em>andi-sarah</em></span
+                      >
+                    </div>
+                  </div>
+                  <div class="guide-step-card">
+                    <div class="guide-step-num">2</div>
+                    <div class="guide-step-body">
+                      <strong>Isi Data Mempelai</strong>
+                      <span
+                        >Nama panggilan wajib diisi. Nama lengkap & orang tua
+                        opsional.</span
+                      >
+                    </div>
+                  </div>
+                  <div class="guide-step-card">
+                    <div class="guide-step-num">3</div>
+                    <div class="guide-step-body">
+                      <strong>Upload Foto & Isi Acara</strong>
+                      <span
+                        >Foto sampul, detail akad/resepsi, galeri, dan musik
+                        latar.</span
+                      >
+                    </div>
+                  </div>
+                  <div class="guide-step-card">
+                    <div class="guide-step-num">4</div>
+                    <div class="guide-step-body">
+                      <strong>Klik "Buat Undangan"</strong>
+                      <span
+                        >Setelah selesai, klik tombol biru. Undangan langsung bisa
+                        disebar!</span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="guide-modal-footer">
+                  <div class="guide-modal-tip">
+                    <Icon
+                      icon="lucide:lightbulb"
+                      style="color: #f59e0b; flex-shrink: 0"
+                    />
+                    <span
+                      >Yang bertanda <strong>*</strong> wajib diisi. Sisanya
+                      opsional — bisa dilengkapi nanti lewat menu
+                      <strong>Edit</strong>.</span
+                    >
+                  </div>
+                  <button
+                    class="btn btn-primary"
+                    @click="dismissGuide"
+                    style="width: 100%"
+                  >
+                    <Icon icon="lucide:check-circle-2" style="font-size: 16px" />
+                    Oke, Saya Paham
+                  </button>
+                </div>
+              </div>
+            </div>
 
             <form @submit.prevent="handleSubmit">
               <!-- Wizard Stepper -->
@@ -448,6 +546,7 @@
                   </div>
                   <div class="wizard-nav-right">
                     <button
+                      v-if="isEditMode"
                       type="button"
                       class="btn btn-success"
                       @click="handleSubmit"
@@ -818,6 +917,7 @@
                   </div>
                   <div class="wizard-nav-right">
                     <button
+                      v-if="isEditMode"
                       type="button"
                       class="btn btn-success"
                       @click="handleSubmit"
@@ -1228,6 +1328,7 @@
                   </div>
                   <div class="wizard-nav-right">
                     <button
+                      v-if="isEditMode"
                       type="button"
                       class="btn btn-success"
                       @click="handleSubmit"
@@ -1598,6 +1699,7 @@
                   </div>
                   <div class="wizard-nav-right">
                     <button
+                      v-if="isEditMode"
                       type="button"
                       class="btn btn-success"
                       @click="handleSubmit"
@@ -2066,7 +2168,7 @@
                         style="margin-right: 8px; vertical-align: -3px"
                         ><Icon icon="lucide:save"
                       /></span>
-                      {{ submitting ? "Menyimpan..." : "Simpan Perubahan" }}
+                      {{ submitting ? "Menyimpan..." : (isEditMode ? "Simpan Perubahan" : "Buat Undangan") }}
                     </button>
                   </div>
                 </div>
@@ -2601,13 +2703,160 @@
     opacity: 1;
   }
 }
+
+/* ===== Onboarding Guide Modal (create mode) ===== */
+.guide-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.3s ease;
+}
+.guide-modal {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+  animation: slideUp 0.35s ease-out;
+}
+@keyframes guideSlideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.guide-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  transition: all 0.2s;
+  font-size: 18px;
+}
+.guide-modal-close:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+.guide-modal-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.guide-modal-icon {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  color: var(--admin-primary, #7c5bf5);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.guide-modal-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 6px;
+}
+.guide-modal-header p {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+.guide-modal-steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (max-width: 520px) {
+  .guide-modal {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+  .guide-modal-steps {
+    grid-template-columns: 1fr;
+  }
+}
+.guide-step-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+.guide-step-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+  transform: translateY(-1px);
+}
+.guide-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--admin-primary, #7c5bf5);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.guide-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.guide-step-body strong {
+  font-size: 13px;
+  color: #1e293b;
+}
+.guide-step-body span {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
+.guide-modal-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.guide-modal-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #64748b;
+  background: #fffbeb;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #fde68a;
+  line-height: 1.5;
+}
 </style>
 
 <script setup lang="ts">
-// Cache buster comment: 1
 import { Icon } from "@iconify/vue";
 import { ref, computed, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import { resolveAssetUrl } from "@/utils/url";
 import { THEME_LIST, getThemeGalleryDefault } from "@/config/themes";
@@ -2620,12 +2869,19 @@ import { useSlugValidation } from "@/composables/useSlugValidation";
 import { usePhotoUpload } from "@/composables/usePhotoUpload";
 import { useMusicManager } from "@/composables/useMusicManager";
 import { useFormWizard } from "@/composables/useFormWizard";
+import { useFormDraft } from "@/composables/useFormDraft";
 import LivePreviewPanel from "@/components/admin/LivePreviewPanel.vue";
 import ImageCropModal from "@/components/admin/ImageCropModal.vue";
 import QuoteLibraryModal from "@/components/admin/QuoteLibraryModal.vue";
 import MapPickerModal from "@/components/admin/MapPickerModal.vue";
 import LoveStoryTemplateModal from "@/components/admin/LoveStoryTemplateModal.vue";
 import ThemePickerModal from "@/components/admin/ThemePickerModal.vue";
+
+const props = defineProps<{
+  mode?: 'create' | 'edit';
+}>();
+
+const isEditMode = computed(() => (props.mode || 'edit') === 'edit');
 
 const route = useRoute();
 const router = useRouter();
@@ -2760,9 +3016,10 @@ const wizard = useFormWizard(
   validateStep,
 );
 
-const loading = ref(true);
+const loading = ref(isEditMode.value);
 
 // --- Form State ---
+const initialTheme = !isEditMode.value ? ((route.query.theme as string) || THEME_LIST[0]?.id || 'floral') : undefined;
 const {
   form,
   submitting,
@@ -2772,18 +3029,43 @@ const {
   getSubmitPayload,
   addLoveStory,
   removeLoveStory,
-} = useInvitationForm();
+} = useInvitationForm(initialTheme);
 
-// --- Slug Validation (with excludeId for edit mode) ---
+// --- Draft Auto-Save (create mode only) ---
+const DRAFT_KEY = 'createInvitation_draft';
+const draft = useFormDraft(DRAFT_KEY);
+let restoredFromDraft = false;
+if (!isEditMode.value) {
+  const saved = draft.loadDraft();
+  if (saved) {
+    Object.assign(form, saved.form);
+    restoredFromDraft = true;
+  }
+}
+
+// --- Slug Validation ---
 const slugRef = computed({
   get: () => form.slug,
   set: (v) => {
     form.slug = v;
   },
 });
-const excludeId = computed(() => route.params.id as string | undefined);
+const excludeId = computed(() => isEditMode.value ? (route.params.id as string | undefined) : undefined);
 const { slugStatus, slugSuggestions, handleSlugInput, applySuggestion } =
   useSlugValidation(slugRef, excludeId);
+
+// Restore wizard step from draft (create mode)
+if (!isEditMode.value && restoredFromDraft) {
+  const saved = draft.loadDraft();
+  if (saved) {
+    wizard.goToStepDirect(saved.stepIndex);
+    if (form.slug) handleSlugInput();
+  }
+}
+// Start auto-saving in create mode
+if (!isEditMode.value) {
+  draft.startAutoSave(form, () => wizard.currentStepIndex.value);
+}
 
 // --- Photo Upload ---
 const {
@@ -2915,6 +3197,24 @@ function getPhotoUrl(url: string) {
   return resolveAssetUrl(url, apiBase);
 }
 
+// --- Onboarding Guide (create mode only) ---
+const GUIDE_KEY = 'createGuideShown';
+const showGuide = ref(
+  !isEditMode.value && !restoredFromDraft && sessionStorage.getItem(GUIDE_KEY) !== 'true',
+);
+function dismissGuide() {
+  showGuide.value = false;
+  sessionStorage.setItem(GUIDE_KEY, 'true');
+}
+
+// Clear guide flag AND draft when navigating away (create mode)
+onBeforeRouteLeave(() => {
+  if (!isEditMode.value) {
+    sessionStorage.removeItem(GUIDE_KEY);
+    draft.clearDraft();
+  }
+});
+
 // --- Submit ---
 async function handleSubmit() {
   // Validate ALL wizard steps before submitting
@@ -2930,21 +3230,37 @@ async function handleSubmit() {
     }
   }
 
+  if (!isEditMode.value) {
+    // Create mode: extra validation
+    if (!form.slug || !form.groom_name || !form.bride_name) {
+      showToast('error', 'Slug, nama mempelai pria dan wanita wajib diisi');
+      return;
+    }
+  }
+
   submitting.value = true;
   try {
-    const id = route.params.id as string;
-    await store.updateInvitation(id, getSubmitPayload());
-    showToast("success", "Undangan berhasil diperbarui!");
-    setTimeout(() => router.push("/dashboard"), 1500);
+    if (isEditMode.value) {
+      const id = route.params.id as string;
+      await store.updateInvitation(id, getSubmitPayload());
+      showToast('success', 'Undangan berhasil diperbarui!');
+      setTimeout(() => router.push('/dashboard'), 1500);
+    } else {
+      await store.createInvitation(getSubmitPayload());
+      showToast('success', 'Undangan berhasil dibuat!');
+      draft.clearDraft();
+      setTimeout(() => router.push('/dashboard?just_created=1'), 1500);
+    }
   } catch (e: any) {
-    showToast("error", e.message || "Gagal memperbarui undangan");
+    showToast('error', e.message || (isEditMode.value ? 'Gagal memperbarui undangan' : 'Gagal membuat undangan'));
   } finally {
     submitting.value = false;
   }
 }
 
-// --- Load Data ---
+// --- Load Data (edit mode only) ---
 onMounted(async () => {
+  if (!isEditMode.value) return;
   const id = route.params.id as string;
   const data = await store.fetchInvitationById(id);
   if (data) {

@@ -1,5 +1,7 @@
 import { json, getEffectiveMethod } from "../shared/http";
 import { requireUser, unauthorized } from "../shared/auth";
+import { rateLimit, getClientIp } from "../shared/rateLimit";
+import { validateBody, rsvpCreateSchema, rsvpUpdateSchema, ValidationError } from "../shared/validation";
 import type { ApiDispatcher } from "../types/api";
 
 /**
@@ -41,29 +43,24 @@ async function requireRsvpOwner(
 }
 
 async function handleRsvpPost(supabase: any, request: Request) {
-  const body = (await request.json()) as {
-    invitation_id?: string;
-    guest_name?: string;
-    attendance?: string;
-    guest_count?: number;
-    message?: string;
-  };
+  // Rate limit: 10 RSVP submissions per IP per 5 minutes
+  const ip = getClientIp(request);
+  const limited = rateLimit(`rsvp:post:${ip}`, 10, 5 * 60 * 1000);
+  if (limited) return limited;
 
-  const { invitation_id, guest_name, attendance, guest_count, message } = body;
-  if (!invitation_id || !guest_name || !attendance) {
-    return json({ error: "Missing required fields" }, 400);
-  }
+  const rawBody = await request.json();
+  const body = validateBody(rsvpCreateSchema, rawBody);
 
   const { data, error } = await supabase
     .from("rsvps")
     .insert([
       {
         id: crypto.randomUUID(),
-        invitation_id,
-        guest_name: String(guest_name).trim(),
-        attendance,
-        guest_count: Math.min(10, Math.max(1, Number(guest_count) || 1)),
-        message: typeof message === "string" ? message.trim() : "",
+        invitation_id: body.invitation_id,
+        guest_name: body.guest_name,
+        attendance: body.attendance,
+        guest_count: body.guest_count,
+        message: body.message,
       },
     ])
     .select()
