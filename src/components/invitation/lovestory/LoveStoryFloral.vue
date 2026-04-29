@@ -1,25 +1,62 @@
 <template>
-  <section v-if="stories.length > 0" class="py-20 px-6 max-w-3xl mx-auto text-center bg-[var(--theme-surface)] rounded-3xl mb-24">
+  <section v-if="stories.length > 0" class="py-20 px-0 md:px-6 w-full mx-auto text-center bg-pink-200 overflow-hidden">
     <h2 class="text-3xl md:text-4xl mb-2 text-[var(--theme-primary)]" :style="{ fontFamily: themeConfig.fontHeading }">Love Story</h2>
-    <div class="flex items-center justify-center gap-4 mb-16 text-[var(--theme-secondary)]">
+    <div class="flex items-center justify-center gap-4 mb-20 text-[var(--theme-secondary)]">
       <div class="h-px w-12 bg-[var(--theme-secondary)] opacity-50"></div>
       <span class="text-xl">💕</span>
       <div class="h-px w-12 bg-[var(--theme-secondary)] opacity-50"></div>
     </div>
     
-    <div class="relative">
-      <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-[var(--theme-secondary)] opacity-30 md:-translate-x-1/2"></div>
-      <div v-for="(story, i) in stories" :key="i" class="relative flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-0 mb-12 last:mb-0">
-        <div class="md:w-1/2 md:pr-12 text-left md:text-right w-full pl-12 md:pl-0">
-          <div class="font-bold text-[var(--theme-primary)] text-sm mb-1" :style="{ fontFamily: themeConfig.fontHeading }">{{ story.date }}</div>
+    <div class="relative w-full max-w-6xl mx-auto flex flex-col items-center pb-24">
+      <div v-for="(story, i) in stories" :key="i" 
+           class="flex items-center w-full relative" 
+           :class="[i > 0 ? '-mt-16 md:-mt-24' : '']" 
+           :style="{ zIndex: 10 + i }">
+        
+        <!-- Left Text Area (Visible on even index if photo exists) -->
+        <div class="flex-1 px-4 md:px-12 text-right flex flex-col justify-center" 
+             :class="[ story.photo && i % 2 === 0 ? 'visible' : 'invisible' ]">
+          <template v-if="story.photo && i % 2 === 0">
+            <div class="font-bold text-[var(--theme-primary)] text-[10px] md:text-sm mb-1">{{ story.date }}</div>
+            <h4 class="font-bold text-sm md:text-2xl text-[var(--theme-primary)] mb-1 md:mb-3 leading-tight">{{ story.title }}</h4>
+            <p class="text-[9px] md:text-sm text-[var(--theme-text-light)] leading-relaxed md:line-clamp-none">{{ story.description }}</p>
+          </template>
         </div>
-        <div class="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-[var(--theme-secondary)] border-4 border-[var(--theme-surface)] -translate-x-[7px] md:-translate-x-1/2 mt-0.5 md:mt-0 z-10"></div>
-        <div class="md:w-1/2 md:pl-12 text-left w-full pl-12 md:pl-0">
-          <h4 class="font-bold text-lg text-[var(--theme-primary)] mb-2">{{ story.title }}</h4>
-          <img v-if="story.photo" :src="resolveAssetUrl(story.photo, apiBase)" :alt="story.title" 
-               class="w-full aspect-[3/2] rounded-lg mb-3 object-cover shadow-sm" style="border: 1px solid rgba(138,154,91,0.2);" />
-          <p class="text-sm text-[var(--theme-text-light)] leading-relaxed whitespace-pre-line">{{ story.description }}</p>
+
+        <!-- Center Frame (Always in center, alternates rotation) -->
+        <div class="w-[140px] md:w-[260px] shrink-0 relative transition-transform duration-500 hover:scale-105"
+             :style="{ transform: `rotate(${i % 2 === 0 ? '-4deg' : '4deg'})` }">
+          <!-- The Polaroid Frame Background -->
+          <img src="https://media.mengundanganda.com/floral/lovestory%20section/randidewi_217b045a-3695-41e6-b879-e6738da90277.png" 
+               class="absolute inset-0 w-full h-full object-fill pointer-events-none z-0 drop-shadow-xl" 
+               alt="Frame" />
+          
+          <!-- Content Inside Frame -->
+          <div class="relative z-10" style="padding: 12% 8% 13% 8%; transform: rotate(-0.2deg) translateY(-3%);"> 
+             <!-- Condition 1: Has Photo -->
+             <img v-if="story.photo" :src="resolveAssetUrl(story.photo, apiBase)" 
+                  class="w-full aspect-[4.5/5] object-cover rounded-[2px]" 
+                  :alt="story.title" />
+             
+             <!-- Condition 2: No Photo (White Card with Text) -->
+             <div v-else class="w-full aspect-[4/5] bg-[#ffffff] p-4 md:p-6 flex flex-col items-center justify-center text-center rounded-[2px] overflow-hidden shadow-inner">
+                 <div class="font-bold text-[var(--theme-primary)] text-[10px] md:text-xs mb-1 md:mb-2">{{ story.date }}</div>
+                 <h4 class="font-bold text-xs md:text-lg text-[var(--theme-primary)] mb-2 md:mb-3 leading-tight">{{ story.title }}</h4>
+                 <p class="text-[9px] md:text-xs leading-relaxed text-[var(--theme-text-light)] line-clamp-6 md:line-clamp-none">{{ story.description }}</p>
+             </div>
+          </div>
         </div>
+
+        <!-- Right Text Area (Visible on odd index if photo exists) -->
+        <div class="flex-1 px-4 md:px-12 text-left flex flex-col justify-center"
+             :class="[ story.photo && i % 2 === 1 ? 'visible' : 'invisible' ]">
+          <template v-if="story.photo && i % 2 === 1">
+            <div class="font-bold text-[var(--theme-primary)] text-[10px] md:text-sm mb-1">{{ story.date }}</div>
+            <h4 class="font-bold text-sm md:text-2xl text-[var(--theme-primary)] mb-1 md:mb-3 leading-tight">{{ story.title }}</h4>
+            <p class="text-[9px] md:text-sm text-[var(--theme-text-light)] leading-relaxed md:line-clamp-none">{{ story.description }}</p>
+          </template>
+        </div>
+
       </div>
     </div>
   </section>
