@@ -4,29 +4,67 @@
     <!-- Background Gradient -->
     <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(to bottom, #fffaf2, #fffaf2); z-index: 0;"></div>
     
-    <!-- Bunga Kiri 1 -->
-    <div class="footer-flower flower-1" style="position: absolute; left: -20px; bottom: -40px; width: 140px; z-index: 5;">
+    <!-- ==================== BUNGA KIRI ==================== -->
+    <!-- LAMA 1 -->
+    <div class="footer-flower flower-1" style="position: absolute; left: -20px; bottom: -5px; width: 140px; z-index: 5;">
       <div class="sway-wrapper sway-delay-1">
         <img src="https://media.mengundanganda.com/floral/footer%20section/randidewi_f7ba6668-cb9a-4b74-b0d5-b45597e9cd47.webp" style="width: 300px; height: auto; display: block;" />
       </div>
     </div>
-    <!-- Bunga Kiri 2 -->
-    <div class="footer-flower flower-2" style="position: absolute; left: 40px; bottom:-20px; width: 120px; z-index: 6;">
+    <!-- LAMA 2 -->
+    <div class="footer-flower flower-2" style="position: absolute; left: 40px; bottom:-5px; width: 120px; z-index: 6;">
       <div class="sway-wrapper sway-delay-2">
         <img src="https://media.mengundanganda.com/floral/footer%20section/randidewi_2884ed55-5806-47af-adc5-83cadbe8d990.webp" style="width: 100px; height: auto; display: block;" />
+      </div>
+    </div>
+    <!-- BARU 1 -->
+    <div class="footer-flower flower-3" style="position: absolute; left: -10px; bottom: 60px; width: 100px; z-index: 4;">
+      <div class="sway-wrapper sway-delay-3">
+        <img src="https://media.mengundanganda.com/floral/lovestory%20section/randidewi_3c16b77d-3a6b-4239-8e9e-68a976fd8c71.webp" style="width: 120px; height: auto; display: block;" />
+      </div>
+    </div>
+    <!-- BARU 2 -->
+    <div class="footer-flower flower-4" style="position: absolute; left: 10px; bottom: -100px; width: 110px; z-index: 7;">
+      <div class="sway-wrapper sway-delay-4">
+        <img src="https://media.mengundanganda.com/floral/lovestory%20section/randidewi_78c5a10f-c4e7-48f8-8e2e-7d7cc702d814.webp" style="width: 70px; height: auto; display: block;" />
+      </div>
+    </div>
+    <!-- BARU 3 -->
+    <div class="footer-flower flower-5" style="position: absolute; left: -10px; bottom: -40px; width: 100px; z-index: 6;">
+      <div class="sway-wrapper sway-delay-5">
+        <img src="https://media.mengundanganda.com/floral/lovestory%20section/randidewi_ec4bf919-6310-40d6-9313-b276df6d2a7b.webp" style="width: 90px; height: auto; display: block;" />
       </div>
     </div>
 
-    <!-- Bunga Kanan 1 (Mirrored) -->
-    <div class="footer-flower flower-1" style="position: absolute; right: -20px; bottom: -40px; width: 140px; z-index: 5; transform: scaleX(-1);">
+    <!-- ==================== BUNGA KANAN ==================== -->
+    <!-- LAMA 1 -->
+    <div class="footer-flower flower-1" style="position: absolute; right: -20px; bottom: -5px; width: 140px; z-index: 5; transform: scaleX(-1);">
       <div class="sway-wrapper sway-delay-1">
         <img src="https://media.mengundanganda.com/floral/footer%20section/randidewi_f7ba6668-cb9a-4b74-b0d5-b45597e9cd47.webp" style="width: 300px; height: auto; display: block;" />
       </div>
     </div>
-    <!-- Bunga Kanan 2 (Mirrored) -->
-    <div class="footer-flower flower-2" style="position: absolute; right: 40px; bottom:-20px; width: 120px; z-index: 6; transform: scaleX(-1);">
+    <!-- LAMA 2 -->
+    <div class="footer-flower flower-2" style="position: absolute; right: 40px; bottom:-5px; width: 120px; z-index: 6; transform: scaleX(-1);">
       <div class="sway-wrapper sway-delay-2">
         <img src="https://media.mengundanganda.com/floral/footer%20section/randidewi_2884ed55-5806-47af-adc5-83cadbe8d990.webp" style="width: 100px; height: auto; display: block;" />
+      </div>
+    </div>
+    <!-- BARU 1 -->
+    <div class="footer-flower flower-3" style="position: absolute; right: -10px; bottom: 60px; width: 100px; z-index: 4; transform: scaleX(-1);">
+      <div class="sway-wrapper sway-delay-3">
+        <img src="https://media.mengundanganda.com/floral/lovestory%20section/randidewi_3c16b77d-3a6b-4239-8e9e-68a976fd8c71.webp" style="width: 120px; height: auto; display: block;" />
+      </div>
+    </div>
+    <!-- BARU 2 -->
+    <div class="footer-flower flower-4" style="position: absolute; right: 10px; bottom: -100px; width: 110px; z-index: 7; transform: scaleX(-1);">
+      <div class="sway-wrapper sway-delay-4">
+        <img src="https://media.mengundanganda.com/floral/lovestory%20section/randidewi_78c5a10f-c4e7-48f8-8e2e-7d7cc702d814.webp" style="width: 70px; height: auto; display: block;" />
+      </div>
+    </div>
+    <!-- BARU 3 -->
+    <div class="footer-flower flower-5" style="position: absolute; right: -10px; bottom: -40px; width: 100px; z-index: 6; transform: scaleX(-1);">
+      <div class="sway-wrapper sway-delay-5">
+        <img src="https://media.mengundanganda.com/floral/lovestory%20section/randidewi_ec4bf919-6310-40d6-9313-b276df6d2a7b.webp" style="width: 90px; height: auto; display: block;" />
       </div>
     </div>
 
@@ -78,6 +116,9 @@ onMounted(() => {
     // Sembunyikan elemen sebelum di-scroll
     gsap.set('.flower-1', { y: 150, opacity: 0 });
     gsap.set('.flower-2', { y: 150, opacity: 0 });
+    gsap.set('.flower-3', { y: 150, opacity: 0 });
+    gsap.set('.flower-4', { y: 150, opacity: 0 });
+    gsap.set('.flower-5', { y: 150, opacity: 0 });
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -97,7 +138,25 @@ onMounted(() => {
       opacity: 1,
       duration: 1.5,
       ease: 'power2.out',
-    }, '-=1'); // Bunga kedua menyusul sedikit (overlap)
+    }, '-=1') // Bunga kedua menyusul sedikit (overlap)
+    .to('.flower-3', {
+      y: 0,
+      opacity: 1,
+      duration: 1.5,
+      ease: 'power2.out',
+    }, '-=1') // Bunga ketiga menyusul sedikit
+    .to('.flower-4', {
+      y: 0,
+      opacity: 1,
+      duration: 1.5,
+      ease: 'power2.out',
+    }, '-=1')
+    .to('.flower-5', {
+      y: 0,
+      opacity: 1,
+      duration: 1.5,
+      ease: 'power2.out',
+    }, '-=1');
   }, footerRef.value);
 });
 
@@ -120,6 +179,21 @@ onUnmounted(() => {
 .sway-delay-2 {
   animation-duration: 3.8s;
   animation-delay: 1.5s;
+}
+
+.sway-delay-3 {
+  animation-duration: 4.2s;
+  animation-delay: 0.8s;
+}
+
+.sway-delay-4 {
+  animation-duration: 3.5s;
+  animation-delay: 0.5s;
+}
+
+.sway-delay-5 {
+  animation-duration: 4.8s;
+  animation-delay: 1.2s;
 }
 
 @keyframes sway {
