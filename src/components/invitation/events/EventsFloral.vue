@@ -172,6 +172,7 @@ const titleRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
 const hasStream = computed(() => props.invitation.streaming_enabled && props.invitation.streaming_url);
+const onResize = () => ScrollTrigger.refresh();
 
 onMounted(() => {
   if (!sectionRef.value) return;
@@ -190,6 +191,7 @@ onMounted(() => {
         pin: true,
         scrub: true,
         anticipatePin: 1,
+        invalidateOnRefresh: true,
       }
     });
 
@@ -225,11 +227,15 @@ onMounted(() => {
       ScrollTrigger.refresh();
     }, 500);
 
+  // Refresh ScrollTrigger ketika viewport berubah (address bar Chrome mobile muncul/hilang)
+  window.addEventListener('resize', onResize);
+
   }, sectionRef.value);
 });
 
 onUnmounted(() => {
   ctx?.revert();
+  window.removeEventListener('resize', onResize);
 });
 </script>
 
