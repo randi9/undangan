@@ -21,7 +21,7 @@
         src="https://media.mengundanganda.com/floral/lovestory%20section/randidewi_7b945e09-e486-4cb3-a299-6c6f214d4787.png"
         alt="Decoration"
         class="w-[150px] md:w-[300px] object-contain opacity-80"
-        style="margin-bottom: 30px;"
+        style="margin-bottom: 70px;"
       />
     </div>
 
@@ -33,7 +33,7 @@
         v-for="(story, i) in stories"
         :key="i"
         class="flex items-center w-full relative story-row"
-        :style="{ zIndex: 10 + i, marginTop: i > 0 ? '40px' : '0px' }"
+        :style="{ zIndex: 10 + i, marginTop: i > 0 ? (story.photo ? '100px' : '40px') : '0px' }"
       >
         <!-- Left Area -->
         <div

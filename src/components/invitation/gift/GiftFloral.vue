@@ -1,8 +1,8 @@
 <template>
-  <section ref="sectionRef" v-if="bankList.length > 0" style="position: relative; padding: 50px 0 220px; max-width: 100%; overflow: hidden; margin: 0 auto; text-align: center; z-index: 10; background-color: #fffaf2;">
+  <section ref="sectionRef" v-if="bankList.length > 0" style="position: relative; padding: 50px 0 250px; max-width: 100%; overflow: hidden; margin: 0 auto; text-align: center; z-index: 10; background-color: #fffaf2;">
     
     <!-- Giant Oval Background -->
-    <div style="position: absolute; top: 100px; bottom: 100px; left: 50%; width: 150vw; transform: translateX(-50%); background-color: #efd7cd; border-radius: 50%; z-index: -1;"></div>
+    <div style="position: absolute; top: 100px; bottom: 100px; left: 50%; width: 150vw; transform: translateX(-50%); background-color: #ffdfd4; border-radius: 50%; z-index: -1;"></div>
     
     <!-- ===== DEKORASI BUNGA ATAS ===== -->
     <!-- Sudut Kiri Layer Belakang (z-index: 3) -->
