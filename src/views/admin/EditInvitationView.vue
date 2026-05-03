@@ -1032,22 +1032,24 @@
                           >
                           <div class="time-input-group">
                             <div class="time-range-row">
-                              <select
+                              <input
                                 v-model="akadStart"
+                                type="time"
                                 class="form-input"
-                              >
-                                <option value="" disabled>Mulai</option>
-                                <option v-for="t in timeOptions" :key="t" :value="t">{{ t }}</option>
-                              </select>
-                              <span class="time-separator">s/d</span>
-                              <select
+                                @keydown.enter.prevent
+                              />
+                              <span class="time-separator">-</span>
+                              <input
+                                v-if="!akadSelesai"
                                 v-model="akadEnd"
+                                type="time"
                                 class="form-input"
-                              >
-                                <option value="" disabled>Selesai</option>
-                                <option v-for="t in timeOptions" :key="t" :value="t">{{ t }}</option>
-                                <option value="Selesai">Selesai</option>
-                              </select>
+                                @keydown.enter.prevent
+                              />
+                              <span
+                                v-else
+                                class="form-input time-selesai-display"
+                              >Selesai</span>
                             </div>
                             <select
                               v-model="akadZone"
@@ -1058,8 +1060,20 @@
                               <option value="WIT">WIT</option>
                             </select>
                           </div>
+                          <button
+                            type="button"
+                            class="btn-selesai-toggle"
+                            :class="{ active: akadSelesai }"
+                            @click="toggleAkadSelesai"
+                          >
+                            <Icon
+                              :icon="akadSelesai ? 'lucide:check-circle-2' : 'lucide:circle'"
+                              style="font-size: 14px"
+                            />
+                            s/d Selesai
+                          </button>
                           <p
-                            v-if="akadStart && akadEnd && akadEnd !== 'Selesai' && akadStart >= akadEnd"
+                            v-if="akadStart && akadEnd && !akadSelesai && akadStart >= akadEnd"
                             class="time-error-hint"
                           >
                             <Icon
@@ -1175,22 +1189,24 @@
                           >
                           <div class="time-input-group">
                             <div class="time-range-row">
-                              <select
+                              <input
                                 v-model="resepsiStart"
+                                type="time"
                                 class="form-input"
-                              >
-                                <option value="" disabled>Mulai</option>
-                                <option v-for="t in timeOptions" :key="t" :value="t">{{ t }}</option>
-                              </select>
-                              <span class="time-separator">s/d</span>
-                              <select
+                                @keydown.enter.prevent
+                              />
+                              <span class="time-separator">-</span>
+                              <input
+                                v-if="!resepsiSelesai"
                                 v-model="resepsiEnd"
+                                type="time"
                                 class="form-input"
-                              >
-                                <option value="" disabled>Selesai</option>
-                                <option v-for="t in timeOptions" :key="t" :value="t">{{ t }}</option>
-                                <option value="Selesai">Selesai</option>
-                              </select>
+                                @keydown.enter.prevent
+                              />
+                              <span
+                                v-else
+                                class="form-input time-selesai-display"
+                              >Selesai</span>
                             </div>
                             <select
                               v-model="resepsiZone"
@@ -1201,11 +1217,23 @@
                               <option value="WIT">WIT</option>
                             </select>
                           </div>
+                          <button
+                            type="button"
+                            class="btn-selesai-toggle"
+                            :class="{ active: resepsiSelesai }"
+                            @click="toggleResepsiSelesai"
+                          >
+                            <Icon
+                              :icon="resepsiSelesai ? 'lucide:check-circle-2' : 'lucide:circle'"
+                              style="font-size: 14px"
+                            />
+                            s/d Selesai
+                          </button>
                           <p
                             v-if="
                               resepsiStart &&
                               resepsiEnd &&
-                              resepsiEnd !== 'Selesai' &&
+                              !resepsiSelesai &&
                               resepsiStart >= resepsiEnd
                             "
                             class="time-error-hint"
@@ -2692,6 +2720,47 @@
   padding-right: 6px;
 }
 
+/* Toggle "Selesai" button */
+.btn-selesai-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--admin-text-secondary);
+  background: transparent;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-selesai-toggle:hover {
+  background: var(--admin-bg);
+  border-color: var(--admin-primary);
+  color: var(--admin-primary);
+}
+.btn-selesai-toggle.active {
+  background: var(--admin-primary);
+  border-color: var(--admin-primary);
+  color: #fff;
+}
+.btn-selesai-toggle.active:hover {
+  opacity: 0.9;
+}
+
+/* "Selesai" text display replacing end time input */
+.time-selesai-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--admin-primary);
+  background: var(--admin-bg);
+}
+
 @media (max-width: 480px) {
   .time-input-group {
     flex-direction: column;
@@ -2937,13 +3006,6 @@ function validateStep(stepIndex: number): string[] {
   return errors;
 }
 
-// --- Time Options (24-hour, setiap 30 menit) ---
-const timeOptions: string[] = [];
-for (let h = 0; h < 24; h++) {
-  for (const m of ["00", "30"]) {
-    timeOptions.push(`${String(h).padStart(2, "0")}:${m}`);
-  }
-}
 
 // --- Time Parsing (Jam & Zona Waktu) ---
 function parseTimeStr(timeStr: string) {
@@ -3059,6 +3121,27 @@ const {
   removeLoveStory,
 } = useInvitationForm(initialTheme);
 
+// --- Toggle "Selesai" untuk waktu akhir ---
+const akadSelesai = ref(parseTimeStr(form.akad_time).end === "Selesai");
+const resepsiSelesai = ref(parseTimeStr(form.resepsi_time).end === "Selesai");
+
+function toggleAkadSelesai() {
+  akadSelesai.value = !akadSelesai.value;
+  if (akadSelesai.value) {
+    akadEnd.value = "Selesai";
+  } else {
+    akadEnd.value = "";
+  }
+}
+function toggleResepsiSelesai() {
+  resepsiSelesai.value = !resepsiSelesai.value;
+  if (resepsiSelesai.value) {
+    resepsiEnd.value = "Selesai";
+  } else {
+    resepsiEnd.value = "";
+  }
+}
+
 // --- Draft Auto-Save (create mode only) ---
 const DRAFT_KEY = 'createInvitation_draft';
 const draft = useFormDraft(DRAFT_KEY);
@@ -3068,6 +3151,9 @@ if (!isEditMode.value) {
   if (saved) {
     Object.assign(form, saved.form);
     restoredFromDraft = true;
+    // Sync "Selesai" toggle state from draft
+    akadSelesai.value = parseTimeStr(form.akad_time).end === "Selesai";
+    resepsiSelesai.value = parseTimeStr(form.resepsi_time).end === "Selesai";
   }
 }
 
@@ -3293,6 +3379,9 @@ onMounted(async () => {
   const data = await store.fetchInvitationById(id);
   if (data) {
     populateForm(data);
+    // Sync "Selesai" toggle state from loaded data
+    akadSelesai.value = parseTimeStr(form.akad_time).end === "Selesai";
+    resepsiSelesai.value = parseTimeStr(form.resepsi_time).end === "Selesai";
   }
   loading.value = false;
 });
