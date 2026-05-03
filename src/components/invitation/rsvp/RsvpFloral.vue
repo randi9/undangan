@@ -20,7 +20,7 @@
     
     <div style="display: flex; flex-wrap: wrap; gap: 32px; text-align: left; align-items: stretch; justify-content: center;">
       <!-- Input Form Section -->
-      <div style="flex: 1; min-width: min(100%, 350px); background-color: rgba(255, 255, 255, 0.9); padding: 32px; border-radius: 32px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center;">
+      <div style="flex: 1; min-width: min(100%, 350px); background-color: rgba(255, 255, 255, 0.9); padding: 32px; border-radius: 32px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15), 0 10px 20px -5px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center;">
         
         <!-- Decoration top right -->
         <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/cf584d49-6790-4bb8-971f-89cdc91c6e00.webp" 
@@ -90,7 +90,7 @@
       
       <!-- List Messages Section -->
       <div style="flex: 1; min-width: min(100%, 350px); display: flex; flex-direction: column; height: 600px;">
-        <div style="background-color: rgba(255,255,255,0.6); padding: 32px; border-radius: 32px; border: 1px solid rgba(0,0,0,0.05); flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; overflow: hidden; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-sizing: border-box;">
+        <div style="background-color: rgba(255,255,255,0.8); padding: 32px; border-radius: 32px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15), 0 10px 20px -5px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; overflow: hidden; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-sizing: border-box;">
           
           <!-- Decoration bottom left -->
           <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/38c7b2f4-88da-4e1c-9457-5b84781baea5.webp" 

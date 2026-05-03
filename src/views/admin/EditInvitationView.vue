@@ -1032,19 +1032,22 @@
                           >
                           <div class="time-input-group">
                             <div class="time-range-row">
-                              <input
+                              <select
                                 v-model="akadStart"
-                                type="time"
                                 class="form-input"
-                                @keydown.enter.prevent
-                              />
-                              <span class="time-separator">-</span>
-                              <input
+                              >
+                                <option value="" disabled>Mulai</option>
+                                <option v-for="t in timeOptions" :key="t" :value="t">{{ t }}</option>
+                              </select>
+                              <span class="time-separator">s/d</span>
+                              <select
                                 v-model="akadEnd"
-                                type="time"
                                 class="form-input"
-                                @keydown.enter.prevent
-                              />
+                              >
+                                <option value="" disabled>Selesai</option>
+                                <option v-for="t in timeOptions" :key="t" :value="t">{{ t }}</option>
+                                <option value="Selesai">Selesai</option>
+                              </select>
                             </div>
                             <select
                               v-model="akadZone"
@@ -1056,7 +1059,7 @@
                             </select>
                           </div>
                           <p
-                            v-if="akadStart && akadEnd && akadStart >= akadEnd"
+                            v-if="akadStart && akadEnd && akadEnd !== 'Selesai' && akadStart >= akadEnd"
                             class="time-error-hint"
                           >
                             <Icon
@@ -1172,19 +1175,22 @@
                           >
                           <div class="time-input-group">
                             <div class="time-range-row">
-                              <input
+                              <select
                                 v-model="resepsiStart"
-                                type="time"
                                 class="form-input"
-                                @keydown.enter.prevent
-                              />
-                              <span class="time-separator">-</span>
-                              <input
+                              >
+                                <option value="" disabled>Mulai</option>
+                                <option v-for="t in timeOptions" :key="t" :value="t">{{ t }}</option>
+                              </select>
+                              <span class="time-separator">s/d</span>
+                              <select
                                 v-model="resepsiEnd"
-                                type="time"
                                 class="form-input"
-                                @keydown.enter.prevent
-                              />
+                              >
+                                <option value="" disabled>Selesai</option>
+                                <option v-for="t in timeOptions" :key="t" :value="t">{{ t }}</option>
+                                <option value="Selesai">Selesai</option>
+                              </select>
                             </div>
                             <select
                               v-model="resepsiZone"
@@ -1199,6 +1205,7 @@
                             v-if="
                               resepsiStart &&
                               resepsiEnd &&
+                              resepsiEnd !== 'Selesai' &&
                               resepsiStart >= resepsiEnd
                             "
                             class="time-error-hint"
@@ -2908,6 +2915,7 @@ function validateStep(stepIndex: number): string[] {
       if (
         akadStart.value &&
         akadEnd.value &&
+        akadEnd.value !== "Selesai" &&
         akadStart.value >= akadEnd.value
       ) {
         errors.push(
@@ -2917,6 +2925,7 @@ function validateStep(stepIndex: number): string[] {
       if (
         resepsiStart.value &&
         resepsiEnd.value &&
+        resepsiEnd.value !== "Selesai" &&
         resepsiStart.value >= resepsiEnd.value
       ) {
         errors.push(
@@ -2928,9 +2937,28 @@ function validateStep(stepIndex: number): string[] {
   return errors;
 }
 
+// --- Time Options (24-hour, setiap 30 menit) ---
+const timeOptions: string[] = [];
+for (let h = 0; h < 24; h++) {
+  for (const m of ["00", "30"]) {
+    timeOptions.push(`${String(h).padStart(2, "0")}:${m}`);
+  }
+}
+
 // --- Time Parsing (Jam & Zona Waktu) ---
 function parseTimeStr(timeStr: string) {
   if (!timeStr) return { start: "", end: "", zone: "WIB" };
+  // Handle "Selesai" as end time
+  const matchSelesai = timeStr.match(
+    /^(\d{2}:\d{2})\s*-\s*Selesai\s*(WIB|WITA|WIT)?$/i,
+  );
+  if (matchSelesai) {
+    return {
+      start: matchSelesai[1] || "",
+      end: "Selesai",
+      zone: matchSelesai[2]?.toUpperCase() || "WIB",
+    };
+  }
   const match = timeStr.match(
     /^(\d{2}:\d{2})(?:\s*-\s*(\d{2}:\d{2}))?\s*(WIB|WITA|WIT)?$/i,
   );
