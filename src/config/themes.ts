@@ -77,7 +77,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     id: "floral",
     name: "Floral",
     thumbnail:
-      "https://media.mengundanganda.com/floral/24b44e21-d97b-4b62-bb88-e29eea9c8e18.webp",
+      "https://media.mengundanganda.com/floral/cover%20section/randidewi_36200883-6cde-4c79-823f-fc9b867e9443.webp",
     description: "Natural dan romantis dengan motif bunga",
     icon: "solar:leaf-bold-duotone",
     color: "#4a5d4e",
@@ -152,7 +152,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     id: "elegant_blue",
     name: "Elegant Blue",
     thumbnail:
-      "https://media.mengundanganda.com/floral/b308425f-94ec-4923-91b4-89a22eeef55d.webp",
+      "https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_90622980-439b-4c34-b5d2-50a6bad28ea8.webp",
     description: "Elegan dengan nuansa biru navy",
     icon: "solar:diamond-bold-duotone",
     color: "#1e3a8a",
@@ -189,7 +189,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     id: "floral_blue",
     name: "Floral Blue",
     thumbnail:
-      "https://media.mengundanganda.com/floral/24b44e21-d97b-4b62-bb88-e29eea9c8e18.webp",
+      "https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_b27abb2d-504d-42d4-91e2-a055512ade57.webp",
     description: "Floral romantis dengan nuansa biru dusty",
     icon: "solar:flowers-bold-duotone",
     color: "#4a7c9b",
