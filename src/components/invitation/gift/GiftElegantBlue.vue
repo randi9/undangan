@@ -1,5 +1,5 @@
 <template>
-  <section v-if="bankList.length > 0" ref="sectionRef" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0 20px 80px 20px; overflow-x: hidden; background-color: #a8d0e6; background-image: radial-gradient(at 80% 20%, rgba(255,255,255,0.8) 0px, transparent 60%), radial-gradient(at 15% 30%, rgba(191,219,254,0.8) 0px, transparent 60%), radial-gradient(at 90% 80%, rgba(4,26,51,0.1) 0px, transparent 30%), radial-gradient(at 20% 90%, rgba(255,255,255,0.9) 0px, transparent 60%), radial-gradient(at 60% 60%, rgba(147,197,253,0.6) 0px, transparent 70%);">
+  <section v-if="bankList.length > 0" ref="sectionRef" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0 20px 80px 20px; overflow-x: hidden; background-color: transparent;">
 
     <!-- ==============================
          SINGLE CONTAINER — GIFT SECTION (Flat Top, Oval Bottom)

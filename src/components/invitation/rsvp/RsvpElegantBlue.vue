@@ -1,5 +1,5 @@
 <template>
-  <section ref="sectionRef" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 80px 20px 0 20px; overflow-x: hidden; background-color: #a8d0e6; background-image: radial-gradient(at 20% 20%, rgba(255,255,255,0.8) 0px, transparent 60%), radial-gradient(at 80% 15%, rgba(4,26,51,0.1) 0px, transparent 30%), radial-gradient(at 10% 80%, rgba(191,219,254,0.8) 0px, transparent 60%), radial-gradient(at 85% 90%, rgba(255,255,255,0.9) 0px, transparent 60%), radial-gradient(at 40% 50%, rgba(147,197,253,0.6) 0px, transparent 70%);">
+  <section ref="sectionRef" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 80px 20px 0 20px; overflow-x: hidden; background-color: transparent;">
 
     <!-- ==============================
          TOP ARCH — RSVP FORM
