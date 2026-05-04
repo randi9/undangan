@@ -94,6 +94,9 @@ export interface Invitation {
   trial_expired?: boolean;
   views_exhausted?: boolean;
   views_remaining?: number | null;
+  // Client access code
+  access_code?: string;
+  access_code_created_at?: string;
 }
 
 export interface CreateInvitationPayload {

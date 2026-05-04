@@ -110,19 +110,20 @@ async function handleVoucherRedeem(supabase: any, request: Request, env: any) {
     .update({ payment_status: "paid", paid_at: now })
     .eq("owner_id", invitation.owner_id);
 
-  await supabase
-    .from("payment_logs")
-    .insert([
-      {
-        invitation_id,
-        user_id: user.id,
-        amount: PAYMENT_AMOUNT,
-        status: "paid",
-        paid_at: now,
-        mayar_invoice_id: `voucher:${code}`,
-      },
-    ])
-    .catch(() => {});
+  try {
+    await supabase
+      .from("payment_logs")
+      .insert([
+        {
+          invitation_id,
+          user_id: user.id,
+          amount: PAYMENT_AMOUNT,
+          status: "paid",
+          paid_at: now,
+          mayar_invoice_id: `voucher:${code}`,
+        },
+      ]);
+  } catch { /* ignore logging errors */ }
 
   return json({
     message: "Voucher berhasil digunakan! Undangan Anda sekarang Premium.",

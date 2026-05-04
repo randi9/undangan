@@ -2,6 +2,7 @@ import { getSupabase } from "../_lib/supabase";
 import { getPathname, json, options } from "./shared/http";
 import { ValidationError } from "./shared/validation";
 import { dispatchAuthRoute } from "./routes/auth";
+import { dispatchClientRoute } from "./routes/client";
 import { dispatchDebugRoute } from "./routes/debug";
 import { dispatchGuestRoute } from "./routes/guests";
 import { dispatchHealthRoute } from "./routes/health";
@@ -17,6 +18,7 @@ import type { ApiDispatcher } from "./types/api";
 const dispatchers: ApiDispatcher[] = [
   dispatchHealthRoute,
   dispatchAuthRoute,
+  dispatchClientRoute,
   dispatchInvitationRoute,
   dispatchRsvpRoute,
   dispatchGuestRoute,

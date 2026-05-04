@@ -153,28 +153,29 @@ async function handlePaymentVerifyLicense(
     })
     .eq("owner_id", user.id);
 
-  await supabase
-    .from("payment_logs")
-    .upsert(
-      [
-        {
-          invitation_id: invitationId,
-          user_id: user.id,
-          amount: PAYMENT_AMOUNT,
-          status: "paid",
-          paid_at: now,
-          mayar_invoice_id: `license:${paymentIdentifier}`,
-          webhook_payload: {
-            paymentIdentifier,
-            productId: body.productId,
-            email: body.email,
-            method: "license_verify",
+  try {
+    await supabase
+      .from("payment_logs")
+      .upsert(
+        [
+          {
+            invitation_id: invitationId,
+            user_id: user.id,
+            amount: PAYMENT_AMOUNT,
+            status: "paid",
+            paid_at: now,
+            mayar_invoice_id: `license:${paymentIdentifier}`,
+            webhook_payload: {
+              paymentIdentifier,
+              productId: body.productId,
+              email: body.email,
+              method: "license_verify",
+            },
           },
-        },
-      ],
-      { onConflict: "invitation_id" },
-    )
-    .catch(() => {});
+        ],
+        { onConflict: "invitation_id" },
+      );
+  } catch { /* ignore logging errors */ }
 
   return json({
     status: "ok",
@@ -274,23 +275,24 @@ async function handlePaymentConfirm(supabase: any, request: Request, env: any) {
     .update({ payment_status: "paid", paid_at: now })
     .eq("owner_id", invitation.owner_id);
 
-  await supabase
-    .from("payment_logs")
-    .upsert(
-      [
-        {
-          invitation_id,
-          user_id: user.id,
-          amount: PAYMENT_AMOUNT,
-          status: "paid",
-          paid_at: now,
-          mayar_invoice_id: `manual:${Date.now()}`,
-          webhook_payload: { confirmed_by: user.id, method: "admin_manual" },
-        },
-      ],
-      { onConflict: "invitation_id" },
-    )
-    .catch(() => {});
+  try {
+    await supabase
+      .from("payment_logs")
+      .upsert(
+        [
+          {
+            invitation_id,
+            user_id: user.id,
+            amount: PAYMENT_AMOUNT,
+            status: "paid",
+            paid_at: now,
+            mayar_invoice_id: `manual:${Date.now()}`,
+            webhook_payload: { confirmed_by: user.id, method: "admin_manual" },
+          },
+        ],
+        { onConflict: "invitation_id" },
+      );
+  } catch { /* ignore logging errors */ }
 
   return json({ status: "ok", message: "Pembayaran berhasil dikonfirmasi." });
 }
@@ -390,23 +392,24 @@ async function markInvitationPaidFromWebhook(
       .eq("id", invitationId);
   }
 
-  await supabase
-    .from("payment_logs")
-    .upsert(
-      [
-        {
-          invitation_id: invitationId,
-          user_id: invOwner?.owner_id || null,
-          amount: data.amount || data.total || PAYMENT_AMOUNT,
-          status: "paid",
-          paid_at: now,
-          mayar_invoice_id: invoiceId || `webhook:${Date.now()}`,
-          webhook_payload: body,
-        },
-      ],
-      { onConflict: "invitation_id" },
-    )
-    .catch(() => {});
+  try {
+    await supabase
+      .from("payment_logs")
+      .upsert(
+        [
+          {
+            invitation_id: invitationId,
+            user_id: invOwner?.owner_id || null,
+            amount: data.amount || data.total || PAYMENT_AMOUNT,
+            status: "paid",
+            paid_at: now,
+            mayar_invoice_id: invoiceId || `webhook:${Date.now()}`,
+            webhook_payload: body,
+          },
+        ],
+        { onConflict: "invitation_id" },
+      );
+  } catch { /* ignore logging errors */ }
 }
 
 async function handlePaymentWebhook(supabase: any, request: Request) {

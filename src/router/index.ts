@@ -94,6 +94,20 @@ if (subdomain) {
       meta: { title: "Koleksi Tema Undangan - MengundangAnda" },
     },
 
+    // === Client Portal (Access Code Auth) ===
+    {
+      path: "/client",
+      name: "client-access",
+      component: () => import("@/views/client/ClientAccessView.vue"),
+      meta: { title: "Akses Undangan - MengundangAnda" },
+    },
+    {
+      path: "/client/dashboard",
+      name: "client-dashboard",
+      component: () => import("@/views/client/ClientDashboardView.vue"),
+      meta: { title: "Panel Undangan - MengundangAnda" },
+    },
+
     // === Dashboard (Protected) ===
     {
       path: "/dashboard",

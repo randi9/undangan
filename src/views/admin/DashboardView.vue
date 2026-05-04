@@ -299,6 +299,16 @@
                     <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">forum</span> Ucapan
                   </router-link>
                   <button
+                    v-if="authStore.isAdmin"
+                    class="btn btn-outline btn-sm"
+                    style="border-color: #8b5cf6; color: #8b5cf6;"
+                    @click="generateAccessCode(invitation)"
+                    :title="invitation.access_code ? `Kode: ${invitation.access_code}` : 'Generate kode akses klien'"
+                  >
+                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">key</span>
+                    {{ invitation.access_code ? 'Salin Kode' : 'Kode Akses' }}
+                  </button>
+                  <button
                     class="btn btn-danger btn-sm"
                     @click="confirmDelete(invitation)"
                   >
@@ -655,6 +665,37 @@ async function handleDelete() {
     showToast("error", "Gagal menghapus undangan");
   }
   deleteTarget.value = null;
+}
+
+async function generateAccessCode(invitation: Invitation) {
+  const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+  // If code already exists, just copy it
+  if (invitation.access_code) {
+    try {
+      await navigator.clipboard.writeText(invitation.access_code);
+      showToast('success', `Kode akses disalin: ${invitation.access_code}`);
+    } catch {
+      showToast('error', 'Gagal menyalin kode');
+    }
+    return;
+  }
+  // Generate new code
+  try {
+    const headers = await authStore.getAuthHeaders();
+    const res = await fetch(`${API_BASE}/client/generate-code/${invitation.id}`, {
+      method: 'POST',
+      headers,
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Gagal generate kode');
+    // Update local data
+    const idx = invitations.value.findIndex(i => i.id === invitation.id);
+    if (idx >= 0) (invitations.value[idx] as any).access_code = data.access_code;
+    await navigator.clipboard.writeText(data.access_code);
+    showToast('success', `Kode akses dibuat & disalin: ${data.access_code}`);
+  } catch (err: any) {
+    showToast('error', err.message || 'Gagal membuat kode akses');
+  }
 }
 
 function showToast(type: string, message: string) {
