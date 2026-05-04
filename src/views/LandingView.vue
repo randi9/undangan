@@ -648,7 +648,7 @@ const themesData = [
   {
     id: 'floral',
     name: 'Floral',
-    thumbnail: 'https://media.mengundanganda.com/floral/24b44e21-d97b-4b62-bb88-e29eea9c8e18.webp',
+    thumbnail: 'https://media.mengundanganda.com/floral/cover%20section/randidewi_36200883-6cde-4c79-823f-fc9b867e9443.webp',
     description: 'Desain romantis dengan ornamen daun dan bunga, warna pastel lembut. Sempurna untuk nuansa garden party yang penuh keindahan alam.',
     color: '#4a5d4e',
     bgColor: '#4a5d4e',
@@ -659,7 +659,7 @@ const themesData = [
   {
     id: 'elegant_blue',
     name: 'Elegant Blue',
-    thumbnail: 'https://media.mengundanganda.com/floral/b308425f-94ec-4923-91b4-89a22eeef55d.webp',
+    thumbnail: 'https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_90622980-439b-4c34-b5d2-50a6bad28ea8.webp',
     description: 'Desain elegan dengan nuansa biru dusty yang menenangkan dipadukan dengan aksen champagne gold. Sempurna untuk nuansa mewah modern.',
     color: '#A3B5C3',
     bgColor: '#1e3a8a',
@@ -670,7 +670,7 @@ const themesData = [
   {
     id: 'floral_blue',
     name: 'Floral Blue',
-    thumbnail: 'https://media.mengundanganda.com/floral/24b44e21-d97b-4b62-bb88-e29eea9c8e18.webp',
+    thumbnail: 'https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_b27abb2d-504d-42d4-91e2-a055512ade57.webp',
     description: 'Perpaduan ornamen floral dengan palet biru yang segar dan elegan. Cocok untuk pasangan yang menginginkan nuansa romantis dengan sentuhan modern.',
     color: '#3b6b8a',
     bgColor: '#3b6b8a',
