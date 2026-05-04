@@ -71,11 +71,12 @@ export const useInvitationStore = defineStore('invitation', () => {
     }
   }
 
-  async function fetchInvitationBySlug(slug: string) {
+  async function fetchInvitationBySlug(slug: string, preview = false) {
     loading.value = true
     error.value = null
     try {
-      const res = await fetch(`${API_BASE}/invitations/slug/${slug}`)
+      const qs = preview ? '?preview=true' : ''
+      const res = await fetch(`${API_BASE}/invitations/slug/${slug}${qs}`)
       if (!res.ok) {
         const data = await safeJson(res).catch(() => ({}))
         throw new Error(data.error || 'Invitation not found')

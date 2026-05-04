@@ -35,6 +35,7 @@ export function usePhotoUpload(
   const cropImageSrc = ref('')
   const cropAspectRatio = ref(1)
   const cropStencilShape = ref<'circle' | 'rectangle'>('rectangle')
+  const photoUploading = ref(false)
   // Internal: track which field the crop is for
   let pendingCropField: CropField | null = null
   let pendingOldUrl = ''
@@ -96,6 +97,11 @@ export function usePhotoUpload(
     const field = pendingCropField
     const oldUrl = pendingOldUrl
 
+    // Close crop modal immediately, show uploading state
+    cropModalOpen.value = false
+    cropImageSrc.value = ''
+    photoUploading.value = true
+
     try {
       // Convert blob to File for upload
       const file = new File([blob], `cropped-${Date.now()}.webp`, { type: 'image/webp' })
@@ -124,13 +130,11 @@ export function usePhotoUpload(
     } catch (err) {
       console.error('[CropConfirm] Upload failed:', err)
       showToast('error', 'Gagal upload foto')
+    } finally {
+      photoUploading.value = false
+      pendingCropField = null
+      pendingOldUrl = ''
     }
-
-    // Reset crop state
-    cropModalOpen.value = false
-    cropImageSrc.value = ''
-    pendingCropField = null
-    pendingOldUrl = ''
   }
 
   function handleCropCancel() {
@@ -281,6 +285,7 @@ export function usePhotoUpload(
     cropImageSrc,
     cropAspectRatio,
     cropStencilShape,
+    photoUploading,
     handleCropConfirm,
     handleCropCancel,
   }

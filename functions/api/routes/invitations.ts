@@ -219,37 +219,45 @@ async function bumpInvitationView(
 ) {
   const viewerIp = getClientIp(request);
 
+  // Skip if IP is unknown (shouldn't count unidentifiable views)
+  if (!viewerIp || viewerIp === "unknown") return;
+
   // Rate limit: 60 view bumps per IP per 10 minutes
   const limited = rateLimit(`view:${viewerIp}`, 60, 10 * 60 * 1000);
   if (limited) return;
 
-  const { data: existingView } = await supabase
-    .from("invitation_views")
-    .select("id")
-    .eq("invitation_id", invitation.id)
-    .eq("viewer_ip", viewerIp)
-    .maybeSingle();
+  try {
+    const { data: existingView } = await supabase
+      .from("invitation_views")
+      .select("id")
+      .eq("invitation_id", invitation.id)
+      .eq("viewer_ip", viewerIp)
+      .maybeSingle();
 
-  if (existingView) return;
+    if (existingView) return;
 
-  // Detect device type and referrer for analytics
-  const ua = request.headers.get("user-agent") || "";
-  const isMobile = /Mobile|Android|iPhone|iPad/i.test(ua);
-  const referer = request.headers.get("referer") || "";
+    // Detect device type and referrer for analytics
+    const ua = request.headers.get("user-agent") || "";
+    const isMobile = /Mobile|Android|iPhone|iPad/i.test(ua);
+    const referer = request.headers.get("referer") || "";
 
-  await supabase.from("invitation_views").insert([
-    {
-      invitation_id: invitation.id,
-      viewer_ip: viewerIp,
-      device_type: isMobile ? "mobile" : "desktop",
-      referer_url: referer.slice(0, 500),
-    },
-  ]);
+    await supabase.from("invitation_views").insert([
+      {
+        invitation_id: invitation.id,
+        viewer_ip: viewerIp,
+        device_type: isMobile ? "mobile" : "desktop",
+        referer_url: referer.slice(0, 500),
+      },
+    ]);
 
-  await supabase
-    .from("invitations")
-    .update({ view_count: (invitation.view_count || 0) + 1 })
-    .eq("id", invitation.id);
+    await supabase
+      .from("invitations")
+      .update({ view_count: (invitation.view_count || 0) + 1 })
+      .eq("id", invitation.id);
+  } catch (err) {
+    // Silently log — don't break the invitation view if analytics fails
+    console.error("[bumpInvitationView] Error:", err);
+  }
 }
 
 async function handleInvitationList(supabase: any, request: Request, env: any) {

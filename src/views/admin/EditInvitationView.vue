@@ -2420,6 +2420,17 @@
       @cancel="handleCropCancel"
     />
 
+    <!-- Photo Uploading Overlay -->
+    <Teleport to="body">
+      <div v-if="photoUploading" class="photo-uploading-overlay">
+        <div class="photo-uploading-card">
+          <div class="loading-spinner" style="width: 36px; height: 36px;"></div>
+          <div style="font-size: 15px; font-weight: 600; color: var(--admin-text, #1e293b)">Mengupload foto...</div>
+          <div style="font-size: 13px; color: var(--admin-text-secondary, #64748b)">Mohon tunggu sebentar</div>
+        </div>
+      </div>
+    </Teleport>
+
     <!-- Quote Library Modal -->
     <QuoteLibraryModal
       :show="showQuoteModal"
@@ -2454,6 +2465,34 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Photo uploading overlay (shown after crop modal closes, during upload) */
+.photo-uploading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.photo-uploading-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 .input-error {
   border-color: #ef4444 !important;
@@ -3205,6 +3244,7 @@ const {
   cropImageSrc,
   cropAspectRatio,
   cropStencilShape,
+  photoUploading,
   handleCropConfirm,
   handleCropCancel,
 } = usePhotoUpload(form, showToast);

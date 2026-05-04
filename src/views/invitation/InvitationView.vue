@@ -672,7 +672,11 @@ onMounted(async () => {
     return;
   }
 
-  const data = await store.fetchInvitationBySlug(slug);
+  // Detect if this is an admin preview (skip view counting)
+  const isAdminPreview = route.query.preview === 'true' ||
+    document.referrer.includes('/dashboard');
+
+  const data = await store.fetchInvitationBySlug(slug, isAdminPreview);
   invitation.value = data;
   loading.value = false;
 
@@ -729,7 +733,7 @@ onBeforeUnmount(() => {
   <div
     v-else-if="!invitation"
     class="min-h-[100dvh] flex flex-col items-center justify-center p-6 lg:p-10 bg-[#f8fafc] relative overflow-hidden"
-    style="font-family: var(--font-sans, &quot;Inter&quot;, sans-serif)"
+    style="font-family: var(--font-sans, 'Inter', sans-serif)"
   >
     <!-- Modern ambient blobs -->
     <div
