@@ -62,7 +62,6 @@ export function rateLimit(
         headers: {
           "Content-Type": "application/json",
           "Retry-After": String(retryAfter),
-          "Access-Control-Allow-Origin": "*",
         },
       },
     );

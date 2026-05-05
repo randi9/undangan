@@ -1,5 +1,5 @@
 import { getSupabase } from "../_lib/supabase";
-import { getPathname, json, options } from "./shared/http";
+import { getPathname, json, secureOptions, wrapResponse } from "./shared/http";
 import { ValidationError } from "./shared/validation";
 import { dispatchAuthRoute } from "./routes/auth";
 import { dispatchClientRoute } from "./routes/client";
@@ -47,7 +47,8 @@ async function dispatchApiRequest(
 export async function onRequest(context: any) {
   const { request, env } = context;
 
-  if (request.method === "OPTIONS") return options();
+  // CORS preflight — respond with validated origin, not wildcard
+  if (request.method === "OPTIONS") return secureOptions(request);
 
   try {
     const pathname = getPathname(request);
@@ -66,22 +67,36 @@ export async function onRequest(context: any) {
       "";
 
     if (!isHealthRequest && (!supabaseUrl || !supabaseKey)) {
-      return json(
-        {
-          error:
-            "Server belum dikonfigurasi. Hubungi admin (Supabase env vars missing).",
-        },
-        503,
+      return wrapResponse(
+        json(
+          {
+            error:
+              "Server belum dikonfigurasi. Hubungi admin.",
+          },
+          503,
+        ),
+        request,
       );
     }
 
     const supabase = getSupabase(env);
-    return await dispatchApiRequest(supabase, env, request, pathname);
+    const response = await dispatchApiRequest(supabase, env, request, pathname);
+
+    // Wrap every response with validated CORS origin + security headers
+    return wrapResponse(response, request);
   } catch (err: any) {
     // Zod validation errors → 400
     if (err instanceof ValidationError) {
-      return json({ error: err.message, issues: err.issues }, 400);
+      return wrapResponse(
+        json({ error: err.message, issues: err.issues }, 400),
+        request,
+      );
     }
-    return json({ error: err?.message || "Server error" }, 500);
+    // Don't leak internal error messages to clients
+    console.error("[API] Unhandled error:", err?.message, err?.stack);
+    return wrapResponse(
+      json({ error: "Terjadi kesalahan pada server." }, 500),
+      request,
+    );
   }
 }

@@ -412,9 +412,86 @@ async function markInvitationPaidFromWebhook(
   } catch { /* ignore logging errors */ }
 }
 
-async function handlePaymentWebhook(supabase: any, request: Request) {
+/**
+ * Compute HMAC-SHA256 hex digest for webhook signature verification.
+ */
+async function computeHmacSha256(secret: string, payload: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+/**
+ * Timing-safe string comparison to prevent timing attacks.
+ */
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
+/**
+ * Verify that the webhook request actually came from Mayar.
+ *
+ * Mayar provides a "Webhook Token" in the dashboard (Integration > API Keys).
+ * This token is used as the HMAC-SHA256 secret to sign the raw request body.
+ * The resulting signature is sent in a request header.
+ *
+ * Store the Webhook Token as MAYAR_WEBHOOK_SECRET in Cloudflare env vars.
+ */
+async function verifyWebhookSignature(
+  rawBody: string,
+  request: Request,
+  env: any,
+): Promise<boolean> {
+  const webhookSecret = env?.MAYAR_WEBHOOK_SECRET || "";
+  if (!webhookSecret) {
+    // Not configured yet — allow through with warning (backward compatible)
+    console.warn("[Webhook] MAYAR_WEBHOOK_SECRET not configured — skipping signature check.");
+    return true;
+  }
+
+  // Mayar may use one of these header names for the signature
+  const signature =
+    request.headers.get("x-mayar-signature") ||
+    request.headers.get("x-callback-signature") ||
+    request.headers.get("x-webhook-signature") ||
+    "";
+
+  if (!signature) {
+    console.error("[Webhook] Missing signature header from Mayar");
+    return false;
+  }
+
+  const expectedSig = await computeHmacSha256(webhookSecret, rawBody);
+  return timingSafeEqual(signature.toLowerCase(), expectedSig.toLowerCase());
+}
+
+async function handlePaymentWebhook(supabase: any, request: Request, env: any) {
   try {
-    const body = await request.json().catch(() => ({}));
+    // Read raw body first for signature verification
+    const rawBody = await request.text();
+
+    // Verify the signature using Mayar Webhook Token
+    const isValid = await verifyWebhookSignature(rawBody, request, env);
+    if (!isValid) {
+      console.error("[Webhook] Signature verification failed — rejecting request");
+      return json({ error: "Unauthorized webhook request." }, 403);
+    }
+
+    const body = rawBody ? JSON.parse(rawBody) : {};
     const event = body.event || body.type || "unknown";
     const data = body.data || body;
 
@@ -479,111 +556,8 @@ async function handlePaymentWebhook(supabase: any, request: Request) {
       event,
     });
   } catch (err: any) {
-    return json({ error: err?.message || "Webhook processing failed" }, 500);
+    return json({ error: "Webhook processing failed." }, 500);
   }
-}
-
-function buildPremiumDebugStatus(
-  user: any,
-  userRecord: any,
-  paymentLogs: any[] | null,
-) {
-  let isUserPremium = false;
-  let premiumSource = "none";
-
-  if (userRecord?.paid_at) {
-    const paidDate = new Date(userRecord.paid_at);
-    const expireDate = new Date(paidDate);
-    expireDate.setFullYear(expireDate.getFullYear() + 1);
-    if (new Date() <= expireDate) {
-      isUserPremium = true;
-      premiumSource = "users.paid_at";
-    } else {
-      premiumSource = "users.paid_at_expired";
-    }
-  }
-
-  if (!isUserPremium && paymentLogs && paymentLogs.length > 0) {
-    const paidLogs = paymentLogs.filter(
-      (l: any) => l.status === "paid" && l.paid_at,
-    );
-    if (paidLogs.length > 0) {
-      const lastPaidAt = new Date(paidLogs[0].paid_at);
-      const expireDate = new Date(lastPaidAt);
-      expireDate.setFullYear(expireDate.getFullYear() + 1);
-      if (new Date() <= expireDate) {
-        isUserPremium = true;
-        premiumSource = "payment_logs";
-      }
-    }
-  }
-
-  return {
-    is_premium: isUserPremium,
-    premium_source: premiumSource,
-    is_admin_created:
-      user.role === "admin" || user.user_source === "admin_created",
-    would_get_status:
-      user.role === "admin" ||
-      user.user_source === "admin_created" ||
-      isUserPremium
-        ? "paid"
-        : "trial",
-  };
-}
-
-async function handlePaymentDebugPremium(
-  supabase: any,
-  request: Request,
-  env: any,
-) {
-  const user = await requireUser(supabase, request, env);
-  if (!user) return unauthorized();
-
-  const checks: Record<string, any> = {};
-
-  const { data: userRecord, error: userErr } = await supabase
-    .from("users")
-    .select("id, username, role, user_source, paid_at, max_invitations")
-    .eq("id", user.id)
-    .single();
-  checks.user_record = userErr ? { error: userErr.message } : userRecord;
-  checks.user_has_paid_at_column = userRecord ? "paid_at" in userRecord : false;
-  checks.user_paid_at_value = userRecord?.paid_at || null;
-
-  const { data: paymentLogs, error: logErr } = await supabase
-    .from("payment_logs")
-    .select(
-      "id, invitation_id, user_id, status, paid_at, mayar_invoice_id, created_at",
-    )
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(5);
-  checks.payment_logs_by_user_id = logErr
-    ? { error: logErr.message }
-    : paymentLogs;
-  checks.payment_logs_count = paymentLogs?.length || 0;
-
-  const { data: allLogs, error: allLogErr } = await supabase
-    .from("payment_logs")
-    .select("id, invitation_id, user_id, status, paid_at, mayar_invoice_id")
-    .order("created_at", { ascending: false })
-    .limit(10);
-  checks.all_recent_payment_logs = allLogErr
-    ? { error: allLogErr.message }
-    : allLogs;
-
-  const { error: colErr } = await supabase
-    .from("users")
-    .select("paid_at")
-    .eq("id", user.id)
-    .single();
-  checks.paid_at_column_exists = !colErr?.message?.includes("paid_at");
-  if (colErr) checks.paid_at_column_error = colErr.message;
-
-  checks.result = buildPremiumDebugStatus(user, userRecord, paymentLogs);
-
-  return json(checks);
 }
 
 export const dispatchPaymentRoute: ApiDispatcher = async ({
@@ -600,8 +574,9 @@ export const dispatchPaymentRoute: ApiDispatcher = async ({
     return await handlePaymentVerifyLicense(supabase, request, env);
   }
 
+  // Webhook: match "payment/webhook" regardless of query params
   if (pathname === "payment/webhook" && request.method === "POST") {
-    return await handlePaymentWebhook(supabase, request);
+    return await handlePaymentWebhook(supabase, request, env);
   }
 
   if (pathname.startsWith("payment/status/") && request.method === "GET") {
@@ -610,10 +585,6 @@ export const dispatchPaymentRoute: ApiDispatcher = async ({
 
   if (pathname === "payment/confirm" && request.method === "POST") {
     return await handlePaymentConfirm(supabase, request, env);
-  }
-
-  if (pathname === "payment/debug-premium" && request.method === "GET") {
-    return await handlePaymentDebugPremium(supabase, request, env);
   }
 
   return null;

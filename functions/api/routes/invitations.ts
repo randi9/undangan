@@ -359,10 +359,22 @@ async function handleInvitationBySlug(
     invitation.id,
   );
 
+  // Strip sensitive fields from public response
+  const {
+    access_code: _ac,
+    access_code_created_at: _acca,
+    owner_id: _oid,
+    mayar_invoice_id: _mii,
+    ...publicInvitation
+  } = invitation;
+
+  // Filter out hidden RSVPs from public view
+  const visibleRsvps = (rsvps || []).filter((r: any) => !r.is_hidden);
+
   return json({
-    ...invitation,
+    ...publicInvitation,
     photos,
-    rsvps,
+    rsvps: visibleRsvps,
     is_trial: (accessState as any).isTrial,
     show_watermark: (accessState as any).showWatermark,
     trial_expired: (accessState as any).trialExpired,
@@ -706,12 +718,14 @@ async function handleInvitationDelete(
     
     const { error: delError } = await supabase.from("invitations").delete().eq("id", id);
     if (delError) {
-      return json({ error: `Supabase delete error: ${delError.message}` }, 500);
+      console.error("[Invitations] Delete error:", delError.message);
+      return json({ error: "Gagal menghapus undangan." }, 500);
     }
 
     return json({ message: "Invitation deleted successfully" });
   } catch (err: any) {
-    return json({ error: `Crash di backend: ${err?.message}`, _stack: err?.stack }, 500);
+    console.error("[Invitations] Delete crash:", err?.message, err?.stack);
+    return json({ error: "Gagal menghapus undangan." }, 500);
   }
 }
 
