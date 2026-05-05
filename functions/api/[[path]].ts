@@ -13,6 +13,7 @@ import { dispatchPaymentRoute } from "./routes/payment";
 import { dispatchRsvpRoute } from "./routes/rsvp";
 import { dispatchUploadRoute } from "./routes/upload";
 import { dispatchVoucherRoute } from "./routes/vouchers";
+import { dispatchChatRoute } from "./routes/chat";
 import type { ApiDispatcher } from "./types/api";
 
 const dispatchers: ApiDispatcher[] = [
@@ -28,6 +29,7 @@ const dispatchers: ApiDispatcher[] = [
   dispatchPaymentRoute,
   dispatchDebugRoute,
   dispatchUploadRoute,
+  dispatchChatRoute,
 ];
 
 async function dispatchApiRequest(

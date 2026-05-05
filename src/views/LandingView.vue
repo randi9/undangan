@@ -440,6 +440,9 @@
         </a>
       </div>
     </nav>
+
+    <!-- AI Customer Service Chat Widget -->
+    <ChatWidget />
   </div>
 </template>
 
@@ -447,6 +450,7 @@
 import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
 import { Icon } from '@iconify/vue'
 import LandingHeroCinematic from '@/components/landing/LandingHeroCinematic.vue'
+import ChatWidget from '@/components/ui/ChatWidget.vue'
 
 const navScrolled = ref(false)
 const mobileMenuOpen = ref(false)
