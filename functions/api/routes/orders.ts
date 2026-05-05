@@ -3,12 +3,15 @@ import { json } from "../shared/http";
 import type { ApiDispatcher } from "../types/api";
 
 /**
- * Generate a unique order number: ORD-YYYYMMDD-XXX
+ * Generate a unique order number: ORD-YYYYMMDD-XXXXXX
+ * Uses crypto.getRandomValues() for unpredictable, collision-resistant IDs.
  */
 function generateOrderNumber(): string {
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10).replace(/-/g, "");
-  const rand = Math.floor(Math.random() * 900 + 100);
+  const randomBytes = new Uint32Array(1);
+  crypto.getRandomValues(randomBytes);
+  const rand = (randomBytes[0] % 900000) + 100000; // 6-digit: 100000–999999
   return `ORD-${dateStr}-${rand}`;
 }
 

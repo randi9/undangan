@@ -10,9 +10,11 @@ import type { ApiDispatcher } from "../types/api";
 function randomPassword() {
   const chars =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%";
+  const randomBytes = new Uint32Array(12);
+  crypto.getRandomValues(randomBytes);
   let password = "";
   for (let i = 0; i < 12; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
+    password += chars.charAt(randomBytes[i] % chars.length);
   }
   return password;
 }

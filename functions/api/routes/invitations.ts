@@ -2,6 +2,7 @@ import { requireUser, unauthorized } from "../shared/auth";
 import { getEffectiveMethod, json } from "../shared/http";
 import { deleteR2Url } from "../shared/storage";
 import { rateLimit, getClientIp } from "../shared/rateLimit";
+import { invitationCreateSchema, invitationUpdateSchema, validateBody } from "../shared/validation";
 import type { ApiDispatcher } from "../types/api";
 
 function parseLoveStory(value: unknown) {
@@ -473,10 +474,8 @@ async function handleInvitationCreate(
   const user = await requireUser(supabase, request, env);
   if (!user) return unauthorized();
 
-  const body = await request.json();
-  if (!body?.slug || !body?.groom_name || !body?.bride_name) {
-    return json({ error: "slug, groom_name, bride_name wajib diisi" }, 400);
-  }
+  const rawBody = await request.json();
+  const body = validateBody(invitationCreateSchema, rawBody);
 
   if (user.role !== "admin") {
     const { count } = await supabase
@@ -604,7 +603,8 @@ async function handleInvitationUpdate(
   const id = decodeURIComponent(pathname.slice("invitations/".length))
     .trim()
     .split("/")[0];
-  const body = await request.json();
+  const rawBody = await request.json();
+  const body = validateBody(invitationUpdateSchema, rawBody);
 
   const { data: current } = await supabase
     .from("invitations")

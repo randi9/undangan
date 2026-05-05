@@ -5,9 +5,11 @@ import type { ApiDispatcher } from "../types/api";
 
 function generateVoucherCode() {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const randomBytes = new Uint32Array(8);
+  crypto.getRandomValues(randomBytes);
   let code = "MA-";
   for (let i = 0; i < 8; i++)
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
+    code += chars.charAt(randomBytes[i] % chars.length);
   return code;
 }
 

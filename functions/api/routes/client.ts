@@ -4,34 +4,87 @@ import type { ApiDispatcher } from "../types/api";
 
 /**
  * Generate a random 8-character alphanumeric access code (uppercase).
+ * Uses crypto.getRandomValues() for cryptographic randomness.
  */
 function generateAccessCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Exclude confusing chars: 0,O,1,I
+  const randomBytes = new Uint32Array(8);
+  crypto.getRandomValues(randomBytes);
   let code = "";
   for (let i = 0; i < 8; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
+    code += chars.charAt(randomBytes[i] % chars.length);
   }
   return code;
 }
 
 /**
- * Create a simple time-limited access token from the invitation ID + access code.
- * Uses base64 encoding with expiry timestamp — lightweight, no JWT library needed.
+ * Derive a signing secret for client access tokens.
+ * Uses SUPABASE_SECRET_KEY which is always available in the env.
  */
-function createAccessToken(invitationId: string, accessCode: string): string {
-  const expiresAt = Date.now() + 72 * 60 * 60 * 1000; // 72 hours
-  const payload = JSON.stringify({ inv: invitationId, code: accessCode, exp: expiresAt });
-  return btoa(payload);
+function getTokenSecret(env: any): string {
+  return (env?.SUPABASE_SECRET_KEY || env?.SUPABASE_SERVICE_ROLE_KEY || "client-token-fallback-key") + ":client-access";
 }
 
 /**
- * Decode and validate an access token. Returns the invitation ID if valid.
+ * Compute HMAC-SHA256 hex signature.
  */
-function decodeAccessToken(token: string): { invitationId: string; accessCode: string } | null {
+async function hmacSign(secret: string, data: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(data));
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+/**
+ * Create an HMAC-signed time-limited access token.
+ * Format: base64(payload).hmacSignature
+ */
+async function createAccessToken(invitationId: string, accessCode: string, env: any): Promise<string> {
+  const expiresAt = Date.now() + 72 * 60 * 60 * 1000; // 72 hours
+  const payloadStr = JSON.stringify({ inv: invitationId, code: accessCode, exp: expiresAt });
+  const payloadB64 = btoa(payloadStr);
+  const signature = await hmacSign(getTokenSecret(env), payloadB64);
+  return `${payloadB64}.${signature}`;
+}
+
+/**
+ * Decode, verify signature, and validate an access token.
+ * Returns the invitation ID + access code if valid, null otherwise.
+ */
+async function decodeAccessToken(token: string, env: any): Promise<{ invitationId: string; accessCode: string } | null> {
   try {
-    const payload = JSON.parse(atob(token));
+    const dotIndex = token.lastIndexOf(".");
+    if (dotIndex === -1) {
+      // Legacy unsigned token (backward compat) — still validate against DB
+      const payload = JSON.parse(atob(token));
+      if (!payload.inv || !payload.code || !payload.exp) return null;
+      if (Date.now() > payload.exp) return null;
+      return { invitationId: payload.inv, accessCode: payload.code };
+    }
+
+    const payloadB64 = token.slice(0, dotIndex);
+    const signature = token.slice(dotIndex + 1);
+
+    // Verify HMAC signature
+    const expectedSig = await hmacSign(getTokenSecret(env), payloadB64);
+    if (signature.length !== expectedSig.length) return null;
+    let diff = 0;
+    for (let i = 0; i < signature.length; i++) {
+      diff |= signature.charCodeAt(i) ^ expectedSig.charCodeAt(i);
+    }
+    if (diff !== 0) return null;
+
+    const payload = JSON.parse(atob(payloadB64));
     if (!payload.inv || !payload.code || !payload.exp) return null;
-    if (Date.now() > payload.exp) return null; // expired
+    if (Date.now() > payload.exp) return null;
     return { invitationId: payload.inv, accessCode: payload.code };
   } catch {
     return null;
@@ -45,13 +98,14 @@ function decodeAccessToken(token: string): { invitationId: string; accessCode: s
 async function requireClientAccess(
   supabase: any,
   request: Request,
+  env: any,
 ): Promise<{ invitation: any } | { response: Response }> {
   const authHeader = request.headers.get("x-access-token") || "";
   if (!authHeader) {
     return { response: json({ error: "Token akses diperlukan." }, 401) };
   }
 
-  const decoded = decodeAccessToken(authHeader);
+  const decoded = await decodeAccessToken(authHeader, env);
   if (!decoded) {
     return { response: json({ error: "Token akses tidak valid atau kedaluwarsa." }, 401) };
   }
@@ -139,7 +193,7 @@ async function handleRevokeAccessCode(
 }
 
 // === Public: Verify Access Code ===
-async function handleVerifyCode(supabase: any, request: Request) {
+async function handleVerifyCode(supabase: any, request: Request, env: any) {
   const ip = getClientIp(request);
   const limited = rateLimit(`client:verify:${ip}`, 5, 5 * 60 * 1000);
   if (limited) return limited;
@@ -161,7 +215,7 @@ async function handleVerifyCode(supabase: any, request: Request) {
     return json({ error: "Kode akses tidak ditemukan." }, 404);
   }
 
-  const token = createAccessToken(invitation.id, code);
+  const token = await createAccessToken(invitation.id, code, env);
 
   return json({
     token,
@@ -177,8 +231,8 @@ async function handleVerifyCode(supabase: any, request: Request) {
 }
 
 // === Client: Get Invitation Details ===
-async function handleClientInvitation(supabase: any, request: Request) {
-  const authResult = await requireClientAccess(supabase, request);
+async function handleClientInvitation(supabase: any, request: Request, env: any) {
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const inv = authResult.invitation;
@@ -200,8 +254,8 @@ async function handleClientInvitation(supabase: any, request: Request) {
 }
 
 // === Client: Get Guests ===
-async function handleClientGuests(supabase: any, request: Request) {
-  const authResult = await requireClientAccess(supabase, request);
+async function handleClientGuests(supabase: any, request: Request, env: any) {
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const { data, error } = await supabase
@@ -215,8 +269,8 @@ async function handleClientGuests(supabase: any, request: Request) {
 }
 
 // === Client: Add Guests (Bulk) ===
-async function handleClientAddGuests(supabase: any, request: Request) {
-  const authResult = await requireClientAccess(supabase, request);
+async function handleClientAddGuests(supabase: any, request: Request, env: any) {
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const body = await request.json();
@@ -245,8 +299,9 @@ async function handleClientUpdateGuest(
   supabase: any,
   request: Request,
   pathname: string,
+  env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request);
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const guestId = decodeURIComponent(
@@ -271,8 +326,9 @@ async function handleClientDeleteGuest(
   supabase: any,
   request: Request,
   pathname: string,
+  env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request);
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const guestId = decodeURIComponent(
@@ -290,8 +346,8 @@ async function handleClientDeleteGuest(
 }
 
 // === Client: Get RSVPs ===
-async function handleClientRsvps(supabase: any, request: Request) {
-  const authResult = await requireClientAccess(supabase, request);
+async function handleClientRsvps(supabase: any, request: Request, env: any) {
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const { data, error } = await supabase
@@ -309,8 +365,9 @@ async function handleClientReplyRsvp(
   supabase: any,
   request: Request,
   pathname: string,
+  env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request);
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const rsvpId = decodeURIComponent(
@@ -349,8 +406,9 @@ async function handleClientDeleteRsvp(
   supabase: any,
   request: Request,
   pathname: string,
+  env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request);
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const rsvpId = decodeURIComponent(
@@ -374,8 +432,8 @@ async function handleClientDeleteRsvp(
 }
 
 // === Client: Get Stats ===
-async function handleClientStats(supabase: any, request: Request) {
-  const authResult = await requireClientAccess(supabase, request);
+async function handleClientStats(supabase: any, request: Request, env: any) {
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const invitationId = authResult.invitation.id;
@@ -413,8 +471,9 @@ async function handleClientStats(supabase: any, request: Request) {
 async function handleClientUpdateWaMessage(
   supabase: any,
   request: Request,
+  env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request);
+  const authResult = await requireClientAccess(supabase, request, env);
   if ("response" in authResult) return authResult.response;
 
   const body = await request.json();
@@ -445,33 +504,33 @@ export const dispatchClientRoute: ApiDispatcher = async ({
 
   // Public: verify code
   if (pathname === "client/verify-code" && method === "POST")
-    return await handleVerifyCode(supabase, request);
+    return await handleVerifyCode(supabase, request, env);
 
   // Client authenticated endpoints (require access token)
   if (pathname === "client/invitation" && method === "GET")
-    return await handleClientInvitation(supabase, request);
+    return await handleClientInvitation(supabase, request, env);
 
   if (pathname === "client/guests" && method === "GET")
-    return await handleClientGuests(supabase, request);
+    return await handleClientGuests(supabase, request, env);
   if (pathname === "client/guests" && method === "POST")
-    return await handleClientAddGuests(supabase, request);
+    return await handleClientAddGuests(supabase, request, env);
   if (pathname.startsWith("client/guests/") && method === "PUT")
-    return await handleClientUpdateGuest(supabase, request, pathname);
+    return await handleClientUpdateGuest(supabase, request, pathname, env);
   if (pathname.startsWith("client/guests/") && method === "DELETE")
-    return await handleClientDeleteGuest(supabase, request, pathname);
+    return await handleClientDeleteGuest(supabase, request, pathname, env);
 
   if (pathname === "client/rsvps" && method === "GET")
-    return await handleClientRsvps(supabase, request);
+    return await handleClientRsvps(supabase, request, env);
   if (pathname.startsWith("client/rsvps/") && method === "PUT")
-    return await handleClientReplyRsvp(supabase, request, pathname);
+    return await handleClientReplyRsvp(supabase, request, pathname, env);
   if (pathname.startsWith("client/rsvps/") && method === "DELETE")
-    return await handleClientDeleteRsvp(supabase, request, pathname);
+    return await handleClientDeleteRsvp(supabase, request, pathname, env);
 
   if (pathname === "client/stats" && method === "GET")
-    return await handleClientStats(supabase, request);
+    return await handleClientStats(supabase, request, env);
 
   if (pathname === "client/wa-message" && method === "PUT")
-    return await handleClientUpdateWaMessage(supabase, request);
+    return await handleClientUpdateWaMessage(supabase, request, env);
 
   return null;
 };
