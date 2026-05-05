@@ -960,21 +960,30 @@ onBeforeUnmount(() => {
         @open-lightbox="openLightbox"
       />
 
-      <!-- RSVP (Dynamic per theme) -->
-      <component
-        :is="activeRsvp"
-        :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"
-        :theme-config="activeTheme"
-        :submitting="rsvpSubmitting"
-        @submit-rsvp="handleSubmitRsvp"
-      />
+      <!-- RSVP & GIFT WRAPPER (For shared background) -->
+      <div class="rsvp-gift-wrapper" style="position: relative; width: 100%; z-index: 10;">
+        <!-- Shared Background for RSVP & Gift -->
+        <div v-if="['floral_blue', 'elegant_blue'].includes(themeName)" style="position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100vw; background-image: url('https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_1cd310ab-cb74-40d2-942c-07e3f50c594d.webp'); background-size: cover; background-position: center; z-index: -1;">
+          <!-- Light blue overlay to match gallery, with increased opacity -->
+          <div style="position: absolute; inset: 0; background-color: rgba(168, 208, 230, 0.7);"></div>
+        </div>
 
-      <!-- GIFT (Dynamic per theme) -->
-      <component
-        :is="activeGift"
-        :invitation="invitation"
-        :theme-config="activeTheme"
-      />
+        <!-- RSVP (Dynamic per theme) -->
+        <component
+          :is="activeRsvp"
+          :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"
+          :theme-config="activeTheme"
+          :submitting="rsvpSubmitting"
+          @submit-rsvp="handleSubmitRsvp"
+        />
+
+        <!-- GIFT (Dynamic per theme) -->
+        <component
+          :is="activeGift"
+          :invitation="invitation"
+          :theme-config="activeTheme"
+        />
+      </div>
 
       <!-- FOOTER (Dynamic per theme) -->
       <component
