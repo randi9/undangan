@@ -78,7 +78,9 @@ const sendMessage = async () => {
         <!-- Header -->
         <div class="chat-header">
           <div class="chat-header-info">
-            <div class="chat-avatar">✨</div>
+            <div class="chat-avatar">
+              <img src="/images/avatar.webp" alt="Mia Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+            </div>
             <div>
               <div class="chat-name">Mia (AI Assistant)</div>
               <div class="chat-status">Online</div>
@@ -135,7 +137,7 @@ const sendMessage = async () => {
 
     <!-- Floating Action Button -->
     <button v-show="!isOpen" @click="toggleChat" class="chat-fab">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#ffffff" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
       </svg>
     </button>
@@ -163,20 +165,26 @@ const sendMessage = async () => {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
-  color: #fff;
+  /* Premium Liquid Glass / Glassmorphism */
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-left: 1px solid rgba(255, 255, 255, 0.8);
+  color: #2563eb;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.5);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 4px 6px rgba(255, 255, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .chat-fab:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 28px rgba(59, 130, 246, 0.5), 0 0 0 4px rgba(255, 255, 255, 0.5);
+  transform: scale(1.1) translateY(-2px);
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), inset 0 4px 6px rgba(255, 255, 255, 0.6);
 }
 
 /* === Chat Window === */
@@ -201,13 +209,14 @@ const sendMessage = async () => {
 
 /* === Header === */
 .chat-header {
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  background: linear-gradient(135deg, #3b82f6, #ffffff);
   padding: 14px 16px;
-  color: #fff;
+  color: #1e293b;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .chat-header-info {
@@ -224,7 +233,8 @@ const sendMessage = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .chat-name {
@@ -235,13 +245,13 @@ const sendMessage = async () => {
 
 .chat-status {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(30, 41, 59, 0.7);
 }
 
 .chat-close-btn {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.05);
   border: none;
-  color: #fff;
+  color: #64748b;
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -249,11 +259,12 @@ const sendMessage = async () => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .chat-close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.1);
+  color: #1e293b;
 }
 
 /* === Messages === */
