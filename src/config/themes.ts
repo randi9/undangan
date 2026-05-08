@@ -10,7 +10,7 @@
 import type { ThemeConfig } from "@/types/theme";
 
 export interface ThemeRegistryEntry {
-  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue";
+  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda";
   name: string;
   thumbnail: string;
   description: string;
@@ -220,6 +220,43 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
         "linear-gradient(180deg, rgba(74,124,155,0.5) 0%, rgba(74,124,155,0.8) 100%)",
       coverImage:
         "https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_28658e27-e94d-40ca-b897-607ef8ea0d83.webp",
+    },
+  },
+  nyunda: {
+    id: "nyunda",
+    name: "Nyunda",
+    thumbnail:
+      "https://media.mengundanganda.com/floral/43498db7-3a42-4aaa-a066-a0322604ac92.webp",
+    description: "Hangat dan elegan dengan nuansa Sunda",
+    icon: "solar:sun-bold-duotone",
+    color: "#5C3D2E",
+    bgGradient: "linear-gradient(135deg, #5C3D2E 0%, #A67B5B 100%)",
+    sampleUrl: "/sample/nyunda",
+    defaultGalleryType: "carousel",
+    previewStyle: {
+      bg: "#FFF8E7",
+      color: "#5C3D2E",
+      headerText: "The Wedding",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 3px; color: #A67B5B; text-transform: uppercase;",
+      nameText: "John & Sarah",
+      nameStyle:
+        "font-family: 'Playfair Display', serif; font-size: 20px; margin-top: 4px; color: #5C3D2E;",
+    },
+    themeConfig: {
+      name: "nyunda",
+      bg: "#FFF8E7",
+      surface: "#F5E6D0",
+      primary: "#5C3D2E",
+      secondary: "#A67B5B",
+      text: "#5C3D2E",
+      textLight: "#8B6F5C",
+      fontHeading: "'Playfair Display', serif",
+      fontBody: "'Inter', sans-serif",
+      overlayGradient:
+        "linear-gradient(180deg, rgba(92,61,46,0.5) 0%, rgba(92,61,46,0.8) 100%)",
+      coverImage:
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80",
     },
   },
 };

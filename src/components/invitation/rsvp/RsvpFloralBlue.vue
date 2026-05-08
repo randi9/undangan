@@ -1,11 +1,11 @@
 <template>
-  <section style="position: relative; width: 100%; margin-bottom: -100px; text-align: center; z-index: 10; overflow: hidden; background-color: transparent;">
+  <section style="position: relative; width: 100%; text-align: center; z-index: 10; overflow: hidden; background-color: transparent;">
     
-    <div ref="rsvpWrapper" style="position: relative; padding: 48px 0 100px; width: 100%; margin: 0; z-index: 10;">
+    <div ref="rsvpWrapper" style="position: relative; width: 100%; margin: 0; z-index: 10;">
 
-      <!-- The White Container Wrapper for Shadow -->
-      <div style="width: 100vw; margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));">
-        <div style="background-color: rgba(255, 255, 255, 0.95); width: 100%; padding: 180px 24px; position: relative; display: flex; flex-direction: column; align-items: center; -webkit-mask: radial-gradient(55% 120px at 50% 0%, transparent 99%, black 100%) top / 100% 50% no-repeat, radial-gradient(55% 120px at 50% 100%, transparent 99%, black 100%) bottom / 100% 50% no-repeat; mask: radial-gradient(55% 120px at 50% 0%, transparent 99%, black 100%) top / 100% 50% no-repeat, radial-gradient(55% 120px at 50% 100%, transparent 99%, black 100%) bottom / 100% 50% no-repeat;">
+      <!-- Transparent Container Wrapper -->
+      <div style="width: 100vw; margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%);">
+        <div style="width: 100%; padding: 120px 24px 60px; position: relative; display: flex; flex-direction: column; align-items: center;">
         
         <!-- Floral Decors (Alternating) -->
         <img

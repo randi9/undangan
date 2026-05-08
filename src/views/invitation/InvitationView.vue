@@ -58,6 +58,9 @@ const coverComponents: Record<string, Component> = {
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/covers/CoverFloralBlue.vue"),
   ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/covers/CoverNyunda.vue"),
+  ),
 };
 
 const heroComponents: Record<string, Component> = {
@@ -75,6 +78,9 @@ const heroComponents: Record<string, Component> = {
   ),
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/heroes/HeroFloralBlue.vue"),
+  ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/heroes/HeroNyunda.vue"),
   ),
 };
 
@@ -94,6 +100,9 @@ const quoteComponents: Record<string, Component> = {
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/quotes/QuoteFloralBlue.vue"),
   ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/quotes/QuoteNyunda.vue"),
+  ),
 };
 
 const coupleComponents: Record<string, Component> = {
@@ -111,6 +120,9 @@ const coupleComponents: Record<string, Component> = {
   ),
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/couples/CoupleFloralBlue.vue"),
+  ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/couples/CoupleNyunda.vue"),
   ),
 };
 
@@ -130,6 +142,9 @@ const countdownComponents: Record<string, Component> = {
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/countdowns/CountdownFloralBlue.vue"),
   ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/countdowns/CountdownNyunda.vue"),
+  ),
 };
 
 const eventsComponents: Record<string, Component> = {
@@ -147,6 +162,9 @@ const eventsComponents: Record<string, Component> = {
   ),
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/events/EventsFloralBlue.vue"),
+  ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/events/EventsNyunda.vue"),
   ),
 };
 
@@ -166,6 +184,9 @@ const loveStoryComponents: Record<string, Component> = {
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/lovestory/LoveStoryFloralBlue.vue"),
   ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/lovestory/LoveStoryNyunda.vue"),
+  ),
 };
 
 const galleryComponents: Record<string, Component> = {
@@ -183,6 +204,9 @@ const galleryComponents: Record<string, Component> = {
   ),
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/gallery/GalleryFloralBlue.vue"),
+  ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/gallery/GalleryNyunda.vue"),
   ),
 };
 
@@ -202,6 +226,9 @@ const rsvpComponents: Record<string, Component> = {
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/rsvp/RsvpFloralBlue.vue"),
   ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/rsvp/RsvpNyunda.vue"),
+  ),
 };
 
 const giftComponents: Record<string, Component> = {
@@ -220,6 +247,9 @@ const giftComponents: Record<string, Component> = {
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/gift/GiftFloralBlue.vue"),
   ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/gift/GiftNyunda.vue"),
+  ),
 };
 
 const footerComponents: Record<string, Component> = {
@@ -237,6 +267,9 @@ const footerComponents: Record<string, Component> = {
   ),
   floral_blue: defineAsyncComponent(
     () => import("@/components/invitation/footer/FooterFloralBlue.vue"),
+  ),
+  nyunda: defineAsyncComponent(
+    () => import("@/components/invitation/footer/FooterNyunda.vue"),
   ),
 };
 
@@ -865,13 +898,16 @@ onBeforeUnmount(() => {
         <div
           ref="heroOval"
           :class="[
-            'flex flex-col gap-4 items-center justify-center mx-auto opacity-0 p-6 md:p-10 text-center relative z-10',
-            !['elegant_blue', 'floral_blue'].includes(themeName)
-              ? 'w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
-              : themeName === 'elegant_blue'
-                ? 'w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
-                : 'w-full max-w-[600px]'
+            'flex flex-col gap-4 opacity-0 p-6 md:p-10 relative z-10',
+            !['elegant_blue', 'floral_blue', 'nyunda'].includes(themeName)
+              ? 'items-center justify-center mx-auto text-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
+              : themeName === 'nyunda'
+                ? ''
+                : themeName === 'elegant_blue'
+                  ? 'items-center justify-center mx-auto text-center w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
+                  : 'items-center justify-center mx-auto text-center w-full max-w-[600px]'
           ]"
+          :style="themeName === 'nyunda' ? { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', textAlign: 'center', margin: '0 auto' } : {}"
         >
           <img
             v-if="themeName === 'elegant_blue'"
@@ -884,13 +920,14 @@ onBeforeUnmount(() => {
           <p
             :ref="setHeroTextRef"
             class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium opacity-0"
+            :style="themeName === 'nyunda' ? { textAlign: 'center' } : {}"
           >
             The Wedding of
           </p>
           <h1
             :ref="setHeroTextRef"
             class="text-5xl md:text-7xl lg:text-8xl mb-1 opacity-0 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]"
-            :style="{ fontFamily: activeTheme.fontHeading }"
+            :style="themeName === 'nyunda' ? { fontFamily: activeTheme.fontHeading, textAlign: 'center' } : { fontFamily: activeTheme.fontHeading }"
           >
             {{ invitation.groom_name }}
             <span
