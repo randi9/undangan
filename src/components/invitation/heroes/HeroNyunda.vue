@@ -128,68 +128,78 @@ defineProps<{
   transform-origin: center center;
   opacity: 0;
   animation: 
-    decor-enter-right 2s cubic-bezier(0.25, 1, 0.5, 1) forwards,
-    sway-right 4s ease-in-out 2s infinite alternate;
+    decor-enter-right 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards,
+    sway-right 5s ease-in-out 3.5s infinite alternate;
 }
 
 .decor-left {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    decor-enter-left 2s cubic-bezier(0.25, 1, 0.5, 1) forwards,
-    sway-left 4s ease-in-out 2s infinite alternate;
+    decor-enter-left 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards,
+    sway-left 5s ease-in-out 3.5s infinite alternate;
 }
 
 .tree-top-right {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    tree-enter-right 2s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards,
-    sway-right 2.5s ease-in-out 3s infinite alternate;
+    tree-top-enter-right 4s cubic-bezier(0.25, 1, 0.5, 1) 0.5s forwards,
+    sway-right-2 3.5s ease-in-out 4.5s infinite alternate;
 }
 
 .tree-top-left {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    tree-enter-left 2s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards,
-    sway-left 2.5s ease-in-out 3s infinite alternate;
+    tree-top-enter-left 4s cubic-bezier(0.25, 1, 0.5, 1) 0.5s forwards,
+    sway-left-2 3.5s ease-in-out 4.5s infinite alternate;
 }
 
 .tree-bottom-right {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    tree-enter-right 2s cubic-bezier(0.25, 1, 0.5, 1) 2s forwards,
-    sway-right 2.5s ease-in-out 4s infinite alternate;
+    tree-bottom-enter-right 4s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards,
+    sway-right-3 4.5s ease-in-out 5s infinite alternate;
 }
 
 .tree-bottom-left {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    tree-enter-left 2s cubic-bezier(0.25, 1, 0.5, 1) 2s forwards,
-    sway-left 2.5s ease-in-out 4s infinite alternate;
+    tree-bottom-enter-left 4s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards,
+    sway-left-3 4.5s ease-in-out 5s infinite alternate;
 }
 
 @keyframes decor-enter-right {
-  0% { opacity: 0; transform: translate(60px, -30px) scale(0.6) rotate(10deg); }
+  0% { opacity: 0; transform: translate(60px, -60px) scale(0.5) rotate(15deg); }
   100% { opacity: 1; transform: translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
 }
 
 @keyframes decor-enter-left {
-  0% { opacity: 0; transform: scaleX(-1) translate(60px, -30px) scale(0.6) rotate(10deg); }
+  0% { opacity: 0; transform: scaleX(-1) translate(60px, -60px) scale(0.5) rotate(15deg); }
   100% { opacity: 1; transform: scaleX(-1) translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
 }
 
-@keyframes tree-enter-right {
-  0% { opacity: 0; transform: translate(100px, 30px) scale(0.8) rotate(15deg); }
-  100% { opacity: 1; transform: translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
+@keyframes tree-top-enter-right {
+  0% { opacity: 0; transform: translate(100px, 0px) scale(0.7) rotate(5deg); }
+  100% { opacity: 1; transform: translate(-3px, 2px) rotate(-2deg) scale(0.99); }
 }
 
-@keyframes tree-enter-left {
-  0% { opacity: 0; transform: scaleX(-1) translate(100px, 30px) scale(0.8) rotate(15deg); }
-  100% { opacity: 1; transform: scaleX(-1) translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
+@keyframes tree-top-enter-left {
+  0% { opacity: 0; transform: scaleX(-1) translate(100px, 0px) scale(0.7) rotate(5deg); }
+  100% { opacity: 1; transform: scaleX(-1) translate(-3px, 2px) rotate(-2deg) scale(0.99); }
+}
+
+@keyframes tree-bottom-enter-right {
+  0% { opacity: 0; transform: translate(80px, 80px) scale(0.6) rotate(20deg); }
+  100% { opacity: 1; transform: translate(-4px, -2px) rotate(-1deg) scale(0.97); }
+}
+
+@keyframes tree-bottom-enter-left {
+  0% { opacity: 0; transform: scaleX(-1) translate(80px, 80px) scale(0.6) rotate(20deg); }
+  100% { opacity: 1; transform: scaleX(-1) translate(-4px, -2px) rotate(-1deg) scale(0.97); }
 }
 
 @keyframes sway-right {
@@ -200,5 +210,25 @@ defineProps<{
 @keyframes sway-left {
   0% { transform: scaleX(-1) translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
   100% { transform: scaleX(-1) translate(15px, 0) rotate(3deg) scale(1.02); }
+}
+
+@keyframes sway-right-2 {
+  0% { transform: translate(-3px, 2px) rotate(-2deg) scale(0.99); }
+  100% { transform: translate(10px, -2px) rotate(4deg) scale(1.01); }
+}
+
+@keyframes sway-left-2 {
+  0% { transform: scaleX(-1) translate(-3px, 2px) rotate(-2deg) scale(0.99); }
+  100% { transform: scaleX(-1) translate(10px, -2px) rotate(4deg) scale(1.01); }
+}
+
+@keyframes sway-right-3 {
+  0% { transform: translate(-4px, -2px) rotate(-1deg) scale(0.97); }
+  100% { transform: translate(12px, 2px) rotate(3.5deg) scale(1.03); }
+}
+
+@keyframes sway-left-3 {
+  0% { transform: scaleX(-1) translate(-4px, -2px) rotate(-1deg) scale(0.97); }
+  100% { transform: scaleX(-1) translate(12px, 2px) rotate(3.5deg) scale(1.03); }
 }
 </style>
