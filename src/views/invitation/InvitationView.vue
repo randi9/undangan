@@ -481,6 +481,18 @@ const themeStyles = computed(() => ({
 function openInvitation() {
   isClosingOverlay.value = true;
   isOpened.value = true;
+  
+  // Reset scroll position to top when opening the invitation
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  
+  // Enforce scroll position after DOM updates from async components
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+  });
+  
   if (invitation.value?.music_url && musicPlayer.value) {
     musicPlayer.value
       .play()
@@ -893,12 +905,14 @@ onBeforeUnmount(() => {
     />
 
     <!-- MAIN INVITATION CONTENT -->
-    <div v-if="isOpened" class="animate-fade-in">
-      <!-- HERO (Dynamic per theme) -->
-      <component
-        :is="activeHero"
-        :overlay-gradient="activeTheme.overlayGradient"
-      >
+    <div v-if="isOpened" class="animate-fade-in" style="overflow-anchor: none;">
+      <!-- HERO WRAPPER (prevents layout shift flash of quotes) -->
+      <div style="min-height: 100vh; width: 100%;">
+        <!-- HERO (Dynamic per theme) -->
+        <component
+          :is="activeHero"
+          :overlay-gradient="activeTheme.overlayGradient"
+        >
         <div
           ref="heroOval"
           :class="[
@@ -949,6 +963,7 @@ onBeforeUnmount(() => {
           </p>
         </div>
       </component>
+      </div>
 
       <!-- QUOTE (Dynamic per theme) -->
       <component

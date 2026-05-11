@@ -10,6 +10,18 @@
     <img src="https://media.mengundanganda.com/nyunda/hero%20section/randidewi_bedbdf0f-9600-49f5-9476-24457c1a9a4a.webp" alt="Tree Left" class="tree-top-left" style="position: absolute; top: 120px; left: -80px; width: 200px; height: auto; z-index: 25; pointer-events: none;" />
     <img src="https://media.mengundanganda.com/nyunda/hero%20section/randidewi_bedbdf0f-9600-49f5-9476-24457c1a9a4a.webp" alt="Tree Right" class="tree-bottom-right" style="position: absolute; top: 250px; right: -60px; width: 150px; height: auto; z-index: 24; pointer-events: none;" />
     <img src="https://media.mengundanganda.com/nyunda/hero%20section/randidewi_bedbdf0f-9600-49f5-9476-24457c1a9a4a.webp" alt="Tree Left" class="tree-bottom-left" style="position: absolute; top: 250px; left: -60px; width: 150px; height: auto; z-index: 24; pointer-events: none;" />
+    <!-- Bottom Flowers -->
+    <img src="https://media.mengundanganda.com/nyunda/hero%20section/bunga%20bawah/randidewi_59ddbaee-028e-497f-9ddf-11cebf85906c.webp" alt="Bottom Flower Right" class="flower-bottom-right" style="position: absolute; bottom: -20px; right: -100px; width: 200px; height: auto; z-index: 35; pointer-events: none;" />
+    <img src="https://media.mengundanganda.com/nyunda/hero%20section/bunga%20bawah/randidewi_59ddbaee-028e-497f-9ddf-11cebf85906c.webp" alt="Bottom Flower Left" class="flower-bottom-left" style="position: absolute; bottom: -20px; left: -100px; width: 220px; height: auto; z-index: 35; pointer-events: none;" />
+
+    <img src="https://media.mengundanganda.com/nyunda/hero%20section/bunga%20bawah/randidewi_43d55580-40b9-4e14-8188-4914e145bfe5.webp" alt="Bottom Flower 2 Right" class="flower-bottom-right-2" style="position: absolute; bottom: -120px; right: -20px; width: 130px; height: auto; z-index: 36; pointer-events: none;" />
+    <img src="https://media.mengundanganda.com/nyunda/hero%20section/bunga%20bawah/randidewi_43d55580-40b9-4e14-8188-4914e145bfe5.webp" alt="Bottom Flower 2 Left" class="flower-bottom-left-2" style="position: absolute; bottom: -120px; left: -20px; width: 130px; height: auto; z-index: 36; pointer-events: none;" />
+
+    <img src="https://media.mengundanganda.com/nyunda/hero%20section/bunga%20bawah/randidewi_bf92929f-e9a4-498c-bc6e-5bc7d272759f.webp" alt="Bottom Flower 3 Right" class="flower-bottom-right-3" style="position: absolute; bottom: -50px; right: -10px; width: 120px; height: auto; z-index: 37; pointer-events: none;" />
+    <img src="https://media.mengundanganda.com/nyunda/hero%20section/bunga%20bawah/randidewi_bf92929f-e9a4-498c-bc6e-5bc7d272759f.webp" alt="Bottom Flower 3 Left" class="flower-bottom-left-3" style="position: absolute; bottom: -50px; left: -10px; width: 120px; height: auto; z-index: 37; pointer-events: none;" />
+
+    <img src="https://media.mengundanganda.com/nyunda/hero%20section/bunga%20bawah/randidewi_55c191f8-0243-4308-a5d0-e6ce2cec0cba.webp" alt="Bottom Flower 4 Left" class="flower-bottom-left-4" style="position: absolute; bottom: -120px; left: 60px; width: 120px; height: auto; z-index: 35; pointer-events: none;" />
+    <img src="https://media.mengundanganda.com/nyunda/hero%20section/bunga%20bawah/randidewi_55c191f8-0243-4308-a5d0-e6ce2cec0cba.webp" alt="Bottom Flower 4 Right" class="flower-bottom-right-4" style="position: absolute; bottom: -120px; right: 60px; width: 120px; height: auto; z-index: 35; pointer-events: none;" />
 
     <!-- Flock of Birds (5 Birds) -->
     <div class="bird-flight bird-1">
@@ -128,68 +140,144 @@ defineProps<{
   transform-origin: center center;
   opacity: 0;
   animation: 
-    decor-enter-right 2s cubic-bezier(0.25, 1, 0.5, 1) forwards,
-    sway-right 4s ease-in-out 2s infinite alternate;
+    decor-enter-right 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards,
+    sway-right 5s ease-in-out 3.5s infinite alternate;
 }
 
 .decor-left {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    decor-enter-left 2s cubic-bezier(0.25, 1, 0.5, 1) forwards,
-    sway-left 4s ease-in-out 2s infinite alternate;
+    decor-enter-left 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards,
+    sway-left 5s ease-in-out 3.5s infinite alternate;
 }
 
 .tree-top-right {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    tree-enter-right 2s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards,
-    sway-right 2.5s ease-in-out 3s infinite alternate;
+    tree-top-enter-right 4s cubic-bezier(0.25, 1, 0.5, 1) 0.5s forwards,
+    sway-right-2 2.8s ease-in-out 4.5s infinite alternate;
 }
 
 .tree-top-left {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    tree-enter-left 2s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards,
-    sway-left 2.5s ease-in-out 3s infinite alternate;
+    tree-top-enter-left 4s cubic-bezier(0.25, 1, 0.5, 1) 0.5s forwards,
+    sway-left-2 2.8s ease-in-out 4.5s infinite alternate;
 }
 
 .tree-bottom-right {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    tree-enter-right 2s cubic-bezier(0.25, 1, 0.5, 1) 2s forwards,
-    sway-right 2.5s ease-in-out 4s infinite alternate;
+    tree-bottom-enter-right 4s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards,
+    sway-right-3 3.5s ease-in-out 5s infinite alternate;
 }
 
 .tree-bottom-left {
   transform-origin: center center;
   opacity: 0;
   animation: 
-    tree-enter-left 2s cubic-bezier(0.25, 1, 0.5, 1) 2s forwards,
-    sway-left 2.5s ease-in-out 4s infinite alternate;
+    tree-bottom-enter-left 4s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards,
+    sway-left-3 3.5s ease-in-out 5s infinite alternate;
 }
 
+
+.flower-bottom-right {
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: 
+    flower-enter-right 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards,
+    sway-flower-right 2.8s ease-in-out 3.5s infinite alternate;
+}
+
+.flower-bottom-left {
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: 
+    flower-enter-left 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards,
+    sway-flower-left 2.8s ease-in-out 3.5s infinite alternate;
+}
+
+.flower-bottom-right-2 {
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: 
+    flower-enter-right-2 3.5s cubic-bezier(0.25, 1, 0.5, 1) 0.2s forwards,
+    sway-flower-right-2 2.3s ease-in-out 3.7s infinite alternate;
+}
+
+.flower-bottom-left-2 {
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: 
+    flower-enter-left-2 3.5s cubic-bezier(0.25, 1, 0.5, 1) 0.2s forwards,
+    sway-flower-left-2 2.3s ease-in-out 3.7s infinite alternate;
+}
+
+.flower-bottom-right-3 {
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: 
+    flower-enter-right-3 3.5s cubic-bezier(0.25, 1, 0.5, 1) 0.4s forwards,
+    sway-flower-right-3 1.9s ease-in-out 3.9s infinite alternate;
+}
+
+.flower-bottom-left-3 {
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: 
+    flower-enter-left-3 3.5s cubic-bezier(0.25, 1, 0.5, 1) 0.4s forwards,
+    sway-flower-left-3 1.9s ease-in-out 3.9s infinite alternate;
+}
+
+.flower-bottom-right-4 {
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: 
+    flower-enter-right-4 3.5s cubic-bezier(0.25, 1, 0.5, 1) 0.6s forwards,
+    sway-flower-right-4 2.6s ease-in-out 4.1s infinite alternate;
+}
+
+.flower-bottom-left-4 {
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: 
+    flower-enter-left-4 3.5s cubic-bezier(0.25, 1, 0.5, 1) 0.6s forwards,
+    sway-flower-left-4 2.6s ease-in-out 4.1s infinite alternate;
+}
+
+
 @keyframes decor-enter-right {
-  0% { opacity: 0; transform: translate(60px, -30px) scale(0.6) rotate(10deg); }
+  0% { opacity: 0; transform: translate(60px, -60px) scale(0.5) rotate(15deg); }
   100% { opacity: 1; transform: translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
 }
 
 @keyframes decor-enter-left {
-  0% { opacity: 0; transform: scaleX(-1) translate(60px, -30px) scale(0.6) rotate(10deg); }
+  0% { opacity: 0; transform: scaleX(-1) translate(60px, -60px) scale(0.5) rotate(15deg); }
   100% { opacity: 1; transform: scaleX(-1) translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
 }
 
-@keyframes tree-enter-right {
-  0% { opacity: 0; transform: translate(100px, 30px) scale(0.8) rotate(15deg); }
-  100% { opacity: 1; transform: translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
+@keyframes tree-top-enter-right {
+  0% { opacity: 0; transform: translate(100px, 0px) scale(0.7) rotate(5deg); }
+  100% { opacity: 1; transform: translate(-3px, 2px) rotate(-2deg) scale(0.99); }
 }
 
-@keyframes tree-enter-left {
-  0% { opacity: 0; transform: scaleX(-1) translate(100px, 30px) scale(0.8) rotate(15deg); }
-  100% { opacity: 1; transform: scaleX(-1) translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
+@keyframes tree-top-enter-left {
+  0% { opacity: 0; transform: scaleX(-1) translate(100px, 0px) scale(0.7) rotate(5deg); }
+  100% { opacity: 1; transform: scaleX(-1) translate(-3px, 2px) rotate(-2deg) scale(0.99); }
+}
+
+@keyframes tree-bottom-enter-right {
+  0% { opacity: 0; transform: translate(80px, 80px) scale(0.6) rotate(20deg); }
+  100% { opacity: 1; transform: translate(-4px, -2px) rotate(-1deg) scale(0.97); }
+}
+
+@keyframes tree-bottom-enter-left {
+  0% { opacity: 0; transform: scaleX(-1) translate(80px, 80px) scale(0.6) rotate(20deg); }
+  100% { opacity: 1; transform: scaleX(-1) translate(-4px, -2px) rotate(-1deg) scale(0.97); }
 }
 
 @keyframes sway-right {
@@ -201,4 +289,105 @@ defineProps<{
   0% { transform: scaleX(-1) translate(-5px, 0) rotate(-1.5deg) scale(0.98); }
   100% { transform: scaleX(-1) translate(15px, 0) rotate(3deg) scale(1.02); }
 }
+
+@keyframes sway-right-2 {
+  0% { transform: translate(-3px, 2px) rotate(-2deg) scale(0.99); }
+  100% { transform: translate(10px, -2px) rotate(4deg) scale(1.01); }
+}
+
+@keyframes sway-left-2 {
+  0% { transform: scaleX(-1) translate(-3px, 2px) rotate(-2deg) scale(0.99); }
+  100% { transform: scaleX(-1) translate(10px, -2px) rotate(4deg) scale(1.01); }
+}
+
+@keyframes sway-right-3 {
+  0% { transform: translate(-4px, -2px) rotate(-1deg) scale(0.97); }
+  100% { transform: translate(12px, 2px) rotate(3.5deg) scale(1.03); }
+}
+
+@keyframes sway-left-3 {
+  0% { transform: scaleX(-1) translate(-4px, -2px) rotate(-1deg) scale(0.97); }
+  100% { transform: scaleX(-1) translate(12px, 2px) rotate(3.5deg) scale(1.03); }
+}
+
+@keyframes flower-enter-right {
+  0% { opacity: 0; transform: translate(30px, 30px) rotate(10deg) scale(0.8); }
+  100% { opacity: 0.7; transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes flower-enter-left {
+  0% { opacity: 0; transform: scaleX(-1) translate(30px, 30px) rotate(-10deg) scale(0.8); }
+  100% { opacity: 0.7; transform: scaleX(-1) translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes flower-enter-right-2 {
+  0% { opacity: 0; transform: translate(30px, 30px) rotate(10deg) scale(0.8); }
+  100% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes flower-enter-left-2 {
+  0% { opacity: 0; transform: scaleX(-1) translate(30px, 30px) rotate(-10deg) scale(0.8); }
+  100% { opacity: 1; transform: scaleX(-1) translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes sway-flower-right {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { transform: translate(0, 0) rotate(4deg) scale(1); }
+}
+
+@keyframes sway-flower-left {
+  0% { transform: scaleX(-1) translate(0, 0) rotate(0deg) scale(1); }
+  100% { transform: scaleX(-1) translate(0, 0) rotate(4deg) scale(1); }
+}
+
+@keyframes sway-flower-right-2 {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { transform: translate(0, 0) rotate(-3deg) scale(1); }
+}
+
+@keyframes sway-flower-left-2 {
+  0% { transform: scaleX(-1) translate(0, 0) rotate(0deg) scale(1); }
+  100% { transform: scaleX(-1) translate(0, 0) rotate(-3deg) scale(1); }
+}
+
+@keyframes flower-enter-right-3 {
+  0% { opacity: 0; transform: translate(30px, 30px) rotate(10deg) scale(0.8); }
+  100% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes flower-enter-left-3 {
+  0% { opacity: 0; transform: scaleX(-1) translate(30px, 30px) rotate(-10deg) scale(0.8); }
+  100% { opacity: 1; transform: scaleX(-1) translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes sway-flower-right-3 {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { transform: translate(0, 0) rotate(5deg) scale(1); }
+}
+
+@keyframes sway-flower-left-3 {
+  0% { transform: scaleX(-1) translate(0, 0) rotate(0deg) scale(1); }
+  100% { transform: scaleX(-1) translate(0, 0) rotate(5deg) scale(1); }
+}
+
+@keyframes flower-enter-left-4 {
+  0% { opacity: 0; transform: translate(-30px, 30px) rotate(-10deg) scale(0.8); }
+  100% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes flower-enter-right-4 {
+  0% { opacity: 0; transform: scaleX(-1) translate(-30px, 30px) rotate(-10deg) scale(0.8); }
+  100% { opacity: 1; transform: scaleX(-1) translate(0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes sway-flower-left-4 {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { transform: translate(0, 0) rotate(-4deg) scale(1); }
+}
+
+@keyframes sway-flower-right-4 {
+  0% { transform: scaleX(-1) translate(0, 0) rotate(0deg) scale(1); }
+  100% { transform: scaleX(-1) translate(0, 0) rotate(-4deg) scale(1); }
+}
+
 </style>
