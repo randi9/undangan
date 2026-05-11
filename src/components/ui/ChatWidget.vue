@@ -136,11 +136,13 @@ const sendMessage = async () => {
     </transition>
 
     <!-- Floating Action Button -->
-    <button v-show="!isOpen" @click="toggleChat" class="chat-fab">
-      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#ffffff" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-      </svg>
-    </button>
+    <transition name="fab-scale">
+      <button v-if="!isOpen" @click="toggleChat" class="chat-fab">
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="#ffffff" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      </button>
+    </transition>
   </div>
 </template>
 
@@ -162,6 +164,9 @@ const sendMessage = async () => {
 
 /* === FAB Button === */
 .chat-fab {
+  position: absolute;
+  bottom: 0;
+  right: 0;
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -189,6 +194,9 @@ const sendMessage = async () => {
 
 /* === Chat Window === */
 .chat-window {
+  position: absolute;
+  bottom: 68px;
+  right: 0;
   width: 340px;
   height: 480px;
   background: #ffffff;
@@ -197,7 +205,6 @@ const sendMessage = async () => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin-bottom: 12px;
 }
 
 @media (min-width: 640px) {
@@ -209,14 +216,14 @@ const sendMessage = async () => {
 
 /* === Header === */
 .chat-header {
-  background: linear-gradient(135deg, #3b82f6, #ffffff);
+  background: #f1f5f9;
   padding: 14px 16px;
   color: #1e293b;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .chat-header-info {
@@ -412,5 +419,17 @@ const sendMessage = async () => {
 .chat-fade-leave-to {
   opacity: 0;
   transform: scale(0.85) translateY(16px);
+}
+
+.fab-scale-enter-active,
+.fab-scale-leave-active {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: center;
+}
+
+.fab-scale-enter-from,
+.fab-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
 }
 </style>
