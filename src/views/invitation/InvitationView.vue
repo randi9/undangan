@@ -613,6 +613,10 @@ async function handleSubmitRsvp(form: {
   message: string;
 }) {
   if (!form.guest_name || !form.attendance) return;
+
+  // Guard: prevent concurrent submissions (rapid double-click)
+  if (rsvpSubmitting.value) return;
+
   rsvpSubmitting.value = true;
 
   // In sample/static mode, mock the RSVP submission locally
