@@ -119,6 +119,10 @@ const messagesRef = ref<HTMLElement | null>(null);
 
 function onSubmit() {
   emit('submitRsvp', { ...form });
+  form.guest_name = '';
+  form.attendance = 'hadir';
+  form.guest_count = 1;
+  form.message = '';
 }
 
 onMounted(() => {
