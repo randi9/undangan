@@ -23,13 +23,6 @@
       <div class="hero-grid">
         <!-- Left Column: Compelling Typography & CTAs -->
         <div class="hero-left-col">
-          <!-- Kicker with decorative line -->
-          <div class="hero-kicker-wrapper" ref="kickerRef">
-            <span class="hero-kicker-line"></span>
-            <p class="hero-kicker">Undangan Digital Premium</p>
-            <span class="hero-kicker-line"></span>
-          </div>
-
           <h1 class="hero-title" ref="titleRef">
             <span class="hero-title-line">Undangan Digital</span>
             <span class="hero-title-accent">Elegan</span>
@@ -56,24 +49,6 @@
                 </svg>
                 Lihat Demo
               </a>
-            </div>
-          </div>
-
-          <!-- Trust Badges -->
-          <div class="hero-trust-row" ref="trustRef">
-            <div class="hero-trust-item">
-              <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-              <span>100% Aman</span>
-            </div>
-            <div class="hero-trust-divider"></div>
-            <div class="hero-trust-item">
-              <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-              <span>5 Menit Jadi</span>
-            </div>
-            <div class="hero-trust-divider"></div>
-            <div class="hero-trust-item">
-              <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              <span>500+ Pengguna</span>
             </div>
           </div>
         </div>
@@ -107,11 +82,9 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { gsap } from "gsap";
 
-const kickerRef = ref(null);
 const titleRef = ref(null);
 const subRef = ref(null);
 const actionsRef = ref(null);
-const trustRef = ref(null);
 const modelContainerRef = ref(null);
 const glowRef = ref(null);
 
@@ -126,11 +99,9 @@ onMounted(() => {
     gsap.set(
       [
         glowRef.value,
-        kickerRef.value,
         titleRef.value,
         subRef.value,
         actionsRef.value,
-        trustRef.value,
         modelContainerRef.value,
       ],
       {
@@ -159,7 +130,7 @@ function initAnimation() {
   // 1. Initial State Settings
   gsap.set(glowRef.value, { opacity: 0, scale: 0.6 });
   gsap.set(
-    [kickerRef.value, titleRef.value, subRef.value, actionsRef.value, trustRef.value],
+    [titleRef.value, subRef.value, actionsRef.value],
     {
       y: 40,
       opacity: 0,
@@ -195,17 +166,6 @@ function initAnimation() {
 
   // Text elements stagger in
   tl.to(
-    kickerRef.value,
-    {
-      y: 0,
-      opacity: 1,
-      duration: 1,
-      ease: "power3.out",
-    },
-    0.3,
-  );
-
-  tl.to(
     titleRef.value,
     {
       y: 0,
@@ -213,7 +173,7 @@ function initAnimation() {
       duration: 1.2,
       ease: "power3.out",
     },
-    0.45,
+    0.3,
   );
 
   tl.to(
@@ -224,7 +184,7 @@ function initAnimation() {
       duration: 1,
       ease: "power3.out",
     },
-    0.6,
+    0.45,
   );
 
   tl.to(
@@ -235,18 +195,7 @@ function initAnimation() {
       duration: 1,
       ease: "power3.out",
     },
-    0.75,
-  );
-
-  tl.to(
-    trustRef.value,
-    {
-      y: 0,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power3.out",
-    },
-    0.9,
+    0.6,
   );
 
   // 3. Initiate Gentle Infinite Floating Animation for the 3D Model

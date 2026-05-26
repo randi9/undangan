@@ -48,15 +48,32 @@
       <!-- Hero Section -->
       <LandingHeroCinematic />
 
-      <!-- Social Proof Stats -->
-      <section class="lp-stats" aria-label="Statistik" ref="statsRef">
-        <div class="lp-container lp-stats-inner">
-          <div class="lp-stat-item" v-for="stat in stats" :key="stat.label">
-            <div class="lp-stat-number">
-              <span class="lp-stat-value">{{ stat.displayed }}</span
-              ><span class="lp-stat-suffix">{{ stat.suffix }}</span>
+      <!-- Trust Badges Section -->
+      <!-- Trust Badges Section -->
+      <section class="lp-stats" aria-label="Keunggulan">
+        <div class="lp-container">
+          <div class="lp-stats-inner">
+            <div class="lp-stat-item">
+              <div class="trust-icon-wrapper">
+                <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+              </div>
+              <div class="lp-stat-label">100% Aman</div>
+              <div class="lp-stat-desc">Data privasi Anda terjamin</div>
             </div>
-            <div class="lp-stat-label">{{ stat.label }}</div>
+            <div class="lp-stat-item">
+              <div class="trust-icon-wrapper">
+                <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+              </div>
+              <div class="lp-stat-label">5 Menit Jadi</div>
+              <div class="lp-stat-desc">Praktis tanpa ribet</div>
+            </div>
+            <div class="lp-stat-item">
+              <div class="trust-icon-wrapper">
+                <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              </div>
+              <div class="lp-stat-label">500+ Pengguna</div>
+              <div class="lp-stat-desc">Telah dipercaya banyak pasangan</div>
+            </div>
           </div>
         </div>
       </section>
@@ -777,8 +794,6 @@ const navScrolled = ref(false);
 const mobileMenuOpen = ref(false);
 const navHiddenMobile = ref(false);
 const activeSection = ref("beranda");
-const scrollY = ref(0);
-const statsRef = ref<HTMLElement | null>(null);
 const prefersReducedMotion = ref(false);
 const faqOpen = ref(-1);
 
@@ -868,40 +883,6 @@ function updateActiveSection() {
   activeSection.value = current;
 }
 
-// ---- Stats Counter Animation ----
-const stats = reactive([
-  { target: 500, displayed: 0, suffix: "+", label: "Undangan Dibuat" },
-  { target: 1200, displayed: 0, suffix: "+", label: "Tamu Diundang" },
-  { target: 99, displayed: 0, suffix: "%", label: "Pengguna Puas" },
-]);
-let statsAnimated = false;
-
-function animateCounters() {
-  if (statsAnimated || prefersReducedMotion.value) {
-    // If reduced motion, just set final values immediately
-    stats.forEach((s) => {
-      s.displayed = s.target;
-    });
-    statsAnimated = true;
-    return;
-  }
-  statsAnimated = true;
-  const duration = 1800;
-  const startTime = performance.now();
-
-  function tick(now: number) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    // Ease out cubic
-    const ease = 1 - Math.pow(1 - progress, 3);
-    stats.forEach((s) => {
-      s.displayed = Math.round(s.target * ease);
-    });
-    if (progress < 1) requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
-
 // ---- Scroll-triggered reveal animation ----
 let revealObserver: IntersectionObserver | null = null;
 
@@ -920,24 +901,6 @@ function setupRevealObserver() {
   document.querySelectorAll(".lp-reveal").forEach((el) => {
     revealObserver!.observe(el);
   });
-}
-
-// ---- Stats IntersectionObserver ----
-let statsObserver: IntersectionObserver | null = null;
-
-function setupStatsObserver() {
-  if (!statsRef.value) return;
-  statsObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !statsAnimated) {
-          animateCounters();
-        }
-      });
-    },
-    { threshold: 0.3 },
-  );
-  statsObserver.observe(statsRef.value);
 }
 
 onMounted(() => {
@@ -962,14 +925,12 @@ onMounted(() => {
   // Setup scroll-triggered reveal animations
   nextTick(() => {
     setupRevealObserver();
-    setupStatsObserver();
   });
 });
 
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
   revealObserver?.disconnect();
-  statsObserver?.disconnect();
 });
 
 const features = [
@@ -1629,64 +1590,104 @@ const themesData = [
   }
 }
 
-/* --- Social Proof Stats --- */
+/* --- Dedicated Trust Badges Section --- */
 .lp-stats {
-  background: transparent;
-  padding: 0;
-  margin-top: -45px; /* Overlap the bottom wave beautifully */
+  background: var(--lp-bg);
+  padding: 40px 0; 
   position: relative;
-  z-index: 10;
+  z-index: 5;
 }
 
 .lp-stats-inner {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  gap: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(59, 130, 246, 0.08);
   border-radius: 24px;
+  padding: 24px;
   box-shadow: 
-    0 12px 40px rgba(15, 23, 42, 0.06),
-    0 4px 18px rgba(59, 130, 246, 0.02);
-  overflow: hidden;
+    0 20px 40px -15px rgba(0, 0, 0, 0.05),
+    0 10px 20px -10px rgba(59, 130, 246, 0.03);
 }
 
 .lp-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 40px 24px;
+  padding: 16px 12px;
   position: relative;
-}
-.lp-stat-item:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 25%;
-  height: 50%;
-  width: 1px;
-  background: rgba(30, 58, 95, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 16px;
+  background: transparent;
 }
 
-.lp-stat-number {
-  font-family: var(--lp-font-serif);
-  font-size: clamp(34px, 4.5vw, 48px);
-  font-weight: 700;
-  color: var(--lp-primary);
-  line-height: 1;
-  margin-bottom: 8px;
+.lp-stat-item:hover {
+  transform: translateY(-8px);
+  background: #ffffff;
+  box-shadow: 
+    0 16px 32px -12px rgba(59, 130, 246, 0.1),
+    0 4px 12px -4px rgba(0, 0, 0, 0.05);
+  border-color: rgba(59, 130, 246, 0.1);
 }
-.lp-stat-suffix {
+
+.lp-stat-item:not(:last-child)::after {
+  display: none;
+}
+
+/* Premium Icon Wrapper */
+.trust-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.02) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
   color: var(--lp-accent-hover);
+  box-shadow: 
+    0 8px 16px -4px rgba(59, 130, 246, 0.08),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lp-stat-item:hover .trust-icon-wrapper {
+  transform: translateY(-4px) scale(1.1) rotate(5deg);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 12px 24px -6px rgba(59, 130, 246, 0.15);
+}
+
+.trust-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--lp-accent-hover);
+  display: block;
 }
 
 .lp-stat-label {
   font-family: var(--lp-font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--lp-primary);
+  letter-spacing: 0.3px;
+  margin: 0 0 4px 0;
+  transition: color 0.3s ease;
+}
+
+.lp-stat-desc {
   font-size: 13px;
-  font-weight: 600;
   color: var(--lp-text-light);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.lp-stat-item:hover .lp-stat-label {
+  color: var(--lp-accent-hover);
 }
 
 /* --- Wave Dividers --- */
@@ -2874,19 +2875,24 @@ const themesData = [
 }
 
 @media (max-width: 480px) {
+  .lp-stats {
+    padding: 40px 0;
+  }
   .lp-features-grid {
     grid-template-columns: 1fr;
   }
   .lp-stats-inner {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
   .lp-stat-item:not(:last-child)::after {
+    left: 25%;
     right: 25%;
     top: auto;
-    bottom: 0;
+    bottom: -8px;
     width: 50%;
     height: 1px;
-    background: rgba(30, 58, 95, 0.08);
+    background: rgba(30, 58, 95, 0.06);
   }
 }
 
@@ -3023,6 +3029,12 @@ const themesData = [
 }
 
 @media (max-width: 768px) {
+  .lp-stats-inner {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 24px;
+  }
+  
   .lp-faq {
     padding: 64px 0;
   }
