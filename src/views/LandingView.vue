@@ -1,377 +1,674 @@
 <template>
   <div class="landing" :style="{ '--scroll-y': scrollY + 'px' }">
     <!-- Navbar -->
-    <nav class="lp-nav" :class="{ scrolled: navScrolled || mobileMenuOpen, 'nav-hidden': navHiddenMobile }">
+    <nav
+      class="lp-nav"
+      :class="{
+        scrolled: navScrolled || mobileMenuOpen,
+        'nav-hidden': navHiddenMobile,
+      }"
+    >
       <div class="lp-container lp-nav-inner">
         <a href="#" class="lp-logo">
-          <img src="/images/logo.webp" alt="Logo MengundangAnda - Platform Undangan Pernikahan Digital" class="lp-logo-img">
+          <img
+            src="/images/logo.webp"
+            alt="Logo MengundangAnda - Platform Undangan Pernikahan Digital"
+            class="lp-logo-img"
+          />
           <span>Mengundang<span class="lp-logo-accent">Anda</span></span>
         </a>
-        <button class="lp-nav-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle menu">
+        <button
+          class="lp-nav-toggle"
+          @click="mobileMenuOpen = !mobileMenuOpen"
+          aria-label="Toggle menu"
+        >
           <span :class="{ open: mobileMenuOpen }"></span>
         </button>
         <ul class="lp-nav-links" :class="{ open: mobileMenuOpen }">
           <li><a href="#fitur" @click="mobileMenuOpen = false">Fitur</a></li>
           <li><a href="#tema" @click="mobileMenuOpen = false">Tema</a></li>
-          <li><a href="#cara-kerja" @click="mobileMenuOpen = false">Cara Kerja</a></li>
-          <li><a href="#testimoni" @click="mobileMenuOpen = false">Testimoni</a></li>
+          <li>
+            <a href="#cara-kerja" @click="mobileMenuOpen = false">Cara Kerja</a>
+          </li>
+          <li>
+            <a href="#testimoni" @click="mobileMenuOpen = false">Testimoni</a>
+          </li>
           <li><a href="#harga" @click="mobileMenuOpen = false">Harga</a></li>
           <li><a href="#faq" @click="mobileMenuOpen = false">FAQ</a></li>
-          <li><a href="/login" class="lp-nav-cta" @click="mobileMenuOpen = false">Buat Undangan</a></li>
+          <li>
+            <a href="/login" class="lp-nav-cta" @click="mobileMenuOpen = false"
+              >Buat Undangan</a
+            >
+          </li>
         </ul>
       </div>
     </nav>
 
     <main>
-    <!-- Hero Section -->
-    <LandingHeroCinematic />
+      <!-- Hero Section -->
+      <LandingHeroCinematic />
 
-
-
-    <!-- Social Proof Stats -->
-    <section class="lp-stats" aria-label="Statistik" ref="statsRef">
-      <div class="lp-container lp-stats-inner">
-        <div class="lp-stat-item" v-for="stat in stats" :key="stat.label">
-          <div class="lp-stat-number">
-            <span class="lp-stat-value">{{ stat.displayed }}</span><span class="lp-stat-suffix">{{ stat.suffix }}</span>
-          </div>
-          <div class="lp-stat-label">{{ stat.label }}</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Fitur Section -->
-    <section id="fitur" class="lp-section lp-section-alt" aria-label="Fitur Unggulan">
-      <div class="lp-container">
-        <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">Mengapa Pilih Kami?</p>
-          <h2 class="lp-section-title">Jangan Habiskan Budget Untuk Undangan Sekali Pakai.</h2>
-          <p class="lp-section-sub">Fokus saja pada momen bahagia Anda. Urusan undangan, biar kami yang bereskan dengan cara yang lebih berkelas, hemat, dan praktis.</p>
-        </div>
-        <div class="lp-features-list">
-          <div
-            class="lp-feature-item lp-reveal"
-            v-for="(feature, i) in features"
-            :key="feature.title"
-            :style="{ transitionDelay: `${i * 100}ms` }"
-          >
-            <div class="lp-feature-icon-wrapper">
-              <Icon :icon="feature.icon" class="lp-feature-icon" />
+      <!-- Social Proof Stats -->
+      <section class="lp-stats" aria-label="Statistik" ref="statsRef">
+        <div class="lp-container lp-stats-inner">
+          <div class="lp-stat-item" v-for="stat in stats" :key="stat.label">
+            <div class="lp-stat-number">
+              <span class="lp-stat-value">{{ stat.displayed }}</span
+              ><span class="lp-stat-suffix">{{ stat.suffix }}</span>
             </div>
-            <div class="lp-feature-text">
-              <h3>{{ feature.title }}</h3>
-              <p>{{ feature.desc }}</p>
-            </div>
+            <div class="lp-stat-label">{{ stat.label }}</div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Wave Divider -->
-    <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
-      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" /></svg>
-    </div>
-
-    <!-- Live Preview Showcase Section -->
-    <section id="live-preview" class="lp-section" aria-label="Live Preview Editor">
-      <div class="lp-container lp-showcase-split">
-        <div class="lp-showcase-content lp-reveal">
-          <p class="lp-section-kicker">Bebas Revisi Sepuasnya</p>
-          <h2 class="lp-section-title">Lihat Perubahan Real-time. Tanpa Butuh Desainer.</h2>
-          <p class="lp-section-sub">
-            Ganti font, sesuaikan warna, atau ubah lokasi acara dan lihat hasilnya detik itu juga. Anda memegang kendali penuh atas tampilan undangan dari layar hp Anda.
-          </p>
-          <ul class="lp-showcase-list">
-            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Tidak perlu lagi membayar biaya revisi.</li>
-            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Bebas khawatir salah ketik atau info yang kurang akurat.</li>
-            <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Mudah digunakan, bahkan jika Anda bukan orang teknis.</li>
-          </ul>
-          <a href="/login" class="lp-btn lp-btn-primary lp-showcase-btn">Coba Live Editor Sekarang</a>
-        </div>
-        <div class="lp-showcase-image lp-reveal" style="transition-delay: 200ms;">
-          <div class="lp-mockup-wrapper">
-             <img src="https://media.mengundanganda.com/landing-page/Screenshot%202026-04-03%20191057.webp" alt="Tampilan fitur Live Preview Editor undangan pernikahan digital MengundangAnda" class="lp-mockup-img" loading="lazy" />
+      <!-- Fitur Section -->
+      <section
+        id="fitur"
+        class="lp-section lp-section-alt"
+        aria-label="Fitur Unggulan"
+      >
+        <div class="lp-container">
+          <div class="lp-section-header lp-reveal">
+            <p class="lp-section-kicker">Mengapa Pilih Kami?</p>
+            <h2 class="lp-section-title">
+              Jangan Habiskan Budget Untuk Undangan Sekali Pakai.
+            </h2>
+            <p class="lp-section-sub">
+              Fokus saja pada momen bahagia Anda. Urusan undangan, biar kami
+              yang bereskan dengan cara yang lebih berkelas, hemat, dan praktis.
+            </p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Wave Divider -->
-    <div class="lp-wave-divider lp-wave-white-to-alt" aria-hidden="true">
-      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,60 C360,0 1080,100 1440,40 L1440,100 L0,100 Z" /></svg>
-    </div>
-
-    <!-- Tema Section -->
-    <section id="tema" class="lp-section lp-section-alt" aria-label="Koleksi Tema">
-      <div class="lp-container">
-        <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">Koleksi Desain Premium</p>
-          <h2 class="lp-section-title">Visual Indah yang Mencerminkan Kisah Anda</h2>
-          <p class="lp-section-sub">Setiap desain dirancang khusus oleh desainer profesional untuk membuat tamu undangan Anda terkesan dari pandangan pertama.</p>
-        </div>
-        <div class="lp-themes-carousel">
-          <div class="lp-theme-card lp-reveal" v-for="(theme, i) in themesData" :key="theme.id" :style="{ '--card-accent': theme.color, transitionDelay: `${i * 120}ms` }">
-            <div class="lp-theme-preview">
-              <div class="lp-theme-device-frame">
-                <div class="lp-theme-device-notch"></div>
-                <div class="lp-theme-device-screen">
-                  <!-- Fallback Placeholder -->
-                  <div class="lp-theme-placeholder">
-                    <Icon :icon="theme.icon" class="lp-placeholder-icon" :style="{ color: theme.color }" />
-                    <span class="lp-placeholder-text">{{ theme.name }}</span>
-                  </div>
-                  <!-- Thumbnail Image -->
-                  <img
-                    :src="theme.thumbnail"
-                    @error="($event.target as HTMLImageElement).style.opacity = '0'"
-                    class="lp-theme-image"
-                    :alt="'Preview tema ' + theme.name"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-              <div class="lp-theme-accent-bar" :style="{ background: theme.bgGradient }"></div>
-            </div>
-            
-            <div class="lp-theme-info">
-              <div class="lp-theme-header">
-                <div class="lp-theme-name-row">
-                  <Icon :icon="theme.icon" class="lp-theme-name-icon" :style="{ color: theme.color }" />
-                  <h3 class="lp-theme-name">{{ theme.name }}</h3>
-                </div>
-              </div>
-              <div class="lp-theme-actions">
-                <a
-                  v-if="theme.sampleUrl"
-                  :href="theme.sampleUrl"
-                  class="btn btn-outline btn-sm lp-theme-btn"
-                >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span>
-                  Lihat Contoh
-                </a>
-                <button
-                  v-else
-                  class="btn btn-outline btn-sm lp-theme-btn"
-                  disabled
-                  title="Link contoh akan segera tersedia"
-                >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">hourglass_top</span>
-                  Segera Hadir
-                </button>
-
-                <a
-                  :href="`/dashboard/create?theme=${theme.id}`"
-                  class="btn btn-primary btn-sm lp-theme-btn lp-theme-btn-use"
-                >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">brush</span>
-                  Pakai Tema Ini
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- CTA: Lihat Semua Tema -->
-        <div class="lp-themes-cta lp-reveal" style="transition-delay: 600ms;">
-          <a href="/themes" class="lp-btn lp-btn-themes-cta">
-            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">palette</span>
-            Lihat Semua Koleksi Tema
-            <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">arrow_forward</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Wave Divider -->
-    <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
-      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" /></svg>
-    </div>
-
-    <!-- Cara Kerja Section -->
-    <section id="cara-kerja" class="lp-section" aria-label="Cara Kerja">
-      <div class="lp-container">
-        <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">Hanya Dalam 3 Langkah</p>
-          <h2 class="lp-section-title">Pelaksanaannya Semudah Mengupdate Medsos</h2>
-          <p class="lp-section-sub">Sama sekali tidak butuh keahlian desain. Siapa pun bisa merancang undangan digital eksklusif ini.</p>
-        </div>
-        <div class="lp-steps-grid">
-          <div class="lp-step lp-reveal" v-for="(step, i) in steps" :key="step.title" :style="{ transitionDelay: `${i * 150}ms` }">
-            <div class="lp-step-number-wrapper">
-              <div class="lp-step-number">{{ i + 1 }}</div>
-            </div>
-            <div class="lp-step-icon-circle">
-              <Icon :icon="step.icon" class="lp-step-icon-svg" />
-            </div>
-            <h3>{{ step.title }}</h3>
-            <p>{{ step.desc }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Wave Divider -->
-    <div class="lp-wave-divider lp-wave-white-to-alt" aria-hidden="true">
-      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,60 C360,0 1080,100 1440,40 L1440,100 L0,100 Z" /></svg>
-    </div>
-
-    <!-- Testimoni Section -->
-    <section id="testimoni" class="lp-section lp-section-alt" aria-label="Testimoni Pengguna">
-      <div class="lp-container">
-        <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">Apa Kata Mereka</p>
-          <h2 class="lp-section-title">Testimoni Pengguna</h2>
-        </div>
-        <div class="lp-testimonials-grid">
-          <div class="lp-testimonial lp-reveal" v-for="(t, i) in testimonials" :key="t.name" :style="{ transitionDelay: `${i * 100}ms` }">
-            <!-- Decorative quote mark -->
-            <div class="lp-testimonial-quote-mark" aria-hidden="true">
-              <svg width="40" height="32" viewBox="0 0 40 32" fill="currentColor" opacity="0.08"><path d="M0 20.8C0 27.2 4.48 32 10.08 32c4.8 0 8.32-3.52 8.32-8 0-4.16-3.2-7.36-7.04-7.36-1.28 0-2.24.32-2.88.64.32-5.12 3.84-10.56 9.28-14.08L14.4 0C5.44 4.8 0 12.16 0 20.8zm21.76 0C21.76 27.2 26.24 32 31.84 32c4.8 0 8.16-3.52 8.16-8 0-4.16-3.04-7.36-7.04-7.36-1.28 0-2.24.32-2.88.64.32-5.12 3.84-10.56 9.28-14.08L36.16 0c-8.96 4.8-14.4 12.16-14.4 20.8z"/></svg>
-            </div>
-            <div class="lp-testimonial-stars" aria-label="Rating 5 bintang">
-              <Icon icon="solar:star-bold" v-for="n in 5" :key="n" class="lp-star-icon" />
-            </div>
-            <p class="lp-testimonial-text">"{{ t.text }}"</p>
-            <div class="lp-testimonial-author">
-              <div class="lp-testimonial-avatar">
-                <Icon :icon="t.avatarIcon" class="lp-avatar-svg" />
-              </div>
-              <div>
-                <div class="lp-testimonial-name">{{ t.name }}</div>
-                <div class="lp-testimonial-role">{{ t.role }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Wave Divider -->
-    <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
-      <svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" /></svg>
-    </div>
-
-    <!-- Pricing Section -->
-    <section id="harga" class="lp-section" aria-label="Harga">
-      <div class="lp-container">
-        <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">Investasi Cerdas</p>
-          <h2 class="lp-section-title">Harga Transparan. Tanpa Biaya Tersembunyi.</h2>
-          <p class="lp-section-sub">Buktikan sendiri secara gratis. Jauh lebih hemat daripada pengeluaran untuk ribuan lembar undangan cetak.</p>
-        </div>
-        <div class="lp-pricing-grid">
-          <!-- Free Plan -->
-          <div class="lp-pricing-card lp-reveal">
-            <div class="lp-pricing-header">
-              <h3>Free</h3>
-              <div class="lp-pricing-price">Gratis</div>
-              <p>Coba buat undangan & lihat hasilnya langsung.</p>
-            </div>
-            <ul class="lp-pricing-features">
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Masa aktif 1 bulan</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Maksimal 25x akses undangan</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Bebas edit tanpa batas</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Live preview editor</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon" /> Branding "Powered by MengundangAnda"</li>
-            </ul>
-            <a href="/login" class="lp-btn lp-pricing-btn">Mulai Gratis</a>
-          </div>
-
-          <!-- Premium Plan -->
-          <div class="lp-pricing-card lp-pricing-premium lp-reveal" style="transition-delay: 120ms;">
-            <div class="lp-premium-badge">PALING POPULER</div>
-            <div class="lp-pricing-shimmer" aria-hidden="true"></div>
-            <div class="lp-pricing-header">
-              <h3>Premium</h3>
-              <div class="lp-pricing-price">Rp 50.000</div>
-              <p>Fitur penuh untuk hari bahagia Anda tanpa batas.</p>
-            </div>
-            <ul class="lp-pricing-features">
-              <li><Icon icon="solar:star-fall-bold-duotone" class="check-icon accent" /> <strong>Masa aktif 1 tahun penuh</strong></li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Akses undangan unlimited (tanpa batas)</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Bebas pilih semua koleksi tema premium</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Fitur Amplop Digital / QRIS</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Upload musik latar sendiri</li>
-              <li><Icon icon="solar:check-circle-bold-duotone" class="check-icon accent" /> Tanpa branding platform</li>
-            </ul>
-            <a href="/login" class="lp-btn lp-btn-primary lp-pricing-btn">Upgrade Premium</a>
-          </div>
-
-          <!-- Jasa Dibuatkan Plan -->
-          <div class="lp-pricing-card lp-pricing-jasa lp-reveal" style="transition-delay: 240ms;">
-            <div class="lp-jasa-badge">TERIMA JADI</div>
-            <div class="lp-pricing-header">
-              <h3>Jasa Dibuatkan</h3>
-              <div class="lp-pricing-price">Rp 99.000</div>
-              <p>Duduk manis, admin kami yang buatkan untuk Anda.</p>
-            </div>
-            <ul class="lp-pricing-features">
-              <li><Icon icon="solar:magic-stick-3-bold-duotone" class="check-icon jasa" /> <strong>Admin buatkan untuk Anda</strong></li>
-              <li><Icon icon="solar:crown-bold-duotone" class="check-icon jasa" /> Semua fitur Premium termasuk</li>
-              <li><Icon icon="solar:clock-circle-bold-duotone" class="check-icon jasa" /> Selesai dalam 30 menit</li>
-              <li><Icon icon="solar:refresh-circle-bold-duotone" class="check-icon jasa" /> 3x revisi gratis</li>
-              <li><Icon icon="solar:infinity-bold-duotone" class="check-icon jasa" /> Akses unlimited 1 tahun</li>
-              <li><Icon icon="solar:shield-check-bold-duotone" class="check-icon jasa" /> Tanpa branding platform</li>
-            </ul>
-            <a href="/order" class="lp-btn lp-btn-jasa lp-pricing-btn">Pesan Sekarang</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section id="faq" class="lp-faq" aria-label="Pertanyaan yang Sering Diajukan">
-      <div class="lp-container">
-        <div class="lp-section-header lp-reveal">
-          <p class="lp-section-kicker">FAQ</p>
-          <h2 class="lp-section-title">Pertanyaan yang Sering Diajukan</h2>
-          <p class="lp-section-sub">Semua yang perlu Anda ketahui tentang MengundangAnda</p>
-        </div>
-        <div class="lp-faq-grid">
-          <div 
-            v-for="(faq, idx) in faqList" 
-            :key="idx" 
-            class="lp-faq-item lp-reveal"
-            :style="{ transitionDelay: (idx * 60) + 'ms' }"
-          >
-            <button 
-              class="lp-faq-question" 
-              @click="faqOpen === idx ? faqOpen = -1 : faqOpen = idx"
-              :aria-expanded="faqOpen === idx"
+          <div class="lp-features-list">
+            <div
+              class="lp-feature-item lp-reveal"
+              v-for="(feature, i) in features"
+              :key="feature.title"
+              :style="{ transitionDelay: `${i * 100}ms` }"
             >
-              <span>{{ faq.q }}</span>
-              <span class="lp-faq-icon" :class="{ open: faqOpen === idx }">
-                <Icon icon="solar:alt-arrow-down-linear" />
-              </span>
-            </button>
-            <Transition name="faq-slide">
-              <div v-if="faqOpen === idx" class="lp-faq-answer">
-                <p>{{ faq.a }}</p>
+              <div class="lp-feature-icon-wrapper">
+                <Icon :icon="feature.icon" class="lp-feature-icon" />
               </div>
-            </Transition>
+              <div class="lp-feature-text">
+                <h3>{{ feature.title }}</h3>
+                <p>{{ feature.desc }}</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- CTA Section -->
-    <section id="cta" class="lp-cta" aria-label="Ajakan Membuat Undangan">
-      <div class="lp-cta-bg"></div>
-      <!-- Floating Orbs for CTA -->
-      <div class="lp-cta-orbs" aria-hidden="true">
-        <div class="lp-orb lp-orb-cta-1"></div>
-        <div class="lp-orb lp-orb-cta-2"></div>
+      <!-- Wave Divider -->
+      <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" />
+        </svg>
       </div>
-      <div class="lp-container lp-cta-content lp-reveal">
-        <div class="lp-cta-ornament" aria-hidden="true">
-          <svg width="60" height="2" viewBox="0 0 60 2"><rect width="60" height="2" rx="1" fill="rgba(255,255,255,0.3)"/></svg>
-          <Icon icon="solar:heart-bold" style="font-size: 20px; color: rgba(147,197,253,0.6);" />
-          <svg width="60" height="2" viewBox="0 0 60 2"><rect width="60" height="2" rx="1" fill="rgba(255,255,255,0.3)"/></svg>
+
+      <!-- Live Preview Showcase Section -->
+      <section
+        id="live-preview"
+        class="lp-section"
+        aria-label="Live Preview Editor"
+      >
+        <div class="lp-container lp-showcase-split">
+          <div class="lp-showcase-content lp-reveal">
+            <p class="lp-section-kicker">Bebas Revisi Sepuasnya</p>
+            <h2 class="lp-section-title">
+              Lihat Perubahan Real-time. Tanpa Butuh Desainer.
+            </h2>
+            <p class="lp-section-sub">
+              Ganti font, sesuaikan warna, atau ubah lokasi acara dan lihat
+              hasilnya detik itu juga. Anda memegang kendali penuh atas tampilan
+              undangan dari layar hp Anda.
+            </p>
+            <ul class="lp-showcase-list">
+              <li>
+                <Icon
+                  icon="solar:check-circle-bold-duotone"
+                  class="check-icon"
+                />
+                Tidak perlu lagi membayar biaya revisi.
+              </li>
+              <li>
+                <Icon
+                  icon="solar:check-circle-bold-duotone"
+                  class="check-icon"
+                />
+                Bebas khawatir salah ketik atau info yang kurang akurat.
+              </li>
+              <li>
+                <Icon
+                  icon="solar:check-circle-bold-duotone"
+                  class="check-icon"
+                />
+                Mudah digunakan, bahkan jika Anda bukan orang teknis.
+              </li>
+            </ul>
+            <a href="/login" class="lp-btn lp-btn-primary lp-showcase-btn"
+              >Coba Live Editor Sekarang</a
+            >
+          </div>
+          <div
+            class="lp-showcase-image lp-reveal"
+            style="transition-delay: 200ms"
+          >
+            <div class="lp-mockup-wrapper">
+              <img
+                src="https://media.mengundanganda.com/landing-page/Screenshot%202026-04-03%20191057.webp"
+                alt="Tampilan fitur Live Preview Editor undangan pernikahan digital MengundangAnda"
+                class="lp-mockup-img"
+                loading="lazy"
+              />
+            </div>
+          </div>
         </div>
-        <h2 class="lp-cta-title">Siap Memukau Tamu<br><span>Undangan Anda?</span></h2>
-        <p class="lp-cta-sub">Bergabung dengan ratusan pasangan yang sudah berhasil menghemat jutaan rupiah tanpa mengorbankan estetika.</p>
-        <a href="/login" class="lp-btn lp-btn-white lp-cta-btn">Buat Undangan Gratis Sekarang</a>
+      </section>
+
+      <!-- Wave Divider -->
+      <div class="lp-wave-divider lp-wave-white-to-alt" aria-hidden="true">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path d="M0,60 C360,0 1080,100 1440,40 L1440,100 L0,100 Z" />
+        </svg>
       </div>
-    </section>
+
+      <!-- Tema Section -->
+      <section
+        id="tema"
+        class="lp-section lp-section-alt"
+        aria-label="Koleksi Tema"
+      >
+        <div class="lp-container">
+          <div class="lp-section-header lp-reveal">
+            <p class="lp-section-kicker">Koleksi Desain Premium</p>
+            <h2 class="lp-section-title">
+              Visual Indah yang Mencerminkan Kisah Anda
+            </h2>
+            <p class="lp-section-sub">
+              Setiap desain dirancang khusus oleh desainer profesional untuk
+              membuat tamu undangan Anda terkesan dari pandangan pertama.
+            </p>
+          </div>
+          <div class="lp-themes-carousel">
+            <div
+              class="lp-theme-card lp-reveal"
+              v-for="(theme, i) in themesData"
+              :key="theme.id"
+              :style="{
+                '--card-accent': theme.color,
+                transitionDelay: `${i * 120}ms`,
+              }"
+            >
+              <div class="lp-theme-preview">
+                <div class="lp-theme-device-frame">
+                  <div class="lp-theme-device-notch"></div>
+                  <div class="lp-theme-device-screen">
+                    <!-- Fallback Placeholder -->
+                    <div class="lp-theme-placeholder">
+                      <Icon
+                        :icon="theme.icon"
+                        class="lp-placeholder-icon"
+                        :style="{ color: theme.color }"
+                      />
+                      <span class="lp-placeholder-text">{{ theme.name }}</span>
+                    </div>
+                    <!-- Thumbnail Image -->
+                    <img
+                      :src="theme.thumbnail"
+                      @error="
+                        ($event.target as HTMLImageElement).style.opacity = '0'
+                      "
+                      class="lp-theme-image"
+                      :alt="'Preview tema ' + theme.name"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="lp-theme-accent-bar"
+                  :style="{ background: theme.bgGradient }"
+                ></div>
+              </div>
+
+              <div class="lp-theme-info">
+                <div class="lp-theme-header">
+                  <div class="lp-theme-name-row">
+                    <Icon
+                      :icon="theme.icon"
+                      class="lp-theme-name-icon"
+                      :style="{ color: theme.color }"
+                    />
+                    <h3 class="lp-theme-name">{{ theme.name }}</h3>
+                  </div>
+                </div>
+                <div class="lp-theme-actions">
+                  <a
+                    v-if="theme.sampleUrl"
+                    :href="theme.sampleUrl"
+                    class="btn btn-outline btn-sm lp-theme-btn"
+                  >
+                    <span
+                      class="material-symbols-rounded"
+                      style="font-size: 16px; vertical-align: -3px"
+                      >visibility</span
+                    >
+                    Lihat Contoh
+                  </a>
+                  <button
+                    v-else
+                    class="btn btn-outline btn-sm lp-theme-btn"
+                    disabled
+                    title="Link contoh akan segera tersedia"
+                  >
+                    <span
+                      class="material-symbols-rounded"
+                      style="font-size: 16px; vertical-align: -3px"
+                      >hourglass_top</span
+                    >
+                    Segera Hadir
+                  </button>
+
+                  <a
+                    :href="`/dashboard/create?theme=${theme.id}`"
+                    class="btn btn-primary btn-sm lp-theme-btn lp-theme-btn-use"
+                  >
+                    <span
+                      class="material-symbols-rounded"
+                      style="font-size: 16px; vertical-align: -3px"
+                      >brush</span
+                    >
+                    Pakai Tema Ini
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- CTA: Lihat Semua Tema -->
+          <div class="lp-themes-cta lp-reveal" style="transition-delay: 600ms">
+            <a href="/themes" class="lp-btn lp-btn-themes-cta">
+              <span
+                class="material-symbols-rounded"
+                style="font-size: 18px; vertical-align: -3px"
+                >palette</span
+              >
+              Lihat Semua Koleksi Tema
+              <span
+                class="material-symbols-rounded"
+                style="font-size: 16px; vertical-align: -3px"
+                >arrow_forward</span
+              >
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wave Divider -->
+      <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" />
+        </svg>
+      </div>
+
+      <!-- Cara Kerja Section -->
+      <section id="cara-kerja" class="lp-section" aria-label="Cara Kerja">
+        <div class="lp-container">
+          <div class="lp-section-header lp-reveal">
+            <p class="lp-section-kicker">Hanya Dalam 3 Langkah</p>
+            <h2 class="lp-section-title">
+              Pelaksanaannya Semudah Mengupdate Medsos
+            </h2>
+            <p class="lp-section-sub">
+              Sama sekali tidak butuh keahlian desain. Siapa pun bisa merancang
+              undangan digital eksklusif ini.
+            </p>
+          </div>
+          <div class="lp-steps-grid">
+            <div
+              class="lp-step lp-reveal"
+              v-for="(step, i) in steps"
+              :key="step.title"
+              :style="{ transitionDelay: `${i * 150}ms` }"
+            >
+              <div class="lp-step-number-wrapper">
+                <div class="lp-step-number">{{ i + 1 }}</div>
+              </div>
+              <div class="lp-step-icon-circle">
+                <Icon :icon="step.icon" class="lp-step-icon-svg" />
+              </div>
+              <h3>{{ step.title }}</h3>
+              <p>{{ step.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wave Divider -->
+      <div class="lp-wave-divider lp-wave-white-to-alt" aria-hidden="true">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path d="M0,60 C360,0 1080,100 1440,40 L1440,100 L0,100 Z" />
+        </svg>
+      </div>
+
+      <!-- Testimoni Section -->
+      <section
+        id="testimoni"
+        class="lp-section lp-section-alt"
+        aria-label="Testimoni Pengguna"
+      >
+        <div class="lp-container">
+          <div class="lp-section-header lp-reveal">
+            <p class="lp-section-kicker">Apa Kata Mereka</p>
+            <h2 class="lp-section-title">Testimoni Pengguna</h2>
+          </div>
+          <div class="lp-testimonials-grid">
+            <div
+              class="lp-testimonial lp-reveal"
+              v-for="(t, i) in testimonials"
+              :key="t.name"
+              :style="{ transitionDelay: `${i * 100}ms` }"
+            >
+              <!-- Decorative quote mark -->
+              <div class="lp-testimonial-quote-mark" aria-hidden="true">
+                <svg
+                  width="40"
+                  height="32"
+                  viewBox="0 0 40 32"
+                  fill="currentColor"
+                  opacity="0.08"
+                >
+                  <path
+                    d="M0 20.8C0 27.2 4.48 32 10.08 32c4.8 0 8.32-3.52 8.32-8 0-4.16-3.2-7.36-7.04-7.36-1.28 0-2.24.32-2.88.64.32-5.12 3.84-10.56 9.28-14.08L14.4 0C5.44 4.8 0 12.16 0 20.8zm21.76 0C21.76 27.2 26.24 32 31.84 32c4.8 0 8.16-3.52 8.16-8 0-4.16-3.04-7.36-7.04-7.36-1.28 0-2.24.32-2.88.64.32-5.12 3.84-10.56 9.28-14.08L36.16 0c-8.96 4.8-14.4 12.16-14.4 20.8z"
+                  />
+                </svg>
+              </div>
+              <div class="lp-testimonial-stars" aria-label="Rating 5 bintang">
+                <Icon
+                  icon="solar:star-bold"
+                  v-for="n in 5"
+                  :key="n"
+                  class="lp-star-icon"
+                />
+              </div>
+              <p class="lp-testimonial-text">"{{ t.text }}"</p>
+              <div class="lp-testimonial-author">
+                <div class="lp-testimonial-avatar">
+                  <Icon :icon="t.avatarIcon" class="lp-avatar-svg" />
+                </div>
+                <div>
+                  <div class="lp-testimonial-name">{{ t.name }}</div>
+                  <div class="lp-testimonial-role">{{ t.role }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wave Divider -->
+      <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+          <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" />
+        </svg>
+      </div>
+
+      <!-- Pricing Section -->
+      <section id="harga" class="lp-section" aria-label="Harga">
+        <div class="lp-container">
+          <div class="lp-section-header lp-reveal">
+            <p class="lp-section-kicker">Investasi Cerdas</p>
+            <h2 class="lp-section-title">
+              Harga Transparan. Tanpa Biaya Tersembunyi.
+            </h2>
+            <p class="lp-section-sub">
+              Buktikan sendiri secara gratis. Jauh lebih hemat daripada
+              pengeluaran untuk ribuan lembar undangan cetak.
+            </p>
+          </div>
+          <div class="lp-pricing-grid">
+            <!-- Free Plan -->
+            <div class="lp-pricing-card lp-reveal">
+              <div class="lp-pricing-header">
+                <h3>Free</h3>
+                <div class="lp-pricing-price">Gratis</div>
+                <p>Coba buat undangan & lihat hasilnya langsung.</p>
+              </div>
+              <ul class="lp-pricing-features">
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon"
+                  />
+                  Masa aktif 1 bulan
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon"
+                  />
+                  Maksimal 25x akses undangan
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon"
+                  />
+                  Bebas edit tanpa batas
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon"
+                  />
+                  Live preview editor
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon"
+                  />
+                  Branding "Powered by MengundangAnda"
+                </li>
+              </ul>
+              <a href="/login" class="lp-btn lp-pricing-btn">Mulai Gratis</a>
+            </div>
+
+            <!-- Premium Plan -->
+            <div
+              class="lp-pricing-card lp-pricing-premium lp-reveal"
+              style="transition-delay: 120ms"
+            >
+              <div class="lp-premium-badge">PALING POPULER</div>
+              <div class="lp-pricing-shimmer" aria-hidden="true"></div>
+              <div class="lp-pricing-header">
+                <h3>Premium</h3>
+                <div class="lp-pricing-price">Rp 50.000</div>
+                <p>Fitur penuh untuk hari bahagia Anda tanpa batas.</p>
+              </div>
+              <ul class="lp-pricing-features">
+                <li>
+                  <Icon
+                    icon="solar:star-fall-bold-duotone"
+                    class="check-icon accent"
+                  />
+                  <strong>Masa aktif 1 tahun penuh</strong>
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon accent"
+                  />
+                  Akses undangan unlimited (tanpa batas)
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon accent"
+                  />
+                  Bebas pilih semua koleksi tema premium
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon accent"
+                  />
+                  Fitur Amplop Digital / QRIS
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon accent"
+                  />
+                  Upload musik latar sendiri
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:check-circle-bold-duotone"
+                    class="check-icon accent"
+                  />
+                  Tanpa branding platform
+                </li>
+              </ul>
+              <a href="/login" class="lp-btn lp-btn-primary lp-pricing-btn"
+                >Upgrade Premium</a
+              >
+            </div>
+
+            <!-- Jasa Dibuatkan Plan -->
+            <div
+              class="lp-pricing-card lp-pricing-jasa lp-reveal"
+              style="transition-delay: 240ms"
+            >
+              <div class="lp-jasa-badge">TERIMA JADI</div>
+              <div class="lp-pricing-header">
+                <h3>Jasa Dibuatkan</h3>
+                <div class="lp-pricing-price">Rp 99.000</div>
+                <p>Duduk manis, admin kami yang buatkan untuk Anda.</p>
+              </div>
+              <ul class="lp-pricing-features">
+                <li>
+                  <Icon
+                    icon="solar:magic-stick-3-bold-duotone"
+                    class="check-icon jasa"
+                  />
+                  <strong>Admin buatkan untuk Anda</strong>
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:crown-bold-duotone"
+                    class="check-icon jasa"
+                  />
+                  Semua fitur Premium termasuk
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:clock-circle-bold-duotone"
+                    class="check-icon jasa"
+                  />
+                  Selesai dalam 30 menit
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:refresh-circle-bold-duotone"
+                    class="check-icon jasa"
+                  />
+                  3x revisi gratis
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:infinity-bold-duotone"
+                    class="check-icon jasa"
+                  />
+                  Akses unlimited 1 tahun
+                </li>
+                <li>
+                  <Icon
+                    icon="solar:shield-check-bold-duotone"
+                    class="check-icon jasa"
+                  />
+                  Tanpa branding platform
+                </li>
+              </ul>
+              <a href="/order" class="lp-btn lp-btn-jasa lp-pricing-btn"
+                >Pesan Sekarang</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section
+        id="faq"
+        class="lp-faq"
+        aria-label="Pertanyaan yang Sering Diajukan"
+      >
+        <div class="lp-container">
+          <div class="lp-section-header lp-reveal">
+            <p class="lp-section-kicker">FAQ</p>
+            <h2 class="lp-section-title">Pertanyaan yang Sering Diajukan</h2>
+            <p class="lp-section-sub">
+              Semua yang perlu Anda ketahui tentang MengundangAnda
+            </p>
+          </div>
+          <div class="lp-faq-grid">
+            <div
+              v-for="(faq, idx) in faqList"
+              :key="idx"
+              class="lp-faq-item lp-reveal"
+              :style="{ transitionDelay: idx * 60 + 'ms' }"
+            >
+              <button
+                class="lp-faq-question"
+                @click="faqOpen === idx ? (faqOpen = -1) : (faqOpen = idx)"
+                :aria-expanded="faqOpen === idx"
+              >
+                <span>{{ faq.q }}</span>
+                <span class="lp-faq-icon" :class="{ open: faqOpen === idx }">
+                  <Icon icon="solar:alt-arrow-down-linear" />
+                </span>
+              </button>
+              <Transition name="faq-slide">
+                <div v-if="faqOpen === idx" class="lp-faq-answer">
+                  <p>{{ faq.a }}</p>
+                </div>
+              </Transition>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section id="cta" class="lp-cta" aria-label="Ajakan Membuat Undangan">
+        <div class="lp-cta-bg"></div>
+        <!-- Floating Orbs for CTA -->
+        <div class="lp-cta-orbs" aria-hidden="true">
+          <div class="lp-orb lp-orb-cta-1"></div>
+          <div class="lp-orb lp-orb-cta-2"></div>
+        </div>
+        <div class="lp-container lp-cta-content lp-reveal">
+          <div class="lp-cta-ornament" aria-hidden="true">
+            <svg width="60" height="2" viewBox="0 0 60 2">
+              <rect width="60" height="2" rx="1" fill="rgba(255,255,255,0.3)" />
+            </svg>
+            <Icon
+              icon="solar:heart-bold"
+              style="font-size: 20px; color: rgba(147, 197, 253, 0.6)"
+            />
+            <svg width="60" height="2" viewBox="0 0 60 2">
+              <rect width="60" height="2" rx="1" fill="rgba(255,255,255,0.3)" />
+            </svg>
+          </div>
+          <h2 class="lp-cta-title">
+            Siap Memukau Tamu<br /><span>Undangan Anda?</span>
+          </h2>
+          <p class="lp-cta-sub">
+            Bergabung dengan ratusan pasangan yang sudah berhasil menghemat
+            jutaan rupiah tanpa mengorbankan estetika.
+          </p>
+          <a href="/login" class="lp-btn lp-btn-white lp-cta-btn"
+            >Buat Undangan Gratis Sekarang</a
+          >
+        </div>
+      </section>
     </main>
 
     <!-- Footer -->
@@ -379,10 +676,17 @@
       <div class="lp-container lp-footer-inner">
         <div class="lp-footer-brand">
           <a href="#" class="lp-logo">
-            <img src="/images/logo.webp" alt="Logo MengundangAnda - Platform Undangan Pernikahan Digital" class="lp-logo-img">
+            <img
+              src="/images/logo.webp"
+              alt="Logo MengundangAnda - Platform Undangan Pernikahan Digital"
+              class="lp-logo-img"
+            />
             <span>Mengundang<span class="lp-logo-accent">Anda</span></span>
           </a>
-          <p>Platform undangan pernikahan digital premium. Buat, desain, dan bagikan undangan Anda dengan mudah.</p>
+          <p>
+            Platform undangan pernikahan digital premium. Buat, desain, dan
+            bagikan undangan Anda dengan mudah.
+          </p>
         </div>
         <div class="lp-footer-links">
           <h4>Navigasi</h4>
@@ -395,7 +699,9 @@
         </div>
         <div class="lp-footer-links">
           <h4>Kontak</h4>
-          <a href="mailto:chatkita@mengundanganda.com">chatkita@mengundanganda.com</a>
+          <a href="mailto:chatkita@mengundanganda.com"
+            >chatkita@mengundanganda.com</a
+          >
           <a href="#">Instagram</a>
           <a href="#">WhatsApp</a>
         </div>
@@ -420,15 +726,30 @@
     <!-- Mobile Bottom Navigation -->
     <nav class="mobile-bottom-nav">
       <div class="mobile-nav-inner">
-        <a href="#" class="mobile-nav-item" :class="{ active: activeSection === 'beranda' }" @click="activeSection = 'beranda'">
+        <a
+          href="#"
+          class="mobile-nav-item"
+          :class="{ active: activeSection === 'beranda' }"
+          @click="activeSection = 'beranda'"
+        >
           <Icon icon="solar:home-smile-bold-duotone" />
           <span>Beranda</span>
         </a>
-        <a href="#tema" class="mobile-nav-item" :class="{ active: activeSection === 'tema' }" @click="activeSection = 'tema'">
+        <a
+          href="#tema"
+          class="mobile-nav-item"
+          :class="{ active: activeSection === 'tema' }"
+          @click="activeSection = 'tema'"
+        >
           <Icon icon="solar:gallery-bold-duotone" />
           <span>Tema</span>
         </a>
-        <a href="#harga" class="mobile-nav-item" :class="{ active: activeSection === 'harga' }" @click="activeSection = 'harga'">
+        <a
+          href="#harga"
+          class="mobile-nav-item"
+          :class="{ active: activeSection === 'harga' }"
+          @click="activeSection = 'harga'"
+        >
           <Icon icon="solar:tag-price-bold-duotone" />
           <span>Harga</span>
         </a>
@@ -447,242 +768,323 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
-import { Icon } from '@iconify/vue'
-import LandingHeroCinematic from '@/components/landing/LandingHeroCinematic.vue'
-import ChatWidget from '@/components/ui/ChatWidget.vue'
+import { ref, reactive, onMounted, onUnmounted, nextTick } from "vue";
+import { Icon } from "@iconify/vue";
+import LandingHeroCinematic from "@/components/landing/LandingHeroCinematic.vue";
+import ChatWidget from "@/components/ui/ChatWidget.vue";
 
-const navScrolled = ref(false)
-const mobileMenuOpen = ref(false)
-const navHiddenMobile = ref(false)
-const activeSection = ref('beranda')
-const scrollY = ref(0)
-const statsRef = ref<HTMLElement | null>(null)
-const prefersReducedMotion = ref(false)
-const faqOpen = ref(-1)
+const navScrolled = ref(false);
+const mobileMenuOpen = ref(false);
+const navHiddenMobile = ref(false);
+const activeSection = ref("beranda");
+const scrollY = ref(0);
+const statsRef = ref<HTMLElement | null>(null);
+const prefersReducedMotion = ref(false);
+const faqOpen = ref(-1);
 
 const faqList = [
   {
-    q: 'Apa itu MengundangAnda?',
-    a: 'MengundangAnda adalah platform pembuatan undangan pernikahan digital premium yang memungkinkan Anda membuat undangan elegan dalam hitungan menit. Pilih dari berbagai tema mewah, lengkapi data acara, dan langsung bagikan ke tamu melalui WhatsApp.'
+    q: "Apa itu MengundangAnda?",
+    a: "MengundangAnda adalah platform pembuatan undangan pernikahan digital premium yang memungkinkan Anda membuat undangan elegan dalam hitungan menit. Pilih dari berbagai tema mewah, lengkapi data acara, dan langsung bagikan ke tamu melalui WhatsApp.",
   },
   {
-    q: 'Bagaimana cara membuat undangan digital di MengundangAnda?',
-    a: 'Cukup 3 langkah: (1) Daftar akun gratis, (2) Pilih tema dan isi detail acara pernikahan Anda, (3) Bagikan link undangan ke tamu via WhatsApp. Seluruh proses bisa selesai dalam 5 menit.'
+    q: "Bagaimana cara membuat undangan digital di MengundangAnda?",
+    a: "Cukup 3 langkah: (1) Daftar akun gratis, (2) Pilih tema dan isi detail acara pernikahan Anda, (3) Bagikan link undangan ke tamu via WhatsApp. Seluruh proses bisa selesai dalam 5 menit.",
   },
   {
-    q: 'Apakah bisa membuat undangan pernikahan digital secara gratis?',
-    a: 'Ya! MengundangAnda menyediakan paket Free yang mencakup semua fitur utama: pilihan tema premium, RSVP, musik latar, countdown, galeri foto, dan live preview. Paket Free aktif selama 1 bulan dengan 25x akses link.'
+    q: "Apakah bisa membuat undangan pernikahan digital secara gratis?",
+    a: "Ya! MengundangAnda menyediakan paket Free yang mencakup semua fitur utama: pilihan tema premium, RSVP, musik latar, countdown, galeri foto, dan live preview. Paket Free aktif selama 1 bulan dengan 25x akses link.",
   },
   {
-    q: 'Berapa harga paket premium MengundangAnda?',
-    a: 'Paket Premium hanya Rp 50.000 (sekali bayar, self-service) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform.'
+    q: "Berapa harga paket premium MengundangAnda?",
+    a: "Paket Premium hanya Rp 50.000 (sekali bayar, self-service) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform.",
   },
   {
-    q: 'Apa itu layanan Jasa Dibuatkan Undangan?',
-    a: 'Layanan Jasa Dibuatkan (Rp 99.000) adalah paket terima jadi. Anda cukup kirim data pernikahan, lalu admin kami yang akan membuatkan undangan digital premium untuk Anda. Selesai dalam 1 jam, dengan 3x revisi gratis dan semua fitur Premium sudah termasuk.'
+    q: "Apa itu layanan Jasa Dibuatkan Undangan?",
+    a: "Layanan Jasa Dibuatkan (Rp 99.000) adalah paket terima jadi. Anda cukup kirim data pernikahan, lalu admin kami yang akan membuatkan undangan digital premium untuk Anda. Selesai dalam 1 jam, dengan 3x revisi gratis dan semua fitur Premium sudah termasuk.",
   },
   {
-    q: 'Fitur apa saja yang tersedia di MengundangAnda?',
-    a: 'Fitur lengkap meliputi: 5 tema premium (Elegant Gold, Floral, Minimalist, Elegant Blue, Floral Blue), RSVP & buku tamu, musik latar otomatis, countdown timer, galeri foto prewedding, love story timeline, amplop digital, peta lokasi Google Maps, dan kirim undangan via WhatsApp.'
+    q: "Fitur apa saja yang tersedia di MengundangAnda?",
+    a: "Fitur lengkap meliputi: 5 tema premium (Elegant Gold, Floral, Minimalist, Elegant Blue, Floral Blue), RSVP & buku tamu, musik latar otomatis, countdown timer, galeri foto prewedding, love story timeline, amplop digital, peta lokasi Google Maps, dan kirim undangan via WhatsApp.",
   },
-]
+];
 
 function isMobile() {
-  return window.innerWidth <= 768
+  return window.innerWidth <= 768;
 }
 
 function handleScroll() {
-  const y = window.scrollY
-  navScrolled.value = y > 40
-  scrollY.value = y
+  const y = window.scrollY;
+  navScrolled.value = y > 40;
+  scrollY.value = y;
 
   // Hero section height (approx viewport height)
-  const heroHeight = window.innerHeight
+  const heroHeight = window.innerHeight;
 
   if (isMobile()) {
     // Hide navbar after scrolling past hero on mobile
-    navHiddenMobile.value = y > heroHeight
+    navHiddenMobile.value = y > heroHeight;
   } else {
-    navHiddenMobile.value = false
+    navHiddenMobile.value = false;
   }
 
-  updateActiveSection()
+  updateActiveSection();
 }
 
 function updateActiveSection() {
-  const allSections = ['fitur', 'live-preview', 'tema', 'cara-kerja', 'testimoni', 'harga', 'faq']
-  let current = activeSection.value
-  
+  const allSections = [
+    "fitur",
+    "live-preview",
+    "tema",
+    "cara-kerja",
+    "testimoni",
+    "harga",
+    "faq",
+  ];
+  let current = activeSection.value;
+
   for (const id of allSections) {
-    const el = document.getElementById(id)
+    const el = document.getElementById(id);
     if (el) {
-      const rect = el.getBoundingClientRect()
+      const rect = el.getBoundingClientRect();
       // Section is active if it's in the middle of the viewport
-      if (rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.3) {
-        if (id === 'tema') current = 'tema'
-        else if (id === 'harga') current = 'harga'
-        else current = '' // Clear active if in a section not in bottom nav
-        break
+      if (
+        rect.top <= window.innerHeight * 0.5 &&
+        rect.bottom >= window.innerHeight * 0.3
+      ) {
+        if (id === "tema") current = "tema";
+        else if (id === "harga") current = "harga";
+        else current = ""; // Clear active if in a section not in bottom nav
+        break;
       }
     }
   }
-  
+
   // If at the very top, Beranda is active
   if (window.scrollY < window.innerHeight * 0.4) {
-    current = 'beranda'
+    current = "beranda";
   }
-  
-  activeSection.value = current
+
+  activeSection.value = current;
 }
 
 // ---- Stats Counter Animation ----
 const stats = reactive([
-  { target: 500, displayed: 0, suffix: '+', label: 'Undangan Dibuat' },
-  { target: 1200, displayed: 0, suffix: '+', label: 'Tamu Diundang' },
-  { target: 99, displayed: 0, suffix: '%', label: 'Pengguna Puas' },
-])
-let statsAnimated = false
+  { target: 500, displayed: 0, suffix: "+", label: "Undangan Dibuat" },
+  { target: 1200, displayed: 0, suffix: "+", label: "Tamu Diundang" },
+  { target: 99, displayed: 0, suffix: "%", label: "Pengguna Puas" },
+]);
+let statsAnimated = false;
 
 function animateCounters() {
   if (statsAnimated || prefersReducedMotion.value) {
     // If reduced motion, just set final values immediately
-    stats.forEach(s => { s.displayed = s.target })
-    statsAnimated = true
-    return
+    stats.forEach((s) => {
+      s.displayed = s.target;
+    });
+    statsAnimated = true;
+    return;
   }
-  statsAnimated = true
-  const duration = 1800
-  const startTime = performance.now()
+  statsAnimated = true;
+  const duration = 1800;
+  const startTime = performance.now();
 
   function tick(now: number) {
-    const elapsed = now - startTime
-    const progress = Math.min(elapsed / duration, 1)
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
     // Ease out cubic
-    const ease = 1 - Math.pow(1 - progress, 3)
-    stats.forEach(s => {
-      s.displayed = Math.round(s.target * ease)
-    })
-    if (progress < 1) requestAnimationFrame(tick)
+    const ease = 1 - Math.pow(1 - progress, 3);
+    stats.forEach((s) => {
+      s.displayed = Math.round(s.target * ease);
+    });
+    if (progress < 1) requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick)
+  requestAnimationFrame(tick);
 }
 
 // ---- Scroll-triggered reveal animation ----
-let revealObserver: IntersectionObserver | null = null
+let revealObserver: IntersectionObserver | null = null;
 
 function setupRevealObserver() {
-  revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('lp-revealed')
-      }
-    })
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("lp-revealed");
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: "0px 0px -40px 0px" },
+  );
 
-  document.querySelectorAll('.lp-reveal').forEach(el => {
-    revealObserver!.observe(el)
-  })
+  document.querySelectorAll(".lp-reveal").forEach((el) => {
+    revealObserver!.observe(el);
+  });
 }
 
 // ---- Stats IntersectionObserver ----
-let statsObserver: IntersectionObserver | null = null
+let statsObserver: IntersectionObserver | null = null;
 
 function setupStatsObserver() {
-  if (!statsRef.value) return
-  statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting && !statsAnimated) {
-        animateCounters()
-      }
-    })
-  }, { threshold: 0.3 })
-  statsObserver.observe(statsRef.value)
+  if (!statsRef.value) return;
+  statsObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !statsAnimated) {
+          animateCounters();
+        }
+      });
+    },
+    { threshold: 0.3 },
+  );
+  statsObserver.observe(statsRef.value);
 }
 
 onMounted(() => {
   // Check for reduced motion preference
-  prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  prefersReducedMotion.value = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   // Dynamic SEO head management
-  document.title = 'MengundangAnda — Buat Undangan Pernikahan Digital Premium | Mengundang Anda'
-  const metaDesc = document.querySelector('meta[name="description"]')
+  document.title =
+    "MengundangAnda — Buat Undangan Pernikahan Digital Premium | Mengundang Anda";
+  const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) {
-    metaDesc.setAttribute('content', 'MengundangAnda — Platform undangan pernikahan digital premium. Buat desain mewah gratis dalam 5 menit. RSVP, Musik, Maps, dan kirim via WhatsApp. Mengundang Anda dengan elegan.')
+    metaDesc.setAttribute(
+      "content",
+      "MengundangAnda — Platform undangan pernikahan digital premium. Buat desain mewah gratis dalam 5 menit. RSVP, Musik, Maps, dan kirim via WhatsApp. Mengundang Anda dengan elegan.",
+    );
   }
 
-  window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener("scroll", handleScroll, { passive: true });
 
   // Setup scroll-triggered reveal animations
   nextTick(() => {
-    setupRevealObserver()
-    setupStatsObserver()
-  })
-})
+    setupRevealObserver();
+    setupStatsObserver();
+  });
+});
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-  revealObserver?.disconnect()
-  statsObserver?.disconnect()
-})
-
+  window.removeEventListener("scroll", handleScroll);
+  revealObserver?.disconnect();
+  statsObserver?.disconnect();
+});
 
 const features = [
-  { icon: 'solar:stopwatch-bold-duotone', title: 'Siap Sebar Dalam 5 Menit', desc: 'Lupakan proses revisi berhari-hari dengan vendor. Isi form, dan undangan siap di-share.' },
-  { icon: 'solar:wallet-money-bold-duotone', title: 'Hemat Budget Hingga 90%', desc: 'Coret biaya cetak dari anggaran Anda. Simpan dana untuk kebutuhan lain yang lebih krusial.' },
-  { icon: 'solar:smartphone-2-bold-duotone', title: 'Sebar Cepat via WhatsApp', desc: 'Sekali klik, jangkau ratusan tamu di mana saja secara instan. Tanpa repot keliling rumah.' },
-  { icon: 'solar:map-point-wave-bold-duotone', title: 'Pengalaman Tamu Terbaik', desc: 'Manjakan tamu dengan navigasi lokasi presisi tinggi, musik romantis, dan sistem RSVP otomatis.' },
-  { icon: 'solar:pallete-2-bold-duotone', title: 'Standar Visual Profesional', desc: 'Setiap elemen didesain oleh ahlinya. Undangan terlihat mahal tanpa harus membayar mahal.' },
-  { icon: 'solar:shield-check-bold-duotone', title: 'Kendali Penuh di Tangan Anda', desc: 'Ada perubahan mendadak? Tenang, Anda bisa update lokasi atau tanggal kapan pun tanpa batas.' },
-]
+  {
+    icon: "solar:stopwatch-bold-duotone",
+    title: "Siap Sebar Dalam 5 Menit",
+    desc: "Lupakan proses revisi berhari-hari dengan vendor. Isi form, dan undangan siap di-share.",
+  },
+  {
+    icon: "solar:wallet-money-bold-duotone",
+    title: "Hemat Budget Hingga 90%",
+    desc: "Coret biaya cetak dari anggaran Anda. Simpan dana untuk kebutuhan lain yang lebih krusial.",
+  },
+  {
+    icon: "solar:smartphone-2-bold-duotone",
+    title: "Sebar Cepat via WhatsApp",
+    desc: "Sekali klik, jangkau ratusan tamu di mana saja secara instan. Tanpa repot keliling rumah.",
+  },
+  {
+    icon: "solar:map-point-wave-bold-duotone",
+    title: "Pengalaman Tamu Terbaik",
+    desc: "Manjakan tamu dengan navigasi lokasi presisi tinggi, musik romantis, dan sistem RSVP otomatis.",
+  },
+  {
+    icon: "solar:pallete-2-bold-duotone",
+    title: "Standar Visual Profesional",
+    desc: "Setiap elemen didesain oleh ahlinya. Undangan terlihat mahal tanpa harus membayar mahal.",
+  },
+  {
+    icon: "solar:shield-check-bold-duotone",
+    title: "Kendali Penuh di Tangan Anda",
+    desc: "Ada perubahan mendadak? Tenang, Anda bisa update lokasi atau tanggal kapan pun tanpa batas.",
+  },
+];
 
 const steps = [
-  { title: 'Pilih Desain', desc: 'Temukan tema visual yang paling serasi dengan konsep dan nuansa pernikahan Anda.', icon: 'solar:pallete-2-bold-duotone' },
-  { title: 'Lengkapi Cerita', desc: 'Masukkan detail acara, cerita cinta, galeri foto, dan peta lokasi ke dalam form yang simpel.', icon: 'solar:pen-new-square-bold-duotone' },
-  { title: 'Langsung Sebarkan', desc: 'Salin link undangan unik Anda dan sebarkan ke kerabat serta sahabat dalam satu ketukan.', icon: 'solar:share-bold-duotone' },
-]
+  {
+    title: "Pilih Desain",
+    desc: "Temukan tema visual yang paling serasi dengan konsep dan nuansa pernikahan Anda.",
+    icon: "solar:pallete-2-bold-duotone",
+  },
+  {
+    title: "Lengkapi Cerita",
+    desc: "Masukkan detail acara, cerita cinta, galeri foto, dan peta lokasi ke dalam form yang simpel.",
+    icon: "solar:pen-new-square-bold-duotone",
+  },
+  {
+    title: "Langsung Sebarkan",
+    desc: "Salin link undangan unik Anda dan sebarkan ke kerabat serta sahabat dalam satu ketukan.",
+    icon: "solar:share-bold-duotone",
+  },
+];
 
 const testimonials = [
-  { avatarIcon: 'solar:user-heart-bold-duotone', name: 'Aisyah & Rizky', role: 'Menikah November 2025', text: 'Awalnya cuma iseng coba, eh ternyata hasilnya bagus banget. Temen-temen pada nanya bikin undangannya dimana, hehe. Prosesnya gampang, tinggal isi data terus langsung jadi.' },
-  { avatarIcon: 'solar:users-group-two-rounded-bold-duotone', name: 'Dewi & Arif', role: 'Menikah Januari 2026', text: 'Suka banget sama fitur petanya, jadi tamu ga perlu nanya-nanya lagi lokasi nikahan. Musiknya juga bikin undangan kerasa lebih hidup. Worth it sih menurutku.' },
-  { avatarIcon: 'solar:heart-bold-duotone', name: 'Sarah & Budi', role: 'Menikah Maret 2026', text: 'Sempet mikir mau cetak undangan, tapi setelah coba ini langsung berubah pikiran. Hemat banget dan hasilnya malah lebih cantik. Tema floral-nya beneran elegan!' },
-]
+  {
+    avatarIcon: "solar:user-heart-bold-duotone",
+    name: "Aisyah & Rizky",
+    role: "Menikah November 2025",
+    text: "Awalnya cuma iseng coba, eh ternyata hasilnya bagus banget. Temen-temen pada nanya bikin undangannya dimana, hehe. Prosesnya gampang, tinggal isi data terus langsung jadi.",
+  },
+  {
+    avatarIcon: "solar:users-group-two-rounded-bold-duotone",
+    name: "Dewi & Arif",
+    role: "Menikah Januari 2026",
+    text: "Suka banget sama fitur petanya, jadi tamu ga perlu nanya-nanya lagi lokasi nikahan. Musiknya juga bikin undangan kerasa lebih hidup. Worth it sih menurutku.",
+  },
+  {
+    avatarIcon: "solar:heart-bold-duotone",
+    name: "Sarah & Budi",
+    role: "Menikah Maret 2026",
+    text: "Sempet mikir mau cetak undangan, tapi setelah coba ini langsung berubah pikiran. Hemat banget dan hasilnya malah lebih cantik. Tema floral-nya beneran elegan!",
+  },
+];
 
 const themesData = [
   {
-    id: 'floral',
-    name: 'Floral',
-    thumbnail: 'https://media.mengundanganda.com/floral/cover%20section/randidewi_36200883-6cde-4c79-823f-fc9b867e9443.webp',
-    description: 'Desain romantis dengan ornamen daun dan bunga, warna pastel lembut. Sempurna untuk nuansa garden party yang penuh keindahan alam.',
-    color: '#4a5d4e',
-    bgColor: '#4a5d4e',
-    bgGradient: 'linear-gradient(135deg, #4a5d4e, #8a9a5b)',
-    sampleUrl: '/sample/floral',
-    icon: 'solar:leaf-bold-duotone',
+    id: "floral",
+    name: "Floral",
+    thumbnail:
+      "https://media.mengundanganda.com/floral/cover%20section/randidewi_36200883-6cde-4c79-823f-fc9b867e9443.webp",
+    description:
+      "Desain romantis dengan ornamen daun dan bunga, warna pastel lembut. Sempurna untuk nuansa garden party yang penuh keindahan alam.",
+    color: "#4a5d4e",
+    bgColor: "#4a5d4e",
+    bgGradient: "linear-gradient(135deg, #4a5d4e, #8a9a5b)",
+    sampleUrl: "/sample/floral",
+    icon: "solar:leaf-bold-duotone",
   },
   {
-    id: 'elegant_blue',
-    name: 'Elegant Blue',
-    thumbnail: 'https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_90622980-439b-4c34-b5d2-50a6bad28ea8.webp',
-    description: 'Desain elegan dengan nuansa biru dusty yang menenangkan dipadukan dengan aksen champagne gold. Sempurna untuk nuansa mewah modern.',
-    color: '#A3B5C3',
-    bgColor: '#1e3a8a',
-    bgGradient: 'linear-gradient(135deg, #1e3a8a, #A3B5C3)',
-    sampleUrl: '/sample/elegant_blue',
-    icon: 'solar:stars-bold-duotone',
+    id: "elegant_blue",
+    name: "Elegant Blue",
+    thumbnail:
+      "https://media.mengundanganda.com/elegant_blue/cover%20section/randidewi_90622980-439b-4c34-b5d2-50a6bad28ea8.webp",
+    description:
+      "Desain elegan dengan nuansa biru dusty yang menenangkan dipadukan dengan aksen champagne gold. Sempurna untuk nuansa mewah modern.",
+    color: "#A3B5C3",
+    bgColor: "#1e3a8a",
+    bgGradient: "linear-gradient(135deg, #1e3a8a, #A3B5C3)",
+    sampleUrl: "/sample/elegant_blue",
+    icon: "solar:stars-bold-duotone",
   },
   {
-    id: 'floral_blue',
-    name: 'Floral Blue',
-    thumbnail: 'https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_b27abb2d-504d-42d4-91e2-a055512ade57.webp',
-    description: 'Perpaduan ornamen floral dengan palet biru yang segar dan elegan. Cocok untuk pasangan yang menginginkan nuansa romantis dengan sentuhan modern.',
-    color: '#3b6b8a',
-    bgColor: '#3b6b8a',
-    bgGradient: 'linear-gradient(135deg, #3b6b8a, #b8d4e3)',
-    sampleUrl: '/sample/floral_blue',
-    icon: 'solar:leaf-bold-duotone',
+    id: "floral_blue",
+    name: "Floral Blue",
+    thumbnail:
+      "https://media.mengundanganda.com/floral-blue/cover%20section/randidewi_b27abb2d-504d-42d4-91e2-a055512ade57.webp",
+    description:
+      "Perpaduan ornamen floral dengan palet biru yang segar dan elegan. Cocok untuk pasangan yang menginginkan nuansa romantis dengan sentuhan modern.",
+    color: "#3b6b8a",
+    bgColor: "#3b6b8a",
+    bgGradient: "linear-gradient(135deg, #3b6b8a, #b8d4e3)",
+    sampleUrl: "/sample/floral_blue",
+    icon: "solar:leaf-bold-duotone",
   },
-]
+];
 </script>
 
 <style scoped>
@@ -691,7 +1093,7 @@ const themesData = [
    UI/UX Upgraded Edition
    ======================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap");
 
 /* --- Theme Variables --- */
 .landing {
@@ -699,7 +1101,7 @@ const themesData = [
   --lp-primary-deep: #0f2440;
   --lp-accent: #93c5fd;
   --lp-accent-hover: #2563eb;
-  --lp-accent-light: rgba(59, 130, 246, 0.10);
+  --lp-accent-light: rgba(59, 130, 246, 0.1);
   --lp-accent-glow: rgba(59, 130, 246, 0.25);
   --lp-bg: #ffffff;
   --lp-bg-alt: #f0f5ff;
@@ -710,9 +1112,9 @@ const themesData = [
   --lp-navy-mid: #1e3a5f;
   --lp-gold: #c9a96e;
 
-  --lp-font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-  --lp-font-serif: 'Cormorant Garamond', Georgia, serif;
-  --lp-font-script: 'Dancing Script', cursive;
+  --lp-font-sans: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+  --lp-font-serif: "Cormorant Garamond", Georgia, serif;
+  --lp-font-script: "Dancing Script", cursive;
   --lp-radius-sm: 8px;
   --lp-radius-md: 12px;
   --lp-radius-lg: 16px;
@@ -777,7 +1179,9 @@ const themesData = [
 .lp-reveal {
   opacity: 0;
   transform: translateY(32px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .lp-reveal.lp-revealed {
   opacity: 1;
@@ -833,12 +1237,12 @@ const themesData = [
   border-color: #fff;
   font-size: 16px;
   padding: 16px 40px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
 }
 .lp-btn-white:hover {
   background: var(--lp-bg-alt);
   transform: translateY(-3px);
-  box-shadow: 0 8px 36px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.2);
 }
 
 /* --- Navbar --- */
@@ -852,18 +1256,19 @@ const themesData = [
   z-index: 100;
   padding: 16px 24px;
   border-radius: 100px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.75); /* Semi-transparent white */
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(30, 58, 95, 0.08); /* Soft dark border */
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.04);
   transition: var(--lp-transition);
 }
 
 .lp-nav.scrolled {
   top: 12px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 32px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 4px 32px rgba(15, 23, 42, 0.1);
   padding: 12px 24px;
 }
 
@@ -883,7 +1288,7 @@ const themesData = [
   font-family: var(--lp-font-serif);
   font-size: 22px;
   font-weight: 600;
-  color: #fff;
+  color: var(--lp-primary); /* Dark Navy Logo */
   transition: var(--lp-transition);
 }
 
@@ -898,7 +1303,7 @@ const themesData = [
 }
 
 .lp-logo-accent {
-  color: var(--lp-accent);
+  color: var(--lp-accent-hover); /* Vibrant Blue Accent */
 }
 
 .lp-nav-links {
@@ -912,7 +1317,7 @@ const themesData = [
   font-family: var(--lp-font-sans);
   font-size: 14px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--lp-text-light); /* Dark slate gray text */
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 20px;
@@ -925,8 +1330,8 @@ const themesData = [
 }
 
 .lp-nav-links a:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.15);
+  color: var(--lp-accent-hover);
+  background: var(--lp-accent-light);
 }
 
 .lp-nav.scrolled .lp-nav-links a:hover {
@@ -959,7 +1364,7 @@ const themesData = [
   display: block;
   width: 24px;
   height: 2px;
-  background: #fff;
+  background: var(--lp-primary); /* Dark Navy Hamburger */
   border-radius: 2px;
   transition: var(--lp-transition);
   position: absolute;
@@ -970,12 +1375,28 @@ const themesData = [
 .lp-nav.scrolled .lp-nav-toggle span::after {
   background: var(--lp-primary);
 }
-.lp-nav-toggle span { top: 15px; }
-.lp-nav-toggle span::before { content: ''; top: -7px; }
-.lp-nav-toggle span::after { content: ''; top: 7px; }
-.lp-nav-toggle span.open { background: transparent !important; }
-.lp-nav-toggle span.open::before { transform: rotate(45deg); top: 0; }
-.lp-nav-toggle span.open::after { transform: rotate(-45deg); top: 0; }
+.lp-nav-toggle span {
+  top: 15px;
+}
+.lp-nav-toggle span::before {
+  content: "";
+  top: -7px;
+}
+.lp-nav-toggle span::after {
+  content: "";
+  top: 7px;
+}
+.lp-nav-toggle span.open {
+  background: transparent !important;
+}
+.lp-nav-toggle span.open::before {
+  transform: rotate(45deg);
+  top: 0;
+}
+.lp-nav-toggle span.open::after {
+  transform: rotate(-45deg);
+  top: 0;
+}
 
 /* --- Hero --- */
 .lp-hero {
@@ -993,7 +1414,7 @@ const themesData = [
 .lp-hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url('/images/hero.webp');
+  background-image: url("/images/hero.webp");
   background-size: cover;
   background-position: center 30%;
   background-repeat: no-repeat;
@@ -1004,8 +1425,16 @@ const themesData = [
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(147, 197, 253, 0.12) 0%, transparent 50%),
+    radial-gradient(
+      ellipse at 20% 50%,
+      rgba(59, 130, 246, 0.15) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(147, 197, 253, 0.12) 0%,
+      transparent 50%
+    ),
     linear-gradient(
       180deg,
       rgba(15, 23, 42, 0.6) 0%,
@@ -1034,56 +1463,87 @@ const themesData = [
 }
 
 .lp-orb-1 {
-  width: 300px; height: 300px;
+  width: 300px;
+  height: 300px;
   background: rgba(59, 130, 246, 0.4);
-  top: 10%; left: -5%;
+  top: 10%;
+  left: -5%;
   animation: orbFloat1 12s ease-in-out infinite;
 }
 .lp-orb-2 {
-  width: 200px; height: 200px;
+  width: 200px;
+  height: 200px;
   background: rgba(147, 197, 253, 0.35);
-  top: 60%; right: -3%;
+  top: 60%;
+  right: -3%;
   animation: orbFloat2 15s ease-in-out infinite;
 }
 .lp-orb-3 {
-  width: 150px; height: 150px;
+  width: 150px;
+  height: 150px;
   background: rgba(96, 165, 250, 0.3);
-  bottom: 15%; left: 30%;
+  bottom: 15%;
+  left: 30%;
   animation: orbFloat3 10s ease-in-out infinite;
 }
 .lp-orb-4 {
-  width: 100px; height: 100px;
+  width: 100px;
+  height: 100px;
   background: rgba(191, 219, 254, 0.4);
-  top: 25%; right: 20%;
+  top: 25%;
+  right: 20%;
   animation: orbFloat1 18s ease-in-out infinite reverse;
 }
 
 .lp-orb-cta-1 {
-  width: 250px; height: 250px;
+  width: 250px;
+  height: 250px;
   background: rgba(59, 130, 246, 0.3);
-  top: -10%; right: -5%;
+  top: -10%;
+  right: -5%;
   animation: orbFloat2 14s ease-in-out infinite;
 }
 .lp-orb-cta-2 {
-  width: 180px; height: 180px;
+  width: 180px;
+  height: 180px;
   background: rgba(147, 197, 253, 0.25);
-  bottom: -5%; left: 10%;
+  bottom: -5%;
+  left: 10%;
   animation: orbFloat3 11s ease-in-out infinite;
 }
 
 @keyframes orbFloat1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -40px) scale(1.05); }
-  66% { transform: translate(-20px, 20px) scale(0.95); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -40px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
 }
 @keyframes orbFloat2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(-40px, 30px) scale(1.08); }
-  66% { transform: translate(25px, -25px) scale(0.92); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-40px, 30px) scale(1.08);
+  }
+  66% {
+    transform: translate(25px, -25px) scale(0.92);
+  }
 }
 @keyframes orbFloat3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(35px, -30px) scale(1.1); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(35px, -30px) scale(1.1);
+  }
 }
 
 .lp-hero-content {
@@ -1099,7 +1559,9 @@ const themesData = [
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.95);
   margin-bottom: 24px;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.5),
+    0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .lp-hero-title {
@@ -1109,7 +1571,9 @@ const themesData = [
   color: #ffffff;
   line-height: 1.15;
   margin-bottom: 24px;
-  text-shadow: 0 3px 16px rgba(255, 255, 255, 0.6), 0 1px rgba(255, 255, 255, 0.615);
+  text-shadow:
+    0 3px 16px rgba(255, 255, 255, 0.6),
+    0 1px rgba(255, 255, 255, 0.615);
 }
 
 .lp-hero-script {
@@ -1117,7 +1581,9 @@ const themesData = [
   font-weight: 400;
   color: #93c5fd;
   font-size: clamp(38px, 7vw, 68px);
-  text-shadow: 0 3px 20px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.4);
+  text-shadow:
+    0 3px 20px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(59, 130, 246, 0.4);
 }
 
 .lp-hero-sub {
@@ -1126,7 +1592,9 @@ const themesData = [
   color: rgba(255, 255, 255, 0.95);
   max-width: 560px;
   margin: 0 auto 40px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.5),
+    0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .lp-hero-actions {
@@ -1140,62 +1608,84 @@ const themesData = [
 .lp-fade-up {
   animation: fadeUp 0.8s ease both;
 }
-.lp-delay-1 { animation-delay: 0.15s; }
-.lp-delay-2 { animation-delay: 0.3s; }
-.lp-delay-3 { animation-delay: 0.45s; }
+.lp-delay-1 {
+  animation-delay: 0.15s;
+}
+.lp-delay-2 {
+  animation-delay: 0.3s;
+}
+.lp-delay-3 {
+  animation-delay: 0.45s;
+}
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* --- Social Proof Stats --- */
 .lp-stats {
-  background: linear-gradient(135deg, var(--lp-primary-deep) 0%, var(--lp-navy-mid) 100%);
+  background: transparent;
   padding: 0;
+  margin-top: -45px; /* Overlap the bottom wave beautifully */
   position: relative;
-  z-index: 5;
+  z-index: 10;
 }
 
 .lp-stats-inner {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 24px;
+  box-shadow: 
+    0 12px 40px rgba(15, 23, 42, 0.06),
+    0 4px 18px rgba(59, 130, 246, 0.02);
+  overflow: hidden;
 }
 
 .lp-stat-item {
   text-align: center;
-  padding: 36px 24px;
+  padding: 40px 24px;
   position: relative;
 }
 .lp-stat-item:not(:last-child)::after {
-  content: '';
+  content: "";
   position: absolute;
   right: 0;
   top: 25%;
   height: 50%;
   width: 1px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(30, 58, 95, 0.08);
 }
 
 .lp-stat-number {
   font-family: var(--lp-font-serif);
-  font-size: clamp(32px, 4vw, 44px);
+  font-size: clamp(34px, 4.5vw, 48px);
   font-weight: 700;
-  color: #fff;
+  color: var(--lp-primary);
   line-height: 1;
   margin-bottom: 8px;
 }
 .lp-stat-suffix {
-  color: var(--lp-accent);
+  color: var(--lp-accent-hover);
 }
 
 .lp-stat-label {
   font-family: var(--lp-font-sans);
   font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
-  letter-spacing: 1px;
+  font-weight: 600;
+  color: var(--lp-text-light);
+  letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
@@ -1261,7 +1751,9 @@ const themesData = [
   align-items: center;
   justify-content: center;
   color: var(--lp-accent-hover);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1), inset 0 0 0 1px rgba(59, 130, 246, 0.05);
+  box-shadow:
+    0 4px 12px rgba(59, 130, 246, 0.1),
+    inset 0 0 0 1px rgba(59, 130, 246, 0.05);
   transition: all 0.4s ease;
 }
 .lp-feature-item:hover .lp-feature-icon-wrapper {
@@ -1354,7 +1846,9 @@ const themesData = [
     0 32px 64px rgba(15, 23, 42, 0.12),
     0 0 0 1px var(--lp-border);
   background: #fdfdfd;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+  transition:
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.5s ease;
 }
 .lp-mockup-wrapper:hover {
   transform: translateY(-8px) scale(1.01);
@@ -1417,7 +1911,9 @@ const themesData = [
 }
 .lp-theme-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15), 0 0 0 1px var(--lp-accent);
+  box-shadow:
+    0 20px 60px rgba(59, 130, 246, 0.15),
+    0 0 0 1px var(--lp-accent);
   border-color: var(--lp-accent);
 }
 
@@ -1434,7 +1930,9 @@ const themesData = [
   background: #1a1a2e;
   border-radius: 20px 20px 0 0;
   overflow: hidden;
-  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.1), inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 -2px 16px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.06);
 }
 
 .lp-theme-device-notch {
@@ -1584,13 +2082,19 @@ const themesData = [
   position: relative;
 }
 .lp-steps-grid::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 24px;
   left: 16%;
   right: 16%;
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(59, 130, 246, 0.3),
+    rgba(59, 130, 246, 0.3),
+    transparent
+  );
   z-index: 0;
 }
 
@@ -1600,7 +2104,7 @@ const themesData = [
   z-index: 1;
 }
 .lp-step:not(:last-child)::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 20px;
   right: -25px;
@@ -1629,7 +2133,9 @@ const themesData = [
   border-radius: 50%;
   background: linear-gradient(135deg, var(--lp-accent-hover), #60a5fa);
   color: #fff;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3), 0 0 0 8px var(--lp-bg);
+  box-shadow:
+    0 4px 14px rgba(59, 130, 246, 0.3),
+    0 0 0 8px var(--lp-bg);
   position: relative;
   z-index: 1;
 }
@@ -1643,7 +2149,9 @@ const themesData = [
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease;
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.4s ease;
 }
 .lp-step:hover .lp-step-icon-circle {
   transform: scale(1.1) rotate(-5deg);
@@ -1735,7 +2243,11 @@ const themesData = [
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1),
+    rgba(59, 130, 246, 0.05)
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1814,8 +2326,15 @@ const themesData = [
 }
 
 @keyframes badgePulse {
-  0%, 100% { box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4); }
-  50% { box-shadow: 0 4px 24px rgba(59, 130, 246, 0.6), 0 0 0 4px rgba(59, 130, 246, 0.1); }
+  0%,
+  100% {
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 4px 24px rgba(59, 130, 246, 0.6),
+      0 0 0 4px rgba(59, 130, 246, 0.1);
+  }
 }
 
 /* Shimmer effect on premium card */
@@ -1828,20 +2347,31 @@ const themesData = [
   z-index: 1;
 }
 .lp-pricing-shimmer::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(59, 130, 246, 0.05),
+    transparent
+  );
   animation: shimmer 4s ease-in-out infinite;
 }
 
 @keyframes shimmer {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 .lp-pricing-header {
@@ -1980,18 +2510,27 @@ const themesData = [
   z-index: 0;
 }
 .lp-cta-bg::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
+  background: radial-gradient(
+    circle at 30% 50%,
+    rgba(59, 130, 246, 0.15) 0%,
+    transparent 50%
+  );
 }
 
 @keyframes ctaGradient {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .lp-cta-content {
@@ -2024,7 +2563,7 @@ const themesData = [
 
 .lp-cta-sub {
   font-size: 17px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.75);
   max-width: 500px;
   margin: 0 auto 40px;
   line-height: 1.7;
@@ -2036,14 +2575,21 @@ const themesData = [
 }
 
 @keyframes ctaBtnGlow {
-  0%, 100% { box-shadow: 0 4px 24px rgba(255,255,255,0.15); }
-  50% { box-shadow: 0 4px 36px rgba(255,255,255,0.3), 0 0 0 4px rgba(255,255,255,0.05); }
+  0%,
+  100% {
+    box-shadow: 0 4px 24px rgba(255, 255, 255, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 4px 36px rgba(255, 255, 255, 0.3),
+      0 0 0 4px rgba(255, 255, 255, 0.05);
+  }
 }
 
 /* --- Footer --- */
 .lp-footer {
   background: var(--lp-navy);
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   padding-top: 60px;
 }
 
@@ -2052,7 +2598,7 @@ const themesData = [
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 48px;
   padding-bottom: 48px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .lp-footer .lp-logo {
@@ -2079,7 +2625,7 @@ const themesData = [
 .lp-footer-links a {
   display: block;
   font-size: 14px;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
   padding: 4px 0;
   transition: var(--lp-transition);
@@ -2102,7 +2648,7 @@ const themesData = [
 }
 .lp-footer-bottom p {
   font-size: 13px;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255, 255, 255, 0.35);
   margin: 0;
 }
 .lp-footer-bottom-links {
@@ -2112,7 +2658,7 @@ const themesData = [
 }
 .lp-footer-bottom-links a {
   font-size: 13px;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255, 255, 255, 0.35);
   text-decoration: none;
   transition: color 0.2s ease;
   cursor: pointer;
@@ -2121,7 +2667,7 @@ const themesData = [
   color: #60a5fa;
 }
 .lp-footer-dot {
-  color: rgba(255,255,255,0.2);
+  color: rgba(255, 255, 255, 0.2);
   font-size: 14px;
 }
 
@@ -2166,7 +2712,7 @@ const themesData = [
     margin: 0 auto;
     gap: 20px;
   }
-  
+
   .lp-testimonials-grid {
     grid-template-columns: 1fr;
     max-width: 440px;
@@ -2186,7 +2732,7 @@ const themesData = [
     margin-left: auto;
     margin-right: auto;
   }
-  .lp-steps-grid::before { 
+  .lp-steps-grid::before {
     display: none;
   }
   .lp-step:not(:last-child)::after {
@@ -2226,12 +2772,14 @@ const themesData = [
 @media (max-width: 768px) {
   /* Hide navbar when scrolling past hero on mobile */
   .lp-nav.nav-hidden {
-    transform: translateX(-50%) translateY(-120%);
+    transform: translateY(-120%) !important;
     opacity: 0;
     pointer-events: none;
   }
 
-  .lp-nav-toggle { display: block; }
+  .lp-nav-toggle {
+    display: block;
+  }
 
   .lp-nav-links {
     position: absolute;
@@ -2239,7 +2787,7 @@ const themesData = [
     left: 0;
     width: 100%;
     height: auto;
-    background: rgba(255, 255, 255, 0.90);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.8);
@@ -2255,8 +2803,8 @@ const themesData = [
     transform-origin: top center;
     z-index: 100;
   }
-  
-  .lp-nav-links.open { 
+
+  .lp-nav-links.open {
     opacity: 1;
     pointer-events: auto;
     transform: translateY(0) scale(1);
@@ -2297,7 +2845,9 @@ const themesData = [
     color: #ffffff !important;
   }
 
-  .lp-section { padding: 72px 0; }
+  .lp-section {
+    padding: 72px 0;
+  }
 
   .lp-features-list {
     grid-template-columns: 1fr;
@@ -2336,6 +2886,7 @@ const themesData = [
     bottom: 0;
     width: 50%;
     height: 1px;
+    background: rgba(30, 58, 95, 0.08);
   }
 }
 
@@ -2392,11 +2943,13 @@ const themesData = [
   border-radius: 16px;
   border: 1px solid #e8ecf1;
   overflow: hidden;
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 .lp-faq-item:hover {
   border-color: #93c5fd;
-  box-shadow: 0 4px 20px rgba(59,130,246,0.08);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
 }
 .lp-faq-question {
   width: 100%;
@@ -2429,7 +2982,10 @@ const themesData = [
   flex-shrink: 0;
   font-size: 18px;
   color: #64748b;
-  transition: transform 0.35s ease, background 0.3s, color 0.3s;
+  transition:
+    transform 0.35s ease,
+    background 0.3s,
+    color 0.3s;
 }
 .lp-faq-icon.open {
   transform: rotate(180deg);
@@ -2454,30 +3010,60 @@ const themesData = [
   animation: faqSlideDown 0.25s ease reverse;
 }
 @keyframes faqSlideDown {
-  from { opacity: 0; max-height: 0; padding-bottom: 0; }
-  to { opacity: 1; max-height: 300px; padding-bottom: 20px; }
+  from {
+    opacity: 0;
+    max-height: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 300px;
+    padding-bottom: 20px;
+  }
 }
 
 @media (max-width: 768px) {
-  .lp-faq { padding: 64px 0; }
+  .lp-faq {
+    padding: 64px 0;
+  }
   .lp-faq-question {
     padding: 16px 18px;
     font-size: 14.5px;
   }
-  .lp-faq-answer { padding: 0 18px 16px; }
-  .lp-faq-answer p { font-size: 13.5px; }
+  .lp-faq-answer {
+    padding: 0 18px 16px;
+  }
+  .lp-faq-answer p {
+    font-size: 13.5px;
+  }
 }
 
 /* ===== Mobile Bottom Navigation ===== */
 .mobile-bottom-nav {
-  display: none; 
+  display: none;
 }
 
 @media (max-width: 768px) {
+  /* Sleek mobile navbar override to replace awkward capsule */
+  .lp-nav {
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid rgba(30, 58, 95, 0.06);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 12px 20px;
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.02);
+  }
+
   /* Sembunyikan Navigasi Lama di Mobile */
   .lp-nav-toggle,
   .lp-nav-links {
-    display: none !important; 
+    display: none !important;
   }
 
   /* Tampilkan dan Styling Bottom Nav */
@@ -2556,9 +3142,9 @@ const themesData = [
   .mobile-nav-item.nav-cta svg {
     font-size: 20px;
   }
-  
+
   .landing main {
-    padding-bottom: 80px; 
+    padding-bottom: 80px;
   }
 }
 </style>
