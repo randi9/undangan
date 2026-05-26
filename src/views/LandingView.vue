@@ -843,6 +843,7 @@ const activeSection = ref("beranda");
 const prefersReducedMotion = ref(false);
 const faqOpen = ref(-1);
 const isDemoScrolled = ref(false);
+const scrollY = ref(0);
 
 function handleMessage(event: MessageEvent) {
   if (event.data?.type === "DEMO_SCROLLED") {
