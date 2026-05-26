@@ -3218,20 +3218,19 @@ const themesData = [
 }
 
 @media (max-width: 768px) {
-  /* Sleek mobile navbar override to replace awkward capsule */
+  /* Floating pill mobile navbar */
   .lp-nav {
-    top: 0;
-    left: 0;
-    transform: none;
-    width: 100%;
-    border-radius: 0;
-    border: none;
-    border-bottom: 1px solid rgba(30, 58, 95, 0.06);
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    border-radius: 100px;
+    border: 1px solid rgba(30, 58, 95, 0.08);
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding: 12px 20px;
-    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.02);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
   }
 
   /* Sembunyikan Navigasi Lama di Mobile */

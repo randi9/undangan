@@ -37,15 +37,31 @@
           <div class="hero-cta-group" ref="actionsRef">
             <div class="hero-actions">
               <a href="/login" class="hero-btn hero-btn-primary">
-                <svg class="hero-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 5v14M5 12h14"/>
+                <svg
+                  class="hero-btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 5v14M5 12h14" />
                 </svg>
                 Buat Undangan Gratis
                 <span class="hero-btn-shine"></span>
               </a>
               <a href="#tema" class="hero-btn hero-btn-ghost">
-                <svg class="hero-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polygon points="5 3 19 12 5 21 5 3"/>
+                <svg
+                  class="hero-btn-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon points="5 3 19 12 5 21 5 3" />
                 </svg>
                 Lihat Demo
               </a>
@@ -57,8 +73,14 @@
         <div class="hero-right-col" ref="modelContainerRef">
           <div class="hero-model-wrapper">
             <!-- Decorative ring behind model -->
-            <div class="hero-model-ring hero-model-ring-1" aria-hidden="true"></div>
-            <div class="hero-model-ring hero-model-ring-2" aria-hidden="true"></div>
+            <div
+              class="hero-model-ring hero-model-ring-1"
+              aria-hidden="true"
+            ></div>
+            <div
+              class="hero-model-ring hero-model-ring-2"
+              aria-hidden="true"
+            ></div>
             <img
               src="/images/hero-model.webp"
               alt="MengundangAnda 3D Wedding Couple Model"
@@ -69,12 +91,7 @@
       </div>
     </div>
 
-    <!-- Bottom decorative wave -->
-    <div class="hero-bottom-wave" aria-hidden="true">
-      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-        <path d="M0,64 C320,120 620,20 960,64 C1200,96 1380,48 1440,32 L1440,120 L0,120 Z" fill="currentColor"/>
-      </svg>
-    </div>
+
   </section>
 </template>
 
@@ -129,13 +146,10 @@ onUnmounted(() => {
 function initAnimation() {
   // 1. Initial State Settings
   gsap.set(glowRef.value, { opacity: 0, scale: 0.6 });
-  gsap.set(
-    [titleRef.value, subRef.value, actionsRef.value],
-    {
-      y: 40,
-      opacity: 0,
-    },
-  );
+  gsap.set([titleRef.value, subRef.value, actionsRef.value], {
+    y: 40,
+    opacity: 0,
+  });
   gsap.set(modelContainerRef.value, { y: 80, opacity: 0, scale: 0.8 });
 
   tl = gsap.timeline({ defaults: { ease: "power4.out" } });
@@ -257,10 +271,26 @@ function startFloating() {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(147, 197, 253, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(219, 234, 254, 0.15) 0%, transparent 80%),
-    radial-gradient(ellipse 40% 40% at 70% 20%, rgba(96, 165, 250, 0.06) 0%, transparent 50%);
+    radial-gradient(
+      ellipse 80% 60% at 20% 30%,
+      rgba(59, 130, 246, 0.08) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 80% at 80% 70%,
+      rgba(147, 197, 253, 0.12) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 50% at 50% 50%,
+      rgba(219, 234, 254, 0.15) 0%,
+      transparent 80%
+    ),
+    radial-gradient(
+      ellipse 40% 40% at 70% 20%,
+      rgba(96, 165, 250, 0.06) 0%,
+      transparent 50%
+    );
   animation: meshShift 12s ease-in-out infinite alternate;
   z-index: 0;
 }
@@ -268,17 +298,49 @@ function startFloating() {
 @keyframes meshShift {
   0% {
     background:
-      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 80% at 80% 70%, rgba(147, 197, 253, 0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(219, 234, 254, 0.15) 0%, transparent 80%),
-      radial-gradient(ellipse 40% 40% at 70% 20%, rgba(96, 165, 250, 0.06) 0%, transparent 50%);
+      radial-gradient(
+        ellipse 80% 60% at 20% 30%,
+        rgba(59, 130, 246, 0.08) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 60% 80% at 80% 70%,
+        rgba(147, 197, 253, 0.12) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 50% 50% at 50% 50%,
+        rgba(219, 234, 254, 0.15) 0%,
+        transparent 80%
+      ),
+      radial-gradient(
+        ellipse 40% 40% at 70% 20%,
+        rgba(96, 165, 250, 0.06) 0%,
+        transparent 50%
+      );
   }
   100% {
     background:
-      radial-gradient(ellipse 70% 70% at 40% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 70%),
-      radial-gradient(ellipse 80% 60% at 60% 30%, rgba(147, 197, 253, 0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 30% 70%, rgba(219, 234, 254, 0.12) 0%, transparent 80%),
-      radial-gradient(ellipse 45% 45% at 80% 60%, rgba(96, 165, 250, 0.09) 0%, transparent 50%);
+      radial-gradient(
+        ellipse 70% 70% at 40% 50%,
+        rgba(59, 130, 246, 0.1) 0%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 80% 60% at 60% 30%,
+        rgba(147, 197, 253, 0.08) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 50% 60% at 30% 70%,
+        rgba(219, 234, 254, 0.12) 0%,
+        transparent 80%
+      ),
+      radial-gradient(
+        ellipse 45% 45% at 80% 60%,
+        rgba(96, 165, 250, 0.09) 0%,
+        transparent 50%
+      );
   }
 }
 
@@ -302,27 +364,145 @@ function startFloating() {
 }
 
 /* Generate different positions and delays for each sparkle */
-.sparkle-1 { top: 12%; left: 8%; animation-delay: 0s; animation-duration: 7s; width: 3px; height: 3px; }
-.sparkle-2 { top: 25%; left: 15%; animation-delay: 1.2s; animation-duration: 9s; width: 5px; height: 5px; background: rgba(147, 197, 253, 0.4); }
-.sparkle-3 { top: 45%; left: 5%; animation-delay: 2.4s; animation-duration: 6s; }
-.sparkle-4 { top: 70%; left: 12%; animation-delay: 0.8s; animation-duration: 10s; width: 3px; height: 3px; }
-.sparkle-5 { top: 85%; left: 25%; animation-delay: 3s; animation-duration: 8s; background: rgba(96, 165, 250, 0.3); }
-.sparkle-6 { top: 15%; right: 10%; animation-delay: 1.5s; animation-duration: 7.5s; width: 6px; height: 6px; background: rgba(147, 197, 253, 0.25); }
-.sparkle-7 { top: 35%; right: 18%; animation-delay: 0.3s; animation-duration: 9.5s; }
-.sparkle-8 { top: 55%; right: 8%; animation-delay: 2s; animation-duration: 6.5s; width: 3px; height: 3px; }
-.sparkle-9 { top: 75%; right: 15%; animation-delay: 4s; animation-duration: 8.5s; background: rgba(59, 130, 246, 0.2); }
-.sparkle-10 { top: 90%; right: 30%; animation-delay: 1s; animation-duration: 7.2s; width: 5px; height: 5px; }
-.sparkle-11 { top: 8%; left: 40%; animation-delay: 3.5s; animation-duration: 11s; width: 3px; height: 3px; background: rgba(219, 234, 254, 0.5); }
-.sparkle-12 { top: 30%; left: 55%; animation-delay: 0.5s; animation-duration: 8s; }
-.sparkle-13 { top: 60%; right: 40%; animation-delay: 2.8s; animation-duration: 9s; width: 4px; height: 4px; }
-.sparkle-14 { top: 20%; right: 35%; animation-delay: 1.8s; animation-duration: 7s; background: rgba(96, 165, 250, 0.35); }
-.sparkle-15 { top: 50%; left: 30%; animation-delay: 4.5s; animation-duration: 10s; width: 3px; height: 3px; }
-.sparkle-16 { top: 80%; left: 45%; animation-delay: 0.2s; animation-duration: 6.8s; }
-.sparkle-17 { top: 40%; left: 65%; animation-delay: 3.2s; animation-duration: 8.8s; width: 5px; height: 5px; background: rgba(147, 197, 253, 0.3); }
-.sparkle-18 { top: 65%; left: 70%; animation-delay: 1.6s; animation-duration: 7.5s; }
+.sparkle-1 {
+  top: 12%;
+  left: 8%;
+  animation-delay: 0s;
+  animation-duration: 7s;
+  width: 3px;
+  height: 3px;
+}
+.sparkle-2 {
+  top: 25%;
+  left: 15%;
+  animation-delay: 1.2s;
+  animation-duration: 9s;
+  width: 5px;
+  height: 5px;
+  background: rgba(147, 197, 253, 0.4);
+}
+.sparkle-3 {
+  top: 45%;
+  left: 5%;
+  animation-delay: 2.4s;
+  animation-duration: 6s;
+}
+.sparkle-4 {
+  top: 70%;
+  left: 12%;
+  animation-delay: 0.8s;
+  animation-duration: 10s;
+  width: 3px;
+  height: 3px;
+}
+.sparkle-5 {
+  top: 85%;
+  left: 25%;
+  animation-delay: 3s;
+  animation-duration: 8s;
+  background: rgba(96, 165, 250, 0.3);
+}
+.sparkle-6 {
+  top: 15%;
+  right: 10%;
+  animation-delay: 1.5s;
+  animation-duration: 7.5s;
+  width: 6px;
+  height: 6px;
+  background: rgba(147, 197, 253, 0.25);
+}
+.sparkle-7 {
+  top: 35%;
+  right: 18%;
+  animation-delay: 0.3s;
+  animation-duration: 9.5s;
+}
+.sparkle-8 {
+  top: 55%;
+  right: 8%;
+  animation-delay: 2s;
+  animation-duration: 6.5s;
+  width: 3px;
+  height: 3px;
+}
+.sparkle-9 {
+  top: 75%;
+  right: 15%;
+  animation-delay: 4s;
+  animation-duration: 8.5s;
+  background: rgba(59, 130, 246, 0.2);
+}
+.sparkle-10 {
+  top: 90%;
+  right: 30%;
+  animation-delay: 1s;
+  animation-duration: 7.2s;
+  width: 5px;
+  height: 5px;
+}
+.sparkle-11 {
+  top: 8%;
+  left: 40%;
+  animation-delay: 3.5s;
+  animation-duration: 11s;
+  width: 3px;
+  height: 3px;
+  background: rgba(219, 234, 254, 0.5);
+}
+.sparkle-12 {
+  top: 30%;
+  left: 55%;
+  animation-delay: 0.5s;
+  animation-duration: 8s;
+}
+.sparkle-13 {
+  top: 60%;
+  right: 40%;
+  animation-delay: 2.8s;
+  animation-duration: 9s;
+  width: 4px;
+  height: 4px;
+}
+.sparkle-14 {
+  top: 20%;
+  right: 35%;
+  animation-delay: 1.8s;
+  animation-duration: 7s;
+  background: rgba(96, 165, 250, 0.35);
+}
+.sparkle-15 {
+  top: 50%;
+  left: 30%;
+  animation-delay: 4.5s;
+  animation-duration: 10s;
+  width: 3px;
+  height: 3px;
+}
+.sparkle-16 {
+  top: 80%;
+  left: 45%;
+  animation-delay: 0.2s;
+  animation-duration: 6.8s;
+}
+.sparkle-17 {
+  top: 40%;
+  left: 65%;
+  animation-delay: 3.2s;
+  animation-duration: 8.8s;
+  width: 5px;
+  height: 5px;
+  background: rgba(147, 197, 253, 0.3);
+}
+.sparkle-18 {
+  top: 65%;
+  left: 70%;
+  animation-delay: 1.6s;
+  animation-duration: 7.5s;
+}
 
 @keyframes sparkleFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
     opacity: 0;
   }
@@ -345,7 +525,11 @@ function startFloating() {
   right: 5%;
   width: 120px;
   height: 120px;
-  background-image: radial-gradient(circle, rgba(59, 130, 246, 0.12) 1.5px, transparent 1.5px);
+  background-image: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.12) 1.5px,
+    transparent 1.5px
+  );
   background-size: 16px 16px;
   z-index: 1;
   opacity: 0.6;
@@ -360,9 +544,21 @@ function startFloating() {
   width: 600px;
   height: 600px;
   background:
-    radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.16) 0%, transparent 60%),
-    radial-gradient(circle at 60% 60%, rgba(139, 92, 246, 0.12) 0%, transparent 65%),
-    radial-gradient(circle at 50% 50%, rgba(201, 169, 110, 0.08) 0%, transparent 70%);
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(59, 130, 246, 0.16) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 60% 60%,
+      rgba(139, 92, 246, 0.12) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(201, 169, 110, 0.08) 0%,
+      transparent 70%
+    );
   filter: blur(60px);
   z-index: 1;
   pointer-events: none;
@@ -406,12 +602,20 @@ function startFloating() {
   display: block;
   width: 32px;
   height: 2px;
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.6), rgba(59, 130, 246, 0.1));
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0.6),
+    rgba(59, 130, 246, 0.1)
+  );
   border-radius: 2px;
 }
 
 .hero-kicker-line:last-child {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.6));
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0.1),
+    rgba(59, 130, 246, 0.6)
+  );
 }
 
 .hero-kicker {
@@ -453,7 +657,7 @@ function startFloating() {
   background-clip: text;
   animation: gradientText 4s ease-in-out infinite;
   font-style: italic;
-  font-family: var(--lp-font-script, 'Dancing Script', cursive);
+  font-family: var(--lp-font-script, "Dancing Script", cursive);
   font-size: clamp(44px, 5.5vw, 72px);
   line-height: 1.2;
   margin: 6px 0;
@@ -461,8 +665,13 @@ function startFloating() {
 }
 
 @keyframes gradientText {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 200% center; }
+  0%,
+  100% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 200% center;
+  }
 }
 
 .hero-sub {
@@ -519,7 +728,7 @@ function startFloating() {
   box-shadow:
     0 8px 24px rgba(37, 99, 235, 0.3),
     0 2px 8px rgba(37, 99, 235, 0.2),
-    inset 0 1px 0 rgba(255,255,255,0.15);
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .hero-btn-primary:hover {
@@ -527,7 +736,7 @@ function startFloating() {
   box-shadow:
     0 14px 36px rgba(37, 99, 235, 0.4),
     0 4px 12px rgba(37, 99, 235, 0.25),
-    inset 0 1px 0 rgba(255,255,255,0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* Shine sweep effect */
@@ -547,8 +756,14 @@ function startFloating() {
 }
 
 @keyframes btnShineSweep {
-  0%, 70%, 100% { left: -100%; }
-  30% { left: 100%; }
+  0%,
+  70%,
+  100% {
+    left: -100%;
+  }
+  30% {
+    left: 100%;
+  }
 }
 
 .hero-btn-ghost {
@@ -577,7 +792,7 @@ function startFloating() {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 16px;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(15, 23, 42, 0.03),
     0 1px 3px rgba(59, 130, 246, 0.02);
 }
@@ -650,7 +865,8 @@ function startFloating() {
 }
 
 @keyframes ringPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.6;
   }
@@ -665,27 +881,13 @@ function startFloating() {
   max-width: 480px;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 20px 50px rgba(15, 23, 42, 0.1)) drop-shadow(0 8px 20px rgba(59, 130, 246, 0.08));
+  filter: drop-shadow(0 20px 50px rgba(15, 23, 42, 0.1))
+    drop-shadow(0 8px 20px rgba(59, 130, 246, 0.08));
   position: relative;
   z-index: 2;
 }
 
-/* ---- Bottom Decorative Wave ---- */
-.hero-bottom-wave {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  z-index: 3;
-  line-height: 0;
-  color: #ffffff;
-}
 
-.hero-bottom-wave svg {
-  width: 100%;
-  height: 60px;
-  display: block;
-}
 
 /* ---- Responsive ---- */
 @media (max-width: 992px) {
@@ -823,9 +1025,6 @@ function startFloating() {
     width: 20px;
   }
 
-  .hero-bottom-wave svg {
-    height: 36px;
-  }
 }
 
 /* --- Accessibility: Reduced Motion --- */
