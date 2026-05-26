@@ -1859,9 +1859,20 @@ const themesData = [
   -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
+/*
+ * CSS iframe scaling for desktop:
+ * Render at 390px (real mobile viewport width) then scale to fit
+ * the ~280px screen area (300px frame - 10px border × 2).
+ * Scale = 280 / 390 ≈ 0.718
+ */
 .theme-demo-iframe {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 390px;
+  height: 845px;
+  transform: scale(0.718);
+  transform-origin: top left;
   pointer-events: auto;
   /* Hide scrollbar in iframe if possible via CSS */
   scrollbar-width: none;
