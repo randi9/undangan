@@ -48,67 +48,72 @@
       <!-- Hero Section -->
       <LandingHeroCinematic />
 
-      <!-- Trust Badges Section -->
-      <!-- Trust Badges Section -->
-      <section class="lp-stats" aria-label="Keunggulan">
-        <div class="lp-container">
-          <div class="lp-stats-inner">
-            <div class="lp-stat-item">
-              <div class="trust-icon-wrapper">
-                <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-              </div>
-              <div class="lp-stat-label">100% Aman</div>
-              <div class="lp-stat-desc">Data privasi Anda terjamin</div>
-            </div>
-            <div class="lp-stat-item">
-              <div class="trust-icon-wrapper">
-                <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-              </div>
-              <div class="lp-stat-label">5 Menit Jadi</div>
-              <div class="lp-stat-desc">Praktis tanpa ribet</div>
-            </div>
-            <div class="lp-stat-item">
-              <div class="trust-icon-wrapper">
-                <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-              </div>
-              <div class="lp-stat-label">500+ Pengguna</div>
-              <div class="lp-stat-desc">Telah dipercaya banyak pasangan</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Fitur Section -->
+      <!-- Fitur Section (Interactive Theme Showcase) -->
       <section
         id="fitur"
         class="lp-section lp-section-alt"
-        aria-label="Fitur Unggulan"
+        aria-label="Demo Tema"
       >
-        <div class="lp-container">
-          <div class="lp-section-header lp-reveal">
-            <p class="lp-section-kicker">Mengapa Pilih Kami?</p>
-            <h2 class="lp-section-title">
-              Jangan Habiskan Budget Untuk Undangan Sekali Pakai.
-            </h2>
-            <p class="lp-section-sub">
-              Fokus saja pada momen bahagia Anda. Urusan undangan, biar kami
-              yang bereskan dengan cara yang lebih berkelas, hemat, dan praktis.
-            </p>
-          </div>
-          <div class="lp-features-list">
-            <div
-              class="lp-feature-item lp-reveal"
-              v-for="(feature, i) in features"
-              :key="feature.title"
-              :style="{ transitionDelay: `${i * 100}ms` }"
+        <div class="lp-container lp-showcase-split">
+          <div class="lp-showcase-content lp-reveal">
+            <p class="lp-section-kicker">Desain Berkualitas Tinggi</p>
+            <h2 class="lp-section-title">Coba Langsung Kualitas Tema Kami.</h2>
+            <ul class="lp-showcase-list">
+              <li>
+                <Icon
+                  icon="solar:check-circle-bold-duotone"
+                  class="check-icon"
+                />
+                Animasi mulus (smooth scrolling).
+              </li>
+              <li>
+                <Icon
+                  icon="solar:check-circle-bold-duotone"
+                  class="check-icon"
+                />
+                Responsif dan cantik di semua layar perangkat.
+              </li>
+              <li>
+                <Icon
+                  icon="solar:check-circle-bold-duotone"
+                  class="check-icon"
+                />
+                Beragam pilihan tema premium eksklusif.
+              </li>
+            </ul>
+            <a href="/themes" class="lp-btn lp-btn-primary lp-showcase-btn"
+              >Lihat Semua Tema</a
             >
-              <div class="lp-feature-icon-wrapper">
-                <Icon :icon="feature.icon" class="lp-feature-icon" />
+          </div>
+
+          <div
+            class="lp-showcase-image lp-reveal"
+            style="transition-delay: 200ms"
+          >
+            <!-- Smartphone CSS Frame Mockup -->
+            <div class="smartphone-frame-wrapper">
+              <div class="smartphone-frame">
+                <div class="smartphone-notch"></div>
+                <div class="smartphone-screen">
+                  <iframe
+                    src="/sample/floral_blue?autoOpen=true"
+                    class="theme-demo-iframe"
+                    title="Demo Tema Floral Blue"
+                    frameborder="0"
+                  ></iframe>
+                </div>
               </div>
-              <div class="lp-feature-text">
-                <h3>{{ feature.title }}</h3>
-                <p>{{ feature.desc }}</p>
-              </div>
+
+              <!-- Scroll Hint -->
+              <transition name="fade">
+                <div class="demo-scroll-hint" v-if="!isDemoScrolled">
+                  <Icon
+                    icon="solar:mouse-circle-bold-duotone"
+                    class="scroll-icon"
+                  />
+                  <span>Coba Scroll</span>
+                </div>
+              </transition>
             </div>
           </div>
         </div>
@@ -120,6 +125,47 @@
           <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" />
         </svg>
       </div>
+
+      <!-- Trust Badges Section -->
+      <section class="lp-stats" aria-label="Keunggulan">
+        <div class="lp-container">
+          <div class="lp-stats-inner">
+            <div class="lp-stat-item">
+              <div class="trust-icon-wrapper">
+                <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"
+                  />
+                </svg>
+              </div>
+              <div class="lp-stat-label">100% Aman</div>
+              <div class="lp-stat-desc">Data privasi Anda terjamin</div>
+            </div>
+            <div class="lp-stat-item">
+              <div class="trust-icon-wrapper">
+                <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
+                  />
+                </svg>
+              </div>
+              <div class="lp-stat-label">5 Menit Jadi</div>
+              <div class="lp-stat-desc">Praktis tanpa ribet</div>
+            </div>
+            <div class="lp-stat-item">
+              <div class="trust-icon-wrapper">
+                <svg class="trust-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                  />
+                </svg>
+              </div>
+              <div class="lp-stat-label">500+ Pengguna</div>
+              <div class="lp-stat-desc">Telah dipercaya banyak pasangan</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Live Preview Showcase Section -->
       <section
@@ -796,6 +842,13 @@ const navHiddenMobile = ref(false);
 const activeSection = ref("beranda");
 const prefersReducedMotion = ref(false);
 const faqOpen = ref(-1);
+const isDemoScrolled = ref(false);
+
+function handleMessage(event: MessageEvent) {
+  if (event.data?.type === "DEMO_SCROLLED") {
+    isDemoScrolled.value = true;
+  }
+}
 
 const faqList = [
   {
@@ -921,6 +974,7 @@ onMounted(() => {
   }
 
   window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("message", handleMessage);
 
   // Setup scroll-triggered reveal animations
   nextTick(() => {
@@ -930,6 +984,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
+  window.removeEventListener("message", handleMessage);
   revealObserver?.disconnect();
 });
 
@@ -1103,6 +1158,10 @@ const themesData = [
 
 .lp-section-alt {
   background: var(--lp-bg-alt);
+}
+
+#fitur {
+  z-index: 10; /* Ensures the mockup phone shadow is rendered above the subsequent wave divider */
 }
 
 .lp-section-header {
@@ -1593,7 +1652,7 @@ const themesData = [
 /* --- Dedicated Trust Badges Section --- */
 .lp-stats {
   background: var(--lp-bg);
-  padding: 40px 0; 
+  padding: 40px 0;
   position: relative;
   z-index: 5;
 }
@@ -1606,7 +1665,7 @@ const themesData = [
   border: 1px solid rgba(59, 130, 246, 0.08);
   border-radius: 24px;
   padding: 24px;
-  box-shadow: 
+  box-shadow:
     0 20px 40px -15px rgba(0, 0, 0, 0.05),
     0 10px 20px -10px rgba(59, 130, 246, 0.03);
 }
@@ -1627,7 +1686,7 @@ const themesData = [
 .lp-stat-item:hover {
   transform: translateY(-8px);
   background: #ffffff;
-  box-shadow: 
+  box-shadow:
     0 16px 32px -12px rgba(59, 130, 246, 0.1),
     0 4px 12px -4px rgba(0, 0, 0, 0.05);
   border-color: rgba(59, 130, 246, 0.1);
@@ -1642,14 +1701,18 @@ const themesData = [
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.02) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.08) 0%,
+    rgba(59, 130, 246, 0.02) 100%
+  );
   border: 1px solid rgba(59, 130, 246, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 12px;
   color: var(--lp-accent-hover);
-  box-shadow: 
+  box-shadow:
     0 8px 16px -4px rgba(59, 130, 246, 0.08),
     inset 0 2px 4px rgba(255, 255, 255, 0.8);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1657,7 +1720,11 @@ const themesData = [
 
 .lp-stat-item:hover .trust-icon-wrapper {
   transform: translateY(-4px) scale(1.1) rotate(5deg);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.15) 0%,
+    rgba(59, 130, 246, 0.05) 100%
+  );
   border-color: rgba(59, 130, 246, 0.3);
   box-shadow: 0 12px 24px -6px rgba(59, 130, 246, 0.15);
 }
@@ -1717,76 +1784,148 @@ const themesData = [
   background: var(--lp-bg);
 }
 
-/* --- Feature List Layout --- */
-.lp-features-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px 48px;
-}
-
-.lp-feature-item {
+/* --- Smartphone Frame Mockup --- */
+.smartphone-frame-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 440px; /* 300px phone + 140px padding to accommodate 3D rotated shadow */
+  margin: -20px auto -60px auto; /* Negative margin offsets padding to preserve layout spacing */
+  padding: 20px 70px 110px 70px; /* Generous padding to prevent shadow clipping */
+  perspective: 1000px;
   display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid transparent;
-  border-radius: var(--lp-radius-lg);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: default;
-}
-.lp-feature-item:hover {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(59, 130, 246, 0.15);
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
-  transform: translateX(8px);
+  justify-content: center;
 }
 
-.lp-feature-icon-wrapper {
-  width: 56px;
-  height: 56px;
-  flex-shrink: 0;
-  border-radius: 16px;
-  background: var(--lp-bg);
+.smartphone-frame {
+  position: relative;
+  width: 100%;
+  max-width: 300px; /* Keep phone screen size exactly 300px wide */
+  aspect-ratio: 9 / 19.5;
+  background: #000;
+  border-radius: 40px;
+  border: 10px solid #1a1a1a;
+  box-shadow:
+    -20px 30px 60px -10px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  /* Removed overflow: hidden to prevent browser 3D graphics layers from clipping box-shadow */
+  z-index: 2;
+  transform: rotateY(-8deg) rotateX(3deg);
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.5s ease;
+}
+
+.smartphone-frame:hover {
+  transform: rotateY(0deg) rotateX(0deg);
+  box-shadow:
+    0 40px 80px -15px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+.smartphone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 24px;
+  background: #1a1a1a;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  z-index: 10;
+}
+
+.smartphone-notch::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 25px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.smartphone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 28px;
+  overflow: hidden;
+  /* Add masking to make sure iframe scrollbar respects border-radius */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+.theme-demo-iframe {
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  /* Hide scrollbar in iframe if possible via CSS */
+  scrollbar-width: none;
+}
+.theme-demo-iframe::-webkit-scrollbar {
+  display: none;
+}
+
+.demo-scroll-hint {
+  position: absolute;
+  bottom: 130px; /* Offset the 110px bottom padding to keep it 20px from phone bottom */
+  right: 40px; /* Offset the 70px right padding to keep it 30px to the right of the phone */
+  background: white;
+  color: var(--lp-primary);
+  font-family: var(--lp-font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--lp-accent-hover);
-  box-shadow:
-    0 4px 12px rgba(59, 130, 246, 0.1),
-    inset 0 0 0 1px rgba(59, 130, 246, 0.05);
-  transition: all 0.4s ease;
-}
-.lp-feature-item:hover .lp-feature-icon-wrapper {
-  background: var(--lp-accent-hover);
-  color: #fff;
-  transform: rotate(-10deg) scale(1.05);
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.25);
+  gap: 8px;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  z-index: 20;
+  animation: floatHint 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.lp-feature-icon {
-  font-size: 28px;
-}
-
-.lp-feature-text {
-  flex: 1;
-}
-
-.lp-feature-text h3 {
-  font-family: var(--lp-font-serif);
+.scroll-icon {
   font-size: 20px;
-  font-weight: 700;
-  color: var(--lp-primary);
-  margin-bottom: 6px;
-  text-align: left;
+  color: var(--lp-accent-hover);
+  animation: scrollIconAnim 2s infinite;
 }
 
-.lp-feature-text p {
-  font-size: 15px;
-  color: var(--lp-text-light);
-  line-height: 1.6;
-  margin: 0;
-  text-align: left;
+@keyframes floatHint {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes scrollIconAnim {
+  0% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+  100% {
+    transform: translateY(-2px);
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 /* --- Live Preview Showcase --- */
@@ -1804,23 +1943,24 @@ const themesData = [
 .lp-showcase-list {
   list-style: none;
   padding: 0;
-  margin: 32px 0;
-  display: flex;
+  margin: 24px 0 32px 0;
+  display: inline-flex;
   flex-direction: column;
   gap: 16px;
+  text-align: left;
 }
 
 .lp-showcase-list li {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  font-size: 15px;
+  gap: 16px;
+  font-size: 16px;
   color: var(--lp-text);
   line-height: 1.6;
 }
 
 .lp-showcase-list .check-icon {
-  font-size: 20px;
+  font-size: 24px;
   color: var(--lp-accent-hover);
   flex-shrink: 0;
   margin-top: 2px;
@@ -2707,6 +2847,27 @@ const themesData = [
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
+  .lp-showcase-split {
+    flex-direction: column;
+    text-align: center;
+    gap: 48px;
+  }
+  .lp-showcase-content {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .lp-showcase-list {
+    align-items: flex-start;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .lp-showcase-list li {
+    text-align: left;
+    justify-content: flex-start;
+  }
+
   .lp-features-list {
     grid-template-columns: 1fr;
     max-width: 600px;
@@ -3034,7 +3195,7 @@ const themesData = [
     gap: 16px;
     padding: 24px;
   }
-  
+
   .lp-faq {
     padding: 64px 0;
   }

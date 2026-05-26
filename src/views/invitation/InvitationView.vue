@@ -688,6 +688,16 @@ onMounted(async () => {
     countdownTimer = setInterval(updateCountdown, 1000);
     loading.value = false;
     nextTick(() => preloadAllAssets());
+    
+    // Auto-open invitation if requested (bypasses cover)
+    if (route.query.autoOpen === 'true') {
+      isOpened.value = true;
+      window.addEventListener('scroll', () => {
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: 'DEMO_SCROLLED' }, '*');
+        }
+      }, { once: true, passive: true });
+    }
     return;
   }
 
