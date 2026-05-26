@@ -3034,6 +3034,79 @@ const themesData = [
   .lp-wave-divider svg {
     height: 32px;
   }
+
+  /* ===== Smartphone Frame Demo - Mobile ===== */
+  .smartphone-frame-wrapper {
+    max-width: 240px;
+    padding: 0 0 50px 0;
+    margin: 0 auto;
+    perspective: none;
+  }
+
+  .smartphone-frame {
+    max-width: 100%;
+    border-width: 7px;
+    border-radius: 32px;
+    transform: none;
+    box-shadow:
+      0 16px 40px rgba(0, 0, 0, 0.2),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .smartphone-frame:hover {
+    transform: none;
+    box-shadow:
+      0 16px 40px rgba(0, 0, 0, 0.2),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .smartphone-notch {
+    width: 70px;
+    height: 16px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  .smartphone-notch::after {
+    top: 4px;
+    right: 14px;
+    width: 8px;
+    height: 8px;
+  }
+
+  .smartphone-screen {
+    border-radius: 24px;
+  }
+
+  /*
+   * CSS iframe scaling: render at 390px (real mobile viewport width)
+   * then scale down to fit the ~226px screen area.
+   * Frame=240px - border(7px×2) = 226px screen → scale = 226/390 ≈ 0.58
+   */
+  .theme-demo-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 390px;
+    height: 845px;
+    transform: scale(0.58);
+    transform-origin: top left;
+  }
+
+  .demo-scroll-hint {
+    bottom: 8px;
+    right: 0;
+    left: 0;
+    width: fit-content;
+    margin: 0 auto;
+    font-size: 12px;
+    padding: 7px 12px;
+    gap: 6px;
+  }
+
+  .scroll-icon {
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 480px) {

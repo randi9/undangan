@@ -51,7 +51,7 @@
                 Buat Undangan Gratis
                 <span class="hero-btn-shine"></span>
               </a>
-              <a href="#tema" class="hero-btn hero-btn-ghost">
+              <a href="#fitur" class="hero-btn hero-btn-ghost">
                 <svg
                   class="hero-btn-icon"
                   viewBox="0 0 24 24"
