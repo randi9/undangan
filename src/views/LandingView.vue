@@ -91,16 +91,31 @@
             style="transition-delay: 200ms"
           >
             <!-- Smartphone CSS Frame Mockup -->
-            <div class="smartphone-frame-wrapper">
+            <div class="smartphone-frame-wrapper" ref="demoFrameRef">
               <div class="smartphone-frame">
                 <div class="smartphone-notch"></div>
                 <div class="smartphone-screen">
+                  <!-- Lazy-loaded iframe: only rendered when section is near viewport -->
                   <iframe
+                    v-if="isDemoLoaded"
                     src="/sample/floral_blue?autoOpen=true"
                     class="theme-demo-iframe"
                     title="Demo Tema Floral Blue"
                     frameborder="0"
+                    loading="lazy"
                   ></iframe>
+                  <!-- Loading skeleton while iframe hasn't loaded -->
+                  <div v-else class="demo-skeleton">
+                    <div class="demo-skeleton-shimmer"></div>
+                    <div class="demo-skeleton-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                      </svg>
+                    </div>
+                    <span class="demo-skeleton-text">Memuat Demo...</span>
+                  </div>
                 </div>
               </div>
 
@@ -843,6 +858,8 @@ const activeSection = ref("beranda");
 const prefersReducedMotion = ref(false);
 const faqOpen = ref(-1);
 const isDemoScrolled = ref(false);
+const isDemoLoaded = ref(false);
+const demoFrameRef = ref<HTMLElement | null>(null);
 const scrollY = ref(0);
 
 function handleMessage(event: MessageEvent) {
@@ -939,6 +956,7 @@ function updateActiveSection() {
 
 // ---- Scroll-triggered reveal animation ----
 let revealObserver: IntersectionObserver | null = null;
+let demoObserver: IntersectionObserver | null = null;
 
 function setupRevealObserver() {
   revealObserver = new IntersectionObserver(
@@ -980,6 +998,21 @@ onMounted(() => {
   // Setup scroll-triggered reveal animations
   nextTick(() => {
     setupRevealObserver();
+
+    // Setup lazy loading for demo iframe
+    if (demoFrameRef.value) {
+      demoObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            isDemoLoaded.value = true;
+            demoObserver?.disconnect();
+            demoObserver = null;
+          }
+        },
+        { rootMargin: '200px 0px' }
+      );
+      demoObserver.observe(demoFrameRef.value);
+    }
   });
 });
 
@@ -987,6 +1020,7 @@ onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
   window.removeEventListener("message", handleMessage);
   revealObserver?.disconnect();
+  demoObserver?.disconnect();
 });
 
 const features = [
@@ -1879,6 +1913,66 @@ const themesData = [
 }
 .theme-demo-iframe::-webkit-scrollbar {
   display: none;
+}
+
+/* --- Demo Skeleton Placeholder --- */
+.demo-skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #f0f4f8 0%, #e8eef5 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.demo-skeleton-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 2s ease-in-out infinite;
+}
+
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.demo-skeleton-icon {
+  position: relative;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  color: #94a3b8;
+  animation: skeletonPulse 2s ease-in-out infinite;
+}
+
+.demo-skeleton-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.demo-skeleton-text {
+  position: relative;
+  z-index: 1;
+  font-family: var(--lp-font-sans, sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  letter-spacing: 0.3px;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
 }
 
 .demo-scroll-hint {
