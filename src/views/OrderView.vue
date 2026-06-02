@@ -300,7 +300,7 @@
 import { ref, reactive, computed } from "vue";
 import { Icon } from "@iconify/vue";
 
-const WA_NUMBER = "6285155026238";
+const WA_NUMBER = "6285155026211";
 
 const themeOptions = [
   { id: "elegant", name: "Elegant Gold" },
