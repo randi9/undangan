@@ -100,6 +100,9 @@ let initialTimers: gsap.core.Tween[] = [];
 let flowerSwayTimers: gsap.core.Tween[] = [];
 let entranceTimeline: gsap.core.Timeline | null = null;
 
+// Maximum concurrent petals to prevent DOM explosion and frame rate drops
+const MAX_PETALS = 15;
+
 function randomRange(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
@@ -107,6 +110,9 @@ function randomRange(min: number, max: number) {
 function spawnPetal() {
   const container = petalsContainer.value;
   if (!container) return;
+
+  // Guard: skip spawn if we're at the concurrent petal limit
+  if (activeAnimations.length >= MAX_PETALS) return;
 
   const img = document.createElement('img');
   img.src = petalImages[0] || '';

@@ -35,6 +35,7 @@ import type { Invitation, LoveStoryItem, Rsvp } from "@/types/invitation";
 import type { ThemeConfig } from "@/types/theme";
 import { resolveAssetUrl } from "@/utils/url";
 import { Icon } from "@iconify/vue";
+import { useSmoothScroll } from "@/composables/useSmoothScroll";
 
 // --- PROPS (optional static data for sample pages) ---
 const props = defineProps<{
@@ -304,6 +305,9 @@ const loadingFadeOut = ref(false);
 const invitation = ref<Invitation | null>(null);
 const lightboxOpen = ref(false);
 const lightboxIndex = ref(0);
+
+// --- SMOOTH SCROLL (Lenis) ---
+const { init: initSmoothScroll, destroy: destroySmoothScroll, stop: stopScroll, start: startScroll } = useSmoothScroll();
 const rsvpSubmitting = ref(false);
 const rsvpMessages = ref<Rsvp[]>([]);
 
@@ -402,6 +406,12 @@ watch(isOpened, (val) => {
     heroTextItems.value = [];
     ScrollTrigger.config({ ignoreMobileResize: true });
 
+    // Initialize Lenis smooth scrolling after invitation is opened
+    // Delayed slightly to let async components render first
+    setTimeout(() => {
+      initSmoothScroll();
+    }, 200);
+
     // Tunggu sampai ref heroOval benar-benar ada (terikat ke DOM)
     // sebab pada komponen Async, render DOM mungkin terjadi lebih telat dari sekadar nextTick
     const unwatchHero = watch(
@@ -418,6 +428,15 @@ watch(isOpened, (val) => {
       },
       { immediate: true },
     );
+  }
+});
+
+// Stop smooth scroll when lightbox is open (prevent background scrolling)
+watch(lightboxOpen, (open) => {
+  if (open) {
+    stopScroll();
+  } else {
+    startScroll();
   }
 });
 const musicPlayer = ref<HTMLAudioElement>();
@@ -752,6 +771,7 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   document.removeEventListener("visibilitychange", handleVisibilityChange);
   if (countdownTimer) clearInterval(countdownTimer);
+  destroySmoothScroll();
   ScrollTrigger.getAll().forEach((t) => t.kill());
   window.removeEventListener("resize", onResize);
 });

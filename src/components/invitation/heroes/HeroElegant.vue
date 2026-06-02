@@ -38,7 +38,7 @@
     </div>
 
     <!-- OVAL PASSEPARTOUT MASK -->
-    <div ref="ovalMask" class="hero-oval absolute top-6 bottom-6 left-6 right-6 md:top-8 md:bottom-8 md:left-8 md:right-8 z-[14] pointer-events-none rounded-[1000px] opacity-0" :style="{ boxShadow: `0 0 0 200vmax ${themeConfig?.bg || '#faf8f4'}` }"></div>
+    <div ref="ovalMask" class="hero-oval absolute top-6 bottom-6 left-6 right-6 md:top-8 md:bottom-8 md:left-8 md:right-8 z-[14] pointer-events-none rounded-[1000px] opacity-0" :style="{ boxShadow: `0 0 0 200vmax ${themeConfig?.bg || '#faf8f4'}`, willChange: 'transform, opacity' }"></div>
 
     <!-- Gold corner ornaments -->
     <div ref="ornamentTL" class="absolute top-6 left-6 w-16 h-16 opacity-0 z-20 pointer-events-none">

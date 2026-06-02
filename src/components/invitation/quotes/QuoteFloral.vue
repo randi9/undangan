@@ -309,3 +309,10 @@ onBeforeUnmount(() => {
   ScrollTrigger.getAll().forEach(t => t.kill());
 });
 </script>
+
+<style scoped>
+/* GPU acceleration hints for scroll-triggered scale/rotation animations */
+section :deep(img) {
+  will-change: transform, opacity;
+}
+</style>
