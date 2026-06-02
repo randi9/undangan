@@ -91,21 +91,20 @@
             style="transition-delay: 200ms"
           >
             <!-- Smartphone CSS Frame Mockup -->
-            <div class="smartphone-frame-wrapper" ref="demoFrameRef">
+            <div class="smartphone-frame-wrapper">
               <div class="smartphone-frame">
                 <div class="smartphone-notch"></div>
                 <div class="smartphone-screen">
-                  <!-- Lazy-loaded iframe: only rendered when section is near viewport -->
+                  <!-- Iframe loaded immediately on page load to prevent delay when scrolling -->
                   <iframe
-                    v-if="isDemoLoaded"
                     src="/sample/floral_blue?autoOpen=true"
                     class="theme-demo-iframe"
                     title="Demo Tema Floral Blue"
                     frameborder="0"
-                    loading="lazy"
+                    @load="isDemoLoaded = true"
                   ></iframe>
-                  <!-- Loading skeleton while iframe hasn't loaded -->
-                  <div v-else class="demo-skeleton">
+                  <!-- Loading skeleton while iframe is loading -->
+                  <div v-if="!isDemoLoaded" class="demo-skeleton">
                     <div class="demo-skeleton-shimmer"></div>
                     <div class="demo-skeleton-icon">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -859,7 +858,6 @@ const prefersReducedMotion = ref(false);
 const faqOpen = ref(-1);
 const isDemoScrolled = ref(false);
 const isDemoLoaded = ref(false);
-const demoFrameRef = ref<HTMLElement | null>(null);
 const scrollY = ref(0);
 
 function handleMessage(event: MessageEvent) {
@@ -956,7 +954,6 @@ function updateActiveSection() {
 
 // ---- Scroll-triggered reveal animation ----
 let revealObserver: IntersectionObserver | null = null;
-let demoObserver: IntersectionObserver | null = null;
 
 function setupRevealObserver() {
   revealObserver = new IntersectionObserver(
@@ -998,21 +995,6 @@ onMounted(() => {
   // Setup scroll-triggered reveal animations
   nextTick(() => {
     setupRevealObserver();
-
-    // Setup lazy loading for demo iframe
-    if (demoFrameRef.value) {
-      demoObserver = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) {
-            isDemoLoaded.value = true;
-            demoObserver?.disconnect();
-            demoObserver = null;
-          }
-        },
-        { rootMargin: '200px 0px' }
-      );
-      demoObserver.observe(demoFrameRef.value);
-    }
   });
 });
 
@@ -1020,7 +1002,6 @@ onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
   window.removeEventListener("message", handleMessage);
   revealObserver?.disconnect();
-  demoObserver?.disconnect();
 });
 
 const features = [
