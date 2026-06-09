@@ -55,6 +55,33 @@ function validateInvitationPayload(
     return { ok: false, error: "photos exceeds maximum allowed items" };
   }
 
+  if (body.gift_address !== undefined) {
+    if (typeof body.gift_address !== "string") {
+      return { ok: false, error: "gift_address must be a string" };
+    }
+    if (body.gift_address.length > 500) {
+      return { ok: false, error: "gift_address must be under 500 characters" };
+    }
+  }
+
+  if (body.gift_recipient !== undefined) {
+    if (typeof body.gift_recipient !== "string") {
+      return { ok: false, error: "gift_recipient must be a string" };
+    }
+    if (body.gift_recipient.length > 150) {
+      return { ok: false, error: "gift_recipient must be under 150 characters" };
+    }
+  }
+
+  if (body.gift_phone !== undefined) {
+    if (typeof body.gift_phone !== "string") {
+      return { ok: false, error: "gift_phone must be a string" };
+    }
+    if (body.gift_phone.length > 30) {
+      return { ok: false, error: "gift_phone must be under 30 characters" };
+    }
+  }
+
   return { ok: true };
 }
 
@@ -208,6 +235,9 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       gallery_type,
       photos,
       banks,
+      gift_address,
+      gift_recipient,
+      gift_phone,
     } = req.body;
 
     // Check slug
@@ -259,6 +289,9 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       music_url: music_url || "",
       gallery_type: gallery_type || "carousel",
       banks: Array.isArray(banks) ? banks : [],
+      gift_address: gift_address || "",
+      gift_recipient: gift_recipient || "",
+      gift_phone: gift_phone || "",
     };
 
     const { data: created, error: createError } = await supabase
@@ -367,6 +400,9 @@ router.put("/:id", requireAuth, async (req: Request, res: Response) => {
       "music_url",
       "gallery_type",
       "banks",
+      "gift_address",
+      "gift_recipient",
+      "gift_phone",
     ];
 
     for (const field of updatableFields) {

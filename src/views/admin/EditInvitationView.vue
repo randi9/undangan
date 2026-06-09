@@ -1941,6 +1941,54 @@
                     + Tambah Rekening (Maks. 2)
                   </button>
                 </div>
+
+                <!-- Alamat Kado Fisik -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:package"
+                      style="color: var(--admin-primary)"
+                    />
+                    Alamat Pengiriman Kado Fisik (Opsional)
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Alamat bagi tamu yang ingin mengirim kado fisik/paket secara langsung.
+                  </p>
+                  
+                  <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+                    <div class="form-group">
+                      <label class="form-label">Alamat Lengkap Penerima</label>
+                      <textarea
+                        v-model="form.gift_address"
+                        class="form-input"
+                        rows="3"
+                        placeholder="Contoh: Jl. Mawar No. 12, RT 01/RW 02, Kec. Coblong, Kota Bandung, Jawa Barat (40135)"
+                        maxlength="300"
+                      ></textarea>
+                    </div>
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Nama Penerima</label>
+                        <input
+                          v-model="form.gift_recipient"
+                          class="form-input"
+                          placeholder="Contoh: Andi & Sarah"
+                          maxlength="100"
+                        />
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">No. Telepon Penerima</label>
+                        <input
+                          v-model="form.gift_phone"
+                          class="form-input"
+                          placeholder="Contoh: 081234567890"
+                          maxlength="20"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Background Music -->
                 <div class="form-section">
                   <h3 class="form-section-title">

@@ -1,5 +1,5 @@
 <template>
-  <section v-if="bankList.length > 0" ref="giftSection" class="py-24 px-6 text-center relative overflow-hidden bg-white/50">
+  <section v-if="bankList.length > 0 || invitation.gift_address" ref="giftSection" class="py-24 px-6 text-center relative overflow-hidden bg-white/50">
     <!-- Minimalist BG Decor -->
     <div class="absolute inset-x-0 bottom-0 top-auto h-96 bg-gradient-to-t from-gray-50 to-transparent -z-10"></div>
     
@@ -74,6 +74,43 @@
         </div>
 
       </div>
+
+      <!-- Physical Gift Address Card -->
+      <div
+        v-if="invitation.gift_address"
+        :ref="el => { if (el) cardsRef[bankList.length] = el as HTMLElement }"
+        class="flex flex-col items-center gap-6 w-full max-w-[420px] opacity-0 translate-y-12"
+      >
+        <div class="w-full bg-white p-7 rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-gray-100 relative overflow-hidden flex flex-col justify-between text-left group hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1">
+          <div class="flex justify-between items-center z-10 mb-4">
+            <div class="font-bold text-lg text-gray-800 tracking-wide uppercase">
+              Kirim Hadiah Fisik
+            </div>
+            <Icon icon="lucide:package" class="text-xl text-gray-400" />
+          </div>
+          
+          <div class="z-10 mb-6">
+            <p class="text-sm text-gray-600 leading-relaxed font-light mb-4" style="white-space: pre-line;">
+              {{ invitation.gift_address }}
+            </p>
+            <div class="text-[9px] text-gray-400 font-semibold uppercase tracking-widest mb-1">Penerima</div>
+            <div class="text-sm font-semibold text-gray-800 uppercase tracking-widest leading-tight">
+              {{ invitation.gift_recipient || '-' }}
+            </div>
+            <div v-if="invitation.gift_phone" class="text-xs text-gray-500 mt-1 font-mono">
+              Telp: {{ invitation.gift_phone }}
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center z-10">
+            <button @click="copyAddress" 
+                    class="bg-gray-50 border border-gray-200 text-gray-600 px-4 py-2 rounded-full hover:bg-gray-100 transition-all flex items-center justify-center gap-2 text-xs font-semibold group-hover:bg-gray-900 group-hover:border-gray-900 group-hover:text-white">
+              <Icon :icon="copiedAddress ? 'lucide:check' : 'lucide:copy'" class="text-[14px]" />
+              {{ copiedAddress ? 'Alamat Disalin!' : 'Salin Alamat' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -94,6 +131,7 @@ const props = defineProps<{
 }>();
 
 const copiedIndex = ref<number | null>(null);
+const copiedAddress = ref(false);
 const giftSection = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
 const descRef = ref<HTMLElement | null>(null);
@@ -116,6 +154,21 @@ function copyAccount(index: number) {
   copiedIndex.value = index;
   setTimeout(() => {
     copiedIndex.value = null;
+  }, 2000);
+}
+
+function copyAddress() {
+  if (!props.invitation.gift_address) return;
+  let text = props.invitation.gift_address;
+  if (props.invitation.gift_recipient) {
+    text += `\n(Penerima: ${props.invitation.gift_recipient}`;
+    if (props.invitation.gift_phone) text += `, Telp: ${props.invitation.gift_phone}`;
+    text += `)`;
+  }
+  navigator.clipboard.writeText(text);
+  copiedAddress.value = true;
+  setTimeout(() => {
+    copiedAddress.value = false;
   }, 2000);
 }
 

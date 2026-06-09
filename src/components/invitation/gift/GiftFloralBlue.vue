@@ -1,5 +1,5 @@
 <template>
-  <section ref="sectionRef" v-if="bankList.length > 0" style="position: relative; padding: 10px 0 100px; max-width: 100%; overflow: hidden; margin: 0 auto; text-align: center; z-index: 10;">
+  <section ref="sectionRef" v-if="bankList.length > 0 || invitation.gift_address" style="position: relative; padding: 10px 0 100px; max-width: 100%; overflow: hidden; margin: 0 auto; text-align: center; z-index: 10;">
     
     <!-- Background removed for transparent effect -->
     
@@ -50,7 +50,36 @@
           </div>
         </div>
       </div>
-    </div>
+
+        <!-- Physical Gift Address Card -->
+        <div v-if="invitation.gift_address" style="flex: 1; min-width: 300px; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+          <div style="width: 100%; padding: 24px; position: relative; display: flex; flex-direction: column; justify-content: space-between; text-align: left; z-index: 10; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); border-radius: 20px; overflow: hidden;">
+            <!-- Floral Decorations -->
+            <img src="https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_de652656-b50b-496c-990f-6f89f16b39c8.webp" style="position: absolute; bottom: -20px; left: 0px; width: 150px; height: auto; opacity: 0.3; z-index: 0; pointer-events: none;" alt="Gift Card Floral 1" />
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1; margin-bottom: 16px;">
+              <div style="font-weight: 800; font-size: 20px; color: var(--theme-primary); letter-spacing: 0.05em; text-transform: uppercase;">Kirim Hadiah Fisik</div>
+              <Icon icon="lucide:package" style="font-size: 24px; color: var(--theme-primary);" />
+            </div>
+            
+            <div style="z-index: 1; margin-top: auto; margin-bottom: 24px; width: 100%;">
+              <p style="font-size: 14px; color: #1f2937; line-height: 1.6; font-weight: 500; margin-bottom: 12px; white-space: pre-line;">
+                {{ invitation.gift_address }}
+              </p>
+              <span style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px;">Penerima</span>
+              <span style="font-size: 14px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2;">{{ invitation.gift_recipient || '-' }}</span>
+              <span v-if="invitation.gift_phone" style="font-size: 12px; color: #4b5563; display: block; margin-top: 4px; font-family: monospace;">Telp: {{ invitation.gift_phone }}</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 1;">
+              <button @click="copyAddress" style="flex-shrink: 0; background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.5); cursor: pointer; color: #374151; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 16px; border-radius: 8px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-size: 12px; font-weight: 700;">
+                <Icon :icon="copiedAddress ? 'lucide:check-circle-2' : 'lucide:copy'" style="font-size: 16px; color: var(--theme-primary);" />
+                {{ copiedAddress ? 'Alamat Disalin!' : 'Salin Alamat' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -67,6 +96,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const props = defineProps<{ invitation: Invitation; themeConfig: ThemeConfig; }>();
 const copiedIndex = ref<number | null>(null);
+const copiedAddress = ref(false);
 const sectionRef = ref<HTMLElement | null>(null);
 let ctx: gsap.Context | null = null;
 
@@ -81,6 +111,7 @@ onUnmounted(() => { ctx?.revert(); });
 const bankList = computed<BankAccount[]>(() => {
   if (props.invitation.banks && Array.isArray(props.invitation.banks) && props.invitation.banks.length > 0) return props.invitation.banks.filter(b => b.bank_name || b.bank_account);
   if (props.invitation.bank_name) return [{ bank_name: props.invitation.bank_name, bank_account: props.invitation.bank_account, bank_holder: props.invitation.bank_holder }];
+  if (props.invitation.gift_address) return [];
   return [{ bank_name: 'BCA', bank_account: '1234567890', bank_holder: 'Nama Mempelai Pria' }, { bank_name: 'Mandiri', bank_account: '0987654321', bank_holder: 'Nama Mempelai Wanita' }];
 });
 
@@ -89,5 +120,18 @@ function copyAccount(index: number) {
   navigator.clipboard.writeText(bank.bank_account);
   copiedIndex.value = index;
   setTimeout(() => { copiedIndex.value = null; }, 2000);
+}
+
+function copyAddress() {
+  if (!props.invitation.gift_address) return;
+  let text = props.invitation.gift_address;
+  if (props.invitation.gift_recipient) {
+    text += `\n(Penerima: ${props.invitation.gift_recipient}`;
+    if (props.invitation.gift_phone) text += `, Telp: ${props.invitation.gift_phone}`;
+    text += `)`;
+  }
+  navigator.clipboard.writeText(text);
+  copiedAddress.value = true;
+  setTimeout(() => { copiedAddress.value = false; }, 2000);
 }
 </script>

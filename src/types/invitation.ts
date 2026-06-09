@@ -97,6 +97,9 @@ export interface Invitation {
   // Client access code
   access_code?: string;
   access_code_created_at?: string;
+  gift_address?: string;
+  gift_recipient?: string;
+  gift_phone?: string;
 }
 
 export interface CreateInvitationPayload {
@@ -136,4 +139,7 @@ export interface CreateInvitationPayload {
   streaming_platform?: string;
   streaming_url?: string;
   photos?: Photo[];
+  gift_address?: string;
+  gift_recipient?: string;
+  gift_phone?: string;
 }

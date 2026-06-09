@@ -1,5 +1,5 @@
 <template>
-  <section v-if="bankList.length > 0" ref="sectionRef" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0 20px 80px 20px; overflow-x: hidden; background-color: transparent;">
+  <section v-if="bankList.length > 0 || invitation.gift_address" ref="sectionRef" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0 20px 80px 20px; overflow-x: hidden; background-color: transparent;">
 
     <!-- ==============================
          SINGLE CONTAINER — GIFT SECTION (Flat Top, Oval Bottom)
@@ -21,7 +21,7 @@
       <!-- Cards Wrapper -->
       <div style="width: 100%; max-width: 300px; position: relative; z-index: 2;">
 
-        <div class="card-stack-wrapper">
+        <div v-if="bankList.length > 0" class="card-stack-wrapper">
           <div 
             v-for="(bank, index) in bankList" 
             :key="index"
@@ -83,6 +83,36 @@
         </div>
       </div>
 
+      <!-- Physical Gift Card -->
+      <div v-if="invitation.gift_address" style="width: 100%; max-width: 300px; margin-top: 24px; position: relative; z-index: 2;">
+        <div style="background: linear-gradient(135deg, #fffdf5, #f8f9fa); border: 1px solid rgba(4,26,51,0.1); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); text-align: left; position: relative; overflow: hidden;">
+          <div style="position: absolute; right: -40px; top: -40px; width: 140px; height: 140px; border: 1px solid rgba(4,26,51,0.03); border-radius: 50%; pointer-events: none;"></div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <span style="font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #304851;">Kirim Hadiah Fisik</span>
+            <Icon icon="lucide:package" style="font-size: 18px; color: #304851; opacity: 0.8;" />
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <p style="font-size: 13px; color: #1a252c; font-weight: 500; line-height: 1.5; margin-bottom: 10px; white-space: pre-line;">
+              {{ invitation.gift_address }}
+            </p>
+            <div style="font-size: 9px; color: rgba(48,72,81,0.6); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px;">Penerima</div>
+            <div style="font-size: 13px; font-weight: bold; color: #304851; text-transform: uppercase; letter-spacing: 0.05em;">
+              {{ invitation.gift_recipient || '-' }}
+            </div>
+            <div v-if="invitation.gift_phone" style="font-size: 11px; color: #304851; font-family: monospace; margin-top: 3px;">
+              Telp: {{ invitation.gift_phone }}
+            </div>
+          </div>
+
+          <button @click="copyAddress" style="width: 100%; background: rgba(48,72,81,0.08); border: 1px solid rgba(4,26,51,0.05); color: #304851; padding: 8px 12px; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s;">
+            <Icon :icon="copiedAddress ? 'lucide:check-circle-2' : 'lucide:copy'" style="font-size: 14px; color: #304851;" />
+            {{ copiedAddress ? 'Alamat Disalin!' : 'Salin Alamat' }}
+          </button>
+        </div>
+      </div>
+
     </div>
 
   </section>
@@ -106,6 +136,7 @@ const props = defineProps<{
 }>();
 
 const copiedIndex = ref<number | null>(null);
+const copiedAddress = ref(false);
 const sectionRef = ref<HTMLElement | null>(null);
 
 // Animasi ngocok kartu state
@@ -208,6 +239,21 @@ function copyAccount(index: number) {
   copiedIndex.value = index;
   setTimeout(() => {
     copiedIndex.value = null;
+  }, 2000);
+}
+
+function copyAddress() {
+  if (!props.invitation.gift_address) return;
+  let text = props.invitation.gift_address;
+  if (props.invitation.gift_recipient) {
+    text += `\n(Penerima: ${props.invitation.gift_recipient}`;
+    if (props.invitation.gift_phone) text += `, Telp: ${props.invitation.gift_phone}`;
+    text += `)`;
+  }
+  navigator.clipboard.writeText(text);
+  copiedAddress.value = true;
+  setTimeout(() => {
+    copiedAddress.value = false;
   }, 2000);
 }
 

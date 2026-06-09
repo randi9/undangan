@@ -1,5 +1,5 @@
 <template>
-  <section v-if="bankList.length > 0" ref="giftSection" class="py-24 px-6 text-center" :style="{ backgroundColor: 'var(--theme-surface)' }">
+  <section v-if="bankList.length > 0 || invitation.gift_address" ref="giftSection" class="py-24 px-6 text-center" :style="{ backgroundColor: 'var(--theme-surface)' }">
     <!-- Header -->
     <div ref="headerRef" class="opacity-0 translate-y-6 mb-12">
       <h2 class="text-3xl md:text-5xl mb-3" :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)' }">Wedding Gift</h2>
@@ -87,6 +87,56 @@
           </div>
         </div>
       </div>
+      
+      <!-- Physical Gift Address Card -->
+      <div
+        v-if="invitation.gift_address"
+        :ref="el => { if (el) cardRefs[bankList.length] = el as HTMLElement }"
+        class="flex flex-col items-center gap-6 w-full max-w-[400px] opacity-0 translate-y-12"
+      >
+        <div class="group w-full p-6 rounded-2xl shadow-xl border relative overflow-hidden flex flex-col justify-between text-left transition-transform duration-500 hover:scale-[1.03]"
+             :style="{ backgroundColor: '#ffffff', borderColor: 'rgba(201,169,110,0.3)', boxShadow: '0 12px 30px rgba(139,111,78,0.1)' }">
+          
+          <!-- Pattern decor -->
+          <div class="absolute -right-12 -top-12 w-48 h-48 border-[1.5px] rounded-full pointer-events-none" :style="{ borderColor: 'rgba(201,169,110,0.15)' }"></div>
+          
+          <div class="flex justify-between items-start z-10 mb-4">
+            <div class="font-bold text-lg tracking-wider uppercase" :style="{ color: 'var(--theme-primary)' }">
+              Kirim Hadiah Fisik
+            </div>
+            <svg viewBox="0 0 24 24" class="w-6 h-6" :style="{ fill: 'var(--theme-secondary)' }">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+          </div>
+          
+          <div class="z-10 mb-4">
+            <p class="text-sm text-gray-700 leading-relaxed font-medium mb-3" style="white-space: pre-line;">
+              {{ invitation.gift_address }}
+            </p>
+            <div class="text-[11px] text-gray-400 font-bold uppercase tracking-widest mb-1">Penerima</div>
+            <div class="text-sm font-bold uppercase tracking-wider" :style="{ color: 'var(--theme-primary)' }">
+              {{ invitation.gift_recipient || '-' }}
+            </div>
+            <div v-if="invitation.gift_phone" class="text-xs text-gray-500 mt-1 font-mono">
+              Telp: {{ invitation.gift_phone }}
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center z-10 mt-2">
+            <button @click="copyAddress" 
+                    class="bg-white border text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-all shadow-sm flex items-center justify-center gap-2 text-xs font-semibold hover:scale-105 active:scale-95"
+                    :style="{ borderColor: 'rgba(201,169,110,0.3)', color: 'var(--theme-primary)' }">
+              <svg v-if="!copiedAddress" viewBox="0 0 24 24" class="w-4 h-4" :style="{ fill: 'var(--theme-primary)' }">
+                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+              </svg>
+              <svg v-else viewBox="0 0 24 24" class="w-4 h-4 text-green-600 fill-current">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+              {{ copiedAddress ? 'Alamat Disalin!' : 'Salin Alamat' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -110,6 +160,7 @@ const headerRef = ref<HTMLElement | null>(null);
 const cardRefs = ref<HTMLElement[]>([]);
 
 const copiedIndex = ref<number | null>(null);
+const copiedAddress = ref(false);
 
 const bankList = computed<BankAccount[]>(() => {
   if (props.invitation.banks && Array.isArray(props.invitation.banks) && props.invitation.banks.length > 0) {
@@ -129,6 +180,21 @@ function copyAccount(index: number) {
   copiedIndex.value = index;
   setTimeout(() => {
     copiedIndex.value = null;
+  }, 2500);
+}
+
+function copyAddress() {
+  if (!props.invitation.gift_address) return;
+  let text = props.invitation.gift_address;
+  if (props.invitation.gift_recipient) {
+    text += `\n(Penerima: ${props.invitation.gift_recipient}`;
+    if (props.invitation.gift_phone) text += `, Telp: ${props.invitation.gift_phone}`;
+    text += `)`;
+  }
+  navigator.clipboard.writeText(text);
+  copiedAddress.value = true;
+  setTimeout(() => {
+    copiedAddress.value = false;
   }, 2500);
 }
 
