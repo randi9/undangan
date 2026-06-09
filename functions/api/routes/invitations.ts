@@ -129,6 +129,9 @@ function buildInvitationUpdateData(body: any) {
     "streaming_enabled",
     "streaming_platform",
     "streaming_url",
+    "gift_address",
+    "gift_recipient",
+    "gift_phone",
   ];
 
   for (const f of fields) {
@@ -559,6 +562,9 @@ async function handleInvitationCreate(
     streaming_enabled: body.streaming_enabled || false,
     streaming_platform: body.streaming_platform || "youtube",
     streaming_url: body.streaming_url || "",
+    gift_address: body.gift_address || "",
+    gift_recipient: body.gift_recipient || "",
+    gift_phone: body.gift_phone || "",
     payment_status: paymentStatus,
     trial_expires_at: trialExpiresAt,
     view_count: 0,

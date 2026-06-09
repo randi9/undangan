@@ -40,7 +40,7 @@ export const invitationCreateSchema = z.object({
     .min(3, "Slug minimal 3 karakter")
     .max(64, "Slug maksimal 64 karakter")
     .regex(slugRegex, "Slug hanya boleh huruf kecil, angka, dan strip"),
-  theme: z.enum(["elegant", "minimalist", "floral", "elegant_blue", "floral_blue"]),
+  theme: z.enum(["elegant", "minimalist", "floral", "elegant_blue", "floral_blue", "nyunda"]),
   groom_name: z
     .string()
     .trim()
@@ -84,6 +84,9 @@ export const invitationCreateSchema = z.object({
   streaming_platform: z.string().max(50).optional().default(""),
   streaming_url: z.string().optional().default(""),
   photos: z.array(z.any()).optional(),
+  gift_address: z.string().max(500).optional().default(""),
+  gift_recipient: z.string().max(150).optional().default(""),
+  gift_phone: z.string().max(30).optional().default(""),
 });
 
 // For updates, all fields are optional
