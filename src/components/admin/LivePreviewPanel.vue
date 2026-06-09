@@ -163,8 +163,8 @@ defineExpose({
   top: 0;
   left: 0;
   width: 390px;
-  height: 139.27%; /* 100% / 0.718 */
-  transform: scale(0.718) translateZ(0);
+  height: calc(100% / 0.725);
+  transform: scale(0.725) translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   will-change: transform;

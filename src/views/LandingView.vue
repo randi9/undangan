@@ -1916,15 +1916,15 @@ const themesData = [
  * CSS iframe scaling for desktop:
  * Render at 390px (real mobile viewport width) then scale to fit
  * the ~280px screen area (300px frame - 10px border × 2).
- * Scale = 280 / 390 ≈ 0.718
+ * Scale adjusted slightly from 0.718 to 0.725 to ensure no gaps or subpixel white lines.
  */
 .theme-demo-iframe {
   position: absolute;
   top: 0;
   left: 0;
   width: 390px;
-  height: 845px;
-  transform: scale(0.718) translateZ(0);
+  height: calc(100% / 0.725);
+  transform: scale(0.725) translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   will-change: transform;
@@ -3246,15 +3246,15 @@ const themesData = [
   /*
    * CSS iframe scaling: render at 390px (real mobile viewport width)
    * then scale down to fit the ~226px screen area.
-   * Frame=240px - border(7px×2) = 226px screen → scale = 226/390 ≈ 0.58
+   * Scale adjusted from 0.58 to 0.59 to prevent subpixel white gaps on the sides.
    */
   .theme-demo-iframe {
     position: absolute;
     top: 0;
     left: 0;
     width: 390px;
-    height: 845px;
-    transform: scale(0.58);
+    height: calc(100% / 0.59);
+    transform: scale(0.59);
     transform-origin: top left;
   }
 
