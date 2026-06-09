@@ -722,20 +722,28 @@ function startFloating() {
 }
 
 .hero-btn-primary {
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #1d4ed8 100%);
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
   color: #ffffff;
-  border-color: transparent;
+  border: none;
   box-shadow:
-    0 8px 24px rgba(37, 99, 235, 0.3),
-    0 2px 8px rgba(37, 99, 235, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 4px 0 #1d4ed8,
+    0 8px 24px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .hero-btn-primary:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   box-shadow:
-    0 14px 36px rgba(37, 99, 235, 0.4),
-    0 4px 12px rgba(37, 99, 235, 0.25),
+    0 6px 0 #1d4ed8,
+    0 14px 36px rgba(59, 130, 246, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.hero-btn-primary:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0 #1d4ed8,
+    0 4px 12px rgba(59, 130, 246, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 

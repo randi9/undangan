@@ -1132,7 +1132,7 @@ const themesData = [
   --lp-primary: #1e3a5f;
   --lp-primary-deep: #0f2440;
   --lp-accent: #93c5fd;
-  --lp-accent-hover: #2563eb;
+  --lp-accent-hover: #3b82f6;
   --lp-accent-light: rgba(59, 130, 246, 0.1);
   --lp-accent-glow: rgba(59, 130, 246, 0.25);
   --lp-bg: #ffffff;
@@ -1242,16 +1242,28 @@ const themesData = [
 }
 
 .lp-btn-primary {
-  background: var(--lp-accent-hover);
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
   color: #fff;
-  border-color: var(--lp-accent-hover);
-  box-shadow: 0 4px 24px rgba(59, 130, 246, 0.35);
+  border: none;
+  box-shadow:
+    0 4px 0 #1d4ed8,
+    0 8px 24px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .lp-btn-primary:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.45);
+  box-shadow:
+    0 6px 0 #1d4ed8,
+    0 12px 32px rgba(59, 130, 246, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.lp-btn-primary:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0 #1d4ed8,
+    0 4px 12px rgba(59, 130, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .lp-btn-outline {
@@ -1376,13 +1388,30 @@ const themesData = [
 }
 
 .lp-nav-cta {
-  background: var(--lp-accent-hover) !important;
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%) !important;
   color: #fff !important;
-  padding: 10px 24px !important;
+  border: none !important;
+  box-shadow:
+    0 3px 0 #1d4ed8,
+    0 6px 16px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  padding: 8px 24px !important;
 }
 .lp-nav-cta:hover {
-  background: #1d4ed8 !important;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 5px 0 #1d4ed8,
+    0 10px 20px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+.lp-nav-cta:active {
+  transform: translateY(1px) !important;
+  box-shadow:
+    0 2px 0 #1d4ed8,
+    0 4px 8px rgba(59, 130, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 .lp-nav-toggle {
@@ -1825,14 +1854,19 @@ const themesData = [
     inset 0 0 0 1px rgba(255, 255, 255, 0.15);
   /* Removed overflow: hidden to prevent browser 3D graphics layers from clipping box-shadow */
   z-index: 2;
-  transform: rotateY(-8deg) rotateX(3deg);
+  transform: rotateY(-8deg) rotateX(3deg) translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  will-change: transform;
   transition:
     transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.5s ease;
 }
 
 .smartphone-frame:hover {
-  transform: rotateY(0deg) rotateX(0deg);
+  transform: rotateY(0deg) rotateX(0deg) translateZ(0);
   box-shadow:
     0 40px 80px -15px rgba(0, 0, 0, 0.5),
     inset 0 0 0 1px rgba(255, 255, 255, 0.15);
@@ -1872,6 +1906,10 @@ const themesData = [
   overflow: hidden;
   /* Add masking to make sure iframe scrollbar respects border-radius */
   -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
 /*
@@ -1886,7 +1924,10 @@ const themesData = [
   left: 0;
   width: 390px;
   height: 845px;
-  transform: scale(0.718);
+  transform: scale(0.718) translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
   transform-origin: top left;
   pointer-events: auto;
   /* Hide scrollbar in iframe if possible via CSS */
@@ -2270,6 +2311,32 @@ const themesData = [
 
 .lp-theme-btn-use {
   flex: 1.2;
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 
+    0 3px 0 #1d4ed8,
+    0 6px 12px rgba(59, 130, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform: translateY(0);
+}
+
+.lp-theme-btn-use:hover {
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 5px 0 #1d4ed8,
+    0 8px 16px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+.lp-theme-btn-use:active {
+  transform: translateY(1px) !important;
+  box-shadow: 
+    0 2px 0 #1d4ed8,
+    0 3px 6px rgba(59, 130, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 .lp-theme-btn:disabled {
@@ -2292,14 +2359,26 @@ const themesData = [
   font-size: 15px;
   padding: 14px 36px;
   box-shadow: 0 2px 12px rgba(59, 130, 246, 0.1);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .lp-btn-themes-cta:hover {
-  background: var(--lp-accent-hover);
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
   color: #fff;
-  border-color: var(--lp-accent-hover);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 28px rgba(59, 130, 246, 0.35);
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 0 #1d4ed8,
+    0 12px 28px rgba(59, 130, 246, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.lp-btn-themes-cta:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0 #1d4ed8,
+    0 4px 10px rgba(59, 130, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* --- Steps Timeline --- */

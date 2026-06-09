@@ -1252,14 +1252,19 @@ onBeforeUnmount(() => {
     -20px 30px 60px -10px rgba(0, 0, 0, 0.45),
     inset 0 0 0 1px rgba(255, 255, 255, 0.15);
   z-index: 2;
-  transform: rotateY(-8deg) rotateX(3deg);
+  transform: rotateY(-8deg) rotateX(3deg) translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  will-change: transform;
   transition:
     transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.5s ease;
 }
 
 .smartphone-frame:hover {
-  transform: rotateY(0deg) rotateX(0deg);
+  transform: rotateY(0deg) rotateX(0deg) translateZ(0);
   box-shadow:
     0 40px 80px -15px rgba(0, 0, 0, 0.3),
     inset 0 0 0 1px rgba(255, 255, 255, 0.15);
@@ -1298,6 +1303,10 @@ onBeforeUnmount(() => {
   border-radius: 28px;
   overflow: hidden;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
 .phone-iframe {
@@ -1306,7 +1315,10 @@ onBeforeUnmount(() => {
   left: 0;
   width: 390px;
   height: 139.27%; /* 100% / 0.718 */
-  transform: scale(0.718);
+  transform: scale(0.718) translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
   transform-origin: top left;
   border: none;
   background: #fff;
