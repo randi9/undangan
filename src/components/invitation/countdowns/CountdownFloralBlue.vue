@@ -45,7 +45,7 @@
         <!-- Event Decoration -->
         <img
           ref="eventDecorRef"
-          src="https://media.mengundanganda.com/floral-blue/event%20section/randidewi_8903c563-e7ae-47f8-93c1-751c9a0581cf.webp"
+          src="https://media.mengundanganda.com/floral-blue/coundown%20section/floralblue_caccab54-b364-497d-b22d-3e9f0e0631ed.webp"
           alt="Decoration"
           class="absolute bottom-0 left-0 w-full object-cover object-bottom"
           style="opacity: 0;"
@@ -54,7 +54,7 @@
         <!-- Resepsi Decoration -->
         <img
           ref="resepsiDecorRef"
-          src="https://media.mengundanganda.com/floral-blue/event%20section/randidewi_9ff09159-90b3-416a-bad5-a99a71be6993.webp"
+          src="https://media.mengundanganda.com/floral-blue/coundown%20section/floralblue_816a8b3a-a391-4819-98d3-acec8b6488a3.webp"
           alt="Resepsi Decoration"
           class="absolute bottom-0 left-0 w-full object-cover object-bottom"
           style="opacity: 0;"
