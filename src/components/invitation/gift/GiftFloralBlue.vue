@@ -58,7 +58,7 @@
             <img src="https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_de652656-b50b-496c-990f-6f89f16b39c8.webp" style="position: absolute; bottom: -20px; left: 0px; width: 150px; height: auto; opacity: 0.3; z-index: 0; pointer-events: none;" alt="Gift Card Floral 1" />
             
             <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1; margin-bottom: 16px;">
-              <div style="font-weight: 800; font-size: 20px; color: var(--theme-primary); letter-spacing: 0.05em; text-transform: uppercase;">Kirim Hadiah Fisik</div>
+              <div style="font-weight: 800; font-size: 20px; color: var(--theme-primary); letter-spacing: 0.05em; text-transform: uppercase;">Kirim Kado</div>
               <Icon icon="lucide:package" style="font-size: 24px; color: var(--theme-primary);" />
             </div>
             

@@ -89,7 +89,7 @@
           <div style="position: absolute; right: -40px; top: -40px; width: 140px; height: 140px; border: 1px solid rgba(4,26,51,0.03); border-radius: 50%; pointer-events: none;"></div>
           
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-            <span style="font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #304851;">Kirim Hadiah Fisik</span>
+            <span style="font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #304851;">Kirim Kado</span>
             <Icon icon="lucide:package" style="font-size: 18px; color: #304851; opacity: 0.8;" />
           </div>
 

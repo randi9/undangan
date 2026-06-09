@@ -84,7 +84,7 @@
         <div class="w-full bg-white p-7 rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-gray-100 relative overflow-hidden flex flex-col justify-between text-left group hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1">
           <div class="flex justify-between items-center z-10 mb-4">
             <div class="font-bold text-lg text-gray-800 tracking-wide uppercase">
-              Kirim Hadiah Fisik
+              Kirim Kado
             </div>
             <Icon icon="lucide:package" class="text-xl text-gray-400" />
           </div>

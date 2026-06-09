@@ -139,7 +139,7 @@
             
             <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1; margin-bottom: 16px;">
               <div style="font-weight: 800; font-size: 20px; color: var(--theme-primary); letter-spacing: 0.05em; text-transform: uppercase;">
-                Kirim Hadiah Fisik
+                Kirim Kado
               </div>
               <Icon icon="lucide:package" style="font-size: 24px; color: var(--theme-secondary);" />
             </div>

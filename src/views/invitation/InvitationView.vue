@@ -307,7 +307,12 @@ const lightboxOpen = ref(false);
 const lightboxIndex = ref(0);
 
 // --- SMOOTH SCROLL (Lenis) ---
-const { init: initSmoothScroll, destroy: destroySmoothScroll, stop: stopScroll, start: startScroll } = useSmoothScroll();
+const {
+  init: initSmoothScroll,
+  destroy: destroySmoothScroll,
+  stop: stopScroll,
+  start: startScroll,
+} = useSmoothScroll();
 const rsvpSubmitting = ref(false);
 const rsvpMessages = ref<Rsvp[]>([]);
 
@@ -500,18 +505,18 @@ const themeStyles = computed(() => ({
 function openInvitation() {
   isClosingOverlay.value = true;
   isOpened.value = true;
-  
+
   // Reset scroll position to top when opening the invitation
-  window.scrollTo({ top: 0, behavior: 'instant' });
-  
+  window.scrollTo({ top: 0, behavior: "instant" });
+
   // Enforce scroll position after DOM updates from async components
   requestAnimationFrame(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: "instant" });
     requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.scrollTo({ top: 0, behavior: "instant" });
     });
   });
-  
+
   if (invitation.value?.music_url && musicPlayer.value) {
     musicPlayer.value
       .play()
@@ -707,15 +712,19 @@ onMounted(async () => {
     countdownTimer = setInterval(updateCountdown, 1000);
     loading.value = false;
     nextTick(() => preloadAllAssets());
-    
+
     // Auto-open invitation if requested (bypasses cover)
-    if (route.query.autoOpen === 'true') {
+    if (route.query.autoOpen === "true") {
       isOpened.value = true;
-      window.addEventListener('scroll', () => {
-        if (window.parent !== window) {
-          window.parent.postMessage({ type: 'DEMO_SCROLLED' }, '*');
-        }
-      }, { once: true, passive: true });
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (window.parent !== window) {
+            window.parent.postMessage({ type: "DEMO_SCROLLED" }, "*");
+          }
+        },
+        { once: true, passive: true },
+      );
     }
     return;
   }
@@ -751,8 +760,8 @@ onMounted(async () => {
   }
 
   // Detect if this is an admin preview (skip view counting)
-  const isAdminPreview = route.query.preview === 'true' ||
-    document.referrer.includes('/dashboard');
+  const isAdminPreview =
+    route.query.preview === "true" || document.referrer.includes("/dashboard");
 
   const data = await store.fetchInvitationBySlug(slug, isAdminPreview);
   invitation.value = data;
@@ -778,16 +787,19 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- ========================================= -->
-  <!-- DESKTOP MODE: Render inside phone-frame iframe -->
-  <!-- ========================================= -->
   <div v-if="isDesktop" class="desktop-phone-wrapper">
-    <div class="desktop-phone-frame">
-      <iframe
-        :src="currentUrl"
-        class="phone-iframe"
-        title="Undangan Pernikahan"
-      ></iframe>
+    <!-- Smartphone CSS Frame Mockup -->
+    <div class="smartphone-frame-wrapper">
+      <div class="smartphone-frame">
+        <div class="smartphone-notch"></div>
+        <div class="smartphone-screen">
+          <iframe
+            :src="currentUrl"
+            class="phone-iframe"
+            title="Undangan Pernikahan"
+          ></iframe>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -812,7 +824,7 @@ onBeforeUnmount(() => {
   <div
     v-else-if="!invitation"
     class="min-h-[100dvh] flex flex-col items-center justify-center p-6 lg:p-10 bg-[#f8fafc] relative overflow-hidden"
-    style="font-family: var(--font-sans, 'Inter', sans-serif)"
+    style="font-family: var(--font-sans, &quot;Inter&quot;, sans-serif)"
   >
     <!-- Modern ambient blobs -->
     <div
@@ -935,64 +947,80 @@ onBeforeUnmount(() => {
     />
 
     <!-- MAIN INVITATION CONTENT -->
-    <div v-if="isOpened" class="animate-fade-in" style="overflow-anchor: none;">
+    <div v-if="isOpened" class="animate-fade-in" style="overflow-anchor: none">
       <!-- HERO WRAPPER (prevents layout shift flash of quotes) -->
-      <div style="min-height: 100vh; width: 100%;">
+      <div style="min-height: 100vh; width: 100%">
         <!-- HERO (Dynamic per theme) -->
         <component
           :is="activeHero"
           :overlay-gradient="activeTheme.overlayGradient"
         >
-        <div
-          ref="heroOval"
-          :class="[
-            'flex flex-col gap-4 opacity-0 p-6 md:p-10 relative z-10',
-            !['elegant_blue', 'floral_blue', 'nyunda'].includes(themeName)
-              ? 'items-center justify-center mx-auto text-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
-              : themeName === 'nyunda'
-                ? ''
-                : themeName === 'elegant_blue'
-                  ? 'items-center justify-center mx-auto text-center w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
-                  : 'items-center justify-center mx-auto text-center w-full max-w-[600px]'
-          ]"
-          :style="themeName === 'nyunda' ? { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', textAlign: 'center', margin: '0 auto' } : {}"
-        >
-          <img
-            v-if="themeName === 'elegant_blue'"
-            src="https://media.mengundanganda.com/elegant_blue/hero%20section/randidewi_9c4e42a1-0bb6-4e36-85a9-d581e9767bd7.webp"
-            alt="Frame"
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain -z-10 pointer-events-none"
-            style="max-width: none"
-          />
+          <div
+            ref="heroOval"
+            :class="[
+              'flex flex-col gap-4 opacity-0 p-6 md:p-10 relative z-10',
+              !['elegant_blue', 'floral_blue', 'nyunda'].includes(themeName)
+                ? 'items-center justify-center mx-auto text-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
+                : themeName === 'nyunda'
+                  ? ''
+                  : themeName === 'elegant_blue'
+                    ? 'items-center justify-center mx-auto text-center w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
+                    : 'items-center justify-center mx-auto text-center w-full max-w-[600px]',
+            ]"
+            :style="
+              themeName === 'nyunda'
+                ? {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    textAlign: 'center',
+                    margin: '0 auto',
+                  }
+                : {}
+            "
+          >
+            <img
+              v-if="themeName === 'elegant_blue'"
+              src="https://media.mengundanganda.com/elegant_blue/hero%20section/randidewi_9c4e42a1-0bb6-4e36-85a9-d581e9767bd7.webp"
+              alt="Frame"
+              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain -z-10 pointer-events-none"
+              style="max-width: none"
+            />
 
-          <p
-            :ref="setHeroTextRef"
-            class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium opacity-0"
-            :style="themeName === 'nyunda' ? { textAlign: 'center' } : {}"
-          >
-            The Wedding of
-          </p>
-          <h1
-            :ref="setHeroTextRef"
-            class="text-5xl md:text-7xl lg:text-8xl mb-1 opacity-0 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]"
-            :style="themeName === 'nyunda' ? { fontFamily: activeTheme.fontHeading, textAlign: 'center' } : { fontFamily: activeTheme.fontHeading }"
-          >
-            {{ invitation.groom_name }}
-            <span
-              class="block text-3xl md:text-5xl lg:text-6xl text-[#3d4a40] my-2 drop-shadow-sm"
-              >&amp;</span
+            <p
+              :ref="setHeroTextRef"
+              class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium opacity-0"
+              :style="themeName === 'nyunda' ? { textAlign: 'center' } : {}"
             >
-            {{ invitation.bride_name }}
-          </h1>
-          <p
-            v-if="formattedDate"
-            :ref="setHeroTextRef"
-            class="text-[#3d4a40] mt-4 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold opacity-0 drop-shadow-sm"
-          >
-            {{ formattedDate }}
-          </p>
-        </div>
-      </component>
+              The Wedding of
+            </p>
+            <h1
+              :ref="setHeroTextRef"
+              class="text-5xl md:text-7xl lg:text-8xl mb-1 opacity-0 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]"
+              :style="
+                themeName === 'nyunda'
+                  ? { fontFamily: activeTheme.fontHeading, textAlign: 'center' }
+                  : { fontFamily: activeTheme.fontHeading }
+              "
+            >
+              {{ invitation.groom_name }}
+              <span
+                class="block text-3xl md:text-5xl lg:text-6xl text-[#3d4a40] my-2 drop-shadow-sm"
+                >&amp;</span
+              >
+              {{ invitation.bride_name }}
+            </h1>
+            <p
+              v-if="formattedDate"
+              :ref="setHeroTextRef"
+              class="text-[#3d4a40] mt-4 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold opacity-0 drop-shadow-sm"
+            >
+              {{ formattedDate }}
+            </p>
+          </div>
+        </component>
       </div>
 
       <!-- QUOTE (Dynamic per theme) -->
@@ -1047,11 +1075,34 @@ onBeforeUnmount(() => {
       />
 
       <!-- RSVP & GIFT WRAPPER (For shared background) -->
-      <div class="rsvp-gift-wrapper" style="position: relative; width: 100%; z-index: 10;">
+      <div
+        class="rsvp-gift-wrapper"
+        style="position: relative; width: 100%; z-index: 10"
+      >
         <!-- Shared Background for RSVP & Gift -->
-        <div v-if="['floral_blue', 'elegant_blue'].includes(themeName)" style="position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100vw; background-image: url('https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_1cd310ab-cb74-40d2-942c-07e3f50c594d.webp'); background-size: cover; background-position: center; z-index: -1;">
+        <div
+          v-if="['floral_blue', 'elegant_blue'].includes(themeName)"
+          style="
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100vw;
+            background-image: url(&quot;https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_1cd310ab-cb74-40d2-942c-07e3f50c594d.webp&quot;);
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+          "
+        >
           <!-- Light blue overlay to match gallery, with increased opacity -->
-          <div style="position: absolute; inset: 0; background-color: rgba(168, 208, 230, 0.7);"></div>
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background-color: rgba(168, 208, 230, 0.7);
+            "
+          ></div>
         </div>
 
         <!-- RSVP (Dynamic per theme) -->
@@ -1174,32 +1225,95 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  background: #ffffff;
+  padding: 24px;
+  background: #f8fafc; /* Latar belakang premium yang kontras dengan frame HP hitam */
 }
 
-.desktop-phone-frame {
+/* Smartphone Mockup Styles */
+.smartphone-frame-wrapper {
   position: relative;
-  width: 390px;
-  height: 95vh;
-  height: 95dvh;
-  border-radius: 16px;
-  overflow: hidden;
+  width: 100%;
+  max-width: 440px;
+  padding: 20px 30px 60px 30px; /* Dipersempit ke 30px agar tidak memotong isi pada viewport lebih kecil */
+  perspective: 1000px;
+  display: flex;
+  justify-content: center;
+}
+
+.smartphone-frame {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 9 / 19.5;
+  background: #000;
+  border-radius: 40px;
+  border: 10px solid #1a1a1a;
   box-shadow:
-    -1px 0 0 rgba(0, 0, 0, 0.06),
-    1px 0 0 rgba(0, 0, 0, 0.06),
-    -4px 0 16px rgba(0, 0, 0, 0.08),
-    4px 0 16px rgba(0, 0, 0, 0.08),
-    -8px 0 30px rgba(0, 0, 0, 0.05),
-    8px 0 30px rgba(0, 0, 0, 0.05);
+    -20px 30px 60px -10px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  z-index: 2;
+  transform: rotateY(-8deg) rotateX(3deg);
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.5s ease;
+}
+
+.smartphone-frame:hover {
+  transform: rotateY(0deg) rotateX(0deg);
+  box-shadow:
+    0 40px 80px -15px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+.smartphone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 24px;
+  background: #1a1a1a;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  z-index: 10;
+}
+
+.smartphone-notch::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 25px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.smartphone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
   background: #fff;
+  border-radius: 28px;
+  overflow: hidden;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .phone-iframe {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 390px;
+  height: 139.27%; /* 100% / 0.718 */
+  transform: scale(0.718);
+  transform-origin: top left;
   border: none;
   background: #fff;
+  scrollbar-width: none;
+}
+.phone-iframe::-webkit-scrollbar {
+  display: none;
 }
 
 /* WATERMARK OVERLAY */

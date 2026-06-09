@@ -24,7 +24,7 @@
       <!-- Physical Gift Card -->
       <div v-if="invitation.gift_address" style="background-color: #FFF8E7; border-radius: 8px; padding: 24px; margin-bottom: 16px; text-align: left;">
         <div style="font-size: 0.75rem; font-weight: 700; color: #8B6F5C; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">
-          Kirim Hadiah Fisik
+          Kirim Kado
         </div>
         
         <div style="font-size: 0.9rem; color: #5C3D2E; line-height: 1.6; margin-bottom: 12px; white-space: pre-line;">
