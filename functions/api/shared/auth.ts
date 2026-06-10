@@ -185,3 +185,96 @@ export function requireAdminUser(user: any) {
 export function unauthorized() {
   return json({ error: "Tidak terautentikasi." }, 401);
 }
+
+function getTokenSecret(env: any): string {
+  return (env?.SUPABASE_SECRET_KEY || env?.SUPABASE_SERVICE_ROLE_KEY || "client-token-fallback-key") + ":client-access";
+}
+
+async function hmacSign(secret: string, data: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(data));
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+export async function decodeAccessToken(token: string, env: any): Promise<{ invitationId?: string; accessCode: string; woCodeId?: string; needs_create?: boolean } | null> {
+  try {
+    const dotIndex = token.lastIndexOf(".");
+    if (dotIndex === -1) {
+      const payload = JSON.parse(atob(token));
+      if ((!payload.inv && !payload.wo_code_id) || !payload.code || !payload.exp) return null;
+      if (Date.now() > payload.exp) return null;
+      return { invitationId: payload.inv, accessCode: payload.code };
+    }
+
+    const payloadB64 = token.slice(0, dotIndex);
+    const signature = token.slice(dotIndex + 1);
+
+    const expectedSig = await hmacSign(getTokenSecret(env), payloadB64);
+    if (signature.length !== expectedSig.length) return null;
+    let diff = 0;
+    for (let i = 0; i < signature.length; i++) {
+      diff |= signature.charCodeAt(i) ^ expectedSig.charCodeAt(i);
+    }
+    if (diff !== 0) return null;
+
+    const payload = JSON.parse(atob(payloadB64));
+    if ((!payload.inv && !payload.wo_code_id) || !payload.code || !payload.exp) return null;
+    if (Date.now() > payload.exp) return null;
+    return {
+      invitationId: payload.inv,
+      accessCode: payload.code,
+      woCodeId: payload.wo_code_id,
+      needs_create: payload.needs_create || false,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function createAccessToken(payload: any, env: any): Promise<string> {
+  const expiresAt = Date.now() + 72 * 60 * 60 * 1000; // 72 hours
+  const payloadStr = JSON.stringify({ ...payload, exp: expiresAt });
+  const payloadB64 = btoa(payloadStr);
+  const signature = await hmacSign(getTokenSecret(env), payloadB64);
+  return `${payloadB64}.${signature}`;
+}
+
+export async function requireUserOrClient(supabase: any, request: Request, env: any) {
+  const authHeader = request.headers.get("x-access-token") || request.headers.get("authorization") || "";
+  let token = authHeader;
+  if (authHeader.toLowerCase().startsWith("bearer ")) {
+    token = authHeader.slice(7).trim();
+  }
+
+  if (token) {
+    const decoded = await decodeAccessToken(token, env);
+    if (decoded) {
+      if (decoded.needs_create && decoded.woCodeId) {
+        return {
+          id: "client_temp",
+          role: "client_temp",
+          woCodeId: decoded.woCodeId,
+          accessCode: decoded.accessCode,
+        };
+      } else if (decoded.invitationId) {
+        return {
+          id: "client_auth",
+          role: "client",
+          invitationId: decoded.invitationId,
+          accessCode: decoded.accessCode,
+        };
+      }
+    }
+  }
+
+  return await requireUser(supabase, request, env);
+}

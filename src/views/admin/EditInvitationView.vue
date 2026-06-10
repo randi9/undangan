@@ -1,7 +1,7 @@
 <template>
   <div class="admin-page-simple">
     <header class="simple-topbar">
-      <router-link to="/dashboard" class="simple-topbar-brand">
+      <router-link :to="dashboardPath" class="simple-topbar-brand">
         <div
           class="sidebar-brand-icon"
           style="
@@ -23,7 +23,7 @@
         >
       </router-link>
       <nav class="simple-topbar-nav">
-        <router-link to="/dashboard" class="btn btn-outline btn-sm">
+        <router-link :to="dashboardPath" class="btn btn-outline btn-sm">
           <span
             class="material-symbols-rounded"
             style="font-size: 16px; vertical-align: -3px"
@@ -540,7 +540,7 @@
                 <!-- Wizard Nav Step 1 -->
                 <div class="wizard-nav">
                   <div class="wizard-nav-left">
-                    <router-link to="/dashboard" class="btn btn-outline"
+                    <router-link :to="dashboardPath" class="btn btn-outline"
                       >Batal</router-link
                     >
                   </div>
@@ -3021,6 +3021,7 @@ import { Icon } from "@iconify/vue";
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
+import { useClientStore } from "@/stores/client";
 import { resolveAssetUrl } from "@/utils/url";
 import { THEME_LIST, getThemeGalleryDefault } from "@/config/themes";
 import { DEFAULT_MUSIC } from "@/config/defaultMusic";
@@ -3049,7 +3050,12 @@ const isEditMode = computed(() => (props.mode || 'edit') === 'edit');
 const route = useRoute();
 const router = useRouter();
 const store = useInvitationStore();
+const clientStore = useClientStore();
 const apiBase = import.meta.env.VITE_API_URL || "";
+
+const dashboardPath = computed(() => {
+  return clientStore.isAuthenticated ? "/client/dashboard" : "/dashboard";
+});
 
 // --- Step Validator ---
 function validateStep(stepIndex: number): string[] {
@@ -3444,14 +3450,32 @@ async function handleSubmit() {
   try {
     if (isEditMode.value) {
       const id = route.params.id as string;
-      await store.updateInvitation(id, getSubmitPayload());
+      const res = await store.updateInvitation(id, getSubmitPayload());
       showToast('success', 'Undangan berhasil diperbarui!');
-      setTimeout(() => router.push('/dashboard'), 1500);
+      
+      // If client session, update basic info in localStorage
+      if (clientStore.isAuthenticated && res) {
+        localStorage.setItem('client_invitation_basic', JSON.stringify(res));
+      }
+
+      setTimeout(() => router.push(clientStore.isAuthenticated ? '/client/dashboard' : '/dashboard'), 1500);
     } else {
-      await store.createInvitation(getSubmitPayload());
+      const res = await store.createInvitation(getSubmitPayload());
       showToast('success', 'Undangan berhasil dibuat!');
       draft.clearDraft();
-      setTimeout(() => router.push('/dashboard?just_created=1'), 1500);
+
+      // If client session, update token and basic info in localStorage
+      if (clientStore.isAuthenticated && res) {
+        if (res.token) {
+          clientStore.accessToken = res.token;
+          localStorage.setItem('client_access_token', res.token);
+          clientStore.needsCreate = false;
+          localStorage.setItem('client_needs_create', 'false');
+        }
+        localStorage.setItem('client_invitation_basic', JSON.stringify(res));
+      }
+
+      setTimeout(() => router.push(clientStore.isAuthenticated ? '/client/dashboard' : '/dashboard?just_created=1'), 1500);
     }
   } catch (e: any) {
     showToast('error', e.message || (isEditMode.value ? 'Gagal memperbarui undangan' : 'Gagal membuat undangan'));

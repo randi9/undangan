@@ -54,9 +54,15 @@
           </thead>
           <tbody>
             <tr v-for="user in users" :key="user.id">
-              <td><strong>{{ user.username }}</strong></td>
               <td>
-                <span class="user-badge" :class="user.role">{{ user.role }}</span>
+                <strong>{{ user.username }}</strong>
+                <div v-if="user.role === 'wo' && user.business_name" style="font-size:12px;color:var(--admin-text-secondary);margin-top:2px;">
+                  💼 {{ user.business_name }}
+                  <span v-if="user.business_phone">({{ user.business_phone }})</span>
+                </div>
+              </td>
+              <td>
+                <span class="user-badge" :class="user.role">{{ user.role === 'wo' ? 'Wedding Organizer' : user.role }}</span>
               </td>
               <td>{{ user.role === 'admin' ? '♾️' : user.max_invitations }}</td>
               <td>{{ user.invitation_count ?? 0 }}</td>
@@ -106,13 +112,24 @@
             <label>Role</label>
             <select v-model="form.role" :disabled="formLoading">
               <option value="user">User</option>
+              <option value="wo">Wedding Organizer (WO)</option>
               <option value="admin">Admin</option>
             </select>
           </div>
 
+          <div class="form-group" v-if="form.role === 'wo'">
+            <label>Nama Bisnis WO</label>
+            <input v-model="form.business_name" type="text" placeholder="Contoh: Happy Wedding WO" :disabled="formLoading" />
+          </div>
+
+          <div class="form-group" v-if="form.role === 'wo'">
+            <label>No. HP Bisnis WO</label>
+            <input v-model="form.business_phone" type="text" placeholder="Contoh: 08123456789" :disabled="formLoading" />
+          </div>
+
           <div class="form-group" v-if="form.role !== 'admin'">
-            <label>Max Undangan</label>
-            <input v-model.number="form.max_invitations" type="number" min="1" max="100" :disabled="formLoading" />
+            <label>Max Undangan (Kuota)</label>
+            <input v-model.number="form.max_invitations" type="number" :min="form.role === 'wo' ? 0 : 1" max="1000" :disabled="formLoading" />
           </div>
 
           <div class="modal-actions">
@@ -170,9 +187,11 @@ const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
 interface UserItem {
   id: string
   username: string
-  role: 'admin' | 'user'
+  role: 'admin' | 'user' | 'wo'
   max_invitations: number
   invitation_count?: number
+  business_name?: string | null
+  business_phone?: string | null
   created_at?: string
 }
 
@@ -192,8 +211,10 @@ const formError = ref<string | null>(null)
 const form = ref({
   username: '',
   password: '',
-  role: 'user' as 'admin' | 'user',
-  max_invitations: 1
+  role: 'user' as 'admin' | 'user' | 'wo',
+  max_invitations: 1,
+  business_name: '',
+  business_phone: ''
 })
 
 const deleteTarget = ref<UserItem | null>(null)
@@ -252,7 +273,14 @@ function openCreateModal() {
   isEditing.value = false
   editingId.value = null
   formError.value = null
-  form.value = { username: '', password: '', role: 'user', max_invitations: 1 }
+  form.value = { 
+    username: '', 
+    password: '', 
+    role: 'user', 
+    max_invitations: 3,
+    business_name: '',
+    business_phone: ''
+  }
   showModal.value = true
 }
 
@@ -264,7 +292,9 @@ function openEditModal(user: UserItem) {
     username: user.username,
     password: '',
     role: user.role,
-    max_invitations: user.max_invitations
+    max_invitations: user.max_invitations,
+    business_name: user.business_name || '',
+    business_phone: user.business_phone || ''
   }
   showModal.value = true
 }
@@ -282,6 +312,13 @@ async function handleSubmit() {
       username: form.value.username,
       role: form.value.role,
       max_invitations: form.value.role === 'admin' ? 999 : form.value.max_invitations
+    }
+    if (form.value.role === 'wo') {
+      body.business_name = form.value.business_name || null
+      body.business_phone = form.value.business_phone || null
+    } else {
+      body.business_name = null
+      body.business_phone = null
     }
     if (form.value.password) body.password = form.value.password
 

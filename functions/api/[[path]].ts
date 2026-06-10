@@ -14,12 +14,14 @@ import { dispatchRsvpRoute } from "./routes/rsvp";
 import { dispatchUploadRoute } from "./routes/upload";
 import { dispatchVoucherRoute } from "./routes/vouchers";
 import { dispatchChatRoute } from "./routes/chat";
+import { dispatchWoRoute } from "./routes/wo";
 import type { ApiDispatcher } from "./types/api";
 
 const dispatchers: ApiDispatcher[] = [
   dispatchHealthRoute,
   dispatchAuthRoute,
   dispatchClientRoute,
+  dispatchWoRoute,
   dispatchInvitationRoute,
   dispatchRsvpRoute,
   dispatchGuestRoute,

@@ -47,9 +47,9 @@ async function hmacSign(secret: string, data: string): Promise<string> {
  * Create an HMAC-signed time-limited access token.
  * Format: base64(payload).hmacSignature
  */
-async function createAccessToken(invitationId: string, accessCode: string, env: any): Promise<string> {
+async function createAccessToken(payload: any, env: any): Promise<string> {
   const expiresAt = Date.now() + 72 * 60 * 60 * 1000; // 72 hours
-  const payloadStr = JSON.stringify({ inv: invitationId, code: accessCode, exp: expiresAt });
+  const payloadStr = JSON.stringify({ ...payload, exp: expiresAt });
   const payloadB64 = btoa(payloadStr);
   const signature = await hmacSign(getTokenSecret(env), payloadB64);
   return `${payloadB64}.${signature}`;
@@ -57,15 +57,15 @@ async function createAccessToken(invitationId: string, accessCode: string, env: 
 
 /**
  * Decode, verify signature, and validate an access token.
- * Returns the invitation ID + access code if valid, null otherwise.
+ * Returns the token payload if valid, null otherwise.
  */
-async function decodeAccessToken(token: string, env: any): Promise<{ invitationId: string; accessCode: string } | null> {
+export async function decodeAccessToken(token: string, env: any): Promise<{ invitationId?: string; accessCode: string; woCodeId?: string; needs_create?: boolean } | null> {
   try {
     const dotIndex = token.lastIndexOf(".");
     if (dotIndex === -1) {
       // Legacy unsigned token (backward compat) — still validate against DB
       const payload = JSON.parse(atob(token));
-      if (!payload.inv || !payload.code || !payload.exp) return null;
+      if ((!payload.inv && !payload.wo_code_id) || !payload.code || !payload.exp) return null;
       if (Date.now() > payload.exp) return null;
       return { invitationId: payload.inv, accessCode: payload.code };
     }
@@ -83,9 +83,14 @@ async function decodeAccessToken(token: string, env: any): Promise<{ invitationI
     if (diff !== 0) return null;
 
     const payload = JSON.parse(atob(payloadB64));
-    if (!payload.inv || !payload.code || !payload.exp) return null;
+    if ((!payload.inv && !payload.wo_code_id) || !payload.code || !payload.exp) return null;
     if (Date.now() > payload.exp) return null;
-    return { invitationId: payload.inv, accessCode: payload.code };
+    return {
+      invitationId: payload.inv,
+      accessCode: payload.code,
+      woCodeId: payload.wo_code_id,
+      needs_create: payload.needs_create || false,
+    };
   } catch {
     return null;
   }
@@ -110,15 +115,37 @@ async function requireClientAccess(
     return { response: json({ error: "Token akses tidak valid atau kedaluwarsa." }, 401) };
   }
 
+  if (decoded.needs_create) {
+    return { response: json({ error: "Selesaikan pembuatan undangan terlebih dahulu.", needs_create: true }, 403) };
+  }
+
   // Verify the access code still matches the invitation
   const { data: invitation, error } = await supabase
     .from("invitations")
     .select("*")
     .eq("id", decoded.invitationId)
-    .eq("access_code", decoded.accessCode)
     .single();
 
   if (error || !invitation) {
+    return { response: json({ error: "Kode akses sudah tidak berlaku." }, 401) };
+  }
+
+  // Check if access code matches standard invitation access_code OR used wo_access_code
+  let isAccessCodeValid = invitation.access_code === decoded.accessCode;
+  if (!isAccessCodeValid) {
+    const { data: woCode } = await supabase
+      .from("wo_access_codes")
+      .select("id")
+      .eq("code", decoded.accessCode)
+      .eq("invitation_id", invitation.id)
+      .eq("status", "used")
+      .maybeSingle();
+    if (woCode) {
+      isAccessCodeValid = true;
+    }
+  }
+
+  if (!isAccessCodeValid) {
     return { response: json({ error: "Kode akses sudah tidak berlaku." }, 401) };
   }
 
@@ -205,17 +232,58 @@ async function handleVerifyCode(supabase: any, request: Request, env: any) {
     return json({ error: "Kode akses harus 8 karakter." }, 400);
   }
 
+  // 1. Check WO access codes table first
+  const { data: woCode, error: woError } = await supabase
+    .from("wo_access_codes")
+    .select("id, status, invitation_id, wo_user_id")
+    .eq("code", code)
+    .maybeSingle();
+
+  if (woCode) {
+    if (woCode.status === "revoked") {
+      return json({ error: "Kode akses ini telah dicabut." }, 400);
+    }
+
+    if (woCode.status === "used" || woCode.invitation_id) {
+      // If used, load matching invitation
+      const { data: invitation } = await supabase
+        .from("invitations")
+        .select("id, slug, groom_name, bride_name, cover_photo, theme")
+        .eq("id", woCode.invitation_id)
+        .maybeSingle();
+
+      if (!invitation) {
+        return json({ error: "Undangan terkait tidak ditemukan." }, 404);
+      }
+
+      const token = await createAccessToken({ inv: invitation.id, code }, env);
+      return json({
+        token,
+        invitation,
+        needs_create: false,
+      });
+    }
+
+    // Otherwise, fresh code. Needs creation
+    const token = await createAccessToken({ wo_code_id: woCode.id, code, needs_create: true }, env);
+    return json({
+      token,
+      needs_create: true,
+    });
+  }
+
+  // 2. Fallback to normal invitation access code
   const { data: invitation, error } = await supabase
     .from("invitations")
     .select("id, slug, groom_name, bride_name, cover_photo, theme, access_code")
     .eq("access_code", code)
-    .single();
+    .maybeSingle();
 
   if (error || !invitation) {
     return json({ error: "Kode akses tidak ditemukan." }, 404);
   }
 
-  const token = await createAccessToken(invitation.id, code, env);
+  const token = await createAccessToken({ inv: invitation.id, code }, env);
 
   return json({
     token,
@@ -227,6 +295,7 @@ async function handleVerifyCode(supabase: any, request: Request, env: any) {
       cover_photo: invitation.cover_photo,
       theme: invitation.theme,
     },
+    needs_create: false,
   });
 }
 
@@ -488,6 +557,7 @@ async function handleClientUpdateWaMessage(
   return json(data);
 }
 
+
 export const dispatchClientRoute: ApiDispatcher = async ({
   supabase,
   env,
@@ -509,6 +579,7 @@ export const dispatchClientRoute: ApiDispatcher = async ({
   // Client authenticated endpoints (require access token)
   if (pathname === "client/invitation" && method === "GET")
     return await handleClientInvitation(supabase, request, env);
+
 
   if (pathname === "client/guests" && method === "GET")
     return await handleClientGuests(supabase, request, env);

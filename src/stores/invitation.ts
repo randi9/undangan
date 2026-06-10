@@ -29,14 +29,21 @@ export const useInvitationStore = defineStore('invitation', () => {
 
   async function authHeaders(): Promise<Record<string, string>> {
     const auth = useAuthStore()
-    return await auth.getAuthHeaders()
+    const headers = { ...await auth.getAuthHeaders() }
+    const clientToken = localStorage.getItem('client_access_token')
+    if (clientToken) {
+      headers['X-Access-Token'] = clientToken
+    }
+    return headers
   }
 
   async function fetchInvitations() {
     loading.value = true
     error.value = null
     try {
-      const res = await fetch(`${API_BASE}/invitations`, {
+      const auth = useAuthStore()
+      const endpoint = auth.isWo ? `${API_BASE}/wo/invitations` : `${API_BASE}/invitations`
+      const res = await fetch(endpoint, {
         headers: await authHeaders()
       })
       if (res.status === 401) {

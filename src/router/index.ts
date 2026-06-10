@@ -107,6 +107,18 @@ if (subdomain) {
       component: () => import("@/views/client/ClientDashboardView.vue"),
       meta: { title: "Panel Undangan - MengundangAnda" },
     },
+    {
+      path: "/client/create",
+      name: "client-create",
+      component: () => import("@/views/admin/CreateInvitationView.vue"),
+      meta: { title: "Buat Undangan - MengundangAnda" },
+    },
+    {
+      path: "/client/edit/:id",
+      name: "client-edit",
+      component: () => import("@/views/admin/EditInvitationView.vue"),
+      meta: { title: "Edit Undangan - MengundangAnda" },
+    },
 
     // === Dashboard (Protected) ===
     {
@@ -126,6 +138,12 @@ if (subdomain) {
       name: "themes",
       component: () => import("@/views/admin/ThemeCatalogView.vue"),
       meta: { title: "Koleksi Tema - MengundangAnda", requiresAuth: true },
+    },
+    {
+      path: "/dashboard/access-codes",
+      name: "wo-access-codes",
+      component: () => import("@/views/admin/WoAccessCodesView.vue"),
+      meta: { title: "Kelola Kode Akses - MengundangAnda", requiresAuth: true },
     },
     {
       path: "/dashboard/create",

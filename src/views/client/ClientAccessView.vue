@@ -72,9 +72,20 @@ const loading = ref(false)
 const codeInput = ref<HTMLInputElement | null>(null)
 
 onMounted(() => {
-  // If already authenticated, redirect to dashboard
+  const queryCode = router.currentRoute.value.query.code as string
+  if (queryCode && queryCode.length === 8) {
+    code.value = queryCode.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    handleSubmit()
+    return
+  }
+
+  // If already authenticated, redirect
   if (store.isAuthenticated) {
-    router.replace('/client/dashboard')
+    if (store.needsCreate) {
+      router.replace('/client/create')
+    } else {
+      router.replace('/client/dashboard')
+    }
     return
   }
   codeInput.value?.focus()
@@ -91,8 +102,12 @@ async function handleSubmit() {
   loading.value = true
   errorMsg.value = ''
   try {
-    await store.verifyCode(code.value)
-    router.push('/client/dashboard')
+    const res = await store.verifyCode(code.value)
+    if (res.needs_create) {
+      router.push('/client/create')
+    } else {
+      router.push('/client/dashboard')
+    }
   } catch (err: any) {
     errorMsg.value = err.message || 'Kode akses tidak valid.'
   } finally {

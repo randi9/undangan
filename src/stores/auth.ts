@@ -6,9 +6,11 @@ const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
 export interface AuthUser {
   id: string
   username: string
-  role: 'admin' | 'user'
+  role: 'admin' | 'user' | 'wo'
   max_invitations: number
   invitation_count?: number
+  business_name?: string
+  business_phone?: string
   user_source?: 'admin_created' | 'self_signup'
 }
 
@@ -24,11 +26,13 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!user.value)
   const isAdmin = computed(() => user.value?.role === 'admin')
+  const isWo = computed(() => user.value?.role === 'wo')
   const isSelfSignup = computed(() => user.value?.user_source === 'self_signup')
   const isAdminCreated = computed(() => user.value?.user_source === 'admin_created' || user.value?.role === 'admin')
   const canCreateInvitation = computed(() => {
     if (!user.value) return false
     if (user.value.role === 'admin') return true
+    if (user.value.role === 'wo') return false
     return (user.value.invitation_count ?? 0) < user.value.max_invitations
   })
 
@@ -134,6 +138,7 @@ export const useAuthStore = defineStore('auth', () => {
     error,
     isAuthenticated,
     isAdmin,
+    isWo,
     isSelfSignup,
     isAdminCreated,
     canCreateInvitation,

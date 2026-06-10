@@ -1,4 +1,4 @@
-import { requireUser, unauthorized } from "../shared/auth";
+import { requireUser, requireUserOrClient, unauthorized } from "../shared/auth";
 import { getEffectiveMethod, json } from "../shared/http";
 import { deleteR2Url } from "../shared/storage";
 import { rateLimit, getClientIp } from "../shared/rateLimit";
@@ -401,7 +401,7 @@ async function handleInvitationById(
   const id = decodeURIComponent(pathname.slice("invitations/".length))
     .trim()
     .split("/")[0];
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUserOrClient(supabase, request, env);
   if (!user) return unauthorized();
 
   const { data: invitation, error } = await supabase
@@ -411,8 +411,18 @@ async function handleInvitationById(
     .single();
 
   if (error || !invitation) return json({ error: "Invitation not found" }, 404);
-  if (user.role !== "admin" && invitation.owner_id !== user.id)
-    return json({ error: "Akses ditolak." }, 403);
+  
+  const isClient = user.role === "client";
+  const isOwner = invitation.owner_id === user.id;
+  const isWoInv = user.role === "wo" && invitation.wo_id === user.id;
+
+  if (user.role !== "admin" && !isOwner && !isWoInv) {
+    if (isClient && invitation.id === user.invitationId) {
+      // Allowed client
+    } else {
+      return json({ error: "Akses ditolak." }, 403);
+    }
+  }
 
   const { photos } = await loadInvitationRelations(supabase, id);
   return json({ ...invitation, photos });
@@ -427,18 +437,28 @@ async function handleInvitationStats(
   const id = decodeURIComponent(
     pathname.slice("invitations/".length).replace(/\/stats$/, ""),
   ).trim();
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUserOrClient(supabase, request, env);
   if (!user) return unauthorized();
 
   const { data: invitation, error } = await supabase
     .from("invitations")
-    .select("id, owner_id, view_count")
+    .select("id, owner_id, wo_id, view_count")
     .eq("id", id)
     .single();
 
   if (error || !invitation) return json({ error: "Invitation not found" }, 404);
-  if (user.role !== "admin" && invitation.owner_id !== user.id)
-    return json({ error: "Akses ditolak." }, 403);
+  
+  const isClient = user.role === "client";
+  const isOwner = invitation.owner_id === user.id;
+  const isWoInv = user.role === "wo" && invitation.wo_id === user.id;
+
+  if (user.role !== "admin" && !isOwner && !isWoInv) {
+    if (isClient && invitation.id === user.invitationId) {
+      // Allowed client
+    } else {
+      return json({ error: "Akses ditolak." }, 403);
+    }
+  }
 
   const { data: rsvps, error: rsvpError } = await supabase
     .from("rsvps")
@@ -474,24 +494,53 @@ async function handleInvitationCreate(
   request: Request,
   env: any,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUserOrClient(supabase, request, env);
   if (!user) return unauthorized();
 
   const rawBody = await request.json();
   const body = validateBody(invitationCreateSchema, rawBody);
 
-  if (user.role !== "admin") {
-    const { count } = await supabase
-      .from("invitations")
-      .select("id", { count: "exact", head: true })
-      .eq("owner_id", user.id);
-    if ((count || 0) >= user.max_invitations) {
-      return json(
-        {
-          error: `Limit tercapai. Anda hanya bisa membuat ${user.max_invitations} undangan.`,
-        },
-        403,
-      );
+  const isClientCreate = user.role === "client_temp";
+  let woId = null;
+  let ownerId = isClientCreate ? null : user.id;
+
+  if (isClientCreate) {
+    // 1. Fetch WO access code details
+    const { data: woCode, error: woError } = await supabase
+      .from("wo_access_codes")
+      .select("*")
+      .eq("id", user.woCodeId)
+      .single();
+
+    if (woError || !woCode || woCode.status !== "active") {
+      return json({ error: "Kode akses tidak aktif atau sudah digunakan." }, 400);
+    }
+
+    // 2. Fetch WO user to check quota
+    const { data: woUser } = await supabase
+      .from("users")
+      .select("id, max_invitations")
+      .eq("id", woCode.wo_user_id)
+      .single();
+
+    if (!woUser) {
+      return json({ error: "Wedding Organizer tidak ditemukan." }, 404);
+    }
+    woId = woUser.id;
+  } else {
+    if (user.role !== "admin") {
+      const { count } = await supabase
+        .from("invitations")
+        .select("id", { count: "exact", head: true })
+        .eq("owner_id", user.id);
+      if ((count || 0) >= user.max_invitations) {
+        return json(
+          {
+            error: `Limit tercapai. Anda hanya bisa membuat ${user.max_invitations} undangan.`,
+          },
+          403,
+        );
+      }
     }
   }
 
@@ -504,30 +553,40 @@ async function handleInvitationCreate(
   if (slugCheck)
     return json({ error: "Slug sudah digunakan. Pilih slug lain." }, 400);
 
-  const { isUserPremium, userPaidAt } = await getUserPremiumState(
-    supabase,
-    user.id,
-  );
+  let paymentStatus = "trial";
+  let trialExpiresAt = null;
+  let paidAtValue = null;
 
-  const isAdminCreated =
-    user.user_source === "admin_created" || user.role === "admin";
-  const paymentStatus = isAdminCreated || isUserPremium ? "paid" : "trial";
-  const trialExpiresAt =
-    isAdminCreated || isUserPremium
-      ? null
-      : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-
-  const paidAtValue = getInvitationPaidAtValue(
-    isUserPremium,
-    userPaidAt,
-    isAdminCreated,
-  );
+  if (isClientCreate) {
+    paymentStatus = "paid";
+    paidAtValue = new Date().toISOString();
+  } else {
+    const { isUserPremium, userPaidAt } = await getUserPremiumState(
+      supabase,
+      user.id,
+    );
+    const isAdminCreated =
+      user.user_source === "admin_created" || user.role === "admin";
+    paymentStatus = isAdminCreated || isUserPremium ? "paid" : "trial";
+    trialExpiresAt =
+      isAdminCreated || isUserPremium
+        ? null
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    paidAtValue = getInvitationPaidAtValue(
+      isUserPremium,
+      userPaidAt,
+      isAdminCreated,
+    );
+  }
 
   const id = crypto.randomUUID();
   const newInvitation = {
     id,
     slug: body.slug,
-    owner_id: user.id,
+    owner_id: ownerId,
+    wo_id: woId,
+    access_code: isClientCreate ? user.accessCode : null,
+    access_code_created_at: isClientCreate ? new Date().toISOString() : null,
     theme: body.theme || "elegant",
     groom_name: body.groom_name,
     bride_name: body.bride_name,
@@ -582,6 +641,17 @@ async function handleInvitationCreate(
 
   if (error) throw error;
 
+  if (isClientCreate) {
+    await supabase
+      .from("wo_access_codes")
+      .update({
+        status: "used",
+        invitation_id: id,
+        used_at: new Date().toISOString(),
+      })
+      .eq("id", user.woCodeId);
+  }
+
   const photos = Array.isArray(body.photos) ? body.photos : [];
   if (photos.length) {
     const dbPhotos = photos.map((photo: any, idx: number) => ({
@@ -594,7 +664,14 @@ async function handleInvitationCreate(
     await supabase.from("photos").insert(dbPhotos);
   }
 
-  return json(created, 201);
+  const responseData: any = { ...created };
+  if (isClientCreate) {
+    const { createAccessToken } = await import("../shared/auth");
+    const token = await createAccessToken({ inv: id, code: user.accessCode }, env);
+    responseData.token = token;
+  }
+
+  return json(responseData, 201);
 }
 
 async function handleInvitationUpdate(
@@ -603,7 +680,7 @@ async function handleInvitationUpdate(
   pathname: string,
   env: any,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUserOrClient(supabase, request, env);
   if (!user) return unauthorized();
 
   const id = decodeURIComponent(pathname.slice("invitations/".length))
@@ -618,8 +695,18 @@ async function handleInvitationUpdate(
     .eq("id", id)
     .single();
   if (!current) return json({ error: "Invitation not found" }, 404);
-  if (user.role !== "admin" && current.owner_id !== user.id)
-    return json({ error: "Akses ditolak." }, 403);
+  
+  const isClient = user.role === "client";
+  const isOwner = current.owner_id === user.id;
+  const isWoInv = user.role === "wo" && current.wo_id === user.id;
+
+  if (user.role !== "admin" && !isOwner && !isWoInv) {
+    if (isClient && current.id === user.invitationId) {
+      // Allowed client
+    } else {
+      return json({ error: "Akses ditolak." }, 403);
+    }
+  }
 
   const slugError = await validateUniqueSlugOnUpdate(
     supabase,
@@ -711,6 +798,12 @@ async function handleInvitationDelete(
     for (const story of loveStory) {
       if (story?.photo) await deleteR2Url(env, story.photo).catch(() => {});
     }
+
+    // Release WO quota by marking the associated access code as revoked
+    await supabase
+      .from("wo_access_codes")
+      .update({ status: "revoked" })
+      .eq("invitation_id", id);
 
     await supabase
       .from("payment_logs")

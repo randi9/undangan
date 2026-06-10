@@ -1,11 +1,11 @@
-import { requireUser, unauthorized } from "../shared/auth";
+import { requireUserOrClient, unauthorized } from "../shared/auth";
 import { json, getEffectiveMethod } from "../shared/http";
 import { deleteR2Url, uploadToR2 } from "../shared/storage";
 import type { ApiDispatcher } from "../types/api";
 
 async function handleUploadSingle(supabase: any, env: any, request: Request) {
-  const user = await requireUser(supabase, request, env);
-  if (!user) return unauthorized();
+  const auth = await requireUserOrClient(supabase, request, env);
+  if (!auth) return unauthorized();
 
   const form = await request.formData();
   const file = form.get("photo") as File | null;
@@ -16,8 +16,8 @@ async function handleUploadSingle(supabase: any, env: any, request: Request) {
 }
 
 async function handleUploadMultiple(supabase: any, env: any, request: Request) {
-  const user = await requireUser(supabase, request, env);
-  if (!user) return unauthorized();
+  const auth = await requireUserOrClient(supabase, request, env);
+  if (!auth) return unauthorized();
 
   const form = await request.formData();
   const files = form
@@ -33,8 +33,8 @@ async function handleUploadMultiple(supabase: any, env: any, request: Request) {
 }
 
 async function handleUploadDelete(supabase: any, env: any, request: Request) {
-  const user = await requireUser(supabase, request, env);
-  if (!user) return unauthorized();
+  const auth = await requireUserOrClient(supabase, request, env);
+  if (!auth) return unauthorized();
 
   const body = await request.json();
   if (!body.url) return json({ error: "No URL provided" }, 400);

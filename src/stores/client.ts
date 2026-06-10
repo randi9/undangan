@@ -29,6 +29,7 @@ export const useClientStore = defineStore('client', () => {
   const stats = ref<any>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
+  const needsCreate = ref<boolean>(localStorage.getItem('client_needs_create') === 'true')
 
   const isAuthenticated = computed(() => !!accessToken.value)
 
@@ -59,10 +60,19 @@ export const useClientStore = defineStore('client', () => {
         throw new Error(data.error || 'Kode akses tidak valid.')
       }
       accessToken.value = data.token
-      basicInfo.value = data.invitation
+      needsCreate.value = !!data.needs_create
+      
       localStorage.setItem(STORAGE_KEY, data.token)
-      localStorage.setItem(STORAGE_INV_KEY, JSON.stringify(data.invitation))
-      return data.invitation
+      localStorage.setItem('client_needs_create', data.needs_create ? 'true' : 'false')
+      
+      if (data.invitation) {
+        basicInfo.value = data.invitation
+        localStorage.setItem(STORAGE_INV_KEY, JSON.stringify(data.invitation))
+      } else {
+        basicInfo.value = null
+        localStorage.removeItem(STORAGE_INV_KEY)
+      }
+      return data
     } catch (e: any) {
       error.value = e.message
       throw e
@@ -78,8 +88,10 @@ export const useClientStore = defineStore('client', () => {
     rsvps.value = []
     stats.value = null
     basicInfo.value = null
+    needsCreate.value = false
     localStorage.removeItem(STORAGE_KEY)
     localStorage.removeItem(STORAGE_INV_KEY)
+    localStorage.removeItem('client_needs_create')
   }
 
   async function fetchInvitation() {
@@ -228,6 +240,7 @@ export const useClientStore = defineStore('client', () => {
     error,
     isAuthenticated,
     basicInfo,
+    needsCreate,
     verifyCode,
     logout,
     fetchInvitation,

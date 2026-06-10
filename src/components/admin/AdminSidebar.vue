@@ -20,6 +20,10 @@
         <span class="material-symbols-rounded">palette</span>
         Tema
       </router-link>
+      <router-link v-if="isWo" to="/dashboard/access-codes" class="sidebar-link">
+        <span class="material-symbols-rounded">key</span>
+        Kode Akses
+      </router-link>
       <router-link v-if="showCreateLink" to="/dashboard/create" class="sidebar-link">
         <span class="material-symbols-rounded">add_circle</span>
         Buat Undangan
@@ -71,6 +75,7 @@ const authStore = useAuthStore()
 
 const invitations = computed(() => store.invitations)
 const isAdmin = computed(() => authStore.isAdmin)
+const isWo = computed(() => authStore.isWo)
 
 const hasReachedLimit = computed(() => {
   if (!authStore.user) return false
@@ -78,9 +83,13 @@ const hasReachedLimit = computed(() => {
   return invitations.value.length >= authStore.user.max_invitations
 })
 
-const showCreateLink = computed(() => !hasReachedLimit.value)
+const showCreateLink = computed(() => {
+  if (isWo.value) return false
+  return !hasReachedLimit.value
+})
 
 const showPaymentLink = computed(() => {
+  if (isWo.value) return false
   return invitations.value.some(i => i.payment_status === 'trial')
 })
 

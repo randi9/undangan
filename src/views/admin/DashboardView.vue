@@ -11,15 +11,25 @@
       </div>
     </template>
     <template #actions>
-      <div v-if="authStore.user && !authStore.isAdmin && !hasReachedLimit && (authStore.user.max_invitations ?? 0) > 1" class="invitation-limit-info">
+      <div v-if="authStore.isWo" style="display: flex; gap: 12px; align-items: center;">
+        <div class="invitation-limit-info" v-if="stats">
+          <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
+          {{ stats.quota_used }} / {{ stats.quota_limit }} kuota terpakai
+        </div>
+        <router-link to="/dashboard/access-codes" class="btn btn-primary">
+          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">vpn_key</span>
+          Generate Kode Akses
+        </router-link>
+      </div>
+      <div v-else-if="authStore.user && !authStore.isAdmin && !hasReachedLimit && (authStore.user.max_invitations ?? 0) > 1" class="invitation-limit-info">
         <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
         {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
       </div>
-      <router-link v-if="authStore.isAdmin && !hasReachedLimit" to="/dashboard/create" class="btn btn-primary">
+      <router-link v-if="authStore.isAdmin && !hasReachedLimit && !authStore.isWo" to="/dashboard/create" class="btn btn-primary">
         <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
         Buat Undangan Baru
       </router-link>
-      <div v-else-if="authStore.isAdmin && hasReachedLimit" class="limit-reached-block">
+      <div v-else-if="authStore.isAdmin && hasReachedLimit && !authStore.isWo" class="limit-reached-block">
         <button class="btn btn-primary btn-disabled" disabled>
           <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">block</span>
           Buat Undangan Baru
@@ -281,10 +291,14 @@
                     <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span> Preview
                   </a>
                   <router-link
+                    v-slot="{ href, navigate }"
+                    v-if="!authStore.isWo"
                     :to="`/dashboard/edit/${invitation.id}`"
-                    class="btn btn-outline btn-sm"
+                    custom
                   >
-                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
+                    <a :href="href" @click="navigate" class="btn btn-outline btn-sm">
+                      <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
+                    </a>
                   </router-link>
                   <router-link
                     :to="`/dashboard/guests/${invitation.id}`"
@@ -309,6 +323,7 @@
                     {{ invitation.access_code ? 'Salin Kode' : 'Kode Akses' }}
                   </button>
                   <button
+                    v-if="!authStore.isWo"
                     class="btn btn-danger btn-sm"
                     @click="confirmDelete(invitation)"
                   >
@@ -466,6 +481,7 @@ const searchQuery = ref("");
 const deleteTarget = ref<Invitation | null>(null);
 const toast = ref<{ type: string; message: string } | null>(null);
 const apiBase = import.meta.env.VITE_API_URL || "";
+const stats = ref<any>(null);
 
 // --- Post-Create Guide ---
 const showPostCreateGuide = ref(false);
@@ -707,6 +723,18 @@ function showToast(type: string, message: string) {
 
 onMounted(async () => {
   await store.fetchInvitations();
+
+  if (authStore.isWo) {
+    try {
+      const headers = await authStore.getAuthHeaders();
+      const res = await fetch(`${apiBase}/api/wo/stats`, { headers });
+      if (res.ok) {
+        stats.value = await res.json();
+      }
+    } catch (err) {
+      console.error("Gagal memuat statistik WO:", err);
+    }
+  }
 
   // Show guide popup if user just created an invitation
   if (route.query.just_created === '1') {

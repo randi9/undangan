@@ -27,6 +27,8 @@
         <ClientHomeTab :invitation="invitation" :stats="stats" />
       </div>
 
+
+
       <!-- Tab: Tamu -->
       <div v-show="activeTab === 'guests'" class="tab-panel">
         <ClientGuestsTab :invitation="invitation" />
@@ -45,7 +47,7 @@
         :key="tab.id"
         class="bottom-nav-item"
         :class="{ active: activeTab === tab.id }"
-        @click="activeTab = tab.id"
+        @click="handleTabClick(tab.id)"
       >
         <span class="material-symbols-rounded">{{ tab.icon }}</span>
         <span class="bottom-nav-label">{{ tab.label }}</span>
@@ -61,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, provide } from 'vue'
+import { ref, onMounted, provide, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useClientStore } from '@/stores/client'
 import ClientHomeTab from '@/components/client/ClientHomeTab.vue'
@@ -71,14 +73,23 @@ import ClientWishesTab from '@/components/client/ClientWishesTab.vue'
 const router = useRouter()
 const store = useClientStore()
 
-const activeTab = ref<'home' | 'guests' | 'wishes'>('home')
+const activeTab = ref<'home' | 'edit' | 'guests' | 'wishes'>('home')
 const initialLoading = ref(true)
 const invitation = ref<any>(null)
 const stats = ref<any>(null)
 const toast = ref<{ type: string; message: string } | null>(null)
 
+function handleTabClick(tabId: 'home' | 'edit' | 'guests' | 'wishes') {
+  if (tabId === 'edit' && invitation.value?.id) {
+    router.push(`/client/edit/${invitation.value.id}`)
+  } else {
+    activeTab.value = tabId
+  }
+}
+
 const tabs = [
   { id: 'home' as const, icon: 'home', label: 'Beranda' },
+  { id: 'edit' as const, icon: 'edit', label: 'Edit' },
   { id: 'guests' as const, icon: 'group', label: 'Tamu' },
   { id: 'wishes' as const, icon: 'forum', label: 'Ucapan' },
 ]

@@ -28,7 +28,7 @@ async function handleMe(supabase: any, request: Request, env: any) {
   const { count } = await supabase
     .from("invitations")
     .select("id", { count: "exact", head: true })
-    .eq("owner_id", user.id);
+    .or(`owner_id.eq.${user.id},wo_id.eq.${user.id}`);
 
   return json({ ...user, invitation_count: count || 0 });
 }
@@ -40,16 +40,18 @@ async function handleUsersList(supabase: any, env: any, request: Request) {
 
   const { data: users, error } = await supabase
     .from("users")
-    .select("id, username, role, max_invitations, created_at")
+    .select("id, username, role, max_invitations, business_name, business_phone, created_at")
     .order("created_at", { ascending: false });
   if (error) throw error;
 
   const counts: Record<string, number> = {};
   const { data: invData } = await supabase
     .from("invitations")
-    .select("owner_id");
-  for (const inv of invData || [])
+    .select("owner_id, wo_id");
+  for (const inv of invData || []) {
     if (inv.owner_id) counts[inv.owner_id] = (counts[inv.owner_id] || 0) + 1;
+    if (inv.wo_id) counts[inv.wo_id] = (counts[inv.wo_id] || 0) + 1;
+  }
 
   let clerkUserMap = new Map<string, string>();
   try {
@@ -72,6 +74,8 @@ async function handleUsersList(supabase: any, env: any, request: Request) {
       clerk_id: u.username,
       username: clerkUserMap.get(u.username) || u.username,
       invitation_count: counts[u.id] || 0,
+      business_name: u.business_name,
+      business_phone: u.business_phone,
     })),
   );
 }
@@ -88,8 +92,11 @@ async function handleUsersCreate(supabase: any, env: any, request: Request) {
     .trim()
     .toLowerCase();
   const password = String(body.password || randomPassword());
-  const role = body.role === "admin" ? "admin" : "user";
-  const max_invitations = Math.max(1, Number(body.max_invitations) || 1);
+  const role = ["admin", "user", "wo"].includes(body.role) ? body.role : "user";
+  const defaultMax = role === "wo" ? 0 : 3;
+  const max_invitations = body.max_invitations !== undefined ? Math.max(0, Number(body.max_invitations)) : defaultMax;
+  const business_name = body.business_name ? String(body.business_name).trim() : null;
+  const business_phone = body.business_phone ? String(body.business_phone).trim() : null;
   const clerkManagedPasswordHash = ["clerk", "managed"].join("_");
 
   const createParams: any = {
@@ -103,10 +110,16 @@ async function handleUsersCreate(supabase: any, env: any, request: Request) {
     createParams.email_address = [`${username}@mengundanganda.com`];
   }
 
-  const clerkUser = await clerkRequest(env, "/users", {
-    method: "POST",
-    body: JSON.stringify(createParams),
-  });
+  let clerkUser: any;
+  try {
+    clerkUser = await clerkRequest(env, "/users", {
+      method: "POST",
+      body: JSON.stringify(createParams),
+    });
+  } catch (clerkErr: any) {
+    console.error("[Auth] Clerk create user error:", clerkErr?.message);
+    return json({ error: `Gagal membuat akun: ${clerkErr?.message || "Clerk error"}` }, 400);
+  }
 
   const { data: userRow, error } = await supabase
     .from("users")
@@ -116,13 +129,20 @@ async function handleUsersCreate(supabase: any, env: any, request: Request) {
         password_hash: clerkManagedPasswordHash,
         role,
         max_invitations,
+        business_name,
+        business_phone,
         user_source: "admin_created",
       },
     ])
-    .select("id, username, role, max_invitations, user_source, created_at")
+    .select("id, username, role, max_invitations, business_name, business_phone, user_source, created_at")
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.error("[Auth] Supabase insert error:", error?.message, error?.code);
+    // Cleanup: delete the Clerk user since DB insert failed
+    await clerkRequest(env, `/users/${clerkUser.id}`, { method: "DELETE" }).catch(() => {});
+    return json({ error: `Gagal menyimpan ke database: ${error?.message || "DB error"}` }, 400);
+  }
 
   return json(
     {
@@ -151,22 +171,26 @@ async function handleUsersUpdate(
 
   const { data: currentUser } = await supabase
     .from("users")
-    .select("username")
+    .select("username, role")
     .eq("id", id)
     .single();
   if (!currentUser) return json({ error: "User tidak ditemukan." }, 404);
 
   const updateData: any = {};
   if (body.role !== undefined)
-    updateData.role = body.role === "admin" ? "admin" : "user";
+    updateData.role = ["admin", "user", "wo"].includes(body.role) ? body.role : "user";
   if (body.max_invitations !== undefined)
-    updateData.max_invitations = Math.max(1, Number(body.max_invitations));
+    updateData.max_invitations = Math.max(0, Number(body.max_invitations));
+  if (body.business_name !== undefined)
+    updateData.business_name = body.business_name ? String(body.business_name).trim() : null;
+  if (body.business_phone !== undefined)
+    updateData.business_phone = body.business_phone ? String(body.business_phone).trim() : null;
 
   const { data: updated, error } = await supabase
     .from("users")
     .update(updateData)
     .eq("id", id)
-    .select("id, username, role, max_invitations")
+    .select("id, username, role, max_invitations, business_name, business_phone")
     .single();
   if (error) throw error;
 
@@ -247,8 +271,8 @@ async function handleUserInvitations(
 
   const { data, error } = await supabase
     .from("invitations")
-    .select("id, slug, groom_name, bride_name, theme, created_at")
-    .eq("owner_id", id)
+    .select("id, slug, groom_name, bride_name, theme, created_at, payment_status, wo_id")
+    .or(`owner_id.eq.${id},wo_id.eq.${id}`)
     .order("created_at", { ascending: false });
   if (error) throw error;
 
