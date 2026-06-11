@@ -18,7 +18,7 @@
     <template #actions>
       <div
         v-if="authStore.isWo"
-        style="display: flex; gap: 12px; align-items: center"
+        class="wo-actions-container"
       >
         <div class="invitation-limit-info" v-if="stats">
           <span
@@ -1182,6 +1182,22 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.wo-actions-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+@media (max-width: 576px) {
+  .wo-actions-container {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .wo-actions-container .invitation-limit-info {
+    text-align: center;
+  }
+}
+
 /* ===== Post-Create Guide Modal ===== */
 .guide-modal-overlay {
   position: fixed;

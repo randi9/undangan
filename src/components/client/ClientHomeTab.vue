@@ -1,14 +1,14 @@
 <template>
   <div class="home-tab">
-    <!-- Invitation Card -->
-    <div v-if="invitation" class="inv-card">
-      <div class="inv-card-cover">
+    <!-- Invitation Hero Card -->
+    <div v-if="invitation" class="inv-hero">
+      <div class="inv-hero-cover">
         <img
           v-if="invitation.cover_photo"
           :src="resolveAssetUrl(invitation.cover_photo, apiBase)"
           alt="Cover"
         />
-        <div v-else class="inv-card-cover-placeholder">
+        <div v-else class="inv-hero-cover-placeholder">
           <img
             src="/images/logo.webp"
             alt="Logo"
@@ -16,7 +16,7 @@
           />
         </div>
       </div>
-      <div class="inv-card-body">
+      <div class="inv-hero-body">
         <div class="inv-names">
           {{ invitation.groom_name }} <span class="heart">❤</span>
           {{ invitation.bride_name }}
@@ -46,13 +46,7 @@
         <a
           :href="getInvitationUrl(invitation.slug)"
           target="_blank"
-          class="btn btn-primary btn-sm"
-          style="
-            margin-top: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-          "
+          class="btn btn-primary btn-sm inv-hero-btn"
         >
           <span class="material-symbols-rounded" style="font-size: 16px"
             >open_in_new</span
@@ -65,33 +59,46 @@
     <!-- Stats Cards -->
     <div v-if="stats" class="stats-grid">
       <div class="stat-card">
-        <div class="stat-value" style="color: #3b82f6">
-          {{ stats.pageViews }}
+        <div class="stat-icon-wrap stat-blue">
+          <span class="material-symbols-rounded">visibility</span>
         </div>
-        <div class="stat-label">Total Views</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.pageViews }}</div>
+          <div class="stat-label">Total Views</div>
+        </div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" style="color: #10b981">
-          {{ stats.attendanceStats?.hadir || 0 }}
+        <div class="stat-icon-wrap stat-green">
+          <span class="material-symbols-rounded">check_circle</span>
         </div>
-        <div class="stat-label">Hadir</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.attendanceStats?.hadir || 0 }}</div>
+          <div class="stat-label">Hadir</div>
+        </div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" style="color: #ef4444">
-          {{ stats.attendanceStats?.tidak_hadir || 0 }}
+        <div class="stat-icon-wrap stat-red">
+          <span class="material-symbols-rounded">cancel</span>
         </div>
-        <div class="stat-label">Tidak Hadir</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.attendanceStats?.tidak_hadir || 0 }}</div>
+          <div class="stat-label">Tidak Hadir</div>
+        </div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" style="color: #8b5cf6">
-          {{ stats.totalPax }}
+        <div class="stat-icon-wrap stat-purple">
+          <span class="material-symbols-rounded">groups</span>
         </div>
-        <div class="stat-label">Estimasi Pax</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ stats.totalPax }}</div>
+          <div class="stat-label">Estimasi Pax</div>
+        </div>
       </div>
     </div>
 
     <!-- Attendance Bar -->
     <div v-if="stats && stats.totalRsvps > 0" class="attendance-bar-card">
+      <div class="attendance-title">Statistik Kehadiran</div>
       <div class="bar-labels">
         <span style="color: #10b981">Hadir ({{ hadirPct }}%)</span>
         <span style="color: #ef4444">Tidak Hadir ({{ tidakHadirPct }}%)</span>
@@ -184,7 +191,8 @@ async function copyLink() {
 </script>
 
 <style scoped>
-.inv-card {
+/* ===== Invitation Hero Card ===== */
+.inv-hero {
   background: white;
   border-radius: 16px;
   overflow: hidden;
@@ -193,26 +201,31 @@ async function copyLink() {
   margin-bottom: 20px;
 }
 
-.inv-card-cover {
+.inv-hero-cover {
   aspect-ratio: 3 / 4;
   overflow: hidden;
   background: linear-gradient(135deg, #e8ecf4, #d1d5e0);
 }
 
-.inv-card-cover img {
+.inv-hero-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease;
 }
 
-.inv-card-cover-placeholder {
+.inv-hero:hover .inv-hero-cover img {
+  transform: scale(1.03);
+}
+
+.inv-hero-cover-placeholder {
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.inv-card-body {
+.inv-hero-body {
   padding: 20px;
 }
 
@@ -260,6 +273,14 @@ async function copyLink() {
   margin-right: 2px;
 }
 
+.inv-hero-btn {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===== Stats Grid ===== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -272,26 +293,70 @@ async function copyLink() {
   padding: 16px;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.stat-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon-wrap .material-symbols-rounded {
+  font-size: 22px;
+}
+
+.stat-blue { background: #eff6ff; color: #3b82f6; }
+.stat-green { background: #ecfdf5; color: #10b981; }
+.stat-red { background: #fef2f2; color: #ef4444; }
+.stat-purple { background: #f5f3ff; color: #8b5cf6; }
+
+.stat-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .stat-value {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
+  color: #1e293b;
+  line-height: 1;
   margin-bottom: 2px;
 }
 
 .stat-label {
   font-size: 12px;
   font-weight: 600;
-  color: #64748b;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
+/* ===== Attendance Bar ===== */
 .attendance-bar-card {
   background: white;
-  padding: 16px;
+  padding: 20px;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
+}
+
+.attendance-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
 }
 
 .bar-labels {
@@ -313,10 +378,37 @@ async function copyLink() {
 .progress-bar div {
   transition: width 0.5s ease;
 }
+/* ===== Desktop: Horizontal Hero Card ===== */
+@media (min-width: 768px) {
+  .inv-hero {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 24px;
+  }
 
-@media (min-width: 640px) {
+  .inv-hero-cover {
+    width: 220px;
+    flex-shrink: 0;
+    aspect-ratio: 3 / 4;
+  }
+
+  .inv-hero-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 28px 32px;
+    flex: 1;
+  }
+
+  .inv-names {
+    font-size: 22px;
+  }
+
   .stats-grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
   }
 }
 </style>
+

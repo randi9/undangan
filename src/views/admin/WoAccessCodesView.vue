@@ -1,8 +1,8 @@
 <template>
   <AdminLayout>
     <template #search>
-      <div style="display: flex; gap: 12px; flex: 1; align-items: center; max-width: 500px;">
-        <div class="search-bar" style="flex: 1; margin: 0; max-width: none;">
+      <div class="search-filter-container">
+        <div class="search-bar search-bar-override">
           <span class="material-symbols-rounded" style="font-size:20px">search</span>
           <input
             v-model="searchQuery"
@@ -10,7 +10,7 @@
             placeholder="Cari kode akses..."
           />
         </div>
-        <select v-model="filterStatus" style="padding: 11px 14px; border-radius: 8px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text); outline: none; font-size: 14px; font-family: inherit;">
+        <select v-model="filterStatus" class="filter-select-override">
           <option value="all">Semua Status</option>
           <option value="active">Aktif</option>
           <option value="used">Terpakai</option>
@@ -51,30 +51,30 @@
 
     <!-- Stats grid -->
     <div class="stats-grid">
-      <div class="stat-card">
+      <div class="stat-card blue">
         <div class="stat-body">
           <div class="stat-label">Kode Aktif</div>
           <div class="stat-value">{{ stats?.codes_active ?? 0 }}</div>
         </div>
-        <div class="stat-icon blue">
+        <div class="stat-icon-glow">
           <span class="material-symbols-rounded">vpn_key</span>
         </div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card emerald">
         <div class="stat-body">
           <div class="stat-label">Kode Terpakai</div>
           <div class="stat-value">{{ stats?.codes_used ?? 0 }}</div>
         </div>
-        <div class="stat-icon emerald">
+        <div class="stat-icon-glow">
           <span class="material-symbols-rounded">check_circle</span>
         </div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card pink">
         <div class="stat-body">
           <div class="stat-label">Kode Dicabut</div>
           <div class="stat-value">{{ stats?.codes_revoked ?? 0 }}</div>
         </div>
-        <div class="stat-icon pink">
+        <div class="stat-icon-glow">
           <span class="material-symbols-rounded">cancel</span>
         </div>
       </div>
@@ -674,6 +674,56 @@ onMounted(() => {
   .mcc-actions {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
+  }
+}
+
+.search-filter-container {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  align-items: center;
+  max-width: 500px;
+}
+.search-bar-override {
+  flex: 1;
+  margin: 0;
+  max-width: none;
+}
+.filter-select-override {
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface);
+  color: var(--admin-text);
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+@media (max-width: 576px) {
+  .search-filter-container {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: none;
+  }
+  .search-bar-override {
+    width: 100%;
+  }
+  .filter-select-override {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .qb-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .qb-stats {
+    align-self: flex-end;
   }
 }
 </style>

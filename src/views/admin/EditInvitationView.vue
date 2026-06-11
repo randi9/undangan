@@ -1966,7 +1966,7 @@
                         maxlength="300"
                       ></textarea>
                     </div>
-                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-grid" style="gap: 16px;">
                       <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label">Nama Penerima</label>
                         <input
