@@ -156,9 +156,8 @@
       class="decor-flower flower-left"
       style="
         position: absolute;
-        bottom: -80px;                     /* Tweak posisi vertical */
+        bottom: -100px;                     /* Tweak posisi vertical */
         left: 35%;                       /* Tweak posisi horizontal */
-        transform: translateX(-50%);     /* Menjaga penyejajaran tengah */
         width: 150px;                    /* Tweak ukuran lebar */
         height: auto;
         z-index: 5;
@@ -167,21 +166,148 @@
       alt="Flower Left"
     />
 
+    <!-- Flower Left Extra 1: Samping Flower 1 -->
+    <img 
+      src="https://media.mengundanganda.com/nyunda/event%20section/flower/dewirandi_bac56ae6-cf48-4467-9aa8-c5c3d3c32132.webp"
+      class="decor-flower flower-left-extra-1"
+      style="
+        position: absolute;
+        bottom: -130px;                     /* Tweak posisi vertical */
+        left: 28%;                       /* Tweak posisi horizontal */
+        width: 130px;                    /* Tweak ukuran lebar */
+        height: auto;
+        z-index: 6;                      /* Tweak z-index */
+        pointer-events: none;
+      "
+      alt="Flower Left Extra 1"
+    />
+
+    <!-- Flower Left Extra 2: Samping Kiri Extra 1 -->
+    <img 
+      src="https://media.mengundanganda.com/nyunda/event%20section/flower/dewirandi_6392746b-8495-4dd6-850a-27b53e9a5abe.webp"
+      class="decor-flower flower-left-extra-2"
+      style="
+        position: absolute;
+        bottom: -20px;                     /* Tweak posisi vertical */
+        left: 9%;                       /* Tweak posisi horizontal */
+        width: 150px;                    /* Tweak ukuran lebar */
+        height: auto;
+        z-index: 7;                      /* Tweak z-index */
+        pointer-events: none;
+      "
+      alt="Flower Left Extra 2"
+    />
+
+    <!-- Flower Left Extra 3: Samping Kiri Extra 2 -->
+    <img 
+      src="https://media.mengundanganda.com/nyunda/event%20section/flower/dewirandi_bbeb752b-da6d-4a7b-ae0a-f4b546266519.webp"
+      class="decor-flower flower-left-extra-3"
+      style="
+        position: absolute;
+        bottom: -50px;                     /* Tweak posisi vertical */
+        left: 14%;                       /* Tweak posisi horizontal */
+        width: 100px;                    /* Tweak ukuran lebar */
+        height: auto;
+        z-index: 8;                      /* Tweak z-index */
+        pointer-events: none;
+      "
+      alt="Flower Left Extra 3"
+    />
+
+    <!-- Flower Left Extra 4: Samping Kiri Extra 3 -->
+    <img 
+      src="https://media.mengundanganda.com/nyunda/event%20section/flower/dewirandi_2a688537-a9de-4ba6-a4e5-41cbfc319ae6.webp"
+      class="decor-flower flower-left-extra-4"
+      style="
+        position: absolute;
+        bottom: -10px;                     /* Tweak posisi vertical */
+        left: -1%;                        /* Tweak posisi horizontal */
+        width: 150px;                    /* Tweak ukuran lebar */
+        height: auto;
+        z-index: 9;                      /* Tweak z-index */
+        pointer-events: none;
+      "
+      alt="Flower Left Extra 4"
+    />
+
     <!-- Flower 2: Bottom Tengah Agak Kanan (Mirrored) -->
     <img 
       src="https://media.mengundanganda.com/nyunda/event%20section/flower/dewirandi_6740390c-e656-46dc-a576-83cc3da06b5e.webp"
       class="decor-flower flower-right"
       style="
         position: absolute;
-        bottom: -80px;                     /* Tweak posisi vertical */
+        bottom: -90px;                     /* Tweak posisi vertical */
         right: 35%;                      /* Tweak posisi horizontal */
-        transform: translateX(50%) scaleX(-1); /* Menjaga penyejajaran tengah & mirror */
         width: 150px;                    /* Tweak ukuran lebar */
         height: auto;
         z-index: 5;
         pointer-events: none;
       "
       alt="Flower Right"
+    />
+
+    <!-- Flower Right Extra 1: Samping Flower 2 (Mirrored) -->
+    <img 
+      src="https://media.mengundanganda.com/nyunda/event%20section/flower/dewirandi_bbeb752b-da6d-4a7b-ae0a-f4b546266519.webp"
+      class="decor-flower flower-right-extra-1"
+      style="
+        position: absolute;
+        bottom: -80px;                     /* Tweak posisi vertical */
+        right: 28%;                      /* Tweak posisi horizontal */
+        width: 80px;                     /* Tweak ukuran lebar */
+        height: auto;
+        z-index: 10;                     /* Tweak z-index */
+        pointer-events: none;
+      "
+      alt="Flower Right Extra 1"
+    />
+
+    <!-- Flower Right Extra 2: Samping Kanan Extra 1 (Mirrored) -->
+    <img 
+      src="https://media.mengundanganda.com/nyunda/event%20section/flower/dewirandi_bac56ae6-cf48-4467-9aa8-c5c3d3c32132.webp"
+      class="decor-flower flower-right-extra-2"
+      style="
+        position: absolute;
+        bottom: -90px;                     /* Tweak posisi vertical */
+        right: 16%;                      /* Tweak posisi horizontal */
+        width: 100px;                    /* Tweak ukuran lebar */
+        height: auto;
+        z-index: 7;                      /* Tweak z-index */
+        pointer-events: none;
+      "
+      alt="Flower Right Extra 2"
+    />
+
+    <!-- Flower Right Extra 3: Samping Kanan Extra 2 -->
+    <img 
+      src="https://media.mengundanganda.com/nyunda/event%20section/flower/dewirandi_982fdeba-ab56-4942-9ac3-71dc74622f0d.webp"
+      class="decor-flower flower-right-extra-3"
+      style="
+        position: absolute;
+        bottom: -40px;                     /* Tweak posisi vertical */
+        right: 6%;                       /* Tweak posisi horizontal */
+        width: 130px;                    /* Tweak ukuran lebar */
+        height: auto;
+        z-index: 9;                      /* Tweak z-index */
+        pointer-events: none;
+      "
+      alt="Flower Right Extra 3"
+    />
+
+    <!-- Flower Right Extra 4: Samping Kanan Extra 3 -->
+    <img 
+      src="https://media.mengundanganda.com/nyunda/event%20section/flower/dewirandi_cbda04ab-47c6-4453-88bf-58df19a99b65.webp"
+      class="decor-flower flower-right-extra-4"
+      style="
+        position: absolute;
+        bottom: -50px;                     /* Tweak posisi vertical */
+        right: -7%;                      /* Tweak posisi horizontal */
+        width: 150px;                    /* Tweak ukuran lebar */
+        height: auto;
+        z-index: 7;                      /* Tweak z-index */
+        pointer-events: none;
+      "
+      alt="Flower Right Extra 4"
     />
   </section>
 </template>
@@ -260,15 +386,55 @@ onMounted(() => {
     if (streamRef.value) {
       gsap.set(streamRef.value, { opacity: 0, y: 30, pointerEvents: 'none' });
     }
-    // Set initial position of flowers (slide down by 150px, invisible)
-    gsap.set('.decor-flower', { opacity: 0, y: 150 });
+    // Helper function to animate card children sequentially (unscrubbed, automatic stagger)
+    const animatePanelChildren = (panelEl: HTMLElement | null) => {
+      if (!panelEl) return;
+      const title = panelEl.querySelector('.event-title');
+      const datetime = panelEl.querySelector('.event-datetime-group');
+      const subtitle = panelEl.querySelector('.event-subtitle');
+      const divider = panelEl.querySelector('.event-divider');
+      const location = panelEl.querySelector('.event-location-group');
+      const actions = panelEl.querySelector('.event-actions');
+      const video = panelEl.querySelector('.event-video-wrapper');
+
+      // Set initial states
+      gsap.set([title, datetime, subtitle, divider, location, actions, video].filter(Boolean), { 
+        opacity: 0, 
+        y: 20 
+      });
+
+      // Animate sequentially
+      const tlChildren = gsap.timeline();
+      
+      if (title) {
+        tlChildren.to(title, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' });
+      }
+      if (datetime) {
+        tlChildren.to(datetime, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.45');
+      }
+      if (subtitle) {
+        tlChildren.to(subtitle, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.45');
+      }
+      if (divider) {
+        tlChildren.to(divider, { opacity: 1, y: 0, duration: 0.4 }, '-=0.4');
+      }
+      if (location) {
+        tlChildren.to(location, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4');
+      }
+      if (actions) {
+        tlChildren.to(actions, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4');
+      }
+      if (video) {
+        tlChildren.to(video, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.4');
+      }
+    };
 
     // Determine the scroll duration based on available panels
     let scrollEnd = '+=150%';
     if (hasResepsi.value && hasStream.value) {
-      scrollEnd = '+=300%';
+      scrollEnd = '+=350%';
     } else if (hasResepsi.value || hasStream.value) {
-      scrollEnd = '+=200%';
+      scrollEnd = '+=230%';
     }
 
     const tl = gsap.timeline({
@@ -283,24 +449,58 @@ onMounted(() => {
       }
     });
 
-    // Phase 1: Show Akad & Animate Flowers rising
-    tl.to(akadRef.value, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.5, ease: 'power2.out' });
-    tl.to('.decor-flower', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '<');
-    tl.to({}, { duration: 0.5 }); // read/hold buffer
+    // Phase 1: Show Akad
+    tl.to(akadRef.value, { 
+      opacity: 1, 
+      y: 0, 
+      pointerEvents: 'auto', 
+      duration: 0.8, 
+      ease: 'power2.out',
+      onStart: () => animatePanelChildren(akadRef.value)
+    });
+    tl.to({}, { duration: 0.6 }); // read/hold buffer
+
+    // ScrollTrigger to trigger the flower entrance once when the section is 75% visible in viewport (top is at 25% of viewport height)
+    ScrollTrigger.create({
+      trigger: sectionRef.value,
+      start: 'top 25%',
+      once: true,
+      onEnter: () => {
+        sectionRef.value?.querySelectorAll('.decor-flower').forEach((el) => {
+          el.classList.add('animate-enter');
+        });
+      }
+    });
 
     // Phase 2: transition from Akad to Resepsi (if exists)
     if (hasResepsi.value) {
-      tl.to(akadRef.value, { opacity: 0, y: -30, pointerEvents: 'none', duration: 0.5, ease: 'power2.in' });
-      tl.to(resepsiRef.value, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.5, ease: 'power2.out' }, '-=0.25');
-      tl.to({}, { duration: 0.5 }); // read/hold buffer
+      tl.to(akadRef.value, { opacity: 0, y: -30, pointerEvents: 'none', duration: 0.8, ease: 'power2.in' });
+      tl.to({}, { duration: 0.4 }); // delay/jeda gap
+      tl.to(resepsiRef.value, { 
+        opacity: 1, 
+        y: 0, 
+        pointerEvents: 'auto', 
+        duration: 0.8, 
+        ease: 'power2.out',
+        onStart: () => animatePanelChildren(resepsiRef.value)
+      });
+      tl.to({}, { duration: 0.6 }); // read/hold buffer
     }
 
     // Phase 3: transition to Streaming (if exists)
     if (hasStream.value) {
       const prevRef = hasResepsi.value ? resepsiRef.value : akadRef.value;
-      tl.to(prevRef, { opacity: 0, y: -30, pointerEvents: 'none', duration: 0.5, ease: 'power2.in' });
-      tl.to(streamRef.value, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.5, ease: 'power2.out' }, '-=0.25');
-      tl.to({}, { duration: 0.5 }); // read/hold buffer
+      tl.to(prevRef, { opacity: 0, y: -30, pointerEvents: 'none', duration: 0.8, ease: 'power2.in' });
+      tl.to({}, { duration: 0.4 }); // delay/jeda gap
+      tl.to(streamRef.value, { 
+        opacity: 1, 
+        y: 0, 
+        pointerEvents: 'auto', 
+        duration: 0.8, 
+        ease: 'power2.out',
+        onStart: () => animatePanelChildren(streamRef.value)
+      });
+      tl.to({}, { duration: 0.6 }); // read/hold buffer
     }
 
     // Prevent jumping issues
@@ -501,5 +701,105 @@ onUnmounted(() => {
   .event-subtitle {
     font-size: 12px !important;
   }
+}
+
+/* ========================================================= */
+/* FLOWER ENTRANCE & SWAY CSS ANIMATIONS (PURE CSS CONCEPT) */
+/* ========================================================= */
+
+.decor-flower {
+  transform-origin: bottom center;
+  opacity: 0;
+  transform: var(--base-transform) translateY(150px);
+}
+
+.decor-flower.animate-enter {
+  animation: 
+    flower-enter 1.2s cubic-bezier(0.25, 1, 0.5, 1) var(--enter-delay) forwards,
+    sway var(--sway-duration) ease-in-out calc(var(--enter-delay) + 1.2s) infinite alternate;
+}
+
+@keyframes flower-enter {
+  0% {
+    opacity: 0;
+    transform: var(--base-transform) translateY(150px);
+  }
+  100% {
+    opacity: 1;
+    transform: var(--base-transform) translateY(0);
+  }
+}
+
+@keyframes sway {
+  0% {
+    transform: var(--base-transform) rotate(0deg);
+  }
+  100% {
+    transform: var(--base-transform) rotate(var(--sway-angle));
+  }
+}
+
+/* Flower Left Side variables */
+.flower-left {
+  --base-transform: translateX(-50%);
+  --enter-delay: 1.2s;
+  --sway-angle: -7.5deg;
+  --sway-duration: 3.4s;
+}
+.flower-left-extra-1 {
+  --base-transform: translateX(-50%);
+  --enter-delay: 0.9s;
+  --sway-angle: 6deg;
+  --sway-duration: 3.1s;
+}
+.flower-left-extra-2 {
+  --base-transform: translateX(-50%);
+  --enter-delay: 0.3s;
+  --sway-angle: 7.5deg;
+  --sway-duration: 3.2s;
+}
+.flower-left-extra-3 {
+  --base-transform: translateX(-50%);
+  --enter-delay: 0.6s;
+  --sway-angle: -9deg;
+  --sway-duration: 2.4s;
+}
+.flower-left-extra-4 {
+  --base-transform: translateX(-50%);
+  --enter-delay: 0s;
+  --sway-angle: -8deg;
+  --sway-duration: 2.8s;
+}
+
+/* Flower Right Side variables */
+.flower-right {
+  --base-transform: translateX(50%) scaleX(-1);
+  --enter-delay: 1.2s;
+  --sway-angle: 7.5deg;
+  --sway-duration: 3.0s;
+}
+.flower-right-extra-1 {
+  --base-transform: translateX(50%) scaleX(-1);
+  --enter-delay: 0.9s;
+  --sway-angle: -6deg;
+  --sway-duration: 2.7s;
+}
+.flower-right-extra-2 {
+  --base-transform: translateX(50%) scaleX(-1);
+  --enter-delay: 0.6s;
+  --sway-angle: 9deg;
+  --sway-duration: 3.5s;
+}
+.flower-right-extra-3 {
+  --base-transform: translateX(50%);
+  --enter-delay: 0.3s;
+  --sway-angle: -7.5deg;
+  --sway-duration: 2.9s;
+}
+.flower-right-extra-4 {
+  --base-transform: translateX(50%);
+  --enter-delay: 0s;
+  --sway-angle: 5deg;
+  --sway-duration: 2.6s;
 }
 </style>
