@@ -163,7 +163,7 @@
                       class="btn btn-sm btn-danger"
                       @click="handleDeleteCode(c)"
                       title="Hapus Kode Akses Secara Permanen"
-                      style="background-color: #ef4444; border-color: #ef4444;"
+                      style="background-color: #ef4444; border-color: #ef4444; color: #fff;"
                     >
                       <span class="material-symbols-rounded" style="font-size:16px">delete</span>
                     </button>
@@ -228,7 +228,7 @@
               <button
                 v-if="c.status === 'active' || c.status === 'revoked' || !c.invitation_id"
                 class="btn btn-sm btn-danger"
-                style="padding: 6px 12px; background-color: #ef4444; border-color: #ef4444;"
+                style="padding: 6px 12px; background-color: #ef4444; border-color: #ef4444; color: #fff;"
                 @click="handleDeleteCode(c)"
                 title="Hapus Kode Akses Secara Permanen"
               >

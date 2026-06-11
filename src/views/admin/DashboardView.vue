@@ -1,8 +1,13 @@
 <template>
   <AdminLayout>
     <template #search>
-      <div v-if="authStore.isAdmin || (authStore.user?.max_invitations ?? 0) > 1" class="search-bar">
-        <span class="material-symbols-rounded" style="font-size:20px">search</span>
+      <div
+        v-if="authStore.isAdmin || (authStore.user?.max_invitations ?? 0) > 1"
+        class="search-bar"
+      >
+        <span class="material-symbols-rounded" style="font-size: 20px"
+          >search</span
+        >
         <input
           v-model="searchQuery"
           type="text"
@@ -11,357 +16,626 @@
       </div>
     </template>
     <template #actions>
-      <div v-if="authStore.isWo" style="display: flex; gap: 12px; align-items: center;">
+      <div
+        v-if="authStore.isWo"
+        style="display: flex; gap: 12px; align-items: center"
+      >
         <div class="invitation-limit-info" v-if="stats">
-          <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
+          <span
+            class="material-symbols-rounded"
+            style="font-size: 16px; vertical-align: -3px"
+            >bar_chart</span
+          >
           {{ stats.quota_used }} / {{ stats.quota_limit }} kuota terpakai
         </div>
         <router-link to="/dashboard/access-codes" class="btn btn-primary">
-          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">vpn_key</span>
+          <span
+            class="material-symbols-rounded"
+            style="font-size: 18px; vertical-align: -3px"
+            >vpn_key</span
+          >
           Generate Kode Akses
         </router-link>
       </div>
-      <div v-else-if="authStore.user && !authStore.isAdmin && !hasReachedLimit && (authStore.user.max_invitations ?? 0) > 1" class="invitation-limit-info">
-        <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bar_chart</span>
+      <div
+        v-else-if="
+          authStore.user &&
+          !authStore.isAdmin &&
+          !hasReachedLimit &&
+          (authStore.user.max_invitations ?? 0) > 1
+        "
+        class="invitation-limit-info"
+      >
+        <span
+          class="material-symbols-rounded"
+          style="font-size: 16px; vertical-align: -3px"
+          >bar_chart</span
+        >
         {{ invitations.length }} / {{ authStore.user.max_invitations }} undangan
       </div>
-      <router-link v-if="authStore.isAdmin && !hasReachedLimit && !authStore.isWo" to="/dashboard/create" class="btn btn-primary">
-        <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
+      <router-link
+        v-if="authStore.isAdmin && !hasReachedLimit && !authStore.isWo"
+        to="/dashboard/create"
+        class="btn btn-primary"
+      >
+        <span
+          class="material-symbols-rounded"
+          style="font-size: 18px; vertical-align: -3px"
+          >auto_awesome</span
+        >
         Buat Undangan Baru
       </router-link>
-      <div v-else-if="authStore.isAdmin && hasReachedLimit && !authStore.isWo" class="limit-reached-block">
+      <div
+        v-else-if="authStore.isAdmin && hasReachedLimit && !authStore.isWo"
+        class="limit-reached-block"
+      >
         <button class="btn btn-primary btn-disabled" disabled>
-          <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">block</span>
+          <span
+            class="material-symbols-rounded"
+            style="font-size: 18px; vertical-align: -3px"
+            >block</span
+          >
           Buat Undangan Baru
         </button>
       </div>
     </template>
 
+    <!-- Section Title -->
+    <div class="section-header">
+      <div>
+        <h1 v-if="authStore.isAdmin" class="admin-page-title">
+          Semua Undangan
+        </h1>
+        <h1 v-else class="admin-page-title">Undangan Saya</h1>
 
-        <!-- Section Title -->
-        <div class="section-header">
-          <div>
-            <h1 v-if="authStore.isAdmin" class="admin-page-title">Semua Undangan</h1>
-            <h1 v-else class="admin-page-title">Undangan Saya</h1>
-            
-            <p v-if="authStore.isAdmin" class="admin-page-subtitle">Pantau dan kelola seluruh undangan yang terdaftar di sistem</p>
-            <p v-else class="admin-page-subtitle">Kelola detail undangan, daftar tamu, dan ucapan untuk hari bahagia Anda</p>
+        <p v-if="authStore.isAdmin" class="admin-page-subtitle">
+          Pantau dan kelola seluruh undangan yang terdaftar di sistem
+        </p>
+        <p v-else class="admin-page-subtitle">
+          Kelola detail undangan, daftar tamu, dan ucapan untuk hari bahagia
+          Anda
+        </p>
+      </div>
+    </div>
+
+    <!-- Filter Toolbar Desktop & Mobile Toggle -->
+    <div
+      v-if="authStore.isAdmin && invitations.length > 0"
+      class="filter-controls-container"
+    >
+      <!-- Desktop Toolbar -->
+      <div class="filter-toolbar desktop-only">
+        <div class="filter-group">
+          <div class="filter-item">
+            <label>Urutan:</label>
+            <select v-model="sortOrder" class="filter-select">
+              <option value="newest">Terbaru</option>
+              <option value="oldest">Terlama</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>Status:</label>
+            <select v-model="akadStatusFilter" class="filter-select">
+              <option value="all">Semua Status</option>
+              <option value="upcoming">Belum Akad</option>
+              <option value="past">Selesai Akad</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label>Waktu:</label>
+            <select v-model="timeFilter" class="filter-select">
+              <option value="all">Semua Waktu</option>
+              <option value="this_month">Bulan Ini</option>
+              <option value="next_month">Bulan Depan</option>
+              <option value="this_year">Tahun Ini</option>
+            </select>
           </div>
         </div>
-
-        <!-- Filter Toolbar Desktop & Mobile Toggle -->
-        <div v-if="authStore.isAdmin && invitations.length > 0" class="filter-controls-container">
-          <!-- Desktop Toolbar -->
-          <div class="filter-toolbar desktop-only">
-          <div class="filter-group">
-            <div class="filter-item">
-              <label>Urutan:</label>
-              <select v-model="sortOrder" class="filter-select">
-                <option value="newest">Terbaru</option>
-                <option value="oldest">Terlama</option>
-              </select>
-            </div>
-            <div class="filter-item">
-              <label>Status:</label>
-              <select v-model="akadStatusFilter" class="filter-select">
-                <option value="all">Semua Status</option>
-                <option value="upcoming">Belum Akad</option>
-                <option value="past">Selesai Akad</option>
-              </select>
-            </div>
-            <div class="filter-item">
-              <label>Waktu:</label>
-              <select v-model="timeFilter" class="filter-select">
-                <option value="all">Semua Waktu</option>
-                <option value="this_month">Bulan Ini</option>
-                <option value="next_month">Bulan Depan</option>
-                <option value="this_year">Tahun Ini</option>
-              </select>
-            </div>
-          </div>
-          <div class="filter-group filter-group--right">
-            <button 
-              v-if="searchQuery || sortOrder !== 'newest' || akadStatusFilter !== 'all' || timeFilter !== 'all'"
-              @click="resetFilters" 
-              class="btn btn-outline btn-sm"
-              style="margin-right: 8px;"
-            >
-              <span class="material-symbols-rounded" style="font-size:16px;">refresh</span>
-              Reset Filter
-            </button>
-            <div class="filter-item">
-              <label>Tampilkan:</label>
-              <select v-model="itemsPerPage" class="filter-select">
-                <option :value="5">5</option>
-                <option :value="10">10</option>
-                <option :value="20">20</option>
-                <option :value="50">50</option>
-              </select>
-            </div>
-          </div>
-          </div>
-          
-          <!-- Mobile Filter Button -->
-          <div class="mobile-filter-bar mobile-only">
-            <button class="btn btn-outline" @click="showFilterModal = true" style="flex: 1; justify-content: center;">
-              <span class="material-symbols-rounded" style="font-size:18px;">tune</span>
-              Filter & Urutkan
-            </button>
-            <button 
-              v-if="searchQuery || sortOrder !== 'newest' || akadStatusFilter !== 'all' || timeFilter !== 'all'"
-              @click="resetFilters" 
-              class="btn btn-danger btn-icon"
-              title="Reset Filter"
-            >
-              <span class="material-symbols-rounded" style="font-size:18px;">close</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Filter Modal (Mobile) -->
-        <div v-if="showFilterModal" class="modal-overlay" @click.self="showFilterModal = false">
-          <div class="modal-content filter-modal">
-            <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--admin-border); padding-bottom: 16px; margin-bottom: 16px;">
-              <span style="display:flex; align-items:center; gap:8px;">
-                <span class="material-symbols-rounded" style="font-size:20px;">tune</span> Filter
-              </span>
-              <button class="btn-icon" @click="showFilterModal = false">
-                <span class="material-symbols-rounded" style="font-size:20px;">close</span>
-              </button>
-            </div>
-            
-            <div class="filter-modal-body" style="display: flex; flex-direction: column; gap: 16px;">
-              <div class="filter-item" style="flex-direction: column; align-items: stretch;">
-                <label>Urutan:</label>
-                <select v-model="sortOrder" class="filter-select">
-                  <option value="newest">Terbaru</option>
-                  <option value="oldest">Terlama</option>
-                </select>
-              </div>
-              <div class="filter-item" style="flex-direction: column; align-items: stretch;">
-                <label>Status:</label>
-                <select v-model="akadStatusFilter" class="filter-select">
-                  <option value="all">Semua Status</option>
-                  <option value="upcoming">Belum Akad</option>
-                  <option value="past">Selesai Akad</option>
-                </select>
-              </div>
-              <div class="filter-item" style="flex-direction: column; align-items: stretch;">
-                <label>Waktu:</label>
-                <select v-model="timeFilter" class="filter-select">
-                  <option value="all">Semua Waktu</option>
-                  <option value="this_month">Bulan Ini</option>
-                  <option value="next_month">Bulan Depan</option>
-                  <option value="this_year">Tahun Ini</option>
-                </select>
-              </div>
-              <div class="filter-item" style="flex-direction: column; align-items: stretch;">
-                <label>Tampilkan:</label>
-                <select v-model="itemsPerPage" class="filter-select">
-                  <option :value="5">5</option>
-                  <option :value="10">10</option>
-                  <option :value="20">20</option>
-                  <option :value="50">50</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="modal-actions" style="margin-top: 24px;">
-              <button 
-                @click="resetFilters(); showFilterModal = false" 
-                class="btn btn-outline"
-                style="flex: 1;"
-              >
-                Reset
-              </button>
-              <button class="btn btn-primary" @click="showFilterModal = false" style="flex: 2;">
-                Terapkan
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Invitation Skeletons -->
-        <div v-if="store.loading" class="invitation-grid">
-          <AppSkeleton v-for="i in 3" :key="`inv-skel-${i}`" height="300px" rounded="2xl" />
-        </div>
-
-        <!-- Empty State (No invitations at all) -->
-        <div v-else-if="invitations.length === 0" class="empty-state">
-          <div class="empty-icon">
-            <span class="material-symbols-rounded" style="font-size:64px;color:var(--admin-primary)">mail</span>
-          </div>
-          <div class="empty-title">Belum Ada Undangan</div>
-          <div class="empty-text">
-            Mulai buat undangan pernikahan pertama Anda dengan klik tombol di bawah
-          </div>
-          <router-link v-if="!hasReachedLimit" to="/dashboard/create" class="btn btn-primary btn-lg">
-            <span class="material-symbols-rounded" style="font-size:18px;vertical-align:-3px">auto_awesome</span>
-            Buat Undangan Pertama
-          </router-link>
-          <div v-else class="limit-warning" style="margin-top:12px">
-            <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">warning</span>
-            Limit tercapai! Hubungi admin untuk menambah kuota.
-          </div>
-        </div>
-
-        <!-- Search/Filter Empty -->
-        <div v-else-if="processedInvitations.length === 0" class="empty-state">
-          <div class="empty-icon">
-            <span class="material-symbols-rounded" style="font-size:64px;color:var(--admin-text-secondary)">search_off</span>
-          </div>
-          <div class="empty-title">Tidak Ditemukan</div>
-          <div class="empty-text">
-            Tidak ada undangan yang cocok dengan pencarian "{{ searchQuery }}"
-          </div>
-        </div>
-
-        <!-- Invitation Grid -->
-        <div v-else class="invitation-grid">
-          <div
-            v-for="invitation in paginatedInvitations"
-            :key="invitation.id"
-            class="invitation-card"
+        <div class="filter-group filter-group--right">
+          <button
+            v-if="
+              searchQuery ||
+              sortOrder !== 'newest' ||
+              akadStatusFilter !== 'all' ||
+              timeFilter !== 'all'
+            "
+            @click="resetFilters"
+            class="btn btn-outline btn-sm"
+            style="margin-right: 8px"
           >
-            <div class="invitation-card-cover-wrapper">
-              <img
-                v-if="invitation.cover_photo"
-                :src="resolveAssetUrl(invitation.cover_photo, apiBase)"
-                :alt="invitation.groom_name + ' & ' + invitation.bride_name"
-                class="invitation-card-cover"
-              />
-              <div
-                v-else
-                class="invitation-card-cover"
-                style="display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#e8ecf4,#d1d5e0)"
+            <span class="material-symbols-rounded" style="font-size: 16px"
+              >refresh</span
+            >
+            Reset Filter
+          </button>
+          <div class="filter-item">
+            <label>Tampilkan:</label>
+            <select v-model="itemsPerPage" class="filter-select">
+              <option :value="5">5</option>
+              <option :value="10">10</option>
+              <option :value="20">20</option>
+              <option :value="50">50</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Filter Button -->
+      <div class="mobile-filter-bar mobile-only">
+        <button
+          class="btn btn-outline"
+          @click="showFilterModal = true"
+          style="flex: 1; justify-content: center"
+        >
+          <span class="material-symbols-rounded" style="font-size: 18px"
+            >tune</span
+          >
+          Filter & Urutkan
+        </button>
+        <button
+          v-if="
+            searchQuery ||
+            sortOrder !== 'newest' ||
+            akadStatusFilter !== 'all' ||
+            timeFilter !== 'all'
+          "
+          @click="resetFilters"
+          class="btn btn-danger btn-icon"
+          title="Reset Filter"
+        >
+          <span class="material-symbols-rounded" style="font-size: 18px"
+            >close</span
+          >
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Modal (Mobile) -->
+    <div
+      v-if="showFilterModal"
+      class="modal-overlay"
+      @click.self="showFilterModal = false"
+    >
+      <div class="modal-content filter-modal">
+        <div
+          class="modal-title"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--admin-border);
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+          "
+        >
+          <span style="display: flex; align-items: center; gap: 8px">
+            <span class="material-symbols-rounded" style="font-size: 20px"
+              >tune</span
+            >
+            Filter
+          </span>
+          <button class="btn-icon" @click="showFilterModal = false">
+            <span class="material-symbols-rounded" style="font-size: 20px"
+              >close</span
+            >
+          </button>
+        </div>
+
+        <div
+          class="filter-modal-body"
+          style="display: flex; flex-direction: column; gap: 16px"
+        >
+          <div
+            class="filter-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label>Urutan:</label>
+            <select v-model="sortOrder" class="filter-select">
+              <option value="newest">Terbaru</option>
+              <option value="oldest">Terlama</option>
+            </select>
+          </div>
+          <div
+            class="filter-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label>Status:</label>
+            <select v-model="akadStatusFilter" class="filter-select">
+              <option value="all">Semua Status</option>
+              <option value="upcoming">Belum Akad</option>
+              <option value="past">Selesai Akad</option>
+            </select>
+          </div>
+          <div
+            class="filter-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label>Waktu:</label>
+            <select v-model="timeFilter" class="filter-select">
+              <option value="all">Semua Waktu</option>
+              <option value="this_month">Bulan Ini</option>
+              <option value="next_month">Bulan Depan</option>
+              <option value="this_year">Tahun Ini</option>
+            </select>
+          </div>
+          <div
+            class="filter-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label>Tampilkan:</label>
+            <select v-model="itemsPerPage" class="filter-select">
+              <option :value="5">5</option>
+              <option :value="10">10</option>
+              <option :value="20">20</option>
+              <option :value="50">50</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions" style="margin-top: 24px">
+          <button
+            @click="
+              resetFilters();
+              showFilterModal = false;
+            "
+            class="btn btn-outline"
+            style="flex: 1"
+          >
+            Reset
+          </button>
+          <button
+            class="btn btn-primary"
+            @click="showFilterModal = false"
+            style="flex: 2"
+          >
+            Terapkan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invitation Skeletons -->
+    <div v-if="store.loading" class="invitation-grid">
+      <AppSkeleton
+        v-for="i in 3"
+        :key="`inv-skel-${i}`"
+        height="300px"
+        rounded="2xl"
+      />
+    </div>
+
+    <!-- Empty State (No invitations at all) -->
+    <div v-else-if="invitations.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <span
+          class="material-symbols-rounded"
+          style="font-size: 64px; color: var(--admin-primary)"
+          >mail</span
+        >
+      </div>
+      <div class="empty-title">Belum Ada Undangan</div>
+      <div class="empty-text">
+        Mulai buat undangan pernikahan pertama Anda dengan klik tombol di bawah
+      </div>
+      <router-link
+        v-if="!hasReachedLimit"
+        to="/dashboard/create"
+        class="btn btn-primary btn-lg"
+      >
+        <span
+          class="material-symbols-rounded"
+          style="font-size: 18px; vertical-align: -3px"
+          >auto_awesome</span
+        >
+        Buat Undangan Pertama
+      </router-link>
+      <div v-else class="limit-warning" style="margin-top: 12px">
+        <span
+          class="material-symbols-rounded"
+          style="font-size: 16px; vertical-align: -3px"
+          >warning</span
+        >
+        Limit tercapai! Hubungi admin untuk menambah kuota.
+      </div>
+    </div>
+
+    <!-- Search/Filter Empty -->
+    <div v-else-if="processedInvitations.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <span
+          class="material-symbols-rounded"
+          style="font-size: 64px; color: var(--admin-text-secondary)"
+          >search_off</span
+        >
+      </div>
+      <div class="empty-title">Tidak Ditemukan</div>
+      <div class="empty-text">
+        Tidak ada undangan yang cocok dengan pencarian "{{ searchQuery }}"
+      </div>
+    </div>
+
+    <!-- Invitation Grid -->
+    <div v-else class="invitation-grid">
+      <div
+        v-for="invitation in paginatedInvitations"
+        :key="invitation.id"
+        class="invitation-card"
+      >
+        <div class="invitation-card-cover-wrapper">
+          <img
+            v-if="invitation.cover_photo"
+            :src="resolveAssetUrl(invitation.cover_photo, apiBase)"
+            :alt="invitation.groom_name + ' & ' + invitation.bride_name"
+            class="invitation-card-cover"
+          />
+          <div
+            v-else
+            class="invitation-card-cover"
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 48px;
+              background: linear-gradient(135deg, #e8ecf4, #d1d5e0);
+            "
+          >
+            <img
+              src="/images/logo.webp"
+              alt="Logo"
+              style="width: 48px; height: 48px; object-fit: cover; opacity: 0.4"
+            />
+          </div>
+        </div>
+
+        <div class="invitation-card-body">
+          <div
+            v-if="invitation.payment_status === 'trial'"
+            class="payment-status-badge trial-badge-indicator"
+          >
+            <span
+              class="material-symbols-rounded"
+              style="font-size: 14px; vertical-align: -2px"
+              >hourglass_top</span
+            >
+            Free
+          </div>
+          <div
+            v-else-if="invitation.payment_status === 'paid'"
+            class="payment-status-badge paid-badge-indicator"
+          >
+            <span
+              class="material-symbols-rounded"
+              style="font-size: 14px; vertical-align: -2px"
+              >verified</span
+            >
+            PREMIUM
+          </div>
+
+          <div class="invitation-card-names">
+            {{ invitation.groom_name }}
+            <span class="heart">❤</span>
+            {{ invitation.bride_name }}
+          </div>
+          <div
+            class="invitation-card-slug"
+            @click="copyLink(invitation.slug)"
+            style="cursor: pointer"
+            title="Klik untuk salin link"
+          >
+            <span
+              class="material-symbols-rounded"
+              style="font-size: 14px; vertical-align: -2px"
+              >link</span
+            >
+            {{ getInvitationDisplayUrl(invitation.slug) }}
+          </div>
+          <div class="invitation-card-meta">
+            <span title="Tema Undangan"
+              ><span
+                class="material-symbols-rounded"
+                style="font-size: 14px; vertical-align: -2px"
+                >palette</span
               >
-                <img src="/images/logo.webp" alt="Logo" style="width:48px;height:48px;object-fit:cover;opacity:0.4" />
-              </div>
-            </div>
+              <strong style="text-transform: capitalize">{{
+                invitation.theme || "Elegant"
+              }}</strong></span
+            >
+            <span
+              ><span
+                class="material-symbols-rounded"
+                style="font-size: 14px; vertical-align: -2px"
+                >photo_camera</span
+              >
+              {{ invitation.photo_count || 0 }} foto</span
+            >
+            <span
+              ><span
+                class="material-symbols-rounded"
+                style="font-size: 14px; vertical-align: -2px"
+                >mail</span
+              >
+              {{ invitation.rsvp_count || 0 }} RSVP</span
+            >
 
-            <div class="invitation-card-body">
-              <div v-if="invitation.payment_status === 'trial'" class="payment-status-badge trial-badge-indicator">
-                <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">hourglass_top</span>
-                Free
-              </div>
-              <div v-else-if="invitation.payment_status === 'paid'" class="payment-status-badge paid-badge-indicator">
-                <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">verified</span>
-                PREMIUM
-              </div>
+            <span
+              v-if="invitation.payment_status === 'trial'"
+              style="
+                color: #d97706;
+                font-weight: 500;
+                background: #fffbeb;
+                padding: 2px 6px;
+                border-radius: 4px;
+              "
+            >
+              <span
+                class="material-symbols-rounded"
+                style="font-size: 14px; vertical-align: -2px"
+                >incomplete_circle</span
+              >
+              Sisa
+              {{
+                Math.max(
+                  0,
+                  (invitation.max_views || 25) - (invitation.view_count || 0),
+                )
+              }}
+              akses
+            </span>
+            <span v-else>
+              <span
+                class="material-symbols-rounded"
+                style="font-size: 14px; vertical-align: -2px"
+                >visibility</span
+              >
+              {{ invitation.view_count || 0 }} views
+            </span>
 
-              <div class="invitation-card-names">
-                {{ invitation.groom_name }}
-                <span class="heart">❤</span>
-                {{ invitation.bride_name }}
-              </div>
-              <div class="invitation-card-slug" @click="copyLink(invitation.slug)" style="cursor:pointer" title="Klik untuk salin link">
-                <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">link</span>
-                {{ getInvitationDisplayUrl(invitation.slug) }}
-              </div>
-              <div class="invitation-card-meta">
-                <span title="Tema Undangan"><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">palette</span> <strong style="text-transform: capitalize">{{ invitation.theme || 'Elegant' }}</strong></span>
-                <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">photo_camera</span> {{ invitation.photo_count || 0 }} foto</span>
-                <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">mail</span> {{ invitation.rsvp_count || 0 }} RSVP</span>
-                
-                <span v-if="invitation.payment_status === 'trial'" style="color: #d97706; font-weight: 500; background: #fffbeb; padding: 2px 6px; border-radius: 4px;">
-                  <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">incomplete_circle</span> 
-                  Sisa {{ Math.max(0, (invitation.max_views || 25) - (invitation.view_count || 0)) }} akses
-                </span>
-                <span v-else>
-                  <span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">visibility</span> {{ invitation.view_count || 0 }} views
-                </span>
-
-                <span><span class="material-symbols-rounded" style="font-size:14px;vertical-align:-2px">calendar_today</span> {{ formatDate(invitation.created_at) }}</span>
-              </div>
-              <div class="invitation-card-actions">
-                <!-- Upgrade Button for Trial -->
-                <router-link
-                  v-if="invitation.payment_status === 'trial'"
-                  :to="`/dashboard/payment?invitation_id=${invitation.id}`"
-                  class="btn btn-upgrade btn-sm"
+            <span
+              ><span
+                class="material-symbols-rounded"
+                style="font-size: 14px; vertical-align: -2px"
+                >calendar_today</span
+              >
+              {{ formatDate(invitation.created_at) }}</span
+            >
+          </div>
+          <div class="invitation-card-actions">
+            <!-- Upgrade Button for Trial -->
+            <router-link
+              v-if="invitation.payment_status === 'trial'"
+              :to="`/dashboard/payment?invitation_id=${invitation.id}`"
+              class="btn btn-upgrade btn-sm"
+            >
+              <span
+                class="material-symbols-rounded"
+                style="font-size: 16px; vertical-align: -3px"
+                >bolt</span
+              >
+              Upgrade
+            </router-link>
+            <div class="invitation-card-actions-row">
+              <a
+                :href="getInvitationUrl(invitation.slug)"
+                target="_blank"
+                class="btn btn-outline btn-sm"
+              >
+                <span
+                  class="material-symbols-rounded"
+                  style="font-size: 16px; vertical-align: -3px"
+                  >visibility</span
                 >
-                  <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">bolt</span> Upgrade
-                </router-link>
-                <div class="invitation-card-actions-row">
-                  <a
-                    :href="getInvitationUrl(invitation.slug)"
-                    target="_blank"
-                    class="btn btn-outline btn-sm"
+                Preview
+              </a>
+              <router-link
+                v-slot="{ href, navigate }"
+                v-if="!authStore.isWo"
+                :to="`/dashboard/edit/${invitation.id}`"
+                custom
+              >
+                <a
+                  :href="href"
+                  @click="navigate"
+                  class="btn btn-outline btn-sm"
+                >
+                  <span
+                    class="material-symbols-rounded"
+                    style="font-size: 16px; vertical-align: -3px"
+                    >edit</span
                   >
-                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">visibility</span> Preview
-                  </a>
-                  <router-link
-                    v-slot="{ href, navigate }"
-                    v-if="!authStore.isWo"
-                    :to="`/dashboard/edit/${invitation.id}`"
-                    custom
-                  >
-                    <a :href="href" @click="navigate" class="btn btn-outline btn-sm">
-                      <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">edit</span> Edit
-                    </a>
-                  </router-link>
-                  <router-link
-                    :to="`/dashboard/guests/${invitation.id}`"
-                    class="btn btn-primary btn-sm"
-                  >
-                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">group</span> Tamu
-                  </router-link>
-                  <router-link
-                    :to="`/dashboard/wishes/${invitation.id}`"
-                    class="btn btn-outline btn-sm"
-                  >
-                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">forum</span> Ucapan
-                  </router-link>
-                  <button
-                    v-if="authStore.isAdmin"
-                    class="btn btn-outline btn-sm"
-                    style="border-color: #8b5cf6; color: #8b5cf6;"
-                    @click="generateAccessCode(invitation)"
-                    :title="invitation.access_code ? `Kode: ${invitation.access_code}` : 'Generate kode akses klien'"
-                  >
-                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">key</span>
-                    {{ invitation.access_code ? 'Salin Kode' : 'Kode Akses' }}
-                  </button>
-                  <button
-                    v-if="!authStore.isWo"
-                    class="btn btn-danger btn-sm"
-                    @click="confirmDelete(invitation)"
-                  >
-                    <span class="material-symbols-rounded" style="font-size:16px;vertical-align:-3px">delete</span> Hapus
-                  </button>
-                </div>
-              </div>
+                  Edit
+                </a>
+              </router-link>
+              <router-link
+                :to="`/dashboard/guests/${invitation.id}`"
+                class="btn btn-primary btn-sm"
+              >
+                <span
+                  class="material-symbols-rounded"
+                  style="font-size: 16px; vertical-align: -3px"
+                  >group</span
+                >
+                Tamu
+              </router-link>
+              <router-link
+                :to="`/dashboard/wishes/${invitation.id}`"
+                class="btn btn-outline btn-sm"
+              >
+                <span
+                  class="material-symbols-rounded"
+                  style="font-size: 16px; vertical-align: -3px"
+                  >forum</span
+                >
+                Ucapan
+              </router-link>
+              <button
+                v-if="authStore.isAdmin"
+                class="btn btn-outline btn-sm"
+                style="border-color: #8b5cf6; color: #8b5cf6"
+                @click="generateAccessCode(invitation)"
+                :title="
+                  invitation.access_code
+                    ? `Kode: ${invitation.access_code}`
+                    : 'Generate kode akses klien'
+                "
+              >
+                <span
+                  class="material-symbols-rounded"
+                  style="font-size: 16px; vertical-align: -3px"
+                  >key</span
+                >
+                {{ invitation.access_code ? "Salin Kode" : "Kode Akses" }}
+              </button>
+              <button
+                v-if="!authStore.isWo"
+                class="btn btn-danger btn-sm"
+                @click="confirmDelete(invitation)"
+              >
+                <span
+                  class="material-symbols-rounded"
+                  style="font-size: 16px; vertical-align: -3px"
+                  >delete</span
+                >
+                Hapus
+              </button>
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Pagination Controls -->
-        <div v-if="totalPages > 1" class="pagination-controls">
-          <div class="pagination-info">
-            Menampilkan {{ (currentPage - 1) * itemsPerPage + 1 }} - 
-            {{ Math.min(currentPage * itemsPerPage, processedInvitations.length) }} 
-            dari {{ processedInvitations.length }} undangan
-          </div>
-          <div class="pagination-buttons">
-            <button 
-              class="btn btn-outline btn-sm" 
-              :disabled="currentPage === 1" 
-              @click="prevPage"
-            >
-              <span class="material-symbols-rounded" style="font-size:16px;">chevron_left</span>
-              Sebelumnya
-            </button>
-            <span class="pagination-current">Hal {{ currentPage }} dari {{ totalPages }}</span>
-            <button 
-              class="btn btn-outline btn-sm" 
-              :disabled="currentPage === totalPages" 
-              @click="nextPage"
-            >
-              Selanjutnya
-              <span class="material-symbols-rounded" style="font-size:16px;">chevron_right</span>
-            </button>
-          </div>
-        </div>
+    <!-- Pagination Controls -->
+    <div v-if="totalPages > 1" class="pagination-controls">
+      <div class="pagination-info">
+        Menampilkan {{ (currentPage - 1) * itemsPerPage + 1 }} -
+        {{ Math.min(currentPage * itemsPerPage, processedInvitations.length) }}
+        dari {{ processedInvitations.length }} undangan
+      </div>
+      <div class="pagination-buttons">
+        <button
+          class="btn btn-outline btn-sm"
+          :disabled="currentPage === 1"
+          @click="prevPage"
+        >
+          <span class="material-symbols-rounded" style="font-size: 16px"
+            >chevron_left</span
+          >
+          Sebelumnya
+        </button>
+        <span class="pagination-current"
+          >Hal {{ currentPage }} dari {{ totalPages }}</span
+        >
+        <button
+          class="btn btn-outline btn-sm"
+          :disabled="currentPage === totalPages"
+          @click="nextPage"
+        >
+          Selanjutnya
+          <span class="material-symbols-rounded" style="font-size: 16px"
+            >chevron_right</span
+          >
+        </button>
+      </div>
+    </div>
     <!-- Delete Modal -->
     <div
       v-if="deleteTarget"
@@ -370,93 +644,194 @@
     >
       <div class="modal-content">
         <div class="modal-title">
-          <span class="material-symbols-rounded" style="font-size:24px;color:var(--admin-danger);vertical-align:-4px">warning</span>
+          <span
+            class="material-symbols-rounded"
+            style="
+              font-size: 24px;
+              color: var(--admin-danger);
+              vertical-align: -4px;
+            "
+            >warning</span
+          >
           Hapus Undangan?
         </div>
         <div class="modal-text">
           Undangan
-          <strong>{{ deleteTarget.groom_name }} & {{ deleteTarget.bride_name }}</strong>
+          <strong
+            >{{ deleteTarget.groom_name }} &
+            {{ deleteTarget.bride_name }}</strong
+          >
           akan dihapus secara permanen.
         </div>
         <div class="modal-actions">
-          <button class="btn btn-outline" @click="deleteTarget = null">Batal</button>
-          <button class="btn btn-danger" @click="handleDelete">Ya, Hapus</button>
+          <button class="btn btn-outline" @click="deleteTarget = null">
+            Batal
+          </button>
+          <button class="btn btn-danger" @click="handleDelete">
+            Ya, Hapus
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Post-Create Guide Modal -->
-    <div v-if="showPostCreateGuide" class="guide-modal-overlay" @click.self="dismissPostCreateGuide">
+    <div
+      v-if="showPostCreateGuide"
+      class="guide-modal-overlay"
+      @click.self="dismissPostCreateGuide"
+    >
       <div class="guide-modal">
-        <button class="guide-modal-close" @click="dismissPostCreateGuide" title="Tutup panduan">
+        <button
+          class="guide-modal-close"
+          @click="dismissPostCreateGuide"
+          title="Tutup panduan"
+        >
           <Icon icon="lucide:x" />
         </button>
         <div class="guide-modal-header">
           <div class="guide-modal-icon">
-            <Icon icon="lucide:party-popper" style="font-size: 22px;" />
+            <Icon icon="lucide:party-popper" style="font-size: 22px" />
           </div>
           <h2>Undangan Berhasil Dibuat!</h2>
           <p>Berikut panduan tombol yang tersedia di kartu undangan Anda</p>
         </div>
         <div class="guide-modal-steps">
           <div class="guide-step-card">
-            <div class="guide-step-icon" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #3b82f6;"><Icon icon="lucide:eye" style="font-size: 16px;" /></div>
+            <div
+              class="guide-step-icon"
+              style="
+                background: linear-gradient(135deg, #eff6ff, #dbeafe);
+                color: #3b82f6;
+              "
+            >
+              <Icon icon="lucide:eye" style="font-size: 16px" />
+            </div>
             <div class="guide-step-body">
               <strong>Preview</strong>
-              <span>Lihat tampilan undangan Anda seperti yang dilihat tamu.</span>
+              <span
+                >Lihat tampilan undangan Anda seperti yang dilihat tamu.</span
+              >
             </div>
           </div>
           <div class="guide-step-card">
-            <div class="guide-step-icon" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); color: #16a34a;"><Icon icon="lucide:pencil" style="font-size: 16px;" /></div>
+            <div
+              class="guide-step-icon"
+              style="
+                background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+                color: #16a34a;
+              "
+            >
+              <Icon icon="lucide:pencil" style="font-size: 16px" />
+            </div>
             <div class="guide-step-body">
               <strong>Edit</strong>
-              <span>Ubah data mempelai, tanggal, foto, dan semua isi undangan.</span>
+              <span
+                >Ubah data mempelai, tanggal, foto, dan semua isi
+                undangan.</span
+              >
             </div>
           </div>
           <div class="guide-step-card">
-            <div class="guide-step-icon" style="background: linear-gradient(135deg, #eef2ff, #e0e7ff); color: #6366f1;"><Icon icon="lucide:users" style="font-size: 16px;" /></div>
+            <div
+              class="guide-step-icon"
+              style="
+                background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+                color: #6366f1;
+              "
+            >
+              <Icon icon="lucide:users" style="font-size: 16px" />
+            </div>
             <div class="guide-step-body">
               <strong>Tamu</strong>
-              <span>Kelola daftar tamu undangan dan pantau siapa yang sudah RSVP.</span>
+              <span
+                >Kelola daftar tamu undangan dan pantau siapa yang sudah
+                RSVP.</span
+              >
             </div>
           </div>
           <div class="guide-step-card">
-            <div class="guide-step-icon" style="background: linear-gradient(135deg, #fdf4ff, #fae8ff); color: #a855f7;"><Icon icon="lucide:message-square" style="font-size: 16px;" /></div>
+            <div
+              class="guide-step-icon"
+              style="
+                background: linear-gradient(135deg, #fdf4ff, #fae8ff);
+                color: #a855f7;
+              "
+            >
+              <Icon icon="lucide:message-square" style="font-size: 16px" />
+            </div>
             <div class="guide-step-body">
               <strong>Ucapan</strong>
               <span>Lihat dan kelola ucapan & doa dari tamu yang hadir.</span>
             </div>
           </div>
           <div class="guide-step-card">
-            <div class="guide-step-icon" style="background: linear-gradient(135deg, #fef2f2, #fecaca); color: #ef4444;"><Icon icon="lucide:trash-2" style="font-size: 16px;" /></div>
+            <div
+              class="guide-step-icon"
+              style="
+                background: linear-gradient(135deg, #fef2f2, #fecaca);
+                color: #ef4444;
+              "
+            >
+              <Icon icon="lucide:trash-2" style="font-size: 16px" />
+            </div>
             <div class="guide-step-body">
               <strong>Hapus</strong>
               <span>Hapus undangan secara permanen beserta semua datanya.</span>
             </div>
           </div>
           <div class="guide-step-card">
-            <div class="guide-step-icon" style="background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #d97706;"><Icon icon="lucide:zap" style="font-size: 16px;" /></div>
+            <div
+              class="guide-step-icon"
+              style="
+                background: linear-gradient(135deg, #fffbeb, #fef3c7);
+                color: #d97706;
+              "
+            >
+              <Icon icon="lucide:zap" style="font-size: 16px" />
+            </div>
             <div class="guide-step-body">
               <strong>Upgrade</strong>
-              <span>Tingkatkan ke Premium agar tamu tak terbatas dan banner undangan dihilangkan.</span>
+              <span
+                >Tingkatkan ke Premium agar tamu tak terbatas dan banner
+                undangan dihilangkan.</span
+              >
             </div>
           </div>
         </div>
         <div class="guide-modal-footer">
           <div class="guide-modal-tip">
-            <Icon icon="lucide:lightbulb" style="color: #f59e0b; flex-shrink: 0;" />
-            <span>Klik <strong>link URL</strong> di kartu undangan untuk langsung menyalin link. Kirimkan ke tamu lewat WhatsApp!</span>
+            <Icon
+              icon="lucide:lightbulb"
+              style="color: #f59e0b; flex-shrink: 0"
+            />
+            <span
+              >Klik <strong>link URL</strong> di kartu undangan untuk langsung
+              menyalin link. Kirimkan ke tamu lewat WhatsApp!</span
+            >
           </div>
-          <button class="btn btn-primary" @click="dismissPostCreateGuide" style="width: 100%;">
-            <Icon icon="lucide:check-circle-2" style="font-size: 16px;" /> Oke, Saya Paham!
+          <button
+            class="btn btn-primary"
+            @click="dismissPostCreateGuide"
+            style="width: 100%"
+          >
+            <Icon icon="lucide:check-circle-2" style="font-size: 16px" /> Oke,
+            Saya Paham!
           </button>
         </div>
       </div>
     </div>
 
     <!-- Toast -->
-    <div v-if="toast" :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']">
-      <Icon :icon="toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'" style="font-size: 18px; flex-shrink: 0;" />
+    <div
+      v-if="toast"
+      :class="['toast', `toast-${toast.type}`, 'flex', 'items-center', 'gap-2']"
+    >
+      <Icon
+        :icon="
+          toast.type === 'error' ? 'lucide:x-circle' : 'lucide:check-circle-2'
+        "
+        style="font-size: 18px; flex-shrink: 0"
+      />
       <span>{{ toast.message }}</span>
     </div>
   </AdminLayout>
@@ -487,9 +862,11 @@ const stats = ref<any>(null);
 const showPostCreateGuide = ref(false);
 
 // --- Filter & Pagination State ---
-const sortOrder = ref<'newest' | 'oldest'>('newest');
-const akadStatusFilter = ref<'all' | 'upcoming' | 'past'>('all');
-const timeFilter = ref<'all' | 'this_month' | 'next_month' | 'this_year'>('all');
+const sortOrder = ref<"newest" | "oldest">("newest");
+const akadStatusFilter = ref<"all" | "upcoming" | "past">("all");
+const timeFilter = ref<"all" | "this_month" | "next_month" | "this_year">(
+  "all",
+);
 const itemsPerPage = ref<5 | 10 | 20 | 50>(10);
 const currentPage = ref(1);
 const showFilterModal = ref(false);
@@ -505,23 +882,23 @@ function resetFilters() {
 function dismissPostCreateGuide() {
   showPostCreateGuide.value = false;
   // Clean URL params
-  router.replace({ path: '/dashboard' });
+  router.replace({ path: "/dashboard" });
 }
 
 const invitations = computed(() => store.invitations);
 
 const hasReachedLimit = computed(() => {
   if (!authStore.user) return false;
-  if (authStore.user.role === 'admin') return false;
+  if (authStore.user.role === "admin") return false;
   return invitations.value.length >= authStore.user.max_invitations;
 });
 
 const hasTrialInvitation = computed(() => {
-  return invitations.value.some(i => i.payment_status === 'trial');
+  return invitations.value.some((i) => i.payment_status === "trial");
 });
 
 const firstTrialInvitationId = computed(() => {
-  const trialInv = invitations.value.find(i => i.payment_status === 'trial');
+  const trialInv = invitations.value.find((i) => i.payment_status === "trial");
   return trialInv ? trialInv.id : null;
 });
 
@@ -542,35 +919,35 @@ const processedInvitations = computed(() => {
   }
 
   // 2. Filter Status Akad
-  if (akadStatusFilter.value !== 'all') {
-    result = result.filter(inv => {
-      if (!inv.akad_date) return akadStatusFilter.value === 'upcoming'; // Anggap yg belum diset sebagai upcoming
+  if (akadStatusFilter.value !== "all") {
+    result = result.filter((inv) => {
+      if (!inv.akad_date) return akadStatusFilter.value === "upcoming"; // Anggap yg belum diset sebagai upcoming
       const akadDate = new Date(inv.akad_date);
       akadDate.setHours(0, 0, 0, 0);
-      return akadStatusFilter.value === 'upcoming' 
-        ? akadDate >= today 
+      return akadStatusFilter.value === "upcoming"
+        ? akadDate >= today
         : akadDate < today;
     });
   }
 
   // 3. Filter Waktu (berdasarkan akad_date)
-  if (timeFilter.value !== 'all') {
+  if (timeFilter.value !== "all") {
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
-    
-    result = result.filter(inv => {
+
+    result = result.filter((inv) => {
       if (!inv.akad_date) return false;
       const akadDate = new Date(inv.akad_date);
       const akadMonth = akadDate.getMonth();
       const akadYear = akadDate.getFullYear();
-      
-      if (timeFilter.value === 'this_month') {
+
+      if (timeFilter.value === "this_month") {
         return akadMonth === currentMonth && akadYear === currentYear;
-      } else if (timeFilter.value === 'next_month') {
+      } else if (timeFilter.value === "next_month") {
         const nextMonth = (currentMonth + 1) % 12;
         const yearOffset = currentMonth === 11 ? 1 : 0;
-        return akadMonth === nextMonth && akadYear === (currentYear + yearOffset);
-      } else if (timeFilter.value === 'this_year') {
+        return akadMonth === nextMonth && akadYear === currentYear + yearOffset;
+      } else if (timeFilter.value === "this_year") {
         return akadYear === currentYear;
       }
       return true;
@@ -581,13 +958,15 @@ const processedInvitations = computed(() => {
   result.sort((a, b) => {
     const timeA = new Date(a.created_at || 0).getTime();
     const timeB = new Date(b.created_at || 0).getTime();
-    return sortOrder.value === 'newest' ? timeB - timeA : timeA - timeB;
+    return sortOrder.value === "newest" ? timeB - timeA : timeA - timeB;
   });
 
   return result;
 });
 
-const totalPages = computed(() => Math.ceil(processedInvitations.value.length / itemsPerPage.value));
+const totalPages = computed(() =>
+  Math.ceil(processedInvitations.value.length / itemsPerPage.value),
+);
 
 const paginatedInvitations = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value;
@@ -596,9 +975,12 @@ const paginatedInvitations = computed(() => {
 });
 
 // Reset page to 1 when filters change
-watch([searchQuery, sortOrder, akadStatusFilter, timeFilter, itemsPerPage], () => {
-  currentPage.value = 1;
-});
+watch(
+  [searchQuery, sortOrder, akadStatusFilter, timeFilter, itemsPerPage],
+  () => {
+    currentPage.value = 1;
+  },
+);
 
 function prevPage() {
   if (currentPage.value > 1) currentPage.value--;
@@ -662,9 +1044,9 @@ async function copyLink(slug: string) {
   const url = getInvitationUrl(slug);
   try {
     await navigator.clipboard.writeText(url);
-    showToast('success', 'Link berhasil disalin!');
+    showToast("success", "Link berhasil disalin!");
   } catch {
-    showToast('error', 'Gagal menyalin link');
+    showToast("error", "Gagal menyalin link");
   }
 }
 
@@ -684,33 +1066,37 @@ async function handleDelete() {
 }
 
 async function generateAccessCode(invitation: Invitation) {
-  const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+  const API_BASE = (import.meta.env.VITE_API_URL || "") + "/api";
   // If code already exists, just copy it
   if (invitation.access_code) {
     try {
       await navigator.clipboard.writeText(invitation.access_code);
-      showToast('success', `Kode akses disalin: ${invitation.access_code}`);
+      showToast("success", `Kode akses disalin: ${invitation.access_code}`);
     } catch {
-      showToast('error', 'Gagal menyalin kode');
+      showToast("error", "Gagal menyalin kode");
     }
     return;
   }
   // Generate new code
   try {
     const headers = await authStore.getAuthHeaders();
-    const res = await fetch(`${API_BASE}/client/generate-code/${invitation.id}`, {
-      method: 'POST',
-      headers,
-    });
+    const res = await fetch(
+      `${API_BASE}/client/generate-code/${invitation.id}`,
+      {
+        method: "POST",
+        headers,
+      },
+    );
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Gagal generate kode');
+    if (!res.ok) throw new Error(data.error || "Gagal generate kode");
     // Update local data
-    const idx = invitations.value.findIndex(i => i.id === invitation.id);
-    if (idx >= 0) (invitations.value[idx] as any).access_code = data.access_code;
+    const idx = invitations.value.findIndex((i) => i.id === invitation.id);
+    if (idx >= 0)
+      (invitations.value[idx] as any).access_code = data.access_code;
     await navigator.clipboard.writeText(data.access_code);
-    showToast('success', `Kode akses dibuat & disalin: ${data.access_code}`);
+    showToast("success", `Kode akses dibuat & disalin: ${data.access_code}`);
   } catch (err: any) {
-    showToast('error', err.message || 'Gagal membuat kode akses');
+    showToast("error", err.message || "Gagal membuat kode akses");
   }
 }
 
@@ -737,7 +1123,7 @@ onMounted(async () => {
   }
 
   // Show guide popup if user just created an invitation
-  if (route.query.just_created === '1') {
+  if (route.query.just_created === "1") {
     showPostCreateGuide.value = true;
   }
 
@@ -746,33 +1132,39 @@ onMounted(async () => {
   const licenseCode = urlParams.get("licenseCode");
   const transactionId = urlParams.get("transaction_id") || urlParams.get("id");
   const fallbackInvitationId = urlParams.get("invitation_id");
-  
-  const paymentIdentifier = licenseCode || transactionId || fallbackInvitationId;
-  
+
+  const paymentIdentifier =
+    licenseCode || transactionId || fallbackInvitationId;
+
   if (paymentIdentifier) {
     const productId = urlParams.get("productId");
     const email = urlParams.get("email");
-    
-    console.log("[Payment] Detected payment redirect, attempting verification...");
-    
+
+    console.log(
+      "[Payment] Detected payment redirect, attempting verification...",
+    );
+
     try {
       const headers = await authStore.getAuthHeaders();
-      const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+      const API_BASE = (import.meta.env.VITE_API_URL || "") + "/api";
       const res = await fetch(`${API_BASE}/payment/verify-license`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...headers },
-        body: JSON.stringify({ 
-          licenseCode, 
-          transaction_id: transactionId, 
+        body: JSON.stringify({
+          licenseCode,
+          transaction_id: transactionId,
           invitation_id: fallbackInvitationId,
-          productId, 
-          email 
+          productId,
+          email,
         }),
       });
       const data = await res.json();
-      
+
       if (res.ok && (data.status === "ok" || data.status === "already_paid")) {
-        showToast("success", "Pembayaran berhasil diverifikasi! Undangan sudah aktif.");
+        showToast(
+          "success",
+          "Pembayaran berhasil diverifikasi! Undangan sudah aktif.",
+        );
         // Refresh invitations to show updated status
         await store.fetchInvitations();
       } else {
@@ -782,7 +1174,7 @@ onMounted(async () => {
     } catch (err) {
       console.error("[Payment] Verify error:", err);
     }
-    
+
     // Clean URL params
     window.history.replaceState({}, "", window.location.pathname);
   }
@@ -804,8 +1196,12 @@ onMounted(async () => {
   animation: fadeIn 0.3s ease;
 }
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .guide-modal {
   position: relative;
@@ -820,8 +1216,14 @@ onMounted(async () => {
   animation: slideUp 0.35s ease-out;
 }
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(24px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 .guide-modal-close {
   position: absolute;
@@ -938,4 +1340,3 @@ onMounted(async () => {
   line-height: 1.5;
 }
 </style>
-

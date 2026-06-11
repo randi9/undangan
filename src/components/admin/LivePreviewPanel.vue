@@ -31,15 +31,12 @@
     >
       <Icon icon="lucide:x" style="font-size: 22px" />
     </button>
-    <div style="width: 100%; height: 100vh; overflow: hidden">
-      <iframe
-        ref="mobilePreviewIframe"
-        class="editor-preview-iframe"
-        :src="`/invitation/preview`"
-        title="Live Preview Mobile"
-        style="height: 100%"
-      ></iframe>
-    </div>
+    <iframe
+      ref="mobilePreviewIframe"
+      class="mobile-preview-fullscreen-iframe"
+      :src="`/invitation/preview`"
+      title="Live Preview Mobile"
+    ></iframe>
   </div>
 </template>
 
@@ -70,10 +67,15 @@ defineExpose({
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
   overflow: visible !important;
+}
+
+@media (min-width: 1024px) {
+  .editor-preview-area {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>
 
@@ -176,6 +178,14 @@ defineExpose({
 
 .editor-preview-iframe::-webkit-scrollbar {
   display: none;
+}
+
+/* Mobile Fullscreen Preview Iframe */
+.mobile-preview-fullscreen-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
 }
 
 /* Mobile Preview Components */
