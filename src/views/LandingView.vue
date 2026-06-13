@@ -889,7 +889,7 @@ const faqList = [
   },
   {
     q: "Fitur apa saja yang tersedia di MengundangAnda?",
-    a: "Fitur lengkap meliputi: 5 tema premium (Elegant Gold, Floral, Minimalist, Elegant Blue, Floral Blue), RSVP & buku tamu, musik latar otomatis, countdown timer, galeri foto prewedding, love story timeline, amplop digital, peta lokasi Google Maps, dan kirim undangan via WhatsApp.",
+    a: "Fitur lengkap meliputi: pilihan tema premium (Floral, Elegant Blue, Floral Blue, Nyunda), RSVP & buku tamu, musik latar otomatis, countdown timer, galeri foto prewedding, love story timeline, amplop digital, peta lokasi Google Maps, dan kirim undangan via WhatsApp.",
   },
 ];
 
@@ -1102,6 +1102,19 @@ const themesData = [
     bgGradient: "linear-gradient(135deg, #1e3a8a, #A3B5C3)",
     sampleUrl: "/sample/elegant_blue",
     icon: "solar:stars-bold-duotone",
+  },
+  {
+    id: "nyunda",
+    name: "Nyunda",
+    thumbnail:
+      "https://media.mengundanganda.com/floral/43498db7-3a42-4aaa-a066-a0322604ac92.webp",
+    description:
+      "Desain hangat dan anggun dengan nuansa budaya Sunda yang khas. Sempurna untuk pernikahan tradisional Jawa Barat yang penuh makna.",
+    color: "#5C3D2E",
+    bgColor: "#FFF8E7",
+    bgGradient: "linear-gradient(135deg, #5C3D2E, #A67B5B)",
+    sampleUrl: "/sample/nyunda",
+    icon: "solar:sun-bold-duotone",
   },
   {
     id: "floral_blue",

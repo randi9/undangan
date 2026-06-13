@@ -14,7 +14,7 @@ const emit = defineEmits<{
   (e: "select", themeId: ThemeRegistryEntry["id"]): void;
 }>();
 
-type ThemeCategory = "Semua" | "Elegant" | "Floral" | "Minimalist" | "Blue";
+type ThemeCategory = "Semua" | "Elegant" | "Floral" | "Sunda" | "Blue";
 
 const activeCategory = ref<ThemeCategory>("Semua");
 const searchQuery = ref("");
@@ -25,7 +25,7 @@ const categories: ThemeCategory[] = [
   "Semua",
   "Elegant",
   "Floral",
-  "Minimalist",
+  "Sunda",
   "Blue",
 ];
 
@@ -38,8 +38,8 @@ function getThemeCategory(
 
   if (id.includes("elegant") || name.includes("elegant")) tags.push("Elegant");
   if (id.includes("floral") || name.includes("floral")) tags.push("Floral");
-  if (id.includes("minimalist") || name.includes("minimalist"))
-    tags.push("Minimalist");
+  if (id.includes("nyunda") || name.includes("nyunda") || id.includes("sunda"))
+    tags.push("Sunda");
   if (id.includes("blue") || name.includes("blue")) tags.push("Blue");
 
   return tags;

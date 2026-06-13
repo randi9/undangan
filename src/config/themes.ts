@@ -227,7 +227,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     name: "Nyunda",
     thumbnail:
       "https://media.mengundanganda.com/floral/43498db7-3a42-4aaa-a066-a0322604ac92.webp",
-    description: "Hangat dan elegan dengan nuansa Sunda",
+    description: "Hangat dan anggun dengan nuansa Sunda",
     icon: "solar:sun-bold-duotone",
     color: "#5C3D2E",
     bgGradient: "linear-gradient(135deg, #5C3D2E 0%, #A67B5B 100%)",

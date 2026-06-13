@@ -169,4 +169,5 @@ export const SAMPLE_INVITATIONS: Record<string, Invitation> = {
   floral: createSampleInvitation('floral', sharedSampleData),
   minimalist: createSampleInvitation('minimalist'),
   elegant_blue: createSampleInvitation('elegant_blue', sharedSampleData),
+  nyunda: createSampleInvitation('nyunda', sharedSampleData),
 }

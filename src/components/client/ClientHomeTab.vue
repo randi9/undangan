@@ -31,7 +31,7 @@
           <span
             ><span class="material-symbols-rounded">palette</span>
             <strong style="text-transform: capitalize">{{
-              invitation.theme || "elegant"
+              invitation.theme || "nyunda"
             }}</strong></span
           >
           <span

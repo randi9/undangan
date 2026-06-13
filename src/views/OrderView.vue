@@ -304,11 +304,10 @@ import { trackEvent } from "@/composables/useMetaPixel";
 const WA_NUMBER = "6285155026211";
 
 const themeOptions = [
-  { id: "elegant", name: "Elegant Gold" },
   { id: "floral", name: "Floral" },
-  { id: "minimalist", name: "Clean Minimalist" },
   { id: "elegant_blue", name: "Elegant Blue" },
   { id: "floral_blue", name: "Floral Blue" },
+  { id: "nyunda", name: "Nyunda" },
 ];
 
 function themeLabel(id: string) {
