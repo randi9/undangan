@@ -86,6 +86,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import AdminLayout from "@/components/admin/AdminLayout.vue";
+import { trackEvent } from "@/composables/useMetaPixel";
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -177,6 +178,7 @@ async function checkPayment() {
       const data = await authStore.checkPaymentStatus(invitationId.value);
       if (data?.payment_status === "paid") {
         paymentConfirmed.value = true;
+        trackEvent('Purchase', { value: 50000, currency: 'IDR' });
         // Get slug for preview link
         try {
           const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
@@ -199,6 +201,7 @@ async function checkPayment() {
     const inv = await findLatestInvitation();
     if (inv?.payment_status === "paid") {
       paymentConfirmed.value = true;
+      trackEvent('Purchase', { value: 50000, currency: 'IDR' });
     } else if (retryCount < MAX_RETRIES) {
       // Webhook might not have arrived yet
       retryCount++;

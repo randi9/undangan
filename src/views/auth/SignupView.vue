@@ -25,11 +25,16 @@
 <script setup lang="ts">
 import { SignUp } from '@clerk/vue'
 import { useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
+import { trackEvent } from '@/composables/useMetaPixel'
 
 const route = useRoute()
 const redirectUrl = computed(() => {
   return typeof route.query.redirect_url === 'string' && route.query.redirect_url ? route.query.redirect_url : '/dashboard'
+})
+
+onMounted(() => {
+  trackEvent('CompleteRegistration')
 })
 </script>
 

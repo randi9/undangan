@@ -299,6 +299,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
 import { Icon } from "@iconify/vue";
+import { trackEvent } from "@/composables/useMetaPixel";
 
 const WA_NUMBER = "6285155026211";
 
@@ -419,6 +420,9 @@ async function handleSubmit() {
   waLink.value = computedWALink.value;
   submitted.value = true;
   submitting.value = false;
+
+  // Track Meta Pixel Lead event
+  trackEvent('Lead', { content_name: 'Jasa Dibuatkan Undangan', value: 99000, currency: 'IDR' });
 
   // Open WhatsApp
   window.open(waLink.value, "_blank");

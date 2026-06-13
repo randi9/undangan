@@ -229,6 +229,7 @@ import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { Icon } from "@iconify/vue";
 import AdminLayout from "@/components/admin/AdminLayout.vue";
+import { trackEvent } from "@/composables/useMetaPixel";
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -317,6 +318,7 @@ async function handleRedeem() {
 
 onMounted(() => {
   loadPaymentStatus();
+  trackEvent('InitiateCheckout', { value: 50000, currency: 'IDR' });
 });
 </script>
 

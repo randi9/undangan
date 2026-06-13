@@ -4,6 +4,7 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 import LandingView from "@/views/LandingView.vue";
+import { initMetaPixel, trackPageView } from "@/composables/useMetaPixel";
 
 const host = globalThis.location.hostname;
 const parts = host.split(".");
@@ -270,6 +271,13 @@ router.beforeEach((to) => {
   }
 
   return true;
+});
+
+// --- Meta Pixel ---
+initMetaPixel();
+
+router.afterEach(() => {
+  trackPageView();
 });
 
 export default router;
