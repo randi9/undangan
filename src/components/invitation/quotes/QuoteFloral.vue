@@ -311,8 +311,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* GPU acceleration hints for scroll-triggered scale/rotation animations */
-section :deep(img) {
-  will-change: transform, opacity;
-}
+/* GPU hints removed — blanket will-change on all images creates excessive GPU layers
+   that degrade scroll performance. GSAP auto-promotes elements when animating transforms. */
 </style>

@@ -101,7 +101,7 @@ let flowerSwayTimers: gsap.core.Tween[] = [];
 let entranceTimeline: gsap.core.Timeline | null = null;
 
 // Maximum concurrent petals to prevent DOM explosion and frame rate drops
-const MAX_PETALS = 15;
+const MAX_PETALS = 8;
 
 function randomRange(min: number, max: number) {
   return Math.random() * (max - min) + min;
@@ -179,7 +179,7 @@ function spawnPetal() {
 function startSpawningLoop() {
   spawnPetal();
   // Schedule next petal -> GSAP's delayedCall automatically pauses when the tab is inactive!
-  spawnTimer = gsap.delayedCall(randomRange(0.6, 1.2), startSpawningLoop);
+  spawnTimer = gsap.delayedCall(randomRange(1.2, 2.0), startSpawningLoop);
 }
 
 onMounted(() => {

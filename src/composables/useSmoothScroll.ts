@@ -20,16 +20,20 @@ gsap.registerPlugin(ScrollTrigger)
 export function useSmoothScroll() {
   const lenis: Ref<Lenis | null> = ref(null)
 
+  // Keep a reference to the ticker callback so we can properly remove it on destroy
+  let tickerCallback: ((time: number) => void) | null = null
+
   function init() {
     // Prevent double-init
     if (lenis.value) return
 
     lenis.value = new Lenis({
-      lerp: 0.07,          // Low lerp = very smooth, slightly "floaty" (premium feel)
-      duration: 1.2,        // Scroll animation duration
+      lerp: 0.1,            // Slightly higher lerp = more responsive, less floaty (0.07 was too sluggish)
+      // NOTE: Do NOT set both `lerp` and `duration` — they conflict. Lenis uses lerp when set.
       smoothWheel: true,    // Smooth mouse wheel / trackpad
-      wheelMultiplier: 0.8, // Slightly dampen wheel speed for elegance
-      touchMultiplier: 1.5, // Make touch swipes responsive
+      wheelMultiplier: 1.0, // Default wheel speed (0.8 felt sluggish)
+      touchMultiplier: 1.8, // Make touch swipes snappy and responsive
+      autoResize: true,     // Auto-recalculate on resize
       // smoothTouch: false — default; native touch scroll feels more natural on mobile
     })
 
@@ -38,9 +42,10 @@ export function useSmoothScroll() {
     lenis.value.on('scroll', ScrollTrigger.update)
 
     // Drive Lenis via GSAP's ticker (single rAF loop, avoids double-frame issues)
-    gsap.ticker.add((time: number) => {
+    tickerCallback = (time: number) => {
       lenis.value?.raf(time * 1000)
-    })
+    }
+    gsap.ticker.add(tickerCallback)
 
     // Disable GSAP's built-in lag smoothing so Lenis handles it
     gsap.ticker.lagSmoothing(0)
@@ -54,7 +59,12 @@ export function useSmoothScroll() {
   function destroy() {
     if (!lenis.value) return
 
-    // Remove the ticker callback (GSAP doesn't provide removeByRef, so we destroy Lenis which stops rAF)
+    // Remove the ticker callback to prevent memory leaks and ghost rAF loops
+    if (tickerCallback) {
+      gsap.ticker.remove(tickerCallback)
+      tickerCallback = null
+    }
+
     lenis.value.destroy()
     lenis.value = null
   }

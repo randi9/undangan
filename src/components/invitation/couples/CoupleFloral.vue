@@ -410,15 +410,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* GPU acceleration hints for heavy sliding/scaling animations */
-.groom-photo,
-.bride-photo,
-.groom-text,
-.bride-text,
-.groom-flowers,
-.bride-flowers,
-.groom-leaf,
-.bride-leaf {
-  will-change: transform, opacity;
-}
+/* will-change removed — GSAP auto-promotes elements to GPU layers during animation.
+   Permanent will-change on 7+ element classes wastes GPU memory when not animating. */
 </style>

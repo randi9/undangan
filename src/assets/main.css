@@ -77,6 +77,27 @@
 html {
 }
 
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+/* === SCROLL PERFORMANCE OPTIMIZATIONS === */
+/* Force GPU compositing for elements that use heavy filters (backdrop-filter, blur).
+   Without this, the browser re-composites the entire stacking context on every scroll frame. */
+.lenis [style*="backdrop-filter"],
+.lenis [style*="-webkit-backdrop-filter"] {
+  contain: layout style paint;
+  isolation: isolate;
+}
+
+/* Use content-visibility to skip layout/paint for off-screen invitation sections.
+   This is the single biggest perf win — the browser only renders what's near the viewport. */
+.animate-fade-in > div > section,
+.animate-fade-in > div > div > section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100dvh;
+}
+
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
