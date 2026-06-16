@@ -2,36 +2,30 @@ import { requireUser, unauthorized } from "../shared/auth";
 import { json, getEffectiveMethod } from "../shared/http";
 import type { ApiDispatcher } from "../types/api";
 
-/**
- * Verify that the authenticated user owns the invitation (or is admin).
- * Returns the user object if authorized, or a Response to return immediately.
- */
 async function requireInvitationOwner(
-  supabase: any,
+  db: D1Database,
   request: Request,
   env: any,
   invitationId: string,
 ): Promise<{ user: any } | { response: Response }> {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return { response: unauthorized() };
 
-  // Admin can access any invitation's guests
-  if (user.role === "admin") return { user };
+  if ((user as any).role === "admin") return { user };
 
-  const { data: invitation } = await supabase
-    .from("invitations")
-    .select("owner_id")
-    .eq("id", invitationId)
-    .single();
+  const invitation = await db
+    .prepare("SELECT owner_id FROM invitations WHERE id = ?")
+    .bind(invitationId)
+    .first();
 
   if (!invitation) return { response: json({ error: "Undangan tidak ditemukan." }, 404) };
-  if (invitation.owner_id !== user.id) return { response: json({ error: "Akses ditolak." }, 403) };
+  if ((invitation as any).owner_id !== (user as any).id) return { response: json({ error: "Akses ditolak." }, 403) };
 
   return { user };
 }
 
 async function handleGuestsList(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
@@ -40,21 +34,19 @@ async function handleGuestsList(
     .trim()
     .split("/")[0];
 
-  const authResult = await requireInvitationOwner(supabase, request, env, invitationId);
+  const authResult = await requireInvitationOwner(db, request, env, invitationId);
   if ("response" in authResult) return authResult.response;
 
-  const { data, error } = await supabase
-    .from("guests")
-    .select("*")
-    .eq("invitation_id", invitationId)
-    .order("created_at", { ascending: false });
-  if (error) throw error;
+  const { results: data } = await db
+    .prepare("SELECT * FROM guests WHERE invitation_id = ? ORDER BY created_at DESC")
+    .bind(invitationId)
+    .all();
 
   return json(data || []);
 }
 
 async function handleGuestsBulk(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
@@ -63,32 +55,32 @@ async function handleGuestsBulk(
     pathname.slice("guests/".length).replace(/\/bulk$/, ""),
   ).trim();
 
-  const authResult = await requireInvitationOwner(supabase, request, env, invitationId);
+  const authResult = await requireInvitationOwner(db, request, env, invitationId);
   if ("response" in authResult) return authResult.response;
 
   const body = await request.json();
   const guests = Array.isArray(body.guests) ? body.guests : [];
   if (!guests.length) return json({ error: "Invalid guests array" }, 400);
 
-  const payload = guests.map((g: any) => ({
-    id: crypto.randomUUID(),
-    invitation_id: invitationId,
-    name: String(g.name || "").trim(),
-    phone_number: String(g.phone_number || "").trim(),
-    is_sent: false,
-  }));
+  const stmts = guests.map((g: any) => {
+    const id = crypto.randomUUID();
+    return db.prepare(
+      "INSERT INTO guests (id, invitation_id, name, phone_number, is_sent) VALUES (?, ?, ?, ?, 0)"
+    ).bind(id, invitationId, String(g.name || "").trim(), String(g.phone_number || "").trim());
+  });
 
-  const { data, error } = await supabase
-    .from("guests")
-    .insert(payload)
-    .select();
-  if (error) throw error;
+  await db.batch(stmts);
+
+  const { results: data } = await db
+    .prepare("SELECT * FROM guests WHERE invitation_id = ? ORDER BY created_at DESC")
+    .bind(invitationId)
+    .all();
 
   return json(data, 201);
 }
 
 async function handleGuestUpdate(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
@@ -97,24 +89,24 @@ async function handleGuestUpdate(
   const invitationId = decodeURIComponent(parts[1] || "");
   const guestId = decodeURIComponent(parts[2] || "");
 
-  const authResult = await requireInvitationOwner(supabase, request, env, invitationId);
+  const authResult = await requireInvitationOwner(db, request, env, invitationId);
   if ("response" in authResult) return authResult.response;
 
   const body = await request.json();
-  const { data, error } = await supabase
-    .from("guests")
-    .update({ is_sent: body.is_sent })
-    .eq("id", guestId)
-    .eq("invitation_id", invitationId)
-    .select()
-    .single();
-  if (error) throw error;
+  await db.prepare(
+    "UPDATE guests SET is_sent = ? WHERE id = ? AND invitation_id = ?"
+  ).bind(body.is_sent ? 1 : 0, guestId, invitationId).run();
+
+  const data = await db
+    .prepare("SELECT * FROM guests WHERE id = ? AND invitation_id = ?")
+    .bind(guestId, invitationId)
+    .first();
 
   return json(data);
 }
 
 async function handleGuestDelete(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
@@ -123,21 +115,18 @@ async function handleGuestDelete(
   const invitationId = decodeURIComponent(parts[1] || "");
   const guestId = decodeURIComponent(parts[2] || "");
 
-  const authResult = await requireInvitationOwner(supabase, request, env, invitationId);
+  const authResult = await requireInvitationOwner(db, request, env, invitationId);
   if ("response" in authResult) return authResult.response;
 
-  const { error } = await supabase
-    .from("guests")
-    .delete()
-    .eq("id", guestId)
-    .eq("invitation_id", invitationId);
-  if (error) throw error;
+  await db.prepare(
+    "DELETE FROM guests WHERE id = ? AND invitation_id = ?"
+  ).bind(guestId, invitationId).run();
 
   return json({ message: "Guest deleted" });
 }
 
 export const dispatchGuestRoute: ApiDispatcher = async ({
-  supabase,
+  db,
   env,
   request,
   pathname,
@@ -145,14 +134,14 @@ export const dispatchGuestRoute: ApiDispatcher = async ({
   const method = getEffectiveMethod(request);
 
   if (pathname.endsWith("/bulk") && method === "POST")
-    return await handleGuestsBulk(supabase, request, pathname, env);
+    return await handleGuestsBulk(db, request, pathname, env);
 
   if (
     pathname.startsWith("guests/") &&
     pathname.split("/").length === 2 &&
     method === "GET"
   ) {
-    return await handleGuestsList(supabase, request, pathname, env);
+    return await handleGuestsList(db, request, pathname, env);
   }
 
   if (
@@ -160,7 +149,7 @@ export const dispatchGuestRoute: ApiDispatcher = async ({
     pathname.split("/").length === 3 &&
     method === "PUT"
   ) {
-    return await handleGuestUpdate(supabase, request, pathname, env);
+    return await handleGuestUpdate(db, request, pathname, env);
   }
 
   if (
@@ -168,7 +157,7 @@ export const dispatchGuestRoute: ApiDispatcher = async ({
     pathname.split("/").length === 3 &&
     method === "DELETE"
   ) {
-    return await handleGuestDelete(supabase, request, pathname, env);
+    return await handleGuestDelete(db, request, pathname, env);
   }
 
   return null;

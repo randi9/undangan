@@ -19,38 +19,37 @@ function randomPassword() {
   return password;
 }
 
-async function handleMe(supabase: any, request: Request, env: any) {
-  const user = await requireUser(supabase, request, env);
+async function handleMe(db: D1Database, request: Request, env: any) {
+  const user = await requireUser(db, request, env);
   if (!user) {
     return json({ error: "Tidak terautentikasi." }, 401);
   }
 
-  const { count } = await supabase
-    .from("invitations")
-    .select("id", { count: "exact", head: true })
-    .or(`owner_id.eq.${user.id},wo_id.eq.${user.id}`);
+  const countResult = await db
+    .prepare("SELECT COUNT(*) as cnt FROM invitations WHERE owner_id = ? OR wo_id = ?")
+    .bind((user as any).id, (user as any).id)
+    .first<{ cnt: number }>();
 
-  return json({ ...user, invitation_count: count || 0 });
+  return json({ ...user, invitation_count: countResult?.cnt || 0 });
 }
 
-async function handleUsersList(supabase: any, env: any, request: Request) {
-  const user = await requireUser(supabase, request, env);
+async function handleUsersList(db: D1Database, env: any, request: Request) {
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
   if (!requireAdminUser(user)) return json({ error: "Akses ditolak." }, 403);
 
-  const { data: users, error } = await supabase
-    .from("users")
-    .select("id, username, role, max_invitations, business_name, business_phone, created_at")
-    .order("created_at", { ascending: false });
-  if (error) throw error;
+  const { results: users } = await db
+    .prepare("SELECT id, username, role, max_invitations, business_name, business_phone, created_at FROM users ORDER BY created_at DESC")
+    .all();
+
+  const { results: invData } = await db
+    .prepare("SELECT owner_id, wo_id FROM invitations")
+    .all();
 
   const counts: Record<string, number> = {};
-  const { data: invData } = await supabase
-    .from("invitations")
-    .select("owner_id, wo_id");
   for (const inv of invData || []) {
-    if (inv.owner_id) counts[inv.owner_id] = (counts[inv.owner_id] || 0) + 1;
-    if (inv.wo_id) counts[inv.wo_id] = (counts[inv.wo_id] || 0) + 1;
+    if ((inv as any).owner_id) counts[(inv as any).owner_id] = (counts[(inv as any).owner_id] || 0) + 1;
+    if ((inv as any).wo_id) counts[(inv as any).wo_id] = (counts[(inv as any).wo_id] || 0) + 1;
   }
 
   let clerkUserMap = new Map<string, string>();
@@ -80,8 +79,8 @@ async function handleUsersList(supabase: any, env: any, request: Request) {
   );
 }
 
-async function handleUsersCreate(supabase: any, env: any, request: Request) {
-  const user = await requireUser(supabase, request, env);
+async function handleUsersCreate(db: D1Database, env: any, request: Request) {
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
   if (!requireAdminUser(user)) return json({ error: "Akses ditolak." }, 403);
 
@@ -121,28 +120,22 @@ async function handleUsersCreate(supabase: any, env: any, request: Request) {
     return json({ error: `Gagal membuat akun: ${clerkErr?.message || "Clerk error"}` }, 400);
   }
 
-  const { data: userRow, error } = await supabase
-    .from("users")
-    .insert([
-      {
-        username: clerkUser.id,
-        password_hash: clerkManagedPasswordHash,
-        role,
-        max_invitations,
-        business_name,
-        business_phone,
-        user_source: "admin_created",
-      },
-    ])
-    .select("id, username, role, max_invitations, business_name, business_phone, user_source, created_at")
-    .single();
-
-  if (error) {
-    console.error("[Auth] Supabase insert error:", error?.message, error?.code);
+  const id = crypto.randomUUID();
+  try {
+    await db.prepare(
+      "INSERT INTO users (id, username, password_hash, role, max_invitations, business_name, business_phone, user_source) VALUES (?, ?, ?, ?, ?, ?, ?, 'admin_created')"
+    ).bind(id, clerkUser.id, clerkManagedPasswordHash, role, max_invitations, business_name, business_phone).run();
+  } catch (dbErr: any) {
+    console.error("[Auth] D1 insert error:", dbErr?.message);
     // Cleanup: delete the Clerk user since DB insert failed
     await clerkRequest(env, `/users/${clerkUser.id}`, { method: "DELETE" }).catch(() => {});
-    return json({ error: `Gagal menyimpan ke database: ${error?.message || "DB error"}` }, 400);
+    return json({ error: `Gagal menyimpan ke database: ${dbErr?.message || "DB error"}` }, 400);
   }
+
+  const userRow = await db
+    .prepare("SELECT id, username, role, max_invitations, business_name, business_phone, user_source, created_at FROM users WHERE id = ?")
+    .bind(id)
+    .first();
 
   return json(
     {
@@ -157,42 +150,53 @@ async function handleUsersCreate(supabase: any, env: any, request: Request) {
 }
 
 async function handleUsersUpdate(
-  supabase: any,
+  db: D1Database,
   env: any,
   request: Request,
   pathname: string,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
   if (!requireAdminUser(user)) return json({ error: "Akses ditolak." }, 403);
 
   const id = decodeURIComponent(pathname.split("/")[2] || "");
   const body = await request.json();
 
-  const { data: currentUser } = await supabase
-    .from("users")
-    .select("username, role")
-    .eq("id", id)
-    .single();
+  const currentUser = await db
+    .prepare("SELECT username, role FROM users WHERE id = ?")
+    .bind(id)
+    .first();
   if (!currentUser) return json({ error: "User tidak ditemukan." }, 404);
 
-  const updateData: any = {};
-  if (body.role !== undefined)
-    updateData.role = ["admin", "user", "wo"].includes(body.role) ? body.role : "user";
-  if (body.max_invitations !== undefined)
-    updateData.max_invitations = Math.max(0, Number(body.max_invitations));
-  if (body.business_name !== undefined)
-    updateData.business_name = body.business_name ? String(body.business_name).trim() : null;
-  if (body.business_phone !== undefined)
-    updateData.business_phone = body.business_phone ? String(body.business_phone).trim() : null;
+  const setClauses: string[] = [];
+  const values: any[] = [];
 
-  const { data: updated, error } = await supabase
-    .from("users")
-    .update(updateData)
-    .eq("id", id)
-    .select("id, username, role, max_invitations, business_name, business_phone")
-    .single();
-  if (error) throw error;
+  if (body.role !== undefined) {
+    setClauses.push("role = ?");
+    values.push(["admin", "user", "wo"].includes(body.role) ? body.role : "user");
+  }
+  if (body.max_invitations !== undefined) {
+    setClauses.push("max_invitations = ?");
+    values.push(Math.max(0, Number(body.max_invitations)));
+  }
+  if (body.business_name !== undefined) {
+    setClauses.push("business_name = ?");
+    values.push(body.business_name ? String(body.business_name).trim() : null);
+  }
+  if (body.business_phone !== undefined) {
+    setClauses.push("business_phone = ?");
+    values.push(body.business_phone ? String(body.business_phone).trim() : null);
+  }
+
+  if (setClauses.length > 0) {
+    values.push(id);
+    await db.prepare(`UPDATE users SET ${setClauses.join(", ")} WHERE id = ?`).bind(...values).run();
+  }
+
+  const updated = await db
+    .prepare("SELECT id, username, role, max_invitations, business_name, business_phone FROM users WHERE id = ?")
+    .bind(id)
+    .first();
 
   const clerkUpdates: any = {};
   if (body.password) {
@@ -203,16 +207,16 @@ async function handleUsersUpdate(
     const parsedUsername = String(body.username).trim().toLowerCase();
     if (
       !parsedUsername.includes("@") &&
-      currentUser.username.startsWith("user_")
+      (currentUser as any).username.startsWith("user_")
     )
       clerkUpdates.username = parsedUsername;
   }
 
   if (
     Object.keys(clerkUpdates).length &&
-    currentUser.username.startsWith("user_")
+    (currentUser as any).username.startsWith("user_")
   ) {
-    await clerkRequest(env, `/users/${currentUser.username}`, {
+    await clerkRequest(env, `/users/${(currentUser as any).username}`, {
       method: "PATCH",
       body: JSON.stringify(clerkUpdates),
     }).catch(() => {});
@@ -222,31 +226,26 @@ async function handleUsersUpdate(
 }
 
 async function handleUsersDelete(
-  supabase: any,
+  db: D1Database,
   env: any,
   request: Request,
   pathname: string,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
   if (!requireAdminUser(user)) return json({ error: "Akses ditolak." }, 403);
 
   const id = decodeURIComponent(pathname.split("/")[2] || "");
-  if (id === user.id)
+  if (id === (user as any).id)
     return json({ error: "Tidak bisa menghapus akun sendiri." }, 400);
 
-  const { data: userToDelete } = await supabase
-    .from("users")
-    .select("username")
-    .eq("id", id)
-    .single();
+  const userToDelete = await db
+    .prepare("SELECT username FROM users WHERE id = ?")
+    .bind(id)
+    .first<{ username: string }>();
 
-  await supabase
-    .from("invitations")
-    .update({ owner_id: null })
-    .eq("owner_id", id);
-  const { error } = await supabase.from("users").delete().eq("id", id);
-  if (error) throw error;
+  await db.prepare("UPDATE invitations SET owner_id = NULL WHERE owner_id = ?").bind(id).run();
+  await db.prepare("DELETE FROM users WHERE id = ?").bind(id).run();
 
   if (userToDelete?.username?.startsWith("user_")) {
     await clerkRequest(env, `/users/${userToDelete.username}`, {
@@ -258,50 +257,48 @@ async function handleUsersDelete(
 }
 
 async function handleUserInvitations(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
   if (!requireAdminUser(user)) return json({ error: "Akses ditolak." }, 403);
 
   const id = decodeURIComponent(pathname.split("/")[2] || "");
 
-  const { data, error } = await supabase
-    .from("invitations")
-    .select("id, slug, groom_name, bride_name, theme, created_at, payment_status, wo_id")
-    .or(`owner_id.eq.${id},wo_id.eq.${id}`)
-    .order("created_at", { ascending: false });
-  if (error) throw error;
+  const { results: data } = await db
+    .prepare("SELECT id, slug, groom_name, bride_name, theme, created_at, payment_status, wo_id FROM invitations WHERE owner_id = ? OR wo_id = ? ORDER BY created_at DESC")
+    .bind(id, id)
+    .all();
 
   return json(data || []);
 }
 
 export const dispatchAuthRoute: ApiDispatcher = async ({
-  supabase,
+  db,
   env,
   request,
   pathname,
 }) => {
   if (pathname === "auth/me" && request.method === "GET")
-    return await handleMe(supabase, request, env);
+    return await handleMe(db, request, env);
   if (pathname === "auth/users" && request.method === "GET")
-    return await handleUsersList(supabase, env, request);
+    return await handleUsersList(db, env, request);
   if (pathname === "auth/users" && request.method === "POST")
-    return await handleUsersCreate(supabase, env, request);
+    return await handleUsersCreate(db, env, request);
 
   if (!pathname.startsWith("auth/users/")) return null;
 
   if (pathname.endsWith("/invitations") && request.method === "GET") {
-    return await handleUserInvitations(supabase, request, pathname, env);
+    return await handleUserInvitations(db, request, pathname, env);
   }
 
   if (request.method === "PUT")
-    return await handleUsersUpdate(supabase, env, request, pathname);
+    return await handleUsersUpdate(db, env, request, pathname);
   if (request.method === "DELETE")
-    return await handleUsersDelete(supabase, env, request, pathname);
+    return await handleUsersDelete(db, env, request, pathname);
 
   return json({ error: "Method tidak didukung" }, 405);
 };

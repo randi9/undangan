@@ -1,13 +1,13 @@
 import { json, getEffectiveMethod } from "../shared/http";
 import { rateLimit, getClientIp } from "../shared/rateLimit";
+import { hydrateInvitation } from "../shared/db";
 import type { ApiDispatcher } from "../types/api";
 
 /**
  * Generate a random 8-character alphanumeric access code (uppercase).
- * Uses crypto.getRandomValues() for cryptographic randomness.
  */
 function generateAccessCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Exclude confusing chars: 0,O,1,I
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   const randomBytes = new Uint32Array(8);
   crypto.getRandomValues(randomBytes);
   let code = "";
@@ -17,17 +17,10 @@ function generateAccessCode(): string {
   return code;
 }
 
-/**
- * Derive a signing secret for client access tokens.
- * Uses SUPABASE_SECRET_KEY which is always available in the env.
- */
 function getTokenSecret(env: any): string {
-  return (env?.SUPABASE_SECRET_KEY || env?.SUPABASE_SERVICE_ROLE_KEY || "client-token-fallback-key") + ":client-access";
+  return (env?.TOKEN_SECRET || env?.SUPABASE_SECRET_KEY || env?.SUPABASE_SERVICE_ROLE_KEY || "client-token-fallback-key") + ":client-access";
 }
 
-/**
- * Compute HMAC-SHA256 hex signature.
- */
 async function hmacSign(secret: string, data: string): Promise<string> {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(
@@ -43,27 +36,18 @@ async function hmacSign(secret: string, data: string): Promise<string> {
     .join("");
 }
 
-/**
- * Create an HMAC-signed time-limited access token.
- * Format: base64(payload).hmacSignature
- */
 async function createAccessToken(payload: any, env: any): Promise<string> {
-  const expiresAt = Date.now() + 72 * 60 * 60 * 1000; // 72 hours
+  const expiresAt = Date.now() + 72 * 60 * 60 * 1000;
   const payloadStr = JSON.stringify({ ...payload, exp: expiresAt });
   const payloadB64 = btoa(payloadStr);
   const signature = await hmacSign(getTokenSecret(env), payloadB64);
   return `${payloadB64}.${signature}`;
 }
 
-/**
- * Decode, verify signature, and validate an access token.
- * Returns the token payload if valid, null otherwise.
- */
 export async function decodeAccessToken(token: string, env: any): Promise<{ invitationId?: string; accessCode: string; woCodeId?: string; needs_create?: boolean } | null> {
   try {
     const dotIndex = token.lastIndexOf(".");
     if (dotIndex === -1) {
-      // Legacy unsigned token (backward compat) — still validate against DB
       const payload = JSON.parse(atob(token));
       if ((!payload.inv && !payload.wo_code_id) || !payload.code || !payload.exp) return null;
       if (Date.now() > payload.exp) return null;
@@ -73,7 +57,6 @@ export async function decodeAccessToken(token: string, env: any): Promise<{ invi
     const payloadB64 = token.slice(0, dotIndex);
     const signature = token.slice(dotIndex + 1);
 
-    // Verify HMAC signature
     const expectedSig = await hmacSign(getTokenSecret(env), payloadB64);
     if (signature.length !== expectedSig.length) return null;
     let diff = 0;
@@ -96,12 +79,8 @@ export async function decodeAccessToken(token: string, env: any): Promise<{ invi
   }
 }
 
-/**
- * Extract and validate the client access token from request headers.
- * Returns the invitation data if valid, or a Response to return immediately.
- */
 async function requireClientAccess(
-  supabase: any,
+  db: D1Database,
   request: Request,
   env: any,
 ): Promise<{ invitation: any } | { response: Response }> {
@@ -119,27 +98,21 @@ async function requireClientAccess(
     return { response: json({ error: "Selesaikan pembuatan undangan terlebih dahulu.", needs_create: true }, 403) };
   }
 
-  // Verify the access code still matches the invitation
-  const { data: invitation, error } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("id", decoded.invitationId)
-    .single();
+  const invitation = await db
+    .prepare("SELECT * FROM invitations WHERE id = ?")
+    .bind(decoded.invitationId)
+    .first();
 
-  if (error || !invitation) {
+  if (!invitation) {
     return { response: json({ error: "Kode akses sudah tidak berlaku." }, 401) };
   }
 
-  // Check if access code matches standard invitation access_code OR used wo_access_code
-  let isAccessCodeValid = invitation.access_code === decoded.accessCode;
+  let isAccessCodeValid = (invitation as any).access_code === decoded.accessCode;
   if (!isAccessCodeValid) {
-    const { data: woCode } = await supabase
-      .from("wo_access_codes")
-      .select("id")
-      .eq("code", decoded.accessCode)
-      .eq("invitation_id", invitation.id)
-      .eq("status", "used")
-      .maybeSingle();
+    const woCode = await db
+      .prepare("SELECT id FROM wo_access_codes WHERE code = ? AND invitation_id = ? AND status = 'used'")
+      .bind(decoded.accessCode, (invitation as any).id)
+      .first();
     if (woCode) {
       isAccessCodeValid = true;
     }
@@ -149,78 +122,71 @@ async function requireClientAccess(
     return { response: json({ error: "Kode akses sudah tidak berlaku." }, 401) };
   }
 
-  return { invitation };
+  return { invitation: hydrateInvitation(invitation) };
 }
 
 // === Admin: Generate Access Code ===
 async function handleGenerateAccessCode(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
-  // This requires admin auth — reuse existing auth check
   const { requireUser, unauthorized } = await import("../shared/auth");
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
-  if (user.role !== "admin") return json({ error: "Akses ditolak." }, 403);
+  if ((user as any).role !== "admin") return json({ error: "Akses ditolak." }, 403);
 
   const id = decodeURIComponent(
     pathname.slice("client/generate-code/".length),
   ).trim();
 
-  const { data: invitation } = await supabase
-    .from("invitations")
-    .select("id")
-    .eq("id", id)
-    .single();
+  const invitation = await db
+    .prepare("SELECT id FROM invitations WHERE id = ?")
+    .bind(id)
+    .first();
 
   if (!invitation) return json({ error: "Undangan tidak ditemukan." }, 404);
 
   const accessCode = generateAccessCode();
-  const { data: updated, error } = await supabase
-    .from("invitations")
-    .update({
-      access_code: accessCode,
-      access_code_created_at: new Date().toISOString(),
-    })
-    .eq("id", id)
-    .select("id, access_code, access_code_created_at")
-    .single();
+  const now = new Date().toISOString();
+  await db.prepare(
+    "UPDATE invitations SET access_code = ?, access_code_created_at = ? WHERE id = ?"
+  ).bind(accessCode, now, id).run();
 
-  if (error) throw error;
+  const updated = await db
+    .prepare("SELECT id, access_code, access_code_created_at FROM invitations WHERE id = ?")
+    .bind(id)
+    .first();
 
   return json(updated);
 }
 
 // === Admin: Revoke Access Code ===
 async function handleRevokeAccessCode(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
   const { requireUser, unauthorized } = await import("../shared/auth");
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
-  if (user.role !== "admin") return json({ error: "Akses ditolak." }, 403);
+  if ((user as any).role !== "admin") return json({ error: "Akses ditolak." }, 403);
 
   const id = decodeURIComponent(
     pathname.slice("client/revoke-code/".length),
   ).trim();
 
-  const { error } = await supabase
-    .from("invitations")
-    .update({ access_code: null, access_code_created_at: null })
-    .eq("id", id);
-
-  if (error) throw error;
+  await db.prepare(
+    "UPDATE invitations SET access_code = NULL, access_code_created_at = NULL WHERE id = ?"
+  ).bind(id).run();
 
   return json({ message: "Kode akses dicabut." });
 }
 
 // === Public: Verify Access Code ===
-async function handleVerifyCode(supabase: any, request: Request, env: any) {
+async function handleVerifyCode(db: D1Database, request: Request, env: any) {
   const ip = getClientIp(request);
   const limited = rateLimit(`client:verify:${ip}`, 5, 5 * 60 * 1000);
   if (limited) return limited;
@@ -233,30 +199,27 @@ async function handleVerifyCode(supabase: any, request: Request, env: any) {
   }
 
   // 1. Check WO access codes table first
-  const { data: woCode, error: woError } = await supabase
-    .from("wo_access_codes")
-    .select("id, status, invitation_id, wo_user_id")
-    .eq("code", code)
-    .maybeSingle();
+  const woCode = await db
+    .prepare("SELECT id, status, invitation_id, wo_user_id FROM wo_access_codes WHERE code = ?")
+    .bind(code)
+    .first();
 
   if (woCode) {
-    if (woCode.status === "revoked") {
+    if ((woCode as any).status === "revoked") {
       return json({ error: "Kode akses ini telah dicabut." }, 400);
     }
 
-    if (woCode.status === "used" || woCode.invitation_id) {
-      // If used, load matching invitation
-      const { data: invitation } = await supabase
-        .from("invitations")
-        .select("id, slug, groom_name, bride_name, cover_photo, theme")
-        .eq("id", woCode.invitation_id)
-        .maybeSingle();
+    if ((woCode as any).status === "used" || (woCode as any).invitation_id) {
+      const invitation = await db
+        .prepare("SELECT id, slug, groom_name, bride_name, cover_photo, theme FROM invitations WHERE id = ?")
+        .bind((woCode as any).invitation_id)
+        .first();
 
       if (!invitation) {
         return json({ error: "Undangan terkait tidak ditemukan." }, 404);
       }
 
-      const token = await createAccessToken({ inv: invitation.id, code }, env);
+      const token = await createAccessToken({ inv: (invitation as any).id, code }, env);
       return json({
         token,
         invitation,
@@ -265,7 +228,7 @@ async function handleVerifyCode(supabase: any, request: Request, env: any) {
     }
 
     // Otherwise, fresh code. Needs creation
-    const token = await createAccessToken({ wo_code_id: woCode.id, code, needs_create: true }, env);
+    const token = await createAccessToken({ wo_code_id: (woCode as any).id, code, needs_create: true }, env);
     return json({
       token,
       needs_create: true,
@@ -273,104 +236,98 @@ async function handleVerifyCode(supabase: any, request: Request, env: any) {
   }
 
   // 2. Fallback to normal invitation access code
-  const { data: invitation, error } = await supabase
-    .from("invitations")
-    .select("id, slug, groom_name, bride_name, cover_photo, theme, access_code")
-    .eq("access_code", code)
-    .maybeSingle();
+  const invitation = await db
+    .prepare("SELECT id, slug, groom_name, bride_name, cover_photo, theme, access_code FROM invitations WHERE access_code = ?")
+    .bind(code)
+    .first();
 
-  if (error || !invitation) {
+  if (!invitation) {
     return json({ error: "Kode akses tidak ditemukan." }, 404);
   }
 
-  const token = await createAccessToken({ inv: invitation.id, code }, env);
+  const token = await createAccessToken({ inv: (invitation as any).id, code }, env);
 
   return json({
     token,
     invitation: {
-      id: invitation.id,
-      slug: invitation.slug,
-      groom_name: invitation.groom_name,
-      bride_name: invitation.bride_name,
-      cover_photo: invitation.cover_photo,
-      theme: invitation.theme,
+      id: (invitation as any).id,
+      slug: (invitation as any).slug,
+      groom_name: (invitation as any).groom_name,
+      bride_name: (invitation as any).bride_name,
+      cover_photo: (invitation as any).cover_photo,
+      theme: (invitation as any).theme,
     },
     needs_create: false,
   });
 }
 
 // === Client: Get Invitation Details ===
-async function handleClientInvitation(supabase: any, request: Request, env: any) {
-  const authResult = await requireClientAccess(supabase, request, env);
+async function handleClientInvitation(db: D1Database, request: Request, env: any) {
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
   const inv = authResult.invitation;
 
-  // Load photos
-  const { data: photos } = await supabase
-    .from("photos")
-    .select("*")
-    .eq("invitation_id", inv.id)
-    .order("sort_order", { ascending: true });
+  const { results: photos } = await db
+    .prepare("SELECT * FROM photos WHERE invitation_id = ? ORDER BY sort_order ASC")
+    .bind(inv.id)
+    .all();
 
   return json({
     ...inv,
     photos: photos || [],
-    // Don't expose sensitive fields
     access_code: undefined,
     access_code_created_at: undefined,
   });
 }
 
 // === Client: Get Guests ===
-async function handleClientGuests(supabase: any, request: Request, env: any) {
-  const authResult = await requireClientAccess(supabase, request, env);
+async function handleClientGuests(db: D1Database, request: Request, env: any) {
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
-  const { data, error } = await supabase
-    .from("guests")
-    .select("*")
-    .eq("invitation_id", authResult.invitation.id)
-    .order("created_at", { ascending: false });
+  const { results: data } = await db
+    .prepare("SELECT * FROM guests WHERE invitation_id = ? ORDER BY created_at DESC")
+    .bind(authResult.invitation.id)
+    .all();
 
-  if (error) throw error;
   return json(data || []);
 }
 
 // === Client: Add Guests (Bulk) ===
-async function handleClientAddGuests(supabase: any, request: Request, env: any) {
-  const authResult = await requireClientAccess(supabase, request, env);
+async function handleClientAddGuests(db: D1Database, request: Request, env: any) {
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
   const body = await request.json();
   const guests = Array.isArray(body.guests) ? body.guests : [];
   if (!guests.length) return json({ error: "Daftar tamu tidak boleh kosong." }, 400);
 
-  const payload = guests.map((g: any) => ({
-    id: crypto.randomUUID(),
-    invitation_id: authResult.invitation.id,
-    name: String(g.name || "").trim(),
-    phone_number: String(g.phone_number || "").trim(),
-    is_sent: false,
-  }));
+  const stmts = guests.map((g: any) => {
+    const id = crypto.randomUUID();
+    return db.prepare(
+      "INSERT INTO guests (id, invitation_id, name, phone_number, is_sent) VALUES (?, ?, ?, ?, 0)"
+    ).bind(id, authResult.invitation.id, String(g.name || "").trim(), String(g.phone_number || "").trim());
+  });
 
-  const { data, error } = await supabase
-    .from("guests")
-    .insert(payload)
-    .select();
+  await db.batch(stmts);
 
-  if (error) throw error;
+  const { results: data } = await db
+    .prepare("SELECT * FROM guests WHERE invitation_id = ? ORDER BY created_at DESC")
+    .bind(authResult.invitation.id)
+    .all();
+
   return json(data, 201);
 }
 
 // === Client: Update Guest Status ===
 async function handleClientUpdateGuest(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request, env);
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
   const guestId = decodeURIComponent(
@@ -378,65 +335,60 @@ async function handleClientUpdateGuest(
   ).trim();
 
   const body = await request.json();
-  const { data, error } = await supabase
-    .from("guests")
-    .update({ is_sent: body.is_sent })
-    .eq("id", guestId)
-    .eq("invitation_id", authResult.invitation.id)
-    .select()
-    .single();
+  await db.prepare(
+    "UPDATE guests SET is_sent = ? WHERE id = ? AND invitation_id = ?"
+  ).bind(body.is_sent ? 1 : 0, guestId, authResult.invitation.id).run();
 
-  if (error) throw error;
+  const data = await db
+    .prepare("SELECT * FROM guests WHERE id = ? AND invitation_id = ?")
+    .bind(guestId, authResult.invitation.id)
+    .first();
+
   return json(data);
 }
 
 // === Client: Delete Guest ===
 async function handleClientDeleteGuest(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request, env);
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
   const guestId = decodeURIComponent(
     pathname.slice("client/guests/".length),
   ).trim();
 
-  const { error } = await supabase
-    .from("guests")
-    .delete()
-    .eq("id", guestId)
-    .eq("invitation_id", authResult.invitation.id);
+  await db.prepare(
+    "DELETE FROM guests WHERE id = ? AND invitation_id = ?"
+  ).bind(guestId, authResult.invitation.id).run();
 
-  if (error) throw error;
   return json({ message: "Tamu dihapus." });
 }
 
 // === Client: Get RSVPs ===
-async function handleClientRsvps(supabase: any, request: Request, env: any) {
-  const authResult = await requireClientAccess(supabase, request, env);
+async function handleClientRsvps(db: D1Database, request: Request, env: any) {
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
-  const { data, error } = await supabase
-    .from("rsvps")
-    .select("*")
-    .eq("invitation_id", authResult.invitation.id)
-    .order("created_at", { ascending: false });
+  const { results: data } = await db
+    .prepare("SELECT * FROM rsvps WHERE invitation_id = ? ORDER BY created_at DESC")
+    .bind(authResult.invitation.id)
+    .all();
 
-  if (error) throw error;
   return json(data || []);
 }
 
 // === Client: Reply to RSVP ===
 async function handleClientReplyRsvp(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request, env);
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
   const rsvpId = decodeURIComponent(
@@ -444,75 +396,69 @@ async function handleClientReplyRsvp(
   ).trim();
 
   const body = await request.json();
-  const updateData: any = {};
-  if (body.reply_text !== undefined) updateData.reply_text = body.reply_text;
-  if (body.is_hidden !== undefined) updateData.is_hidden = body.is_hidden;
 
   // Ensure the RSVP belongs to this invitation
-  const { data: rsvp } = await supabase
-    .from("rsvps")
-    .select("id, invitation_id")
-    .eq("id", rsvpId)
-    .single();
+  const rsvp = await db
+    .prepare("SELECT id, invitation_id FROM rsvps WHERE id = ?")
+    .bind(rsvpId)
+    .first();
 
-  if (!rsvp || rsvp.invitation_id !== authResult.invitation.id) {
+  if (!rsvp || (rsvp as any).invitation_id !== authResult.invitation.id) {
     return json({ error: "RSVP tidak ditemukan." }, 404);
   }
 
-  const { data, error } = await supabase
-    .from("rsvps")
-    .update(updateData)
-    .eq("id", rsvpId)
-    .select()
-    .single();
+  const setClauses: string[] = [];
+  const values: any[] = [];
+  if (body.reply_text !== undefined) { setClauses.push("reply_text = ?"); values.push(body.reply_text); }
+  if (body.is_hidden !== undefined) { setClauses.push("is_hidden = ?"); values.push(body.is_hidden ? 1 : 0); }
 
-  if (error) throw error;
+  if (setClauses.length > 0) {
+    values.push(rsvpId);
+    await db.prepare(`UPDATE rsvps SET ${setClauses.join(", ")} WHERE id = ?`).bind(...values).run();
+  }
+
+  const data = await db.prepare("SELECT * FROM rsvps WHERE id = ?").bind(rsvpId).first();
   return json(data);
 }
 
 // === Client: Delete RSVP ===
 async function handleClientDeleteRsvp(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request, env);
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
   const rsvpId = decodeURIComponent(
     pathname.slice("client/rsvps/".length),
   ).trim();
 
-  // Ensure the RSVP belongs to this invitation
-  const { data: rsvp } = await supabase
-    .from("rsvps")
-    .select("id, invitation_id")
-    .eq("id", rsvpId)
-    .single();
+  const rsvp = await db
+    .prepare("SELECT id, invitation_id FROM rsvps WHERE id = ?")
+    .bind(rsvpId)
+    .first();
 
-  if (!rsvp || rsvp.invitation_id !== authResult.invitation.id) {
+  if (!rsvp || (rsvp as any).invitation_id !== authResult.invitation.id) {
     return json({ error: "RSVP tidak ditemukan." }, 404);
   }
 
-  const { error } = await supabase.from("rsvps").delete().eq("id", rsvpId);
-  if (error) throw error;
+  await db.prepare("DELETE FROM rsvps WHERE id = ?").bind(rsvpId).run();
   return json({ message: "Ucapan dihapus." });
 }
 
 // === Client: Get Stats ===
-async function handleClientStats(supabase: any, request: Request, env: any) {
-  const authResult = await requireClientAccess(supabase, request, env);
+async function handleClientStats(db: D1Database, request: Request, env: any) {
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
   const invitationId = authResult.invitation.id;
 
-  const { data: rsvps, error: rsvpError } = await supabase
-    .from("rsvps")
-    .select("attendance, guest_count")
-    .eq("invitation_id", invitationId);
-
-  if (rsvpError) throw rsvpError;
+  const { results: rsvps } = await db
+    .prepare("SELECT attendance, guest_count FROM rsvps WHERE invitation_id = ?")
+    .bind(invitationId)
+    .all();
 
   const totalRsvps = rsvps?.length || 0;
   const hadirData = rsvps?.filter((r: any) => r.attendance === "hadir") || [];
@@ -521,7 +467,7 @@ async function handleClientStats(supabase: any, request: Request, env: any) {
 
   let totalPax = 0;
   for (const r of hadirData) {
-    totalPax += r.guest_count || 1;
+    totalPax += (r as any).guest_count || 1;
   }
 
   return json({
@@ -538,28 +484,24 @@ async function handleClientStats(supabase: any, request: Request, env: any) {
 
 // === Client: Update WA Message ===
 async function handleClientUpdateWaMessage(
-  supabase: any,
+  db: D1Database,
   request: Request,
   env: any,
 ) {
-  const authResult = await requireClientAccess(supabase, request, env);
+  const authResult = await requireClientAccess(db, request, env);
   if ("response" in authResult) return authResult.response;
 
   const body = await request.json();
-  const { data, error } = await supabase
-    .from("invitations")
-    .update({ wa_message: body.wa_message, updated_at: new Date().toISOString() })
-    .eq("id", authResult.invitation.id)
-    .select("wa_message")
-    .single();
+  await db.prepare(
+    "UPDATE invitations SET wa_message = ?, updated_at = ? WHERE id = ?"
+  ).bind(body.wa_message, new Date().toISOString(), authResult.invitation.id).run();
 
-  if (error) throw error;
-  return json(data);
+  return json({ wa_message: body.wa_message });
 }
 
 
 export const dispatchClientRoute: ApiDispatcher = async ({
-  supabase,
+  db,
   env,
   request,
   pathname,
@@ -568,40 +510,39 @@ export const dispatchClientRoute: ApiDispatcher = async ({
 
   // Admin endpoints (require Clerk auth)
   if (pathname.startsWith("client/generate-code/") && method === "POST")
-    return await handleGenerateAccessCode(supabase, request, pathname, env);
+    return await handleGenerateAccessCode(db, request, pathname, env);
   if (pathname.startsWith("client/revoke-code/") && method === "DELETE")
-    return await handleRevokeAccessCode(supabase, request, pathname, env);
+    return await handleRevokeAccessCode(db, request, pathname, env);
 
   // Public: verify code
   if (pathname === "client/verify-code" && method === "POST")
-    return await handleVerifyCode(supabase, request, env);
+    return await handleVerifyCode(db, request, env);
 
   // Client authenticated endpoints (require access token)
   if (pathname === "client/invitation" && method === "GET")
-    return await handleClientInvitation(supabase, request, env);
-
+    return await handleClientInvitation(db, request, env);
 
   if (pathname === "client/guests" && method === "GET")
-    return await handleClientGuests(supabase, request, env);
+    return await handleClientGuests(db, request, env);
   if (pathname === "client/guests" && method === "POST")
-    return await handleClientAddGuests(supabase, request, env);
+    return await handleClientAddGuests(db, request, env);
   if (pathname.startsWith("client/guests/") && method === "PUT")
-    return await handleClientUpdateGuest(supabase, request, pathname, env);
+    return await handleClientUpdateGuest(db, request, pathname, env);
   if (pathname.startsWith("client/guests/") && method === "DELETE")
-    return await handleClientDeleteGuest(supabase, request, pathname, env);
+    return await handleClientDeleteGuest(db, request, pathname, env);
 
   if (pathname === "client/rsvps" && method === "GET")
-    return await handleClientRsvps(supabase, request, env);
+    return await handleClientRsvps(db, request, env);
   if (pathname.startsWith("client/rsvps/") && method === "PUT")
-    return await handleClientReplyRsvp(supabase, request, pathname, env);
+    return await handleClientReplyRsvp(db, request, pathname, env);
   if (pathname.startsWith("client/rsvps/") && method === "DELETE")
-    return await handleClientDeleteRsvp(supabase, request, pathname, env);
+    return await handleClientDeleteRsvp(db, request, pathname, env);
 
   if (pathname === "client/stats" && method === "GET")
-    return await handleClientStats(supabase, request, env);
+    return await handleClientStats(db, request, env);
 
   if (pathname === "client/wa-message" && method === "PUT")
-    return await handleClientUpdateWaMessage(supabase, request, env);
+    return await handleClientUpdateWaMessage(db, request, env);
 
   return null;
 };

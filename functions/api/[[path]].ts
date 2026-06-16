@@ -1,4 +1,4 @@
-import { getSupabase } from "../_lib/supabase";
+import { getDb } from "../api/shared/db";
 import { getPathname, json, secureOptions, wrapResponse } from "./shared/http";
 import { ValidationError } from "./shared/validation";
 import { dispatchAuthRoute } from "./routes/auth";
@@ -35,13 +35,13 @@ const dispatchers: ApiDispatcher[] = [
 ];
 
 async function dispatchApiRequest(
-  supabase: any,
+  db: D1Database,
   env: any,
   request: Request,
   pathname: string,
 ) {
   for (const dispatch of dispatchers) {
-    const response = await dispatch({ supabase, env, request, pathname });
+    const response = await dispatch({ db, env, request, pathname });
     if (response) return response;
   }
 
@@ -58,19 +58,9 @@ export async function onRequest(context: any) {
     const pathname = getPathname(request);
 
     const isHealthRequest = pathname === "health" || pathname === "";
-    const supabaseUrl =
-      env?.SUPABASE_URL ||
-      env?.VITE_SUPABASE_URL ||
-      env?.SUPABASE_VITE_SUPABASE_URL ||
-      "";
-    const supabaseKey =
-      env?.SUPABASE_SECRET_KEY ||
-      env?.SUPABASE_SERVICE_ROLE_KEY ||
-      env?.SUPABASE_ANON_KEY ||
-      env?.VITE_SUPABASE_ANON_KEY ||
-      "";
 
-    if (!isHealthRequest && (!supabaseUrl || !supabaseKey)) {
+    // Check D1 binding availability
+    if (!isHealthRequest && !env?.DB) {
       return wrapResponse(
         json(
           {
@@ -83,8 +73,8 @@ export async function onRequest(context: any) {
       );
     }
 
-    const supabase = getSupabase(env);
-    const response = await dispatchApiRequest(supabase, env, request, pathname);
+    const db = getDb(env);
+    const response = await dispatchApiRequest(db, env, request, pathname);
 
     // Wrap every response with validated CORS origin + security headers
     return wrapResponse(response, request);

@@ -1,0 +1,10 @@
+# Cloudflare Pages configuration
+# D1 database binding for MengundangAnda
+# NOTE: Create the D1 database first:
+#   npx wrangler d1 create mengundang-anda-db
+# Then paste the database_id below.
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mengundang-anda-db"
+database_id = "58105769-a7db-44fc-9e49-b925be8ae01c"

@@ -1,5 +1,5 @@
 export type ApiContext = {
-  supabase: any;
+  db: D1Database;
   env: any;
   request: Request;
   pathname: string;

@@ -2,22 +2,15 @@ import { requireAdminUser, requireUser, unauthorized } from "../shared/auth";
 import { json } from "../shared/http";
 import type { ApiDispatcher } from "../types/api";
 
-/**
- * Generate a unique order number: ORD-YYYYMMDD-XXXXXX
- * Uses crypto.getRandomValues() for unpredictable, collision-resistant IDs.
- */
 function generateOrderNumber(): string {
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10).replace(/-/g, "");
   const randomBytes = new Uint32Array(1);
   crypto.getRandomValues(randomBytes);
-  const rand = (randomBytes[0] % 900000) + 100000; // 6-digit: 100000–999999
+  const rand = (randomBytes[0] % 900000) + 100000;
   return `ORD-${dateStr}-${rand}`;
 }
 
-/**
- * Send Telegram notification to admin (fire-and-forget)
- */
 async function notifyTelegram(env: any, orderNumber: string, customerName: string, groomName: string, brideName: string, theme: string) {
   const tgToken = env.TELEGRAM_BOT_TOKEN;
   const tgChatId = env.TELEGRAM_CHAT_ID;
@@ -49,10 +42,7 @@ async function notifyTelegram(env: any, orderNumber: string, customerName: strin
   }
 }
 
-/**
- * POST /api/orders — Create a new order (public, no auth required)
- */
-async function handleCreateOrder(supabase: any, request: Request, env: any) {
+async function handleCreateOrder(db: D1Database, request: Request, env: any) {
   const body = await request.json().catch(() => ({}));
 
   const customerName = String(body.customer_name || "").trim();
@@ -61,7 +51,6 @@ async function handleCreateOrder(supabase: any, request: Request, env: any) {
   const brideName = String(body.bride_name || "").trim();
   const theme = String(body.theme || "elegant").trim();
 
-  // Validation
   if (!customerName)
     return json({ error: "Nama pelanggan wajib diisi." }, 400);
   if (!customerPhone)
@@ -73,37 +62,18 @@ async function handleCreateOrder(supabase: any, request: Request, env: any) {
 
   const orderNumber = generateOrderNumber();
 
-  const orderData = {
-    order_number: orderNumber,
-    status: "pending",
-    customer_name: customerName,
-    customer_phone: customerPhone,
-    customer_email: body.customer_email || null,
-    groom_name: groomName,
-    bride_name: brideName,
-    wedding_date: body.wedding_date || null,
-    theme,
-    location: body.location || null,
-    notes: body.notes || null,
-    package_type: "jasa_dibuatkan",
-    amount: 99000,
-    payment_status: "unpaid",
-  };
-
-  const { data, error } = await supabase
-    .from("orders")
-    .insert([orderData])
-    .select("id, order_number, status, created_at")
-    .single();
-
-  if (error) {
-    // If the table doesn't exist yet, still return success with a generated order number
-    // so the WA redirect flow isn't broken
-    if (
-      error.message?.includes("relation") ||
-      error.code === "42P01" ||
-      error.message?.includes("does not exist")
-    ) {
+  try {
+    await db.prepare(`INSERT INTO orders (
+      order_number, status, customer_name, customer_phone, customer_email,
+      groom_name, bride_name, wedding_date, theme, location, notes,
+      package_type, amount, payment_status
+    ) VALUES (?, 'pending', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'jasa_dibuatkan', 99000, 'unpaid')`).bind(
+      orderNumber, customerName, customerPhone, body.customer_email || null,
+      groomName, brideName, body.wedding_date || null, theme,
+      body.location || null, body.notes || null,
+    ).run();
+  } catch (error: any) {
+    if (error.message?.includes("no such table")) {
       return json({
         order_number: orderNumber,
         status: "pending",
@@ -113,66 +83,67 @@ async function handleCreateOrder(supabase: any, request: Request, env: any) {
     return json({ error: error.message || "Gagal menyimpan order." }, 500);
   }
 
-  // Send Telegram notification (awaited so Cloudflare doesn't kill it)
+  const data = await db
+    .prepare("SELECT id, order_number, status, created_at FROM orders WHERE order_number = ?")
+    .bind(orderNumber)
+    .first();
+
   await notifyTelegram(env, orderNumber, customerName, groomName, brideName, theme);
 
   return json({
-    id: data.id,
-    order_number: data.order_number,
-    status: data.status,
-    created_at: data.created_at,
+    id: (data as any)?.id,
+    order_number: orderNumber,
+    status: "pending",
+    created_at: (data as any)?.created_at,
   });
 }
 
-/**
- * GET /api/orders — List all orders (admin only)
- */
 async function handleListOrders(
-  supabase: any,
+  db: D1Database,
   request: Request,
   env: any,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
   if (!requireAdminUser(user))
     return json({ error: "Hanya admin yang bisa melihat daftar order." }, 403);
 
   const url = new URL(request.url);
-  const status = url.searchParams.get("status"); // optional filter
+  const status = url.searchParams.get("status");
   const limit = Math.min(parseInt(url.searchParams.get("limit") || "50"), 100);
 
-  let query = supabase
-    .from("orders")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
+  let results: any[];
   if (status) {
-    query = query.eq("status", status);
+    const { results: r } = await db
+      .prepare("SELECT * FROM orders WHERE status = ? ORDER BY created_at DESC LIMIT ?")
+      .bind(status, limit)
+      .all();
+    results = r || [];
+  } else {
+    const { results: r } = await db
+      .prepare("SELECT * FROM orders ORDER BY created_at DESC LIMIT ?")
+      .bind(limit)
+      .all();
+    results = r || [];
   }
 
-  const { data, error } = await query;
-
-  if (error) return json({ error: error.message }, 500);
-  return json({ orders: data || [], count: data?.length || 0 });
+  return json({ orders: results, count: results.length });
 }
 
-/**
- * PATCH /api/orders/:id — Update order status (admin only)
- */
 async function handleUpdateOrder(
-  supabase: any,
+  db: D1Database,
   request: Request,
   orderId: string,
   env: any,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
   if (!requireAdminUser(user))
     return json({ error: "Hanya admin yang bisa update order." }, 403);
 
   const body = await request.json().catch(() => ({}));
-  const updates: Record<string, any> = {};
+  const setClauses: string[] = [];
+  const values: any[] = [];
 
   if (body.status) {
     const validStatuses = ["pending", "in_progress", "completed", "cancelled"];
@@ -181,62 +152,60 @@ async function handleUpdateOrder(
         { error: `Status tidak valid. Gunakan: ${validStatuses.join(", ")}` },
         400,
       );
-    updates.status = body.status;
+    setClauses.push("status = ?");
+    values.push(body.status);
   }
 
   if (body.payment_status) {
     if (!["unpaid", "paid"].includes(body.payment_status))
       return json({ error: "payment_status harus 'unpaid' atau 'paid'." }, 400);
-    updates.payment_status = body.payment_status;
+    setClauses.push("payment_status = ?");
+    values.push(body.payment_status);
   }
 
   if (body.invitation_id) {
-    updates.invitation_id = body.invitation_id;
+    setClauses.push("invitation_id = ?");
+    values.push(body.invitation_id);
   }
 
   if (body.notes !== undefined) {
-    updates.notes = body.notes;
+    setClauses.push("notes = ?");
+    values.push(body.notes);
   }
 
-  if (Object.keys(updates).length === 0) {
+  if (setClauses.length === 0) {
     return json({ error: "Tidak ada data yang di-update." }, 400);
   }
 
-  updates.updated_at = new Date().toISOString();
+  setClauses.push("updated_at = ?");
+  values.push(new Date().toISOString());
+  values.push(orderId);
 
-  const { data, error } = await supabase
-    .from("orders")
-    .update(updates)
-    .eq("id", orderId)
-    .select("*")
-    .single();
+  await db.prepare(`UPDATE orders SET ${setClauses.join(", ")} WHERE id = ?`).bind(...values).run();
 
-  if (error) return json({ error: error.message }, 500);
+  const data = await db.prepare("SELECT * FROM orders WHERE id = ?").bind(orderId).first();
   if (!data) return json({ error: "Order tidak ditemukan." }, 404);
 
   return json({ order: data });
 }
 
 export const dispatchOrderRoute: ApiDispatcher = async ({
-  supabase,
+  db,
   env,
   request,
   pathname,
 }) => {
-  // POST /api/orders — public (no auth)
   if (pathname === "orders" && request.method === "POST") {
-    return await handleCreateOrder(supabase, request, env);
+    return await handleCreateOrder(db, request, env);
   }
 
-  // GET /api/orders — admin only
   if (pathname === "orders" && request.method === "GET") {
-    return await handleListOrders(supabase, request, env);
+    return await handleListOrders(db, request, env);
   }
 
-  // PATCH /api/orders/:id — admin only
   if (pathname.startsWith("orders/") && request.method === "PATCH") {
     const orderId = pathname.slice("orders/".length);
-    return await handleUpdateOrder(supabase, request, orderId, env);
+    return await handleUpdateOrder(db, request, orderId, env);
   }
 
   return null;

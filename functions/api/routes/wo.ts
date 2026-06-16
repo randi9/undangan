@@ -1,9 +1,10 @@
 import { requireUser, unauthorized } from "../shared/auth";
 import { json } from "../shared/http";
+import { hydrateInvitation } from "../shared/db";
 import type { ApiDispatcher } from "../types/api";
 
 function generateWoAccessCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Exclude confusing chars
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   const randomBytes = new Uint32Array(8);
   crypto.getRandomValues(randomBytes);
   let code = "";
@@ -14,45 +15,62 @@ function generateWoAccessCode(): string {
 }
 
 // === WO: List Access Codes ===
-async function handleListCodes(supabase: any, request: Request, env: any) {
-  const user = await requireUser(supabase, request, env);
-  if (!user || (user.role !== "wo" && user.role !== "admin")) return unauthorized();
+async function handleListCodes(db: D1Database, request: Request, env: any) {
+  const user = await requireUser(db, request, env);
+  if (!user || ((user as any).role !== "wo" && (user as any).role !== "admin")) return unauthorized();
 
   const url = new URL(request.url);
   const filterWoId = url.searchParams.get("wo_id");
 
-  let query = supabase
-    .from("wo_access_codes")
-    .select("*, invitation:invitations(id, slug, groom_name, bride_name, cover_photo, theme)");
-
-  if (user.role !== "admin") {
-    query = query.eq("wo_user_id", user.id);
+  let codes: any[];
+  if ((user as any).role !== "admin") {
+    const { results } = await db
+      .prepare("SELECT * FROM wo_access_codes WHERE wo_user_id = ? ORDER BY created_at DESC")
+      .bind((user as any).id)
+      .all();
+    codes = results || [];
   } else if (filterWoId) {
-    query = query.eq("wo_user_id", filterWoId);
+    const { results } = await db
+      .prepare("SELECT * FROM wo_access_codes WHERE wo_user_id = ? ORDER BY created_at DESC")
+      .bind(filterWoId)
+      .all();
+    codes = results || [];
+  } else {
+    const { results } = await db
+      .prepare("SELECT * FROM wo_access_codes ORDER BY created_at DESC")
+      .all();
+    codes = results || [];
   }
 
-  const { data, error } = await query.order("created_at", { ascending: false });
-  if (error) throw error;
+  // Enrich with invitation data
+  const enriched = await Promise.all(
+    codes.map(async (code: any) => {
+      let invitation = null;
+      if (code.invitation_id) {
+        invitation = await db
+          .prepare("SELECT id, slug, groom_name, bride_name, cover_photo, theme FROM invitations WHERE id = ?")
+          .bind(code.invitation_id)
+          .first();
+      }
+      return { ...code, invitation };
+    })
+  );
 
-  return json(data || []);
+  return json(enriched);
 }
 
 // === WO: Generate Access Code ===
-async function handleGenerateCode(supabase: any, request: Request, env: any) {
-  const user = await requireUser(supabase, request, env);
-  if (!user || user.role !== "wo") return unauthorized();
+async function handleGenerateCode(db: D1Database, request: Request, env: any) {
+  const user = await requireUser(db, request, env);
+  if (!user || (user as any).role !== "wo") return unauthorized();
 
-  // Get current active & used codes count to enforce quota
-  const { count, error: countError } = await supabase
-    .from("wo_access_codes")
-    .select("id", { count: "exact", head: true })
-    .eq("wo_user_id", user.id)
-    .in("status", ["active", "used"]);
+  const countResult = await db
+    .prepare("SELECT COUNT(*) as cnt FROM wo_access_codes WHERE wo_user_id = ? AND status IN ('active', 'used')")
+    .bind((user as any).id)
+    .first<{ cnt: number }>();
 
-  if (countError) throw countError;
-
-  const currentCount = count || 0;
-  if (currentCount >= (user.max_invitations || 0)) {
+  const currentCount = countResult?.cnt || 0;
+  if (currentCount >= ((user as any).max_invitations || 0)) {
     return json(
       { error: "Kuota pembuatan undangan telah habis. Silakan hubungi Admin untuk menambah kuota." },
       400,
@@ -60,111 +78,102 @@ async function handleGenerateCode(supabase: any, request: Request, env: any) {
   }
 
   const code = generateWoAccessCode();
-  const { data: newCode, error: insertError } = await supabase
-    .from("wo_access_codes")
-    .insert([
-      {
-        code,
-        wo_user_id: user.id,
-        status: "active",
-      },
-    ])
-    .select("*")
-    .single();
+  const id = crypto.randomUUID();
+  await db.prepare(
+    "INSERT INTO wo_access_codes (id, code, wo_user_id, status) VALUES (?, ?, ?, 'active')"
+  ).bind(id, code, (user as any).id).run();
 
-  if (insertError) throw insertError;
+  const newCode = await db.prepare("SELECT * FROM wo_access_codes WHERE id = ?").bind(id).first();
   return json(newCode, 201);
 }
 
 // === WO: Revoke Access Code ===
-async function handleRevokeCode(supabase: any, request: Request, pathname: string, env: any) {
-  const user = await requireUser(supabase, request, env);
-  if (!user || (user.role !== "wo" && user.role !== "admin")) return unauthorized();
+async function handleRevokeCode(db: D1Database, request: Request, pathname: string, env: any) {
+  const user = await requireUser(db, request, env);
+  if (!user || ((user as any).role !== "wo" && (user as any).role !== "admin")) return unauthorized();
 
   const codeId = pathname.slice("wo/codes/".length).replace(/\/revoke$/, "");
 
-  let query = supabase.from("wo_access_codes").select("*").eq("id", codeId);
-  if (user.role !== "admin") {
-    query = query.eq("wo_user_id", user.id);
+  let woCode;
+  if ((user as any).role !== "admin") {
+    woCode = await db
+      .prepare("SELECT * FROM wo_access_codes WHERE id = ? AND wo_user_id = ?")
+      .bind(codeId, (user as any).id)
+      .first();
+  } else {
+    woCode = await db
+      .prepare("SELECT * FROM wo_access_codes WHERE id = ?")
+      .bind(codeId)
+      .first();
   }
-  
-  const { data: woCode, error: fetchError } = await query.maybeSingle();
-  if (fetchError || !woCode) return json({ error: "Kode akses tidak ditemukan." }, 404);
 
-  if (woCode.status === "used") {
+  if (!woCode) return json({ error: "Kode akses tidak ditemukan." }, 404);
+
+  if ((woCode as any).status === "used") {
     return json({ error: "Kode akses yang sudah digunakan tidak dapat dicabut." }, 400);
   }
 
-  const { data: updated, error: updateError } = await supabase
-    .from("wo_access_codes")
-    .update({ status: "revoked" })
-    .eq("id", codeId)
-    .select("*")
-    .single();
-
-  if (updateError) throw updateError;
+  await db.prepare("UPDATE wo_access_codes SET status = 'revoked' WHERE id = ?").bind(codeId).run();
+  const updated = await db.prepare("SELECT * FROM wo_access_codes WHERE id = ?").bind(codeId).first();
   return json(updated);
 }
 
 // === WO: Delete Access Code ===
-async function handleDeleteCode(supabase: any, request: Request, pathname: string, env: any) {
-  const user = await requireUser(supabase, request, env);
-  if (!user || (user.role !== "wo" && user.role !== "admin")) return unauthorized();
+async function handleDeleteCode(db: D1Database, request: Request, pathname: string, env: any) {
+  const user = await requireUser(db, request, env);
+  if (!user || ((user as any).role !== "wo" && (user as any).role !== "admin")) return unauthorized();
 
   const codeId = pathname.slice("wo/codes/".length);
 
-  let query = supabase.from("wo_access_codes").select("*").eq("id", codeId);
-  if (user.role !== "admin") {
-    query = query.eq("wo_user_id", user.id);
+  let woCode;
+  if ((user as any).role !== "admin") {
+    woCode = await db
+      .prepare("SELECT * FROM wo_access_codes WHERE id = ? AND wo_user_id = ?")
+      .bind(codeId, (user as any).id)
+      .first();
+  } else {
+    woCode = await db
+      .prepare("SELECT * FROM wo_access_codes WHERE id = ?")
+      .bind(codeId)
+      .first();
   }
-  
-  const { data: woCode, error: fetchError } = await query.maybeSingle();
-  if (fetchError || !woCode) return json({ error: "Kode akses tidak ditemukan." }, 404);
 
-  if (woCode.status === "used" && woCode.invitation_id) {
+  if (!woCode) return json({ error: "Kode akses tidak ditemukan." }, 404);
+
+  if ((woCode as any).status === "used" && (woCode as any).invitation_id) {
     return json({ error: "Kode akses yang sedang digunakan oleh undangan aktif tidak dapat dihapus." }, 400);
   }
 
-  const { error: deleteError } = await supabase
-    .from("wo_access_codes")
-    .delete()
-    .eq("id", codeId);
-
-  if (deleteError) throw deleteError;
+  await db.prepare("DELETE FROM wo_access_codes WHERE id = ?").bind(codeId).run();
   return json({ message: "Kode akses berhasil dihapus secara permanen." });
 }
 
 // === WO: Stats ===
-async function handleWoStats(supabase: any, request: Request, env: any) {
-  const user = await requireUser(supabase, request, env);
-  if (!user || (user.role !== "wo" && user.role !== "admin")) return unauthorized();
+async function handleWoStats(db: D1Database, request: Request, env: any) {
+  const user = await requireUser(db, request, env);
+  if (!user || ((user as any).role !== "wo" && (user as any).role !== "admin")) return unauthorized();
 
   const url = new URL(request.url);
   const filterWoId = url.searchParams.get("wo_id");
   
-  let targetWoId = user.id;
-  if (user.role === "admin" && filterWoId) {
+  let targetWoId = (user as any).id;
+  if ((user as any).role === "admin" && filterWoId) {
     targetWoId = filterWoId;
   }
 
-  // Get quota limit
-  let quotaLimit = user.max_invitations || 0;
-  if (user.role === "admin" && filterWoId) {
-    const { data: targetUser } = await supabase
-      .from("users")
-      .select("max_invitations")
-      .eq("id", filterWoId)
-      .single();
+  let quotaLimit = (user as any).max_invitations || 0;
+  if ((user as any).role === "admin" && filterWoId) {
+    const targetUser = await db
+      .prepare("SELECT max_invitations FROM users WHERE id = ?")
+      .bind(filterWoId)
+      .first<{ max_invitations: number }>();
     quotaLimit = targetUser?.max_invitations || 0;
   }
 
-  // Get active/used codes
-  const { data: codes, error: codesError } = await supabase
-    .from("wo_access_codes")
-    .select("status")
-    .eq("wo_user_id", targetWoId);
-
-  if (codesError) throw codesError;
+  const { results: codes } = await db
+    .prepare("SELECT status FROM wo_access_codes WHERE wo_user_id = ?")
+    .bind(targetWoId)
+    .all();
 
   const activeCount = codes?.filter((c: any) => c.status === "active").length || 0;
   const usedCount = codes?.filter((c: any) => c.status === "used").length || 0;
@@ -181,47 +190,55 @@ async function handleWoStats(supabase: any, request: Request, env: any) {
 }
 
 // === WO: List Client Invitations ===
-async function handleWoInvitations(supabase: any, request: Request, env: any) {
-  const user = await requireUser(supabase, request, env);
-  if (!user || (user.role !== "wo" && user.role !== "admin")) return unauthorized();
+async function handleWoInvitations(db: D1Database, request: Request, env: any) {
+  const user = await requireUser(db, request, env);
+  if (!user || ((user as any).role !== "wo" && (user as any).role !== "admin")) return unauthorized();
 
-  let query = supabase.from("invitations").select("*");
-  if (user.role !== "admin") {
-    query = query.eq("wo_id", user.id);
+  let invitations: any[];
+  if ((user as any).role !== "admin") {
+    const { results } = await db
+      .prepare("SELECT * FROM invitations WHERE wo_id = ? ORDER BY created_at DESC")
+      .bind((user as any).id)
+      .all();
+    invitations = results || [];
   } else {
     const url = new URL(request.url);
     const filterWoId = url.searchParams.get("wo_id");
     if (filterWoId) {
-      query = query.eq("wo_id", filterWoId);
+      const { results } = await db
+        .prepare("SELECT * FROM invitations WHERE wo_id = ? ORDER BY created_at DESC")
+        .bind(filterWoId)
+        .all();
+      invitations = results || [];
     } else {
-      query = query.not("wo_id", "is", null);
+      const { results } = await db
+        .prepare("SELECT * FROM invitations WHERE wo_id IS NOT NULL ORDER BY created_at DESC")
+        .all();
+      invitations = results || [];
     }
   }
 
-  const { data, error } = await query.order("created_at", { ascending: false });
-  if (error) throw error;
-
-  return json(data || []);
+  return json(invitations.map(hydrateInvitation));
 }
 
 export const dispatchWoRoute: ApiDispatcher = async ({
-  supabase,
+  db,
   env,
   request,
   pathname,
 }) => {
   if (pathname === "wo/codes" && request.method === "GET")
-    return await handleListCodes(supabase, request, env);
+    return await handleListCodes(db, request, env);
   if (pathname === "wo/codes" && request.method === "POST")
-    return await handleGenerateCode(supabase, request, env);
+    return await handleGenerateCode(db, request, env);
   if (pathname.startsWith("wo/codes/") && pathname.endsWith("/revoke") && request.method === "POST")
-    return await handleRevokeCode(supabase, request, pathname, env);
+    return await handleRevokeCode(db, request, pathname, env);
   if (pathname.startsWith("wo/codes/") && request.method === "DELETE")
-    return await handleDeleteCode(supabase, request, pathname, env);
+    return await handleDeleteCode(db, request, pathname, env);
   if (pathname === "wo/stats" && request.method === "GET")
-    return await handleWoStats(supabase, request, env);
+    return await handleWoStats(db, request, env);
   if (pathname === "wo/invitations" && request.method === "GET")
-    return await handleWoInvitations(supabase, request, env);
+    return await handleWoInvitations(db, request, env);
 
   return null;
 };

@@ -6,8 +6,8 @@ import type { ApiDispatcher } from "../types/api";
  * Debug endpoint — only available to authenticated admin users.
  * Returns basic connectivity checks without leaking internal details.
  */
-async function handleDebugProbe(supabase: any, request: Request, env: any) {
-  const user = await requireUser(supabase, request, env);
+async function handleDebugProbe(db: D1Database, request: Request, env: any) {
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
   if (!requireAdminUser(user)) return json({ error: "Akses ditolak." }, 403);
 
@@ -15,19 +15,25 @@ async function handleDebugProbe(supabase: any, request: Request, env: any) {
 
   checks.uuid = crypto.randomUUID();
 
-  const { error } = await supabase.from("invitations").select("id").limit(1);
-  checks.supabase_query = error ? "error" : "ok";
+  try {
+    const result = await db
+      .prepare("SELECT id FROM invitations LIMIT 1")
+      .first();
+    checks.d1_query = "ok";
+  } catch {
+    checks.d1_query = "error";
+  }
 
   return json({ status: "ok", checks });
 }
 
 export const dispatchDebugRoute: ApiDispatcher = async ({
-  supabase,
+  db,
   env,
   request,
   pathname,
 }) => {
   if (pathname === "debug" && request.method === "POST")
-    return await handleDebugProbe(supabase, request, env);
+    return await handleDebugProbe(db, request, env);
   return null;
 };

@@ -3,6 +3,7 @@ import { getEffectiveMethod, json } from "../shared/http";
 import { deleteR2Url } from "../shared/storage";
 import { rateLimit, getClientIp } from "../shared/rateLimit";
 import { invitationCreateSchema, invitationUpdateSchema, validateBody } from "../shared/validation";
+import { hydrateInvitation, stringifyJsonColumn, parseJsonColumn } from "../shared/db";
 import type { ApiDispatcher } from "../types/api";
 
 function parseLoveStory(value: unknown) {
@@ -19,15 +20,14 @@ function parseLoveStory(value: unknown) {
   return [];
 }
 
-async function getUserPremiumState(supabase: any, userId: string) {
+async function getUserPremiumState(db: D1Database, userId: string) {
   let isUserPremium = false;
   let userPaidAt: string | null = null;
 
-  const { data: userRecord } = await supabase
-    .from("users")
-    .select("paid_at")
-    .eq("id", userId)
-    .single();
+  const userRecord = await db
+    .prepare("SELECT paid_at FROM users WHERE id = ?")
+    .bind(userId)
+    .first<{ paid_at: string | null }>();
 
   if (userRecord?.paid_at) {
     const paidDate = new Date(userRecord.paid_at);
@@ -40,25 +40,22 @@ async function getUserPremiumState(supabase: any, userId: string) {
   }
 
   if (!isUserPremium) {
-    const { data: pastPayments } = await supabase
-      .from("payment_logs")
-      .select("paid_at")
-      .eq("user_id", userId)
-      .eq("status", "paid")
-      .order("paid_at", { ascending: false })
-      .limit(1);
+    const pastPayment = await db
+      .prepare("SELECT paid_at FROM payment_logs WHERE user_id = ? AND status = 'paid' ORDER BY paid_at DESC LIMIT 1")
+      .bind(userId)
+      .first<{ paid_at: string }>();
 
-    if (pastPayments && pastPayments.length > 0) {
-      const lastPaidAt = new Date(pastPayments[0].paid_at);
+    if (pastPayment) {
+      const lastPaidAt = new Date(pastPayment.paid_at);
       const expireDate = new Date(lastPaidAt);
       expireDate.setFullYear(expireDate.getFullYear() + 1);
       if (new Date() <= expireDate) {
         isUserPremium = true;
-        userPaidAt = pastPayments[0].paid_at;
-        await supabase
-          .from("users")
-          .update({ paid_at: userPaidAt })
-          .eq("id", userId);
+        userPaidAt = pastPayment.paid_at;
+        await db
+          .prepare("UPDATE users SET paid_at = ? WHERE id = ?")
+          .bind(userPaidAt, userId)
+          .run();
       }
     }
   }
@@ -77,85 +74,58 @@ function getInvitationPaidAtValue(
 }
 
 async function validateUniqueSlugOnUpdate(
-  supabase: any,
+  db: D1Database,
   id: string,
   slug: string | undefined,
   currentSlug: string,
 ) {
   if (!slug || slug === currentSlug) return null;
-  const { data: slugExists } = await supabase
-    .from("invitations")
-    .select("id")
-    .eq("slug", slug)
-    .neq("id", id)
-    .maybeSingle();
+  const slugExists = await db
+    .prepare("SELECT id FROM invitations WHERE slug = ? AND id != ?")
+    .bind(slug, id)
+    .first();
   return slugExists ? json({ error: "Slug sudah digunakan." }, 400) : null;
 }
 
 function buildInvitationUpdateData(body: any) {
   const updateData: any = { updated_at: new Date().toISOString() };
   const fields = [
-    "slug",
-    "theme",
-    "groom_name",
-    "bride_name",
-    "groom_full_name",
-    "bride_full_name",
-    "groom_father",
-    "groom_mother",
-    "bride_father",
-    "bride_mother",
-    "groom_photo",
-    "bride_photo",
-    "cover_photo",
-    "akad_date",
-    "akad_time",
-    "akad_venue",
-    "akad_address",
-    "akad_map_url",
-    "resepsi_date",
-    "resepsi_time",
-    "resepsi_venue",
-    "resepsi_address",
-    "resepsi_map_url",
-    "quote",
-    "bank_name",
-    "bank_account",
-    "bank_holder",
-    "music_url",
-    "banks",
-    "wa_message",
-    "gallery_type",
-    "streaming_enabled",
-    "streaming_platform",
-    "streaming_url",
-    "gift_address",
-    "gift_recipient",
-    "gift_phone",
+    "slug", "theme", "groom_name", "bride_name", "groom_full_name", "bride_full_name",
+    "groom_father", "groom_mother", "bride_father", "bride_mother", "groom_photo", "bride_photo",
+    "cover_photo", "akad_date", "akad_time", "akad_venue", "akad_address", "akad_map_url",
+    "resepsi_date", "resepsi_time", "resepsi_venue", "resepsi_address", "resepsi_map_url",
+    "quote", "bank_name", "bank_account", "bank_holder", "music_url", "wa_message",
+    "gallery_type", "streaming_enabled", "streaming_platform", "streaming_url",
+    "gift_address", "gift_recipient", "gift_phone",
   ];
 
   for (const f of fields) {
     if (body[f] !== undefined) updateData[f] = body[f];
   }
+  if (body.banks !== undefined) {
+    updateData.banks = stringifyJsonColumn(body.banks);
+  }
   if (body.love_story !== undefined) {
-    updateData.love_story = parseLoveStory(body.love_story) || [];
+    updateData.love_story = stringifyJsonColumn(parseLoveStory(body.love_story) || []);
+  }
+  // Convert boolean to integer for SQLite
+  if (updateData.streaming_enabled !== undefined) {
+    updateData.streaming_enabled = updateData.streaming_enabled ? 1 : 0;
   }
 
   return updateData;
 }
 
-async function loadInvitationRelations(supabase: any, invitationId: string) {
-  const { data: photos } = await supabase
-    .from("photos")
-    .select("*")
-    .eq("invitation_id", invitationId)
-    .order("sort_order", { ascending: true });
+async function loadInvitationRelations(db: D1Database, invitationId: string) {
+  const { results: photos } = await db
+    .prepare("SELECT * FROM photos WHERE invitation_id = ? ORDER BY sort_order ASC")
+    .bind(invitationId)
+    .all();
 
-  const { data: rsvps } = await supabase
-    .from("rsvps")
-    .select("*")
-    .eq("invitation_id", invitationId)
-    .order("created_at", { ascending: false });
+  const { results: rsvps } = await db
+    .prepare("SELECT * FROM rsvps WHERE invitation_id = ? ORDER BY created_at DESC")
+    .bind(invitationId)
+    .all();
 
   return { photos: photos || [], rsvps: rsvps || [] };
 }
@@ -217,7 +187,7 @@ function buildInvitationLockResponse(invitation: any) {
 }
 
 async function bumpInvitationView(
-  supabase: any,
+  db: D1Database,
   invitation: any,
   request: Request,
 ) {
@@ -231,12 +201,10 @@ async function bumpInvitationView(
   if (limited) return;
 
   try {
-    const { data: existingView } = await supabase
-      .from("invitation_views")
-      .select("id")
-      .eq("invitation_id", invitation.id)
-      .eq("viewer_ip", viewerIp)
-      .maybeSingle();
+    const existingView = await db
+      .prepare("SELECT id FROM invitation_views WHERE invitation_id = ? AND viewer_ip = ?")
+      .bind(invitation.id, viewerIp)
+      .first();
 
     if (existingView) return;
 
@@ -245,52 +213,62 @@ async function bumpInvitationView(
     const isMobile = /Mobile|Android|iPhone|iPad/i.test(ua);
     const referer = request.headers.get("referer") || "";
 
-    await supabase.from("invitation_views").insert([
-      {
-        invitation_id: invitation.id,
-        viewer_ip: viewerIp,
-        device_type: isMobile ? "mobile" : "desktop",
-        referer_url: referer.slice(0, 500),
-      },
+    await db.batch([
+      db.prepare(
+        "INSERT INTO invitation_views (invitation_id, viewer_ip, device_type, referer_url) VALUES (?, ?, ?, ?)"
+      ).bind(invitation.id, viewerIp, isMobile ? "mobile" : "desktop", referer.slice(0, 500)),
+      db.prepare(
+        "UPDATE invitations SET view_count = ? WHERE id = ?"
+      ).bind((invitation.view_count || 0) + 1, invitation.id),
     ]);
-
-    await supabase
-      .from("invitations")
-      .update({ view_count: (invitation.view_count || 0) + 1 })
-      .eq("id", invitation.id);
   } catch (err) {
     // Silently log — don't break the invitation view if analytics fails
     console.error("[bumpInvitationView] Error:", err);
   }
 }
 
-async function handleInvitationList(supabase: any, request: Request, env: any) {
-  const user = await requireUser(supabase, request, env);
+async function handleInvitationList(db: D1Database, request: Request, env: any) {
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
 
-  let query = supabase
-    .from("invitations")
-    .select("*, photos(id), rsvps(id)")
-    .order("created_at", { ascending: false });
-
-  if (user.role !== "admin") {
-    query = query.eq("owner_id", user.id);
+  let invitations: any[];
+  if ((user as any).role === "admin") {
+    const { results } = await db
+      .prepare("SELECT * FROM invitations ORDER BY created_at DESC")
+      .all();
+    invitations = results || [];
+  } else {
+    const { results } = await db
+      .prepare("SELECT * FROM invitations WHERE owner_id = ? ORDER BY created_at DESC")
+      .bind((user as any).id)
+      .all();
+    invitations = results || [];
   }
 
-  const { data, error } = await query;
-  if (error) throw error;
+  // Load photo and rsvp counts
+  const enriched = await Promise.all(
+    invitations.map(async (inv: any) => {
+      const photoCount = await db
+        .prepare("SELECT COUNT(*) as cnt FROM photos WHERE invitation_id = ?")
+        .bind(inv.id)
+        .first<{ cnt: number }>();
+      const rsvpCount = await db
+        .prepare("SELECT COUNT(*) as cnt FROM rsvps WHERE invitation_id = ?")
+        .bind(inv.id)
+        .first<{ cnt: number }>();
+      return {
+        ...hydrateInvitation(inv),
+        photo_count: photoCount?.cnt || 0,
+        rsvp_count: rsvpCount?.cnt || 0,
+      };
+    }),
+  );
 
-  const invitations = (data || []).map((i: any) => ({
-    ...i,
-    photo_count: i.photos?.length || 0,
-    rsvp_count: i.rsvps?.length || 0,
-  }));
-
-  return json(invitations);
+  return json(enriched);
 }
 
 async function handleCheckSlug(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
 ) {
@@ -302,28 +280,35 @@ async function handleCheckSlug(
   const url = new URL(request.url);
   const excludeId = url.searchParams.get("exclude_id");
 
-  let query = supabase.from("invitations").select("id").eq("slug", slug);
-  if (excludeId) query = query.neq("id", excludeId);
+  let existing;
+  if (excludeId) {
+    existing = await db
+      .prepare("SELECT id FROM invitations WHERE slug = ? AND id != ?")
+      .bind(slug, excludeId)
+      .first();
+  } else {
+    existing = await db
+      .prepare("SELECT id FROM invitations WHERE slug = ?")
+      .bind(slug)
+      .first();
+  }
 
-  const { data } = await query.single();
-  if (!data) return json({ available: true });
+  if (!existing) return json({ available: true });
 
   const prefixes = [
-    "nikah-",
-    "wedding-",
-    "undangan-",
-    "menikah-",
+    "nikah-", "wedding-", "undangan-", "menikah-",
     `${new Date().getFullYear()}-`,
     `${Math.floor(Math.random() * 99) + 1}-`,
   ];
   const candidates = prefixes.map((p) => p + slug);
 
-  const { data: existing } = await supabase
-    .from("invitations")
-    .select("slug")
-    .in("slug", candidates);
+  const placeholders = candidates.map(() => "?").join(",");
+  const { results: existingSlugs } = await db
+    .prepare(`SELECT slug FROM invitations WHERE slug IN (${placeholders})`)
+    .bind(...candidates)
+    .all();
 
-  const takenSlugs = new Set((existing || []).map((r: any) => r.slug));
+  const takenSlugs = new Set((existingSlugs || []).map((r: any) => r.slug));
   const suggestions = candidates
     .filter((candidate) => !takenSlugs.has(candidate))
     .slice(0, 3);
@@ -332,7 +317,7 @@ async function handleCheckSlug(
 }
 
 async function handleInvitationBySlug(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
 ) {
@@ -341,13 +326,12 @@ async function handleInvitationBySlug(
   ).trim();
   if (!slug) return json({ error: "Slug wajib diisi" }, 400);
 
-  const { data: invitation, error } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("slug", slug)
-    .single();
+  const invitation = await db
+    .prepare("SELECT * FROM invitations WHERE slug = ?")
+    .bind(slug)
+    .first();
 
-  if (error || !invitation) return json({ error: "Invitation not found" }, 404);
+  if (!invitation) return json({ error: "Invitation not found" }, 404);
 
   const accessState = buildInvitationLockResponse(invitation);
   if ("response" in accessState && accessState.response)
@@ -355,13 +339,10 @@ async function handleInvitationBySlug(
 
   const isPreview = new URL(request.url).searchParams.get("preview") === "true";
   if (!isPreview) {
-    await bumpInvitationView(supabase, invitation, request);
+    await bumpInvitationView(db, invitation, request);
   }
 
-  const { photos, rsvps } = await loadInvitationRelations(
-    supabase,
-    invitation.id,
-  );
+  const { photos, rsvps } = await loadInvitationRelations(db, invitation.id as string);
 
   // Strip sensitive fields from public response
   const {
@@ -370,13 +351,13 @@ async function handleInvitationBySlug(
     owner_id: _oid,
     mayar_invoice_id: _mii,
     ...publicInvitation
-  } = invitation;
+  } = invitation as any;
 
   // Filter out hidden RSVPs from public view
   const visibleRsvps = (rsvps || []).filter((r: any) => !r.is_hidden);
 
   return json({
-    ...publicInvitation,
+    ...hydrateInvitation(publicInvitation),
     photos,
     rsvps: visibleRsvps,
     is_trial: (accessState as any).isTrial,
@@ -386,14 +367,14 @@ async function handleInvitationBySlug(
     views_remaining: (accessState as any).isTrial
       ? Math.max(
           0,
-          (invitation.max_views || 25) - (invitation.view_count || 0) - 1,
+          ((invitation as any).max_views || 25) - ((invitation as any).view_count || 0) - 1,
         )
       : null,
   });
 }
 
 async function handleInvitationById(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
@@ -401,35 +382,38 @@ async function handleInvitationById(
   const id = decodeURIComponent(pathname.slice("invitations/".length))
     .trim()
     .split("/")[0];
-  const user = await requireUserOrClient(supabase, request, env);
+  const user = await requireUserOrClient(db, request, env);
   if (!user) return unauthorized();
 
-  const { data: invitation, error } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const invitation = await db
+    .prepare("SELECT * FROM invitations WHERE id = ?")
+    .bind(id)
+    .first();
 
-  if (error || !invitation) return json({ error: "Invitation not found" }, 404);
+  if (!invitation) return json({ error: "Invitation not found" }, 404);
   
-  const isClient = user.role === "client";
-  const isOwner = invitation.owner_id === user.id;
-  const isWoInv = user.role === "wo" && invitation.wo_id === user.id;
+  const isClient = (user as any).role === "client";
+  const isOwner = (invitation as any).owner_id === (user as any).id;
+  const isWoInv = (user as any).role === "wo" && (invitation as any).wo_id === (user as any).id;
 
-  if (user.role !== "admin" && !isOwner && !isWoInv) {
-    if (isClient && invitation.id === user.invitationId) {
+  if ((user as any).role !== "admin" && !isOwner && !isWoInv) {
+    if (isClient && (invitation as any).id === (user as any).invitationId) {
       // Allowed client
     } else {
       return json({ error: "Akses ditolak." }, 403);
     }
   }
 
-  const { photos } = await loadInvitationRelations(supabase, id);
-  return json({ ...invitation, photos });
+  const { results: photos } = await db
+    .prepare("SELECT * FROM photos WHERE invitation_id = ? ORDER BY sort_order ASC")
+    .bind(id)
+    .all();
+
+  return json({ ...hydrateInvitation(invitation), photos: photos || [] });
 }
 
 async function handleInvitationStats(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
@@ -437,48 +421,45 @@ async function handleInvitationStats(
   const id = decodeURIComponent(
     pathname.slice("invitations/".length).replace(/\/stats$/, ""),
   ).trim();
-  const user = await requireUserOrClient(supabase, request, env);
+  const user = await requireUserOrClient(db, request, env);
   if (!user) return unauthorized();
 
-  const { data: invitation, error } = await supabase
-    .from("invitations")
-    .select("id, owner_id, wo_id, view_count")
-    .eq("id", id)
-    .single();
+  const invitation = await db
+    .prepare("SELECT id, owner_id, wo_id, view_count FROM invitations WHERE id = ?")
+    .bind(id)
+    .first();
 
-  if (error || !invitation) return json({ error: "Invitation not found" }, 404);
+  if (!invitation) return json({ error: "Invitation not found" }, 404);
   
-  const isClient = user.role === "client";
-  const isOwner = invitation.owner_id === user.id;
-  const isWoInv = user.role === "wo" && invitation.wo_id === user.id;
+  const isClient = (user as any).role === "client";
+  const isOwner = (invitation as any).owner_id === (user as any).id;
+  const isWoInv = (user as any).role === "wo" && (invitation as any).wo_id === (user as any).id;
 
-  if (user.role !== "admin" && !isOwner && !isWoInv) {
-    if (isClient && invitation.id === user.invitationId) {
+  if ((user as any).role !== "admin" && !isOwner && !isWoInv) {
+    if (isClient && (invitation as any).id === (user as any).invitationId) {
       // Allowed client
     } else {
       return json({ error: "Akses ditolak." }, 403);
     }
   }
 
-  const { data: rsvps, error: rsvpError } = await supabase
-    .from("rsvps")
-    .select("attendance, guest_count")
-    .eq("invitation_id", id);
-  if (rsvpError) throw rsvpError;
+  const { results: rsvps } = await db
+    .prepare("SELECT attendance, guest_count FROM rsvps WHERE invitation_id = ?")
+    .bind(id)
+    .all();
 
   const totalRsvps = rsvps?.length || 0;
   const hadirData = rsvps?.filter((r: any) => r.attendance === "hadir") || [];
-  const notHadirData =
-    rsvps?.filter((r: any) => r.attendance === "tidak_hadir") || [];
+  const notHadirData = rsvps?.filter((r: any) => r.attendance === "tidak_hadir") || [];
   const raguData = rsvps?.filter((r: any) => r.attendance === "ragu") || [];
 
   let totalPax = 0;
   for (const r of hadirData) {
-    totalPax += r.guest_count || 1;
+    totalPax += (r as any).guest_count || 1;
   }
 
   return json({
-    pageViews: invitation.view_count || 0,
+    pageViews: (invitation as any).view_count || 0,
     totalRsvps,
     totalPax,
     attendanceStats: {
@@ -490,53 +471,51 @@ async function handleInvitationStats(
 }
 
 async function handleInvitationCreate(
-  supabase: any,
+  db: D1Database,
   request: Request,
   env: any,
 ) {
-  const user = await requireUserOrClient(supabase, request, env);
+  const user = await requireUserOrClient(db, request, env);
   if (!user) return unauthorized();
 
   const rawBody = await request.json();
   const body = validateBody(invitationCreateSchema, rawBody);
 
-  const isClientCreate = user.role === "client_temp";
+  const isClientCreate = (user as any).role === "client_temp";
   let woId = null;
-  let ownerId = isClientCreate ? null : user.id;
+  let ownerId = isClientCreate ? null : (user as any).id;
 
   if (isClientCreate) {
     // 1. Fetch WO access code details
-    const { data: woCode, error: woError } = await supabase
-      .from("wo_access_codes")
-      .select("*")
-      .eq("id", user.woCodeId)
-      .single();
+    const woCode = await db
+      .prepare("SELECT * FROM wo_access_codes WHERE id = ?")
+      .bind((user as any).woCodeId)
+      .first();
 
-    if (woError || !woCode || woCode.status !== "active") {
+    if (!woCode || (woCode as any).status !== "active") {
       return json({ error: "Kode akses tidak aktif atau sudah digunakan." }, 400);
     }
 
     // 2. Fetch WO user to check quota
-    const { data: woUser } = await supabase
-      .from("users")
-      .select("id, max_invitations")
-      .eq("id", woCode.wo_user_id)
-      .single();
+    const woUser = await db
+      .prepare("SELECT id, max_invitations FROM users WHERE id = ?")
+      .bind((woCode as any).wo_user_id)
+      .first();
 
     if (!woUser) {
       return json({ error: "Wedding Organizer tidak ditemukan." }, 404);
     }
-    woId = woUser.id;
+    woId = (woUser as any).id;
   } else {
-    if (user.role !== "admin") {
-      const { count } = await supabase
-        .from("invitations")
-        .select("id", { count: "exact", head: true })
-        .eq("owner_id", user.id);
-      if ((count || 0) >= user.max_invitations) {
+    if ((user as any).role !== "admin") {
+      const countResult = await db
+        .prepare("SELECT COUNT(*) as cnt FROM invitations WHERE owner_id = ?")
+        .bind((user as any).id)
+        .first<{ cnt: number }>();
+      if ((countResult?.cnt || 0) >= (user as any).max_invitations) {
         return json(
           {
-            error: `Limit tercapai. Anda hanya bisa membuat ${user.max_invitations} undangan.`,
+            error: `Limit tercapai. Anda hanya bisa membuat ${(user as any).max_invitations} undangan.`,
           },
           403,
         );
@@ -544,11 +523,10 @@ async function handleInvitationCreate(
     }
   }
 
-  const { data: slugCheck } = await supabase
-    .from("invitations")
-    .select("id")
-    .eq("slug", body.slug)
-    .maybeSingle();
+  const slugCheck = await db
+    .prepare("SELECT id FROM invitations WHERE slug = ?")
+    .bind(body.slug)
+    .first();
 
   if (slugCheck)
     return json({ error: "Slug sudah digunakan. Pilih slug lain." }, 400);
@@ -562,11 +540,11 @@ async function handleInvitationCreate(
     paidAtValue = new Date().toISOString();
   } else {
     const { isUserPremium, userPaidAt } = await getUserPremiumState(
-      supabase,
-      user.id,
+      db,
+      (user as any).id,
     );
     const isAdminCreated =
-      user.user_source === "admin_created" || user.role === "admin";
+      (user as any).user_source === "admin_created" || (user as any).role === "admin";
     paymentStatus = isAdminCreated || isUserPremium ? "paid" : "trial";
     trialExpiresAt =
       isAdminCreated || isUserPremium
@@ -580,94 +558,86 @@ async function handleInvitationCreate(
   }
 
   const id = crypto.randomUUID();
-  const newInvitation = {
-    id,
-    slug: body.slug,
-    owner_id: ownerId,
-    wo_id: woId,
-    access_code: isClientCreate ? user.accessCode : null,
-    access_code_created_at: isClientCreate ? new Date().toISOString() : null,
-    theme: body.theme || "elegant",
-    groom_name: body.groom_name,
-    bride_name: body.bride_name,
-    groom_full_name: body.groom_full_name || "",
-    bride_full_name: body.bride_full_name || "",
-    groom_father: body.groom_father || "",
-    groom_mother: body.groom_mother || "",
-    bride_father: body.bride_father || "",
-    bride_mother: body.bride_mother || "",
-    groom_photo: body.groom_photo || "",
-    bride_photo: body.bride_photo || "",
-    cover_photo: body.cover_photo || "",
-    akad_date: body.akad_date || "",
-    akad_time: body.akad_time || "",
-    akad_venue: body.akad_venue || "",
-    akad_address: body.akad_address || "",
-    akad_map_url: body.akad_map_url || "",
-    resepsi_date: body.resepsi_date || "",
-    resepsi_time: body.resepsi_time || "",
-    resepsi_venue: body.resepsi_venue || "",
-    resepsi_address: body.resepsi_address || "",
-    resepsi_map_url: body.resepsi_map_url || "",
-    love_story: parseLoveStory(body.love_story) || [],
-    quote: body.quote || "",
-    bank_name: body.bank_name || "",
-    bank_account: body.bank_account || "",
-    bank_holder: body.bank_holder || "",
-    music_url: body.music_url || "",
-    wa_message: body.wa_message || "",
-    banks: Array.isArray(body.banks) ? body.banks : [],
-    gallery_type: body.gallery_type || "carousel",
-    streaming_enabled: body.streaming_enabled || false,
-    streaming_platform: body.streaming_platform || "youtube",
-    streaming_url: body.streaming_url || "",
-    gift_address: body.gift_address || "",
-    gift_recipient: body.gift_recipient || "",
-    gift_phone: body.gift_phone || "",
-    payment_status: paymentStatus,
-    trial_expires_at: trialExpiresAt,
-    view_count: 0,
-    max_views: 25,
-    paid_at: paidAtValue,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  };
+  const now = new Date().toISOString();
 
-  const { data: created, error } = await supabase
-    .from("invitations")
-    .insert([newInvitation])
-    .select("*")
-    .single();
+  await db.prepare(`INSERT INTO invitations (
+    id, slug, owner_id, wo_id, access_code, access_code_created_at,
+    theme, groom_name, bride_name, groom_full_name, bride_full_name,
+    groom_father, groom_mother, bride_father, bride_mother,
+    groom_photo, bride_photo, cover_photo,
+    akad_date, akad_time, akad_venue, akad_address, akad_map_url,
+    resepsi_date, resepsi_time, resepsi_venue, resepsi_address, resepsi_map_url,
+    love_story, quote, bank_name, bank_account, bank_holder, music_url,
+    wa_message, banks, gallery_type,
+    streaming_enabled, streaming_platform, streaming_url,
+    gift_address, gift_recipient, gift_phone,
+    payment_status, trial_expires_at, view_count, max_views, paid_at,
+    created_at, updated_at
+  ) VALUES (
+    ?, ?, ?, ?, ?, ?,
+    ?, ?, ?, ?, ?,
+    ?, ?, ?, ?,
+    ?, ?, ?,
+    ?, ?, ?, ?, ?,
+    ?, ?, ?, ?, ?,
+    ?, ?, ?, ?, ?, ?,
+    ?, ?, ?,
+    ?, ?, ?,
+    ?, ?, ?,
+    ?, ?, ?, ?, ?,
+    ?, ?
+  )`).bind(
+    id, body.slug, ownerId, woId,
+    isClientCreate ? (user as any).accessCode : null,
+    isClientCreate ? now : null,
+    body.theme || "elegant", body.groom_name, body.bride_name,
+    body.groom_full_name || "", body.bride_full_name || "",
+    body.groom_father || "", body.groom_mother || "",
+    body.bride_father || "", body.bride_mother || "",
+    body.groom_photo || "", body.bride_photo || "", body.cover_photo || "",
+    body.akad_date || "", body.akad_time || "", body.akad_venue || "",
+    body.akad_address || "", body.akad_map_url || "",
+    body.resepsi_date || "", body.resepsi_time || "", body.resepsi_venue || "",
+    body.resepsi_address || "", body.resepsi_map_url || "",
+    stringifyJsonColumn(parseLoveStory(body.love_story) || []),
+    body.quote || "", body.bank_name || "", body.bank_account || "",
+    body.bank_holder || "", body.music_url || "",
+    body.wa_message || "",
+    stringifyJsonColumn(Array.isArray(body.banks) ? body.banks : []),
+    body.gallery_type || "carousel",
+    body.streaming_enabled ? 1 : 0, body.streaming_platform || "youtube",
+    body.streaming_url || "",
+    body.gift_address || "", body.gift_recipient || "", body.gift_phone || "",
+    paymentStatus, trialExpiresAt, 0, 25, paidAtValue,
+    now, now,
+  ).run();
 
-  if (error) throw error;
+  const created = await db
+    .prepare("SELECT * FROM invitations WHERE id = ?")
+    .bind(id)
+    .first();
 
   if (isClientCreate) {
-    await supabase
-      .from("wo_access_codes")
-      .update({
-        status: "used",
-        invitation_id: id,
-        used_at: new Date().toISOString(),
-      })
-      .eq("id", user.woCodeId);
+    await db
+      .prepare("UPDATE wo_access_codes SET status = 'used', invitation_id = ?, used_at = ? WHERE id = ?")
+      .bind(id, now, (user as any).woCodeId)
+      .run();
   }
 
   const photos = Array.isArray(body.photos) ? body.photos : [];
   if (photos.length) {
-    const dbPhotos = photos.map((photo: any, idx: number) => ({
-      id: crypto.randomUUID(),
-      invitation_id: id,
-      url: photo.url || photo,
-      sort_order: idx,
-      caption: photo.caption || "",
-    }));
-    await supabase.from("photos").insert(dbPhotos);
+    const stmts = photos.map((photo: any, idx: number) =>
+      db.prepare(
+        "INSERT INTO photos (id, invitation_id, url, sort_order, caption) VALUES (?, ?, ?, ?, ?)"
+      ).bind(crypto.randomUUID(), id, photo.url || photo, idx, photo.caption || "")
+    );
+    await db.batch(stmts);
   }
 
-  const responseData: any = { ...created };
+  const responseData: any = { ...hydrateInvitation(created) };
   if (isClientCreate) {
     const { createAccessToken } = await import("../shared/auth");
-    const token = await createAccessToken({ inv: id, code: user.accessCode }, env);
+    const token = await createAccessToken({ inv: id, code: (user as any).accessCode }, env);
     responseData.token = token;
   }
 
@@ -675,12 +645,12 @@ async function handleInvitationCreate(
 }
 
 async function handleInvitationUpdate(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
-  const user = await requireUserOrClient(supabase, request, env);
+  const user = await requireUserOrClient(db, request, env);
   if (!user) return unauthorized();
 
   const id = decodeURIComponent(pathname.slice("invitations/".length))
@@ -689,19 +659,18 @@ async function handleInvitationUpdate(
   const rawBody = await request.json();
   const body = validateBody(invitationUpdateSchema, rawBody);
 
-  const { data: current } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const current = await db
+    .prepare("SELECT * FROM invitations WHERE id = ?")
+    .bind(id)
+    .first();
   if (!current) return json({ error: "Invitation not found" }, 404);
   
-  const isClient = user.role === "client";
-  const isOwner = current.owner_id === user.id;
-  const isWoInv = user.role === "wo" && current.wo_id === user.id;
+  const isClient = (user as any).role === "client";
+  const isOwner = (current as any).owner_id === (user as any).id;
+  const isWoInv = (user as any).role === "wo" && (current as any).wo_id === (user as any).id;
 
-  if (user.role !== "admin" && !isOwner && !isWoInv) {
-    if (isClient && current.id === user.invitationId) {
+  if ((user as any).role !== "admin" && !isOwner && !isWoInv) {
+    if (isClient && (current as any).id === (user as any).invitationId) {
       // Allowed client
     } else {
       return json({ error: "Akses ditolak." }, 403);
@@ -709,42 +678,53 @@ async function handleInvitationUpdate(
   }
 
   const slugError = await validateUniqueSlugOnUpdate(
-    supabase,
+    db,
     id,
     body.slug,
-    current.slug,
+    (current as any).slug,
   );
   if (slugError) return slugError;
 
   const updateData = buildInvitationUpdateData(body);
 
-  const { data: updated, error } = await supabase
-    .from("invitations")
-    .update(updateData)
-    .eq("id", id)
-    .select("*")
-    .single();
+  // Build dynamic UPDATE
+  const setClauses: string[] = [];
+  const values: any[] = [];
+  for (const [key, value] of Object.entries(updateData)) {
+    setClauses.push(`${key} = ?`);
+    values.push(value);
+  }
+  values.push(id);
 
-  if (error) throw error;
+  await db
+    .prepare(`UPDATE invitations SET ${setClauses.join(", ")} WHERE id = ?`)
+    .bind(...values)
+    .run();
+
+  const updated = await db
+    .prepare("SELECT * FROM invitations WHERE id = ?")
+    .bind(id)
+    .first();
 
   if (Array.isArray(body.photos)) {
     // Fetch current photos to find which ones were removed
-    const { data: oldPhotos } = await supabase
-      .from("photos")
-      .select("url")
-      .eq("invitation_id", id);
+    const { results: oldPhotos } = await db
+      .prepare("SELECT url FROM photos WHERE invitation_id = ?")
+      .bind(id)
+      .all();
 
     const newUrls = new Set(
       body.photos.map((p: any) => p.url || p).filter(Boolean),
     );
     // Delete R2 files for photos that are no longer in the new list
     for (const old of oldPhotos || []) {
-      if (old.url && !newUrls.has(old.url)) {
-        await deleteR2Url(env, old.url).catch(() => {});
+      if ((old as any).url && !newUrls.has((old as any).url)) {
+        await deleteR2Url(env, (old as any).url).catch(() => {});
       }
     }
 
-    await supabase.from("photos").delete().eq("invitation_id", id);
+    await db.prepare("DELETE FROM photos WHERE invitation_id = ?").bind(id).run();
+
     const dbPhotos = body.photos.map((photo: any, idx: number) => ({
       id: crypto.randomUUID(),
       invitation_id: id,
@@ -752,74 +732,72 @@ async function handleInvitationUpdate(
       sort_order: idx,
       caption: photo.caption || "",
     }));
-    if (dbPhotos.length) await supabase.from("photos").insert(dbPhotos);
+    if (dbPhotos.length) {
+      const stmts = dbPhotos.map((p: any) =>
+        db.prepare(
+          "INSERT INTO photos (id, invitation_id, url, sort_order, caption) VALUES (?, ?, ?, ?, ?)"
+        ).bind(p.id, p.invitation_id, p.url, p.sort_order, p.caption)
+      );
+      await db.batch(stmts);
+    }
   }
 
-  return json(updated);
+  return json(hydrateInvitation(updated));
 }
 
 async function handleInvitationDelete(
-  supabase: any,
+  db: D1Database,
   env: any,
   request: Request,
   pathname: string,
 ) {
   try {
-    const user = await requireUser(supabase, request, env);
+    const user = await requireUser(db, request, env);
     if (!user) return unauthorized();
 
     const id = decodeURIComponent(pathname.slice("invitations/".length))
       .trim()
       .split("/")[0];
-    const { data: inv, error: fetchErr } = await supabase
-      .from("invitations")
-      .select("*")
-      .eq("id", id)
-      .single();
-    if (!inv) return json({ error: fetchErr ? fetchErr.message : "Invitation not found" }, 404);
-    if (user.role !== "admin" && inv.owner_id !== user.id)
+    const inv = await db
+      .prepare("SELECT * FROM invitations WHERE id = ?")
+      .bind(id)
+      .first();
+    if (!inv) return json({ error: "Invitation not found" }, 404);
+    if ((user as any).role !== "admin" && (inv as any).owner_id !== (user as any).id)
       return json({ error: "Akses ditolak." }, 403);
 
-    const { data: photos } = await supabase
-      .from("photos")
-      .select("url")
-      .eq("invitation_id", id);
+    const { results: photos } = await db
+      .prepare("SELECT url FROM photos WHERE invitation_id = ?")
+      .bind(id)
+      .all();
 
-    if (inv?.cover_photo) await deleteR2Url(env, inv.cover_photo).catch(() => {});
-    if (inv?.groom_photo) await deleteR2Url(env, inv.groom_photo).catch(() => {});
-    if (inv?.bride_photo) await deleteR2Url(env, inv.bride_photo).catch(() => {});
-    if (inv?.music_url) await deleteR2Url(env, inv.music_url).catch(() => {});
+    if ((inv as any)?.cover_photo) await deleteR2Url(env, (inv as any).cover_photo).catch(() => {});
+    if ((inv as any)?.groom_photo) await deleteR2Url(env, (inv as any).groom_photo).catch(() => {});
+    if ((inv as any)?.bride_photo) await deleteR2Url(env, (inv as any).bride_photo).catch(() => {});
+    if ((inv as any)?.music_url) await deleteR2Url(env, (inv as any).music_url).catch(() => {});
     for (const photo of photos || []) {
-      if (photo?.url) await deleteR2Url(env, photo.url).catch(() => {});
+      if ((photo as any)?.url) await deleteR2Url(env, (photo as any).url).catch(() => {});
     }
 
     // Clean up love_story photos from R2
-    const loveStory = Array.isArray(inv?.love_story) ? inv.love_story : [];
+    const loveStory = parseJsonColumn((inv as any)?.love_story, []);
     for (const story of loveStory) {
       if (story?.photo) await deleteR2Url(env, story.photo).catch(() => {});
     }
 
     // Release WO quota by marking the associated access code as revoked
-    await supabase
-      .from("wo_access_codes")
-      .update({ status: "revoked" })
-      .eq("invitation_id", id);
+    await db.prepare("UPDATE wo_access_codes SET status = 'revoked' WHERE invitation_id = ?").bind(id).run();
+    await db.prepare("UPDATE payment_logs SET invitation_id = NULL WHERE invitation_id = ?").bind(id).run();
 
-    await supabase
-      .from("payment_logs")
-      .update({ invitation_id: null })
-      .eq("invitation_id", id);
-
-    await supabase.from("invitation_views").delete().eq("invitation_id", id);
-    await supabase.from("photos").delete().eq("invitation_id", id);
-    await supabase.from("rsvps").delete().eq("invitation_id", id);
-    await supabase.from("guests").delete().eq("invitation_id", id);
+    // Delete related records (D1 supports ON DELETE CASCADE but let's be explicit)
+    await db.batch([
+      db.prepare("DELETE FROM invitation_views WHERE invitation_id = ?").bind(id),
+      db.prepare("DELETE FROM photos WHERE invitation_id = ?").bind(id),
+      db.prepare("DELETE FROM rsvps WHERE invitation_id = ?").bind(id),
+      db.prepare("DELETE FROM guests WHERE invitation_id = ?").bind(id),
+    ]);
     
-    const { error: delError } = await supabase.from("invitations").delete().eq("id", id);
-    if (delError) {
-      console.error("[Invitations] Delete error:", delError.message);
-      return json({ error: "Gagal menghapus undangan." }, 500);
-    }
+    await db.prepare("DELETE FROM invitations WHERE id = ?").bind(id).run();
 
     return json({ message: "Invitation deleted successfully" });
   } catch (err: any) {
@@ -829,7 +807,7 @@ async function handleInvitationDelete(
 }
 
 export const dispatchInvitationRoute: ApiDispatcher = async ({
-  supabase,
+  db,
   env,
   request,
   pathname,
@@ -837,32 +815,32 @@ export const dispatchInvitationRoute: ApiDispatcher = async ({
   const method = getEffectiveMethod(request);
 
   if (pathname === "invitations" && request.method === "GET")
-    return (await handleInvitationList(supabase, request, env)) ?? null;
+    return (await handleInvitationList(db, request, env)) ?? null;
   if (pathname === "invitations" && request.method === "POST")
-    return (await handleInvitationCreate(supabase, request, env)) ?? null;
+    return (await handleInvitationCreate(db, request, env)) ?? null;
 
   if (pathname.startsWith("invitations/check-slug/"))
-    return (await handleCheckSlug(supabase, request, pathname)) ?? null;
+    return (await handleCheckSlug(db, request, pathname)) ?? null;
   if (pathname.startsWith("invitations/slug/"))
-    return (await handleInvitationBySlug(supabase, request, pathname)) ?? null;
+    return (await handleInvitationBySlug(db, request, pathname)) ?? null;
 
   if (pathname.startsWith("invitations/") && pathname.endsWith("/stats")) {
     return (
-      (await handleInvitationStats(supabase, request, pathname, env)) ?? null
+      (await handleInvitationStats(db, request, pathname, env)) ?? null
     );
   }
 
   if (pathname.startsWith("invitations/") && method === "GET")
     return (
-      (await handleInvitationById(supabase, request, pathname, env)) ?? null
+      (await handleInvitationById(db, request, pathname, env)) ?? null
     );
   if (pathname.startsWith("invitations/") && method === "PUT")
     return (
-      (await handleInvitationUpdate(supabase, request, pathname, env)) ?? null
+      (await handleInvitationUpdate(db, request, pathname, env)) ?? null
     );
   if (pathname.startsWith("invitations/") && method === "DELETE")
     return (
-      (await handleInvitationDelete(supabase, env, request, pathname)) ?? null
+      (await handleInvitationDelete(db, env, request, pathname)) ?? null
     );
 
   return null;

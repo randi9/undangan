@@ -4,46 +4,36 @@ import { rateLimit, getClientIp } from "../shared/rateLimit";
 import { validateBody, rsvpCreateSchema, rsvpUpdateSchema, ValidationError } from "../shared/validation";
 import type { ApiDispatcher } from "../types/api";
 
-/**
- * Verify that the authenticated user owns the invitation linked to this RSVP (or is admin).
- * Looks up the RSVP first to get its invitation_id, then checks invitation ownership.
- */
 async function requireRsvpOwner(
-  supabase: any,
+  db: D1Database,
   request: Request,
   env: any,
   rsvpId: string,
 ): Promise<{ user: any } | { response: Response }> {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return { response: unauthorized() };
 
-  // Admin can manage any RSVP
-  if (user.role === "admin") return { user };
+  if ((user as any).role === "admin") return { user };
 
-  // Look up the RSVP to get its invitation_id
-  const { data: rsvp } = await supabase
-    .from("rsvps")
-    .select("invitation_id")
-    .eq("id", rsvpId)
-    .single();
+  const rsvp = await db
+    .prepare("SELECT invitation_id FROM rsvps WHERE id = ?")
+    .bind(rsvpId)
+    .first();
 
   if (!rsvp) return { response: json({ error: "RSVP tidak ditemukan." }, 404) };
 
-  // Verify the invitation belongs to the user
-  const { data: invitation } = await supabase
-    .from("invitations")
-    .select("owner_id")
-    .eq("id", rsvp.invitation_id)
-    .single();
+  const invitation = await db
+    .prepare("SELECT owner_id FROM invitations WHERE id = ?")
+    .bind((rsvp as any).invitation_id)
+    .first();
 
   if (!invitation) return { response: json({ error: "Undangan tidak ditemukan." }, 404) };
-  if (invitation.owner_id !== user.id) return { response: json({ error: "Akses ditolak." }, 403) };
+  if ((invitation as any).owner_id !== (user as any).id) return { response: json({ error: "Akses ditolak." }, 403) };
 
   return { user };
 }
 
-async function handleRsvpPost(supabase: any, request: Request) {
-  // Rate limit: 10 RSVP submissions per IP per 5 minutes
+async function handleRsvpPost(db: D1Database, request: Request) {
   const ip = getClientIp(request);
   const limited = rateLimit(`rsvp:post:${ip}`, 10, 5 * 60 * 1000);
   if (limited) return limited;
@@ -51,99 +41,84 @@ async function handleRsvpPost(supabase: any, request: Request) {
   const rawBody = await request.json();
   const body = validateBody(rsvpCreateSchema, rawBody);
 
-  const { data, error } = await supabase
-    .from("rsvps")
-    .insert([
-      {
-        id: crypto.randomUUID(),
-        invitation_id: body.invitation_id,
-        guest_name: body.guest_name,
-        attendance: body.attendance,
-        guest_count: body.guest_count,
-        message: body.message,
-      },
-    ])
-    .select()
-    .single();
+  const id = crypto.randomUUID();
+  await db.prepare(
+    "INSERT INTO rsvps (id, invitation_id, guest_name, attendance, guest_count, message) VALUES (?, ?, ?, ?, ?, ?)"
+  ).bind(id, body.invitation_id, body.guest_name, body.attendance, body.guest_count, body.message).run();
 
-  if (error) throw error;
+  const data = await db.prepare("SELECT * FROM rsvps WHERE id = ?").bind(id).first();
   return json(data, 201);
 }
 
-async function handleRsvpList(supabase: any, pathname: string) {
+async function handleRsvpList(db: D1Database, pathname: string) {
   const invitationId = decodeURIComponent(
     pathname.slice("rsvp/".length),
   ).trim();
-  const { data, error } = await supabase
-    .from("rsvps")
-    .select("*")
-    .eq("invitation_id", invitationId)
-    .order("created_at", { ascending: false });
+  const { results: data } = await db
+    .prepare("SELECT * FROM rsvps WHERE invitation_id = ? ORDER BY created_at DESC")
+    .bind(invitationId)
+    .all();
 
-  if (error) throw error;
   return json(data || []);
 }
 
 async function handleRsvpUpdate(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
   const id = decodeURIComponent(pathname.slice("rsvp/".length)).trim();
 
-  const authResult = await requireRsvpOwner(supabase, request, env, id);
+  const authResult = await requireRsvpOwner(db, request, env, id);
   if ("response" in authResult) return authResult.response;
 
   const body = await request.json();
 
-  const updateData: any = {};
-  if (body.is_hidden !== undefined) updateData.is_hidden = body.is_hidden;
-  if (body.reply_text !== undefined) updateData.reply_text = body.reply_text;
+  const setClauses: string[] = [];
+  const values: any[] = [];
+  if (body.is_hidden !== undefined) { setClauses.push("is_hidden = ?"); values.push(body.is_hidden ? 1 : 0); }
+  if (body.reply_text !== undefined) { setClauses.push("reply_text = ?"); values.push(body.reply_text); }
 
-  const { data, error } = await supabase
-    .from("rsvps")
-    .update(updateData)
-    .eq("id", id)
-    .select()
-    .single();
-  if (error) throw error;
+  if (setClauses.length > 0) {
+    values.push(id);
+    await db.prepare(`UPDATE rsvps SET ${setClauses.join(", ")} WHERE id = ?`).bind(...values).run();
+  }
 
+  const data = await db.prepare("SELECT * FROM rsvps WHERE id = ?").bind(id).first();
   return json(data);
 }
 
 async function handleRsvpDelete(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
   const id = decodeURIComponent(pathname.slice("rsvp/".length)).trim();
 
-  const authResult = await requireRsvpOwner(supabase, request, env, id);
+  const authResult = await requireRsvpOwner(db, request, env, id);
   if ("response" in authResult) return authResult.response;
 
-  const { error } = await supabase.from("rsvps").delete().eq("id", id);
-  if (error) throw error;
-
+  await db.prepare("DELETE FROM rsvps WHERE id = ?").bind(id).run();
   return json({ message: "RSVP/Wish deleted" });
 }
 
 export const dispatchRsvpRoute: ApiDispatcher = async ({
-  supabase,
+  db,
   env,
   request,
   pathname,
 }) => {
   const method = getEffectiveMethod(request);
   if (pathname === "rsvp" && method === "POST")
-    return await handleRsvpPost(supabase, request);
+    return await handleRsvpPost(db, request);
   if (pathname.startsWith("rsvp/") && method === "GET")
-    return await handleRsvpList(supabase, pathname);
+    return await handleRsvpList(db, pathname);
   if (pathname.startsWith("rsvp/") && method === "PUT")
-    return await handleRsvpUpdate(supabase, request, pathname, env);
+    return await handleRsvpUpdate(db, request, pathname, env);
   if (pathname.startsWith("rsvp/") && method === "DELETE")
-    return await handleRsvpDelete(supabase, request, pathname, env);
+    return await handleRsvpDelete(db, request, pathname, env);
 
   return null;
 };

@@ -91,37 +91,42 @@ export async function clerkRequest(
   return data;
 }
 
-export async function ensureLocalUser(supabase: any, clerkId: string) {
+export async function ensureLocalUser(db: D1Database, clerkId: string) {
   const clerkManagedPasswordHash = ["clerk", "managed"].join("_");
-  const { data: existingUser } = await supabase
-    .from("users")
-    .select("*")
-    .eq("username", clerkId)
-    .maybeSingle();
+
+  const existingUser = await db
+    .prepare("SELECT * FROM users WHERE username = ?")
+    .bind(clerkId)
+    .first();
 
   if (existingUser) return existingUser;
 
-  const { count } = await supabase
-    .from("users")
-    .select("id", { count: "exact", head: true });
+  const countResult = await db
+    .prepare("SELECT COUNT(*) as cnt FROM users")
+    .first<{ cnt: number }>();
 
-  const isFirstUser = count === 0;
+  const isFirstUser = (countResult?.cnt || 0) === 0;
+  const id = crypto.randomUUID();
 
-  const { data: newUser, error } = await supabase
-    .from("users")
-    .insert([
-      {
-        username: clerkId,
-        password_hash: clerkManagedPasswordHash,
-        role: isFirstUser ? "admin" : "user",
-        max_invitations: isFirstUser ? 999 : 1,
-        user_source: isFirstUser ? "admin_created" : "self_signup",
-      },
-    ])
-    .select("*")
-    .single();
+  await db
+    .prepare(
+      "INSERT INTO users (id, username, password_hash, role, max_invitations, user_source) VALUES (?, ?, ?, ?, ?, ?)"
+    )
+    .bind(
+      id,
+      clerkId,
+      clerkManagedPasswordHash,
+      isFirstUser ? "admin" : "user",
+      isFirstUser ? 999 : 1,
+      isFirstUser ? "admin_created" : "self_signup",
+    )
+    .run();
 
-  if (error) throw error;
+  const newUser = await db
+    .prepare("SELECT * FROM users WHERE id = ?")
+    .bind(id)
+    .first();
+
   return newUser;
 }
 
@@ -153,7 +158,7 @@ async function validateClerkSession(env: any, payload: ClerkTokenPayload) {
   }
 }
 
-export async function requireUser(supabase: any, request: Request, env?: any) {
+export async function requireUser(db: D1Database, request: Request, env?: any) {
   const payload = getClerkTokenPayloadFromRequest(request);
   if (!payload) return null;
 
@@ -175,7 +180,7 @@ export async function requireUser(supabase: any, request: Request, env?: any) {
   const isValid = await validateClerkSession(env, payload);
   if (!isValid) return null;
 
-  return await ensureLocalUser(supabase, clerkId);
+  return await ensureLocalUser(db, clerkId);
 }
 
 export function requireAdminUser(user: any) {
@@ -187,7 +192,7 @@ export function unauthorized() {
 }
 
 function getTokenSecret(env: any): string {
-  return (env?.SUPABASE_SECRET_KEY || env?.SUPABASE_SERVICE_ROLE_KEY || "client-token-fallback-key") + ":client-access";
+  return (env?.TOKEN_SECRET || env?.SUPABASE_SECRET_KEY || env?.SUPABASE_SERVICE_ROLE_KEY || "client-token-fallback-key") + ":client-access";
 }
 
 async function hmacSign(secret: string, data: string): Promise<string> {
@@ -248,7 +253,7 @@ export async function createAccessToken(payload: any, env: any): Promise<string>
   return `${payloadB64}.${signature}`;
 }
 
-export async function requireUserOrClient(supabase: any, request: Request, env: any) {
+export async function requireUserOrClient(db: D1Database, request: Request, env: any) {
   const authHeader = request.headers.get("x-access-token") || request.headers.get("authorization") || "";
   let token = authHeader;
   if (authHeader.toLowerCase().startsWith("bearer ")) {
@@ -276,5 +281,5 @@ export async function requireUserOrClient(supabase: any, request: Request, env: 
     }
   }
 
-  return await requireUser(supabase, request, env);
+  return await requireUser(db, request, env);
 }

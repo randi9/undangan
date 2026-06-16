@@ -1,32 +1,32 @@
 import { requireAdminUser, requireUser, unauthorized } from "../shared/auth";
 import { PAYMENT_AMOUNT } from "../shared/constants";
 import { json } from "../shared/http";
+import { stringifyJsonColumn } from "../shared/db";
 import type { ApiDispatcher } from "../types/api";
 
 const MAYAR_PAYMENT_LINK =
   "https://mengundanganda.myr.id/pl/mengundang-anda-premium-akses/";
 
 async function handlePaymentCreateInvoice(
-  supabase: any,
+  db: D1Database,
   request: Request,
   env: any,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
 
   const body = await request.json();
   const invitation_id = String(body.invitation_id || "").trim();
   if (!invitation_id) return json({ error: "invitation_id wajib diisi." }, 400);
 
-  const { data: invitation } = await supabase
-    .from("invitations")
-    .select("*")
-    .eq("id", invitation_id)
-    .single();
+  const invitation = await db
+    .prepare("SELECT * FROM invitations WHERE id = ?")
+    .bind(invitation_id)
+    .first();
   if (!invitation) return json({ error: "Undangan tidak ditemukan." }, 404);
-  if (invitation.owner_id !== user.id && user.role !== "admin")
+  if ((invitation as any).owner_id !== (user as any).id && (user as any).role !== "admin")
     return json({ error: "Akses ditolak." }, 403);
-  if (invitation.payment_status === "paid")
+  if ((invitation as any).payment_status === "paid")
     return json({ error: "Undangan ini sudah dalam status PAID." }, 400);
 
   const basePaymentLink = env?.MAYAR_PAYMENT_LINK || MAYAR_PAYMENT_LINK;
@@ -34,21 +34,21 @@ async function handlePaymentCreateInvoice(
   const paymentUrl = `${basePaymentLink}${separator}invitation_id=${invitation_id}`;
 
   try {
-    await supabase
-      .from("payment_logs")
-      .upsert(
-        [
-          {
-            invitation_id,
-            user_id: user.id,
-            amount: PAYMENT_AMOUNT,
-            status: "pending",
-            mayar_payment_url: paymentUrl,
-            mayar_invoice_id: `pending:${invitation_id}`,
-          },
-        ],
-        { onConflict: "invitation_id" },
-      );
+    // Upsert: try update first, then insert
+    const existing = await db
+      .prepare("SELECT id FROM payment_logs WHERE invitation_id = ?")
+      .bind(invitation_id)
+      .first();
+
+    if (existing) {
+      await db.prepare(
+        "UPDATE payment_logs SET user_id = ?, amount = ?, status = 'pending', mayar_payment_url = ?, mayar_invoice_id = ? WHERE invitation_id = ?"
+      ).bind((user as any).id, PAYMENT_AMOUNT, paymentUrl, `pending:${invitation_id}`, invitation_id).run();
+    } else {
+      await db.prepare(
+        "INSERT INTO payment_logs (invitation_id, user_id, amount, status, mayar_payment_url, mayar_invoice_id) VALUES (?, ?, ?, 'pending', ?, ?)"
+      ).bind(invitation_id, (user as any).id, PAYMENT_AMOUNT, paymentUrl, `pending:${invitation_id}`).run();
+    }
   } catch { /* ignore logging errors */ }
 
   return json({
@@ -59,13 +59,12 @@ async function handlePaymentCreateInvoice(
   });
 }
 
-
 async function handlePaymentVerifyLicense(
-  supabase: any,
+  db: D1Database,
   request: Request,
   env: any,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
 
   const body = await request.json();
@@ -79,43 +78,32 @@ async function handlePaymentVerifyLicense(
 
   let invitationId = body.invitation_id || null;
   if (!invitationId) {
-    const { data: pendingLog } = await supabase
-      .from("payment_logs")
-      .select("invitation_id")
-      .eq("user_id", user.id)
-      .eq("status", "pending")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    const pendingLog = await db
+      .prepare("SELECT invitation_id FROM payment_logs WHERE user_id = ? AND status = 'pending' ORDER BY created_at DESC LIMIT 1")
+      .bind((user as any).id)
+      .first<{ invitation_id: string }>();
     if (pendingLog) invitationId = pendingLog.invitation_id;
   }
 
   if (!invitationId) {
-    const { data: trialInvitation } = await supabase
-      .from("invitations")
-      .select("id")
-      .eq("owner_id", user.id)
-      .eq("payment_status", "trial")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    const trialInvitation = await db
+      .prepare("SELECT id FROM invitations WHERE owner_id = ? AND payment_status = 'trial' ORDER BY created_at DESC LIMIT 1")
+      .bind((user as any).id)
+      .first<{ id: string }>();
     if (trialInvitation) invitationId = trialInvitation.id;
   }
 
   if (!invitationId) {
-    const { data: existingPayment } = await supabase
-      .from("payment_logs")
-      .select("paid_at")
-      .eq("user_id", user.id)
-      .eq("status", "paid")
-      .order("paid_at", { ascending: false })
-      .limit(1);
+    const existingPayment = await db
+      .prepare("SELECT paid_at FROM payment_logs WHERE user_id = ? AND status = 'paid' ORDER BY paid_at DESC LIMIT 1")
+      .bind((user as any).id)
+      .first<{ paid_at: string }>();
 
-    if (existingPayment && existingPayment.length > 0) {
-      await supabase
-        .from("users")
-        .update({ paid_at: existingPayment[0].paid_at })
-        .eq("id", user.id);
+    if (existingPayment) {
+      await db
+        .prepare("UPDATE users SET paid_at = ? WHERE id = ?")
+        .bind(existingPayment.paid_at, (user as any).id)
+        .run();
       return json({
         status: "already_paid",
         message: "Akun sudah Premium.",
@@ -126,15 +114,14 @@ async function handlePaymentVerifyLicense(
     return json({ error: "Tidak ada undangan yang menunggu pembayaran." }, 404);
   }
 
-  const { data: invitation } = await supabase
-    .from("invitations")
-    .select("id, payment_status, paid_at")
-    .eq("id", invitationId)
-    .single();
+  const invitation = await db
+    .prepare("SELECT id, payment_status, paid_at FROM invitations WHERE id = ?")
+    .bind(invitationId)
+    .first();
 
-  if (invitation?.payment_status === "paid") {
-    const paidAt = invitation.paid_at || new Date().toISOString();
-    await supabase.from("users").update({ paid_at: paidAt }).eq("id", user.id);
+  if ((invitation as any)?.payment_status === "paid") {
+    const paidAt = (invitation as any).paid_at || new Date().toISOString();
+    await db.prepare("UPDATE users SET paid_at = ? WHERE id = ?").bind(paidAt, (user as any).id).run();
     return json({
       status: "already_paid",
       message: "Undangan sudah berstatus PAID.",
@@ -143,38 +130,33 @@ async function handlePaymentVerifyLicense(
   }
 
   const now = new Date().toISOString();
-  await supabase.from("users").update({ paid_at: now }).eq("id", user.id);
-  await supabase
-    .from("invitations")
-    .update({
-      payment_status: "paid",
-      paid_at: now,
-      mayar_invoice_id: `license:${paymentIdentifier}`,
-    })
-    .eq("owner_id", user.id);
+  await db.prepare("UPDATE users SET paid_at = ? WHERE id = ?").bind(now, (user as any).id).run();
+  await db.prepare(
+    "UPDATE invitations SET payment_status = 'paid', paid_at = ?, mayar_invoice_id = ? WHERE owner_id = ?"
+  ).bind(now, `license:${paymentIdentifier}`, (user as any).id).run();
 
   try {
-    await supabase
-      .from("payment_logs")
-      .upsert(
-        [
-          {
-            invitation_id: invitationId,
-            user_id: user.id,
-            amount: PAYMENT_AMOUNT,
-            status: "paid",
-            paid_at: now,
-            mayar_invoice_id: `license:${paymentIdentifier}`,
-            webhook_payload: {
-              paymentIdentifier,
-              productId: body.productId,
-              email: body.email,
-              method: "license_verify",
-            },
-          },
-        ],
-        { onConflict: "invitation_id" },
-      );
+    const existing = await db
+      .prepare("SELECT id FROM payment_logs WHERE invitation_id = ?")
+      .bind(invitationId)
+      .first();
+
+    if (existing) {
+      await db.prepare(
+        "UPDATE payment_logs SET user_id = ?, amount = ?, status = 'paid', paid_at = ?, mayar_invoice_id = ?, webhook_payload = ? WHERE invitation_id = ?"
+      ).bind(
+        (user as any).id, PAYMENT_AMOUNT, now, `license:${paymentIdentifier}`,
+        stringifyJsonColumn({ paymentIdentifier, productId: body.productId, email: body.email, method: "license_verify" }),
+        invitationId
+      ).run();
+    } else {
+      await db.prepare(
+        "INSERT INTO payment_logs (invitation_id, user_id, amount, status, paid_at, mayar_invoice_id, webhook_payload) VALUES (?, ?, ?, 'paid', ?, ?, ?)"
+      ).bind(
+        invitationId, (user as any).id, PAYMENT_AMOUNT, now, `license:${paymentIdentifier}`,
+        stringifyJsonColumn({ paymentIdentifier, productId: body.productId, email: body.email, method: "license_verify" }),
+      ).run();
+    }
   } catch { /* ignore logging errors */ }
 
   return json({
@@ -185,42 +167,41 @@ async function handlePaymentVerifyLicense(
 }
 
 async function handlePaymentStatus(
-  supabase: any,
+  db: D1Database,
   request: Request,
   pathname: string,
   env: any,
 ) {
-  const user = await requireUser(supabase, request, env);
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
 
   const invitationId = decodeURIComponent(
     pathname.slice("payment/status/".length),
   ).trim();
 
-  const { data: invitation } = await supabase
-    .from("invitations")
-    .select(
-      "id, payment_status, trial_expires_at, view_count, max_views, mayar_invoice_id, paid_at, owner_id",
+  const invitation = await db
+    .prepare(
+      "SELECT id, payment_status, trial_expires_at, view_count, max_views, mayar_invoice_id, paid_at, owner_id FROM invitations WHERE id = ?"
     )
-    .eq("id", invitationId)
-    .single();
+    .bind(invitationId)
+    .first();
 
   if (!invitation) return json({ error: "Undangan tidak ditemukan." }, 404);
-  if (invitation.owner_id !== user.id && user.role !== "admin")
+  if ((invitation as any).owner_id !== (user as any).id && (user as any).role !== "admin")
     return json({ error: "Akses ditolak." }, 403);
 
-  const isTrial = invitation.payment_status === "trial";
+  const isTrial = (invitation as any).payment_status === "trial";
   const trialExpired =
     isTrial &&
-    invitation.trial_expires_at &&
-    new Date(invitation.trial_expires_at) < new Date();
+    (invitation as any).trial_expires_at &&
+    new Date((invitation as any).trial_expires_at) < new Date();
   const viewsExhausted =
-    isTrial && (invitation.view_count || 0) >= (invitation.max_views || 25);
+    isTrial && ((invitation as any).view_count || 0) >= ((invitation as any).max_views || 25);
 
   let trialTimeRemaining: { hours: number; minutes: number } | null = null;
-  if (isTrial && invitation.trial_expires_at && !trialExpired) {
+  if (isTrial && (invitation as any).trial_expires_at && !trialExpired) {
     const remaining =
-      new Date(invitation.trial_expires_at).getTime() - Date.now();
+      new Date((invitation as any).trial_expires_at).getTime() - Date.now();
     trialTimeRemaining = {
       hours: Math.floor(remaining / (1000 * 60 * 60)),
       minutes: Math.floor((remaining / (1000 * 60)) % 60),
@@ -233,15 +214,15 @@ async function handlePaymentStatus(
     trial_expired: !!trialExpired,
     views_exhausted: !!viewsExhausted,
     views_remaining: isTrial
-      ? Math.max(0, (invitation.max_views || 25) - (invitation.view_count || 0))
+      ? Math.max(0, ((invitation as any).max_views || 25) - ((invitation as any).view_count || 0))
       : null,
     trial_time_remaining: trialTimeRemaining,
     amount: PAYMENT_AMOUNT,
   });
 }
 
-async function handlePaymentConfirm(supabase: any, request: Request, env: any) {
-  const user = await requireUser(supabase, request, env);
+async function handlePaymentConfirm(db: D1Database, request: Request, env: any) {
+  const user = await requireUser(db, request, env);
   if (!user) return unauthorized();
   if (!requireAdminUser(user)) {
     return json({ error: "Hanya admin yang bisa konfirmasi pembayaran." }, 403);
@@ -251,14 +232,13 @@ async function handlePaymentConfirm(supabase: any, request: Request, env: any) {
   const invitation_id = String(body.invitation_id || "").trim();
   if (!invitation_id) return json({ error: "invitation_id wajib diisi." }, 400);
 
-  const { data: invitation } = await supabase
-    .from("invitations")
-    .select("id, payment_status, owner_id")
-    .eq("id", invitation_id)
-    .single();
+  const invitation = await db
+    .prepare("SELECT id, payment_status, owner_id FROM invitations WHERE id = ?")
+    .bind(invitation_id)
+    .first();
 
   if (!invitation) return json({ error: "Undangan tidak ditemukan." }, 404);
-  if (invitation.payment_status === "paid") {
+  if ((invitation as any).payment_status === "paid") {
     return json({
       status: "already_paid",
       message: "Undangan sudah berstatus PAID.",
@@ -266,32 +246,33 @@ async function handlePaymentConfirm(supabase: any, request: Request, env: any) {
   }
 
   const now = new Date().toISOString();
-  await supabase
-    .from("users")
-    .update({ paid_at: now })
-    .eq("id", invitation.owner_id);
-  await supabase
-    .from("invitations")
-    .update({ payment_status: "paid", paid_at: now })
-    .eq("owner_id", invitation.owner_id);
+  await db.prepare("UPDATE users SET paid_at = ? WHERE id = ?").bind(now, (invitation as any).owner_id).run();
+  await db.prepare(
+    "UPDATE invitations SET payment_status = 'paid', paid_at = ? WHERE owner_id = ?"
+  ).bind(now, (invitation as any).owner_id).run();
 
   try {
-    await supabase
-      .from("payment_logs")
-      .upsert(
-        [
-          {
-            invitation_id,
-            user_id: user.id,
-            amount: PAYMENT_AMOUNT,
-            status: "paid",
-            paid_at: now,
-            mayar_invoice_id: `manual:${Date.now()}`,
-            webhook_payload: { confirmed_by: user.id, method: "admin_manual" },
-          },
-        ],
-        { onConflict: "invitation_id" },
-      );
+    const existing = await db
+      .prepare("SELECT id FROM payment_logs WHERE invitation_id = ?")
+      .bind(invitation_id)
+      .first();
+
+    if (existing) {
+      await db.prepare(
+        "UPDATE payment_logs SET user_id = ?, amount = ?, status = 'paid', paid_at = ?, mayar_invoice_id = ?, webhook_payload = ? WHERE invitation_id = ?"
+      ).bind(
+        (user as any).id, PAYMENT_AMOUNT, now, `manual:${Date.now()}`,
+        stringifyJsonColumn({ confirmed_by: (user as any).id, method: "admin_manual" }),
+        invitation_id,
+      ).run();
+    } else {
+      await db.prepare(
+        "INSERT INTO payment_logs (invitation_id, user_id, amount, status, paid_at, mayar_invoice_id, webhook_payload) VALUES (?, ?, ?, 'paid', ?, ?, ?)"
+      ).bind(
+        invitation_id, (user as any).id, PAYMENT_AMOUNT, now, `manual:${Date.now()}`,
+        stringifyJsonColumn({ confirmed_by: (user as any).id, method: "admin_manual" }),
+      ).run();
+    }
   } catch { /* ignore logging errors */ }
 
   return json({ status: "ok", message: "Pembayaran berhasil dikonfirmasi." });
@@ -304,7 +285,7 @@ function extractInvitationIdFromUrl(url: string): string | null {
 }
 
 async function resolveWebhookInvitationId(
-  supabase: any,
+  db: D1Database,
   data: any,
   invoiceId: string | null,
 ) {
@@ -318,14 +299,9 @@ async function resolveWebhookInvitationId(
   if (invitationId) return invitationId;
 
   const urlFields = [
-    data.redirectUrl,
-    data.redirect_url,
-    data.redirectURL,
-    data.link,
-    data.linkUrl,
-    data.link_url,
-    data.successUrl,
-    data.success_url,
+    data.redirectUrl, data.redirect_url, data.redirectURL,
+    data.link, data.linkUrl, data.link_url,
+    data.successUrl, data.success_url,
   ].filter(Boolean);
 
   for (const url of urlFields) {
@@ -334,20 +310,16 @@ async function resolveWebhookInvitationId(
     if (extracted) return extracted;
   }
 
-  const { data: logs } = await supabase
-    .from("payment_logs")
-    .select("invitation_id")
-    .eq("status", "pending")
-    .order("created_at", { ascending: false })
-    .limit(1);
-  if (logs && logs.length > 0) return logs[0].invitation_id;
+  const pendingLog = await db
+    .prepare("SELECT invitation_id FROM payment_logs WHERE status = 'pending' ORDER BY created_at DESC LIMIT 1")
+    .first<{ invitation_id: string }>();
+  if (pendingLog) return pendingLog.invitation_id;
 
   if (invoiceId) {
-    const { data: inv } = await supabase
-      .from("invitations")
-      .select("id")
-      .eq("mayar_invoice_id", invoiceId)
-      .maybeSingle();
+    const inv = await db
+      .prepare("SELECT id FROM invitations WHERE mayar_invoice_id = ?")
+      .bind(invoiceId)
+      .first<{ id: string }>();
     return inv?.id || null;
   }
 
@@ -355,60 +327,48 @@ async function resolveWebhookInvitationId(
 }
 
 async function markInvitationPaidFromWebhook(
-  supabase: any,
+  db: D1Database,
   invitationId: string,
   invoiceId: string | null,
   now: string,
   body: any,
   data: any,
 ) {
-  const { data: invOwner } = await supabase
-    .from("invitations")
-    .select("owner_id")
-    .eq("id", invitationId)
-    .single();
+  const invOwner = await db
+    .prepare("SELECT owner_id FROM invitations WHERE id = ?")
+    .bind(invitationId)
+    .first<{ owner_id: string | null }>();
 
-  if (invOwner) {
-    await supabase
-      .from("users")
-      .update({ paid_at: now })
-      .eq("id", invOwner.owner_id);
-    await supabase
-      .from("invitations")
-      .update({
-        payment_status: "paid",
-        paid_at: now,
-        mayar_invoice_id: invoiceId || null,
-      })
-      .eq("owner_id", invOwner.owner_id);
+  if (invOwner?.owner_id) {
+    await db.prepare("UPDATE users SET paid_at = ? WHERE id = ?").bind(now, invOwner.owner_id).run();
+    await db.prepare(
+      "UPDATE invitations SET payment_status = 'paid', paid_at = ?, mayar_invoice_id = ? WHERE owner_id = ?"
+    ).bind(now, invoiceId || null, invOwner.owner_id).run();
   } else {
-    await supabase
-      .from("invitations")
-      .update({
-        payment_status: "paid",
-        paid_at: now,
-        mayar_invoice_id: invoiceId || null,
-      })
-      .eq("id", invitationId);
+    await db.prepare(
+      "UPDATE invitations SET payment_status = 'paid', paid_at = ?, mayar_invoice_id = ? WHERE id = ?"
+    ).bind(now, invoiceId || null, invitationId).run();
   }
 
   try {
-    await supabase
-      .from("payment_logs")
-      .upsert(
-        [
-          {
-            invitation_id: invitationId,
-            user_id: invOwner?.owner_id || null,
-            amount: data.amount || data.total || PAYMENT_AMOUNT,
-            status: "paid",
-            paid_at: now,
-            mayar_invoice_id: invoiceId || `webhook:${Date.now()}`,
-            webhook_payload: body,
-          },
-        ],
-        { onConflict: "invitation_id" },
-      );
+    const existing = await db
+      .prepare("SELECT id FROM payment_logs WHERE invitation_id = ?")
+      .bind(invitationId)
+      .first();
+
+    const logInvoiceId = invoiceId || `webhook:${Date.now()}`;
+    const amount = data.amount || data.total || PAYMENT_AMOUNT;
+    const webhookPayload = stringifyJsonColumn(body);
+
+    if (existing) {
+      await db.prepare(
+        "UPDATE payment_logs SET user_id = ?, amount = ?, status = 'paid', paid_at = ?, mayar_invoice_id = ?, webhook_payload = ? WHERE invitation_id = ?"
+      ).bind(invOwner?.owner_id || null, amount, now, logInvoiceId, webhookPayload, invitationId).run();
+    } else {
+      await db.prepare(
+        "INSERT INTO payment_logs (invitation_id, user_id, amount, status, paid_at, mayar_invoice_id, webhook_payload) VALUES (?, ?, ?, 'paid', ?, ?, ?)"
+      ).bind(invitationId, invOwner?.owner_id || null, amount, now, logInvoiceId, webhookPayload).run();
+    }
   } catch { /* ignore logging errors */ }
 }
 
@@ -442,15 +402,6 @@ function timingSafeEqual(a: string, b: string): boolean {
   return result === 0;
 }
 
-/**
- * Verify that the webhook request actually came from Mayar.
- *
- * Mayar provides a "Webhook Token" in the dashboard (Integration > API Keys).
- * This token is used as the HMAC-SHA256 secret to sign the raw request body.
- * The resulting signature is sent in a request header.
- *
- * Store the Webhook Token as MAYAR_WEBHOOK_SECRET in Cloudflare env vars.
- */
 async function verifyWebhookSignature(
   rawBody: string,
   request: Request,
@@ -458,12 +409,10 @@ async function verifyWebhookSignature(
 ): Promise<boolean> {
   const webhookSecret = env?.MAYAR_WEBHOOK_SECRET || "";
   if (!webhookSecret) {
-    // Not configured yet — allow through with warning (backward compatible)
     console.warn("[Webhook] MAYAR_WEBHOOK_SECRET not configured — skipping signature check.");
     return true;
   }
 
-  // Mayar may use one of these header names for the signature
   const signature =
     request.headers.get("x-mayar-signature") ||
     request.headers.get("x-callback-signature") ||
@@ -479,12 +428,10 @@ async function verifyWebhookSignature(
   return timingSafeEqual(signature.toLowerCase(), expectedSig.toLowerCase());
 }
 
-async function handlePaymentWebhook(supabase: any, request: Request, env: any) {
+async function handlePaymentWebhook(db: D1Database, request: Request, env: any) {
   try {
-    // Read raw body first for signature verification
     const rawBody = await request.text();
 
-    // Verify the signature using Mayar Webhook Token
     const isValid = await verifyWebhookSignature(rawBody, request, env);
     if (!isValid) {
       console.error("[Webhook] Signature verification failed — rejecting request");
@@ -497,14 +444,9 @@ async function handlePaymentWebhook(supabase: any, request: Request, env: any) {
 
     const isPaymentEvent =
       [
-        "payment.received",
-        "payment.success",
-        "payment.completed",
-        "purchase",
-        "purchase.completed",
-        "new.membership",
-        "membership.created",
-        "membership.new",
+        "payment.received", "payment.success", "payment.completed",
+        "purchase", "purchase.completed",
+        "new.membership", "membership.created", "membership.new",
       ].includes(event) ||
       String(event).includes("payment") ||
       String(event).includes("purchase") ||
@@ -515,23 +457,12 @@ async function handlePaymentWebhook(supabase: any, request: Request, env: any) {
     const now = new Date().toISOString();
     const invoiceId =
       data.id || data.invoiceId || data.transactionId || data.transaction_id;
-    const invitationId = await resolveWebhookInvitationId(
-      supabase,
-      data,
-      invoiceId,
-    );
+    const invitationId = await resolveWebhookInvitationId(db, data, invoiceId);
 
     if (!invitationId) {
-      await supabase.from("payment_logs").insert([
-        {
-          invitation_id: null,
-          user_id: null,
-          amount: data.amount || data.total || PAYMENT_AMOUNT,
-          status: "unmatched",
-          mayar_invoice_id: invoiceId || `unmatched:${Date.now()}`,
-          webhook_payload: body,
-        },
-      ]);
+      await db.prepare(
+        "INSERT INTO payment_logs (invitation_id, user_id, amount, status, mayar_invoice_id, webhook_payload) VALUES (NULL, NULL, ?, 'unmatched', ?, ?)"
+      ).bind(data.amount || data.total || PAYMENT_AMOUNT, invoiceId || `unmatched:${Date.now()}`, stringifyJsonColumn(body)).run();
 
       return json({
         status: "logged",
@@ -540,14 +471,7 @@ async function handlePaymentWebhook(supabase: any, request: Request, env: any) {
       });
     }
 
-    await markInvitationPaidFromWebhook(
-      supabase,
-      invitationId,
-      invoiceId,
-      now,
-      body,
-      data,
-    );
+    await markInvitationPaidFromWebhook(db, invitationId, invoiceId, now, body, data);
 
     return json({
       status: "ok",
@@ -561,30 +485,29 @@ async function handlePaymentWebhook(supabase: any, request: Request, env: any) {
 }
 
 export const dispatchPaymentRoute: ApiDispatcher = async ({
-  supabase,
+  db,
   env,
   request,
   pathname,
 }) => {
   if (pathname === "payment/create-invoice" && request.method === "POST") {
-    return await handlePaymentCreateInvoice(supabase, request, env);
+    return await handlePaymentCreateInvoice(db, request, env);
   }
 
   if (pathname === "payment/verify-license" && request.method === "POST") {
-    return await handlePaymentVerifyLicense(supabase, request, env);
+    return await handlePaymentVerifyLicense(db, request, env);
   }
 
-  // Webhook: match "payment/webhook" regardless of query params
   if (pathname === "payment/webhook" && request.method === "POST") {
-    return await handlePaymentWebhook(supabase, request, env);
+    return await handlePaymentWebhook(db, request, env);
   }
 
   if (pathname.startsWith("payment/status/") && request.method === "GET") {
-    return await handlePaymentStatus(supabase, request, pathname, env);
+    return await handlePaymentStatus(db, request, pathname, env);
   }
 
   if (pathname === "payment/confirm" && request.method === "POST") {
-    return await handlePaymentConfirm(supabase, request, env);
+    return await handlePaymentConfirm(db, request, env);
   }
 
   return null;
