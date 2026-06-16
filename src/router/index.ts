@@ -25,6 +25,10 @@ if (
   if (parts.length >= 4) {
     subdomain = parts[0] || null;
   }
+} else if (host.endsWith(".pages.dev")) {
+  // Untuk Cloudflare Pages preview: xxx.project.pages.dev (4 bagian)
+  // Jangan anggap sebagai subdomain undangan
+  subdomain = null;
 } else if (parts.length >= 3 && parts[0] !== "www") {
   // Domain biasa misal: mydomain.com (2 bagian) -> romi-juli.mydomain.com (3 bagian)
   subdomain = parts[0] || null;
