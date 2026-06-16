@@ -128,44 +128,44 @@
             </div>
           </div>
         </div>
-        
-        <!-- Physical Gift Address Card -->
-        <div v-if="invitation.gift_address" style="flex: 1; min-width: 300px; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
-          <div style="width: 100%; padding: 24px; position: relative; display: flex; flex-direction: column; justify-content: space-between; text-align: left; z-index: 10; background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 245, 240, 0.85) 100%); border-radius: 16px; box-shadow: 0 12px 36px -8px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,1); border: 1px solid rgba(255,255,255,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
-            
-            <!-- Subtle Floral Decor for the Card -->
-            <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/cf584d49-6790-4bb8-971f-89cdc91c6e00.webp" 
-                 style="position: absolute; top: -20px; right: -20px; width: 140px; opacity: 0.15; transform: rotate(15deg); pointer-events: none; z-index: 0;" />
-            
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1; margin-bottom: 16px;">
-              <div style="font-weight: 800; font-size: 20px; color: var(--theme-primary); letter-spacing: 0.05em; text-transform: uppercase;">
-                Kirim Kado
-              </div>
-              <Icon icon="lucide:package" style="font-size: 24px; color: var(--theme-secondary);" />
+
+      </div>
+
+      <!-- Physical Gift Address Card -->
+      <div v-if="invitation.gift_address" style="flex: 1; min-width: 300px; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 24px;">
+        <div style="width: 100%; padding: 24px; position: relative; display: flex; flex-direction: column; justify-content: space-between; text-align: left; z-index: 10; background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 245, 240, 0.85) 100%); border-radius: 16px; box-shadow: 0 12px 36px -8px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,1); border: 1px solid rgba(255,255,255,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+          
+          <!-- Subtle Floral Decor for the Card -->
+          <img src="https://media.mengundanganda.com/tema%20floral/couple%20section/cf584d49-6790-4bb8-971f-89cdc91c6e00.webp" 
+               style="position: absolute; top: -20px; right: -20px; width: 140px; opacity: 0.15; transform: rotate(15deg); pointer-events: none; z-index: 0;" />
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 1; margin-bottom: 16px;">
+            <div style="font-weight: 800; font-size: 20px; color: var(--theme-primary); letter-spacing: 0.05em; text-transform: uppercase;">
+              Kirim Kado
             </div>
-            
-            <div style="z-index: 1; margin-bottom: 16px;">
-              <p style="font-size: 14px; color: #374151; line-height: 1.6; font-weight: 500; margin-bottom: 12px; white-space: pre-line;">
-                {{ invitation.gift_address }}
-              </p>
-              <span style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px;">Penerima</span>
-              <span style="font-size: 14px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2;">
-                {{ invitation.gift_recipient || '-' }}
-              </span>
-              <span v-if="invitation.gift_phone" style="font-size: 12px; color: #4b5563; display: block; margin-top: 4px; font-family: monospace;">
-                Telp: {{ invitation.gift_phone }}
-              </span>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 1;">
-              <button @click="copyAddress" style="background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); cursor: pointer; color: #374151; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 16px; border-radius: 8px; transition: all 0.2s; font-size: 12px; font-weight: 700; backdrop-filter: blur(4px);">
-                <Icon :icon="copiedAddress ? 'lucide:check-circle-2' : 'lucide:copy'" style="font-size: 16px; color: var(--theme-primary);" />
-                {{ copiedAddress ? 'Alamat Disalin!' : 'Salin Alamat' }}
-              </button>
-            </div>
+            <Icon icon="lucide:package" style="font-size: 24px; color: var(--theme-secondary);" />
+          </div>
+          
+          <div style="z-index: 1; margin-bottom: 16px;">
+            <p style="font-size: 14px; color: #374151; line-height: 1.6; font-weight: 500; margin-bottom: 12px; white-space: pre-line;">
+              {{ invitation.gift_address }}
+            </p>
+            <span style="font-size: 10px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px;">Penerima</span>
+            <span style="font-size: 14px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2;">
+              {{ invitation.gift_recipient || '-' }}
+            </span>
+            <span v-if="invitation.gift_phone" style="font-size: 12px; color: #4b5563; display: block; margin-top: 4px; font-family: monospace;">
+              Telp: {{ invitation.gift_phone }}
+            </span>
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; z-index: 1;">
+            <button @click="copyAddress" style="background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); cursor: pointer; color: #374151; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 16px; border-radius: 8px; transition: all 0.2s; font-size: 12px; font-weight: 700; backdrop-filter: blur(4px);">
+              <Icon :icon="copiedAddress ? 'lucide:check-circle-2' : 'lucide:copy'" style="font-size: 16px; color: var(--theme-primary);" />
+              {{ copiedAddress ? 'Alamat Disalin!' : 'Salin Alamat' }}
+            </button>
           </div>
         </div>
-
       </div>
       
     </div>
