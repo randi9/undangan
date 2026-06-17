@@ -66,23 +66,30 @@ export function usePhotoUpload(
       const dataUrl = await readFileAsDataURL(file)
       const config = CROP_CONFIG[field]
       cropImageSrc.value = dataUrl
-      
+
+      const theme = form.theme || 'minimalist'
+
       if (field === 'love_story') {
-        const theme = form.theme || 'minimalist'
         if (theme === 'elegant' || theme === 'elegant_blue') {
           cropAspectRatio.value = 4 / 3
         } else if (theme === 'floral_blue') {
           cropAspectRatio.value = 1 / 1
         } else if (theme === 'floral') {
-          cropAspectRatio.value = 3 / 2
+          cropAspectRatio.value = 1 / 1
         } else {
           cropAspectRatio.value = 16 / 9
         }
+      } else if ((field === 'groom_photo' || field === 'bride_photo') && theme === 'elegant_blue') {
+        // Elegant Blue uses tall portrait photo slots (3:4 ratio, arch shape)
+        cropAspectRatio.value = 3 / 4
+        cropStencilShape.value = 'rectangle'
       } else {
         cropAspectRatio.value = config.aspectRatio
       }
-      
-      cropStencilShape.value = config.stencilShape
+
+      if (!((field === 'groom_photo' || field === 'bride_photo') && theme === 'elegant_blue')) {
+        cropStencilShape.value = config.stencilShape
+      }
       pendingCropField = field
       pendingOldUrl = oldUrl
       cropModalOpen.value = true
@@ -113,7 +120,7 @@ export function usePhotoUpload(
         const story = form.love_story[loveStoryPhotoTargetIndex]
         if (story) {
           if (story.photo) {
-            await store.deleteFile(story.photo).catch(() => {})
+            await store.deleteFile(story.photo).catch(() => { })
           }
           story.photo = url
         }
@@ -121,7 +128,7 @@ export function usePhotoUpload(
       } else {
         // Delete old photo if exists
         if (oldUrl) {
-          await store.deleteFile(oldUrl).catch(() => {})
+          await store.deleteFile(oldUrl).catch(() => { })
         }
         const url = await store.uploadPhoto(file, form.slug || undefined)
         console.log('[CropConfirm] Upload result for', field, ':', url)
@@ -166,21 +173,21 @@ export function usePhotoUpload(
 
   async function removeCoverPhoto() {
     if (form.cover_photo) {
-      await store.deleteFile(form.cover_photo).catch(() => {})
+      await store.deleteFile(form.cover_photo).catch(() => { })
       form.cover_photo = ''
     }
   }
 
   async function removeGroomPhoto() {
     if (form.groom_photo) {
-      await store.deleteFile(form.groom_photo).catch(() => {})
+      await store.deleteFile(form.groom_photo).catch(() => { })
       form.groom_photo = ''
     }
   }
 
   async function removeBridePhoto() {
     if (form.bride_photo) {
-      await store.deleteFile(form.bride_photo).catch(() => {})
+      await store.deleteFile(form.bride_photo).catch(() => { })
       form.bride_photo = ''
     }
   }
@@ -235,7 +242,7 @@ export function usePhotoUpload(
   async function removeGalleryPhoto(index: number) {
     const photo = form.photos[index]
     if (photo && photo.url) {
-      await store.deleteFile(photo.url).catch(() => {})
+      await store.deleteFile(photo.url).catch(() => { })
     }
     form.photos.splice(index, 1)
   }
@@ -257,7 +264,7 @@ export function usePhotoUpload(
   async function removeLoveStoryPhoto(index: number) {
     const story = form.love_story[index]
     if (!story?.photo) return
-    await store.deleteFile(story.photo).catch(() => {})
+    await store.deleteFile(story.photo).catch(() => { })
     story.photo = ''
   }
 
