@@ -218,8 +218,8 @@ async function bumpInvitationView(
         "INSERT INTO invitation_views (invitation_id, viewer_ip, device_type, referer_url) VALUES (?, ?, ?, ?)"
       ).bind(invitation.id, viewerIp, isMobile ? "mobile" : "desktop", referer.slice(0, 500)),
       db.prepare(
-        "UPDATE invitations SET view_count = ? WHERE id = ?"
-      ).bind((invitation.view_count || 0) + 1, invitation.id),
+        "UPDATE invitations SET view_count = view_count + 1 WHERE id = ?"
+      ).bind(invitation.id),
     ]);
   } catch (err) {
     // Silently log — don't break the invitation view if analytics fails
@@ -780,7 +780,7 @@ async function handleInvitationDelete(
     }
 
     // Clean up love_story photos from R2
-    const loveStory = parseJsonColumn((inv as any)?.love_story, []);
+    const loveStory = parseJsonColumn<any[]>((inv as any)?.love_story, []);
     for (const story of loveStory) {
       if (story?.photo) await deleteR2Url(env, story.photo).catch(() => {});
     }

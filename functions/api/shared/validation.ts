@@ -18,7 +18,7 @@ export const rsvpCreateSchema = z.object({
     .max(100, "Nama tamu maksimal 100 karakter"),
   attendance: z.enum(["hadir", "tidak_hadir", "ragu"], {
     errorMap: () => ({ message: "Nilai attendance tidak valid" }),
-  }),
+  } as any),
   guest_count: z.coerce.number().int().min(1).max(10).default(1),
   message: z.string().max(500, "Pesan maksimal 500 karakter").default(""),
 });

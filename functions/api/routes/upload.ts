@@ -20,8 +20,7 @@ async function handleUploadMultiple(db: D1Database, env: any, request: Request) 
   if (!auth) return unauthorized();
 
   const form = await request.formData();
-  const files = form
-    .getAll("photos")
+  const files = (form.getAll("photos") as any[])
     .filter((f): f is File => f instanceof File);
   if (!files.length) return json({ error: "No files uploaded" }, 400);
 
