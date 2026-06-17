@@ -87,6 +87,18 @@ if (subdomain) {
       meta: { title: "Pesan Jasa Dibuatkan Undangan - MengundangAnda" },
     },
     {
+      path: "/record/sample/:themeId",
+      name: "record-sample",
+      component: () => import("@/views/admin/RecordModeView.vue"),
+      meta: { title: "Record Mode - MengundangAnda" },
+    },
+    {
+      path: "/record/:slug",
+      name: "record-invitation",
+      component: () => import("@/views/admin/RecordModeView.vue"),
+      meta: { title: "Record Mode - MengundangAnda" },
+    },
+    {
       path: "/sample/:themeId",
       name: "sample-invitation",
       component: () => import("@/views/invitation/SampleInvitationView.vue"),

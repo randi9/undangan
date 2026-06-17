@@ -291,6 +291,69 @@ const store = useInvitationStore();
 const authStore = useAuthStore();
 const apiBase = import.meta.env.VITE_API_URL || "";
 
+// === RECORD MODE ===
+// When ?record=true, this invitation is inside RecordModeView's iframe.
+// We listen for scroll control messages from the parent and report progress.
+const isRecordMode = computed(() => route.query.record === "true");
+let recordScrollRAF: number | null = null;
+let recordScrollSpeed = 1.5;
+
+function recordScrollStart(speed: number) {
+  recordScrollSpeed = speed;
+  if (recordScrollRAF) cancelAnimationFrame(recordScrollRAF);
+  function step() {
+    window.scrollBy(0, recordScrollSpeed);
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'RECORD_SCROLL_PROGRESS', progress }, '*');
+    }
+    if (progress >= 100) {
+      recordScrollRAF = null;
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'RECORD_SCROLL_DONE' }, '*');
+      }
+      return;
+    }
+    recordScrollRAF = requestAnimationFrame(step);
+  }
+  recordScrollRAF = requestAnimationFrame(step);
+}
+
+function recordScrollPause() {
+  if (recordScrollRAF) {
+    cancelAnimationFrame(recordScrollRAF);
+    recordScrollRAF = null;
+  }
+}
+
+function recordScrollReset() {
+  recordScrollPause();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  if (window.parent !== window) {
+    window.parent.postMessage({ type: 'RECORD_SCROLL_PROGRESS', progress: 0 }, '*');
+  }
+}
+
+function onRecordMessage(event: MessageEvent) {
+  if (!event.data?.type) return;
+  switch (event.data.type) {
+    case 'RECORD_SCROLL_START':
+      recordScrollStart(event.data.speed || 1.5);
+      break;
+    case 'RECORD_SCROLL_PAUSE':
+      recordScrollPause();
+      break;
+    case 'RECORD_SCROLL_RESET':
+      recordScrollReset();
+      break;
+    case 'RECORD_SCROLL_SPEED':
+      recordScrollSpeed = event.data.speed || 1.5;
+      break;
+  }
+}
+
 const goHome = () => {
   if (authStore.user) {
     router.push("/dashboard");
@@ -413,9 +476,12 @@ watch(isOpened, (val) => {
 
     // Initialize Lenis smooth scrolling after invitation is opened
     // Delayed slightly to let async components render first
-    setTimeout(() => {
-      initSmoothScroll();
-    }, 200);
+    // Skip in record mode — programmatic scrollBy needs direct scroll, not Lenis interpolation
+    if (!isRecordMode.value) {
+      setTimeout(() => {
+        initSmoothScroll();
+      }, 200);
+    }
 
     // Tunggu sampai ref heroOval benar-benar ada (terikat ke DOM)
     // sebab pada komponen Async, render DOM mungkin terjadi lebih telat dari sekadar nextTick
@@ -517,7 +583,7 @@ function openInvitation() {
     });
   });
 
-  if (invitation.value?.music_url && musicPlayer.value) {
+  if (invitation.value?.music_url && musicPlayer.value && !isRecordMode.value) {
     musicPlayer.value
       .play()
       .then(() => {
@@ -695,6 +761,15 @@ const currentUrl = computed(() => window.location.href);
 onMounted(async () => {
   document.addEventListener("visibilitychange", handleVisibilityChange);
 
+  // === RECORD MODE: Listen for scroll commands from parent ===
+  if (isRecordMode.value) {
+    window.addEventListener('message', onRecordMessage);
+    // Notify parent that iframe is ready
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: 'RECORD_IFRAME_READY' }, '*');
+    }
+  }
+
   // On desktop, we only render the iframe shell — skip all data loading
   if (isDesktop.value) return;
 
@@ -783,6 +858,11 @@ onBeforeUnmount(() => {
   destroySmoothScroll();
   ScrollTrigger.getAll().forEach((t) => t.kill());
   window.removeEventListener("resize", onResize);
+  // Record mode cleanup
+  if (isRecordMode.value) {
+    window.removeEventListener('message', onRecordMessage);
+    recordScrollPause();
+  }
 });
 </script>
 
