@@ -72,7 +72,7 @@
                 Akad Nikah
               </h2>
               <p class="text-sm font-semibold text-[#2c3e50] mb-0.5">{{ formatDateLong(invitation.akad_date) }}</p>
-              <p class="text-xs font-medium tracking-[0.15em] uppercase text-[#4a5c6a]/80 mb-3">{{ invitation.akad_time }} WIB</p>
+              <p class="text-xs font-medium tracking-[0.15em] uppercase text-[#4a5c6a]/80 mb-3">{{ invitation.akad_time }}</p>
               <div style="width: 32px; height: 1px; background: rgba(44,62,80,0.15); margin-bottom: 12px; border-radius: 1px;"></div>
               <p class="font-bold text-[#1e293b] text-base mb-1">{{ invitation.akad_venue }}</p>
               <p class="text-xs text-[#4a5c6a] leading-relaxed px-1">{{ invitation.akad_address }}</p>
@@ -89,7 +89,7 @@
               </div>
             </div>
           </div>
-
+ 
           <!-- LAYER 3: RESEPSI -->
           <div ref="resepsiRef" class="row-start-1 col-start-1 flex flex-col items-center justify-center pointer-events-none" style="visibility: hidden; opacity: 0;">
             <div style="background: rgba(255,255,255,0.55); backdrop-filter: blur(24px) saturate(1.6); -webkit-backdrop-filter: blur(24px) saturate(1.6); border: 1px solid rgba(255,255,255,0.7); border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.3) inset; padding: 28px 24px 22px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%;" class="pointer-events-auto">
@@ -97,7 +97,7 @@
                 Resepsi
               </h2>
               <p class="text-sm font-semibold text-[#2c3e50] mb-0.5">{{ formatDateLong(invitation.resepsi_date) }}</p>
-              <p class="text-xs font-medium tracking-[0.15em] uppercase text-[#4a5c6a]/80 mb-3">{{ invitation.resepsi_time }} WIB</p>
+              <p class="text-xs font-medium tracking-[0.15em] uppercase text-[#4a5c6a]/80 mb-3">{{ invitation.resepsi_time }}</p>
               <div style="width: 32px; height: 1px; background: rgba(44,62,80,0.15); margin-bottom: 12px; border-radius: 1px;"></div>
               <p class="font-bold text-[#1e293b] text-base mb-1">{{ invitation.resepsi_venue }}</p>
               <p class="text-xs text-[#4a5c6a] leading-relaxed px-1">{{ invitation.resepsi_address }}</p>

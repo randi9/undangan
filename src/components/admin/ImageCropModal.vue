@@ -75,10 +75,16 @@ const stencilProps = computed(() => {
 })
 
 function defaultSize({ imageSize }: { imageSize: { width: number; height: number } }) {
-  return {
-    width: Math.min(imageSize.width, imageSize.height) * 0.8,
-    height: Math.min(imageSize.width, imageSize.height) * 0.8,
+  let width = imageSize.width
+  let height = imageSize.height
+  if (props.aspectRatio) {
+    if (width / height > props.aspectRatio) {
+      width = height * props.aspectRatio
+    } else {
+      height = width / props.aspectRatio
+    }
   }
+  return { width, height }
 }
 
 async function handleConfirm() {
