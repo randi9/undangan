@@ -22,7 +22,7 @@
             :stencil-component="activeStencil"
             :stencil-props="stencilProps"
             :default-size="defaultSize"
-            image-restriction="fill-area"
+            image-restriction="fit-area"
             :resize-image="{ adjustStencil: false, wheel: { ratio: 0.1 } }"
           />
         </div>

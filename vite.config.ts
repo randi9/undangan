@@ -21,6 +21,9 @@ export default defineConfig({
     proxy: {
       '/api': 'http://127.0.0.1:8788',
     },
+    watch: {
+      ignored: ['**/.wrangler/**']
+    }
   },
   build: {
     chunkSizeWarningLimit: 1000,
