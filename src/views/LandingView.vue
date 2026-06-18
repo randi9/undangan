@@ -30,9 +30,7 @@
           <li>
             <a href="#cara-kerja" @click="mobileMenuOpen = false">Cara Kerja</a>
           </li>
-          <li>
-            <a href="#testimoni" @click="mobileMenuOpen = false">Testimoni</a>
-          </li>
+
           <li><a href="#harga" @click="mobileMenuOpen = false">Harga</a></li>
           <li><a href="#faq" @click="mobileMenuOpen = false">FAQ</a></li>
           <li>
@@ -418,75 +416,6 @@
         </div>
       </section>
 
-      <!-- Wave Divider -->
-      <div class="lp-wave-divider lp-wave-white-to-alt" aria-hidden="true">
-        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
-          <path d="M0,60 C360,0 1080,100 1440,40 L1440,100 L0,100 Z" />
-        </svg>
-      </div>
-
-      <!-- Testimoni Section -->
-      <section
-        id="testimoni"
-        class="lp-section lp-section-alt"
-        aria-label="Testimoni Pengguna"
-      >
-        <div class="lp-container">
-          <div class="lp-section-header lp-reveal">
-            <p class="lp-section-kicker">Apa Kata Mereka</p>
-            <h2 class="lp-section-title">Testimoni Pengguna</h2>
-          </div>
-          <div class="lp-testimonials-grid">
-            <div
-              class="lp-testimonial lp-reveal"
-              v-for="(t, i) in testimonials"
-              :key="t.name"
-              :style="{ transitionDelay: `${i * 100}ms` }"
-            >
-              <!-- Decorative quote mark -->
-              <div class="lp-testimonial-quote-mark" aria-hidden="true">
-                <svg
-                  width="40"
-                  height="32"
-                  viewBox="0 0 40 32"
-                  fill="currentColor"
-                  opacity="0.08"
-                >
-                  <path
-                    d="M0 20.8C0 27.2 4.48 32 10.08 32c4.8 0 8.32-3.52 8.32-8 0-4.16-3.2-7.36-7.04-7.36-1.28 0-2.24.32-2.88.64.32-5.12 3.84-10.56 9.28-14.08L14.4 0C5.44 4.8 0 12.16 0 20.8zm21.76 0C21.76 27.2 26.24 32 31.84 32c4.8 0 8.16-3.52 8.16-8 0-4.16-3.04-7.36-7.04-7.36-1.28 0-2.24.32-2.88.64.32-5.12 3.84-10.56 9.28-14.08L36.16 0c-8.96 4.8-14.4 12.16-14.4 20.8z"
-                  />
-                </svg>
-              </div>
-              <div class="lp-testimonial-stars" aria-label="Rating 5 bintang">
-                <Icon
-                  icon="solar:star-bold"
-                  v-for="n in 5"
-                  :key="n"
-                  class="lp-star-icon"
-                />
-              </div>
-              <p class="lp-testimonial-text">"{{ t.text }}"</p>
-              <div class="lp-testimonial-author">
-                <div class="lp-testimonial-avatar">
-                  <Icon :icon="t.avatarIcon" class="lp-avatar-svg" />
-                </div>
-                <div>
-                  <div class="lp-testimonial-name">{{ t.name }}</div>
-                  <div class="lp-testimonial-role">{{ t.role }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Wave Divider -->
-      <div class="lp-wave-divider lp-wave-alt-to-white" aria-hidden="true">
-        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
-          <path d="M0,40 C360,100 1080,0 1440,60 L1440,100 L0,100 Z" />
-        </svg>
-      </div>
-
       <!-- Pricing Section -->
       <section id="harga" class="lp-section" aria-label="Harga">
         <div class="lp-container">
@@ -604,69 +533,14 @@
                   Tanpa branding platform
                 </li>
               </ul>
-              <a href="/login" class="lp-btn lp-btn-primary lp-pricing-btn"
-                >Upgrade Premium</a
-              >
-            </div>
-
-            <!-- Jasa Dibuatkan Plan -->
-            <div
-              class="lp-pricing-card lp-pricing-jasa lp-reveal"
-              style="transition-delay: 240ms"
-            >
-              <div class="lp-jasa-badge">TERIMA JADI</div>
-              <div class="lp-pricing-header">
-                <h3>Jasa Dibuatkan</h3>
-                <div class="lp-pricing-price">Rp 99.000</div>
-                <p>Duduk manis, admin kami yang buatkan untuk Anda.</p>
+              <div class="lp-pricing-btn-group">
+                <a :href="waLink" target="_blank" class="lp-btn lp-btn-whatsapp lp-pricing-btn"
+                  ><Icon icon="mdi:whatsapp" style="font-size: 20px" /> Pesan via WhatsApp</a
+                >
+                <a href="/login" class="lp-btn lp-btn-secondary lp-pricing-btn-alt"
+                  >Atau Login Mandiri</a
+                >
               </div>
-              <ul class="lp-pricing-features">
-                <li>
-                  <Icon
-                    icon="solar:magic-stick-3-bold-duotone"
-                    class="check-icon jasa"
-                  />
-                  <strong>Admin buatkan untuk Anda</strong>
-                </li>
-                <li>
-                  <Icon
-                    icon="solar:crown-bold-duotone"
-                    class="check-icon jasa"
-                  />
-                  Semua fitur Premium termasuk
-                </li>
-                <li>
-                  <Icon
-                    icon="solar:clock-circle-bold-duotone"
-                    class="check-icon jasa"
-                  />
-                  Selesai dalam 30 menit
-                </li>
-                <li>
-                  <Icon
-                    icon="solar:refresh-circle-bold-duotone"
-                    class="check-icon jasa"
-                  />
-                  3x revisi gratis
-                </li>
-                <li>
-                  <Icon
-                    icon="solar:infinity-bold-duotone"
-                    class="check-icon jasa"
-                  />
-                  Akses unlimited 1 tahun
-                </li>
-                <li>
-                  <Icon
-                    icon="solar:shield-check-bold-duotone"
-                    class="check-icon jasa"
-                  />
-                  Tanpa branding platform
-                </li>
-              </ul>
-              <a href="/order" class="lp-btn lp-btn-jasa lp-pricing-btn"
-                >Pesan Sekarang</a
-              >
             </div>
           </div>
         </div>
@@ -741,9 +615,14 @@
             Bergabung dengan ratusan pasangan yang sudah berhasil menghemat
             jutaan rupiah tanpa mengorbankan estetika.
           </p>
-          <a href="/login" class="lp-btn lp-btn-white lp-cta-btn"
-            >Buat Undangan Gratis Sekarang</a
-          >
+          <div class="lp-cta-actions">
+            <a :href="waLink" target="_blank" class="lp-btn lp-btn-whatsapp lp-cta-btn"
+              ><Icon icon="mdi:whatsapp" style="font-size: 22px" /> Pesan via WhatsApp</a
+            >
+            <a href="/login" class="lp-btn lp-btn-outline lp-cta-btn-secondary"
+              >Login & Buat Sendiri</a
+            >
+          </div>
         </div>
       </section>
     </main>
@@ -770,7 +649,7 @@
           <a href="#fitur">Fitur</a>
           <a href="#tema">Tema</a>
           <a href="#cara-kerja">Cara Kerja</a>
-          <a href="#testimoni">Testimoni</a>
+
           <a href="#harga">Harga</a>
           <a href="#faq">FAQ</a>
         </div>
@@ -830,25 +709,33 @@
           <Icon icon="solar:tag-price-bold-duotone" />
           <span>Harga</span>
         </a>
-        <a href="/login" class="mobile-nav-item nav-cta">
-          <div class="cta-icon-wrapper">
-            <Icon icon="solar:magic-stick-3-bold-duotone" />
+        <a :href="waLink" target="_blank" class="mobile-nav-item nav-wa">
+          <div class="wa-icon-wrapper">
+            <Icon icon="mdi:whatsapp" />
           </div>
-          <span>Buat</span>
+          <span>WhatsApp</span>
         </a>
       </div>
     </nav>
 
-    <!-- AI Customer Service Chat Widget -->
-    <ChatWidget />
+    <!-- Floating WhatsApp Button (Desktop only) -->
+    <a
+      :href="waLink"
+      target="_blank"
+      class="floating-wa-btn"
+      aria-label="Chat via WhatsApp"
+    >
+      <Icon icon="mdi:whatsapp" />
+      <span class="floating-wa-label">Chat Kami</span>
+    </a>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from "vue";
 import { Icon } from "@iconify/vue";
 import LandingHeroCinematic from "@/components/landing/LandingHeroCinematic.vue";
-import ChatWidget from "@/components/ui/ChatWidget.vue";
 
 const navScrolled = ref(false);
 const mobileMenuOpen = ref(false);
@@ -859,6 +746,10 @@ const faqOpen = ref(-1);
 const isDemoScrolled = ref(false);
 const isDemoLoaded = ref(false);
 const scrollY = ref(0);
+
+const WA_NUMBER = "6285117708091";
+const WA_MESSAGE = "Halo, saya tertarik untuk membuat undangan pernikahan digital di MengundangAnda. Bisa bantu saya?";
+const waLink = computed(() => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`);
 
 function handleMessage(event: MessageEvent) {
   if (event.data?.type === "DEMO_SCROLLED") {
@@ -881,11 +772,7 @@ const faqList = [
   },
   {
     q: "Berapa harga paket premium MengundangAnda?",
-    a: "Paket Premium hanya Rp 50.000 (sekali bayar, self-service) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform.",
-  },
-  {
-    q: "Apa itu layanan Jasa Dibuatkan Undangan?",
-    a: "Layanan Jasa Dibuatkan (Rp 99.000) adalah paket terima jadi. Anda cukup kirim data pernikahan, lalu admin kami yang akan membuatkan undangan digital premium untuk Anda. Selesai dalam 1 jam, dengan 3x revisi gratis dan semua fitur Premium sudah termasuk.",
+    a: "Paket Premium hanya Rp 50.000 (sekali bayar) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform. Anda bisa pesan via WhatsApp atau login dan buat sendiri.",
   },
   {
     q: "Fitur apa saja yang tersedia di MengundangAnda?",
@@ -921,7 +808,7 @@ function updateActiveSection() {
     "live-preview",
     "tema",
     "cara-kerja",
-    "testimoni",
+
     "harga",
     "faq",
   ];
@@ -1055,26 +942,7 @@ const steps = [
   },
 ];
 
-const testimonials = [
-  {
-    avatarIcon: "solar:user-heart-bold-duotone",
-    name: "Aisyah & Rizky",
-    role: "Menikah November 2025",
-    text: "Awalnya cuma iseng coba, eh ternyata hasilnya bagus banget. Temen-temen pada nanya bikin undangannya dimana, hehe. Prosesnya gampang, tinggal isi data terus langsung jadi.",
-  },
-  {
-    avatarIcon: "solar:users-group-two-rounded-bold-duotone",
-    name: "Dewi & Arif",
-    role: "Menikah Januari 2026",
-    text: "Suka banget sama fitur petanya, jadi tamu ga perlu nanya-nanya lagi lokasi nikahan. Musiknya juga bikin undangan kerasa lebih hidup. Worth it sih menurutku.",
-  },
-  {
-    avatarIcon: "solar:heart-bold-duotone",
-    name: "Sarah & Budi",
-    role: "Menikah Maret 2026",
-    text: "Sempet mikir mau cetak undangan, tapi setelah coba ini langsung berubah pikiran. Hemat banget dan hasilnya malah lebih cantik. Tema floral-nya beneran elegan!",
-  },
-];
+
 
 const themesData = [
   {
@@ -2503,101 +2371,13 @@ const themesData = [
   margin: 0 auto;
 }
 
-/* --- Testimonials --- */
-.lp-testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-}
-
-.lp-testimonial {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--lp-border);
-  border-radius: var(--lp-radius-xl);
-  padding: 36px 32px 32px;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
-.lp-testimonial:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 48px rgba(59, 130, 246, 0.12);
-  border-color: rgba(59, 130, 246, 0.25);
-}
-
-.lp-testimonial-quote-mark {
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  color: var(--lp-accent-hover);
-  pointer-events: none;
-}
-
-.lp-testimonial-stars {
-  display: flex;
-  gap: 3px;
-  margin-bottom: 16px;
-}
-.lp-star-icon {
-  font-size: 18px;
-  color: #f59e0b;
-}
-
-.lp-testimonial-text {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--lp-text);
-  font-style: italic;
-  margin-bottom: 24px;
-}
-
-.lp-testimonial-author {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.lp-testimonial-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.1),
-    rgba(59, 130, 246, 0.05)
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid rgba(59, 130, 246, 0.15);
-  flex-shrink: 0;
-}
-.lp-avatar-svg {
-  font-size: 26px;
-  color: var(--lp-accent-hover);
-}
-
-.lp-testimonial-name {
-  font-family: var(--lp-font-serif);
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--lp-primary);
-}
-
-.lp-testimonial-role {
-  font-size: 12px;
-  color: var(--lp-text-light);
-  margin-top: 2px;
-}
 
 /* --- Pricing --- */
 .lp-pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  max-width: 1080px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
@@ -2766,51 +2546,72 @@ const themesData = [
   color: var(--lp-primary);
 }
 
-/* --- Jasa Dibuatkan Card --- */
-.lp-pricing-jasa {
-  border: 2px solid #f59e0b;
-  background: linear-gradient(180deg, #fffbeb 0%, #ffffff 40%);
-  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.1);
-}
-.lp-pricing-jasa:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 48px rgba(245, 158, 11, 0.18);
-  border-color: #d97706;
-}
-.lp-pricing-jasa .lp-pricing-header h3 {
-  color: #b45309;
-}
-.lp-jasa-badge {
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(90deg, #f59e0b, #d97706);
+
+/* --- WhatsApp Button --- */
+.lp-btn-whatsapp {
+  background: linear-gradient(180deg, #25d366 0%, #128c7e 100%);
   color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  padding: 6px 20px;
-  border-radius: 20px;
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
-  z-index: 2;
-  white-space: nowrap;
+  border: none;
+  gap: 10px;
+  box-shadow:
+    0 4px 0 #075e54,
+    0 8px 24px rgba(37, 211, 102, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.check-icon.jasa {
-  color: #d97706;
-}
-.lp-pricing-card .lp-btn.lp-btn-jasa {
-  background: transparent !important;
-  color: #d97706 !important;
-  border: 2px solid #f59e0b !important;
-  box-shadow: none !important;
-}
-.lp-pricing-card .lp-btn.lp-btn-jasa:hover {
-  background: #fffbeb !important;
-  color: #b45309 !important;
-  border-color: #d97706 !important;
+.lp-btn-whatsapp:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.15) !important;
+  box-shadow:
+    0 6px 0 #075e54,
+    0 12px 32px rgba(37, 211, 102, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.lp-btn-whatsapp:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 2px 0 #075e54,
+    0 4px 12px rgba(37, 211, 102, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* --- Pricing Button Group --- */
+.lp-pricing-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+.lp-pricing-btn-alt {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  padding: 10px 20px;
+}
+.lp-btn-secondary {
+  background: transparent;
+  color: var(--lp-text-light);
+  border: 1.5px solid var(--lp-border);
+  font-size: 13px;
+  padding: 10px 24px;
+}
+.lp-btn-secondary:hover {
+  background: var(--lp-accent-light);
+  border-color: var(--lp-accent-hover);
+  color: var(--lp-accent-hover);
+  transform: translateY(-1px);
+}
+
+/* --- CTA Actions --- */
+.lp-cta-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.lp-cta-btn-secondary {
+  font-size: 15px;
+  padding: 14px 32px;
 }
 
 /* --- CTA Section --- */
@@ -2991,6 +2792,63 @@ const themesData = [
   font-size: 14px;
 }
 
+/* --- Floating WhatsApp Button (Desktop) --- */
+.floating-wa-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 99;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--lp-font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 50px;
+  box-shadow:
+    0 6px 20px rgba(37, 211, 102, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  cursor: pointer;
+}
+.floating-wa-btn svg {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.floating-wa-label {
+  max-width: 0;
+  opacity: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.floating-wa-btn:hover {
+  padding: 14px 22px 14px 16px;
+  gap: 10px;
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 28px rgba(37, 211, 102, 0.5),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.floating-wa-btn:hover .floating-wa-label {
+  max-width: 120px;
+  opacity: 1;
+}
+.floating-wa-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .floating-wa-btn {
+    display: none;
+  }
+}
+
 /* --- Back to Top Button --- */
 .lp-back-to-top {
   position: fixed;
@@ -3054,12 +2912,7 @@ const themesData = [
     gap: 20px;
   }
 
-  .lp-testimonials-grid {
-    grid-template-columns: 1fr;
-    max-width: 440px;
-    margin-left: auto;
-    margin-right: auto;
-  }
+
 
   .lp-theme-card {
     flex: 0 0 85%;
@@ -3194,9 +3047,7 @@ const themesData = [
     grid-template-columns: 1fr;
   }
 
-  .lp-testimonials-grid {
-    grid-template-columns: 1fr;
-  }
+
 
   .lp-hero-bg {
     background-position: center center;
@@ -3336,7 +3187,6 @@ const themesData = [
   }
 
   .lp-feature-card,
-  .lp-testimonial,
   .lp-pricing-card,
   .lp-theme-card,
   .lp-mockup-wrapper {
@@ -3544,8 +3394,8 @@ const themesData = [
     transform: translateY(-2px);
   }
 
-  .mobile-nav-item.nav-cta .cta-icon-wrapper {
-    background: linear-gradient(135deg, var(--admin-primary), #2563eb);
+  .mobile-nav-item.nav-wa .wa-icon-wrapper {
+    background: linear-gradient(135deg, #25d366, #128c7e);
     color: white;
     width: 40px;
     height: 40px;
@@ -3554,16 +3404,16 @@ const themesData = [
     align-items: center;
     justify-content: center;
     margin-top: -20px;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
     border: 3px solid #f8fafc;
     transition: transform 0.2s ease;
   }
 
-  .mobile-nav-item.nav-cta:hover .cta-icon-wrapper {
+  .mobile-nav-item.nav-wa:hover .wa-icon-wrapper {
     transform: scale(1.05);
   }
 
-  .mobile-nav-item.nav-cta svg {
+  .mobile-nav-item.nav-wa svg {
     font-size: 20px;
   }
 

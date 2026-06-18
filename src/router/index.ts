@@ -81,12 +81,6 @@ if (subdomain) {
       meta: { title: "Kebijakan Privasi - MengundangAnda" },
     },
     {
-      path: "/order",
-      name: "order",
-      component: () => import("@/views/OrderView.vue"),
-      meta: { title: "Pesan Jasa Dibuatkan Undangan - MengundangAnda" },
-    },
-    {
       path: "/record/sample/:themeId",
       name: "record-sample",
       component: () => import("@/views/admin/RecordModeView.vue"),

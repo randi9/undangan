@@ -570,7 +570,9 @@ function startFloating() {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 0 80px;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 .hero-grid {
