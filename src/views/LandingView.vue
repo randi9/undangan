@@ -535,6 +535,7 @@
               </ul>
               <div class="lp-pricing-btn-group">
                 <a :href="waLink" target="_blank" class="lp-btn lp-btn-whatsapp lp-pricing-btn"
+                  @click="handleWaClick('pricing_premium')"
                   ><Icon icon="mdi:whatsapp" style="font-size: 20px" /> Pesan via WhatsApp</a
                 >
                 <a href="/login" class="lp-btn lp-btn-secondary lp-pricing-btn-alt"
@@ -617,6 +618,7 @@
           </p>
           <div class="lp-cta-actions">
             <a :href="waLink" target="_blank" class="lp-btn lp-btn-whatsapp lp-cta-btn"
+              @click="handleWaClick('cta_section')"
               ><Icon icon="mdi:whatsapp" style="font-size: 22px" /> Pesan via WhatsApp</a
             >
             <a href="/login" class="lp-btn lp-btn-outline lp-cta-btn-secondary"
@@ -709,7 +711,9 @@
           <Icon icon="solar:tag-price-bold-duotone" />
           <span>Harga</span>
         </a>
-        <a :href="waLink" target="_blank" class="mobile-nav-item nav-wa">
+        <a :href="waLink" target="_blank" class="mobile-nav-item nav-wa"
+          @click="handleWaClick('mobile_nav')"
+        >
           <div class="wa-icon-wrapper">
             <Icon icon="mdi:whatsapp" />
           </div>
@@ -724,6 +728,7 @@
       target="_blank"
       class="floating-wa-btn"
       aria-label="Chat via WhatsApp"
+      @click="handleWaClick('floating_button')"
     >
       <Icon icon="mdi:whatsapp" />
       <span class="floating-wa-label">Chat Kami</span>
@@ -736,6 +741,7 @@
 import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from "vue";
 import { Icon } from "@iconify/vue";
 import LandingHeroCinematic from "@/components/landing/LandingHeroCinematic.vue";
+import { trackEvent } from "@/composables/useMetaPixel";
 
 const navScrolled = ref(false);
 const mobileMenuOpen = ref(false);
@@ -750,6 +756,10 @@ const scrollY = ref(0);
 const WA_NUMBER = "6285117708091";
 const WA_MESSAGE = "Halo, saya tertarik untuk membuat undangan pernikahan digital di MengundangAnda. Bisa bantu saya?";
 const waLink = computed(() => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_MESSAGE)}`);
+
+function handleWaClick(source: string) {
+  trackEvent('Contact', { content_name: source });
+}
 
 function handleMessage(event: MessageEvent) {
   if (event.data?.type === "DEMO_SCROLLED") {
