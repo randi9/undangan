@@ -76,7 +76,7 @@
           />
         </div>
         
-        <div ref="leftPhotoWrapper" style="position: relative; width: clamp(228px, 62.4vw, 288px); height: clamp(228px, 62.4vw, 288px); margin: 0 auto 8px auto; opacity: 0;">
+        <div ref="leftPhotoWrapper" style="position: relative; width: clamp(200px, 35dvh, 288px); height: clamp(200px, 35dvh, 288px); margin: 0 auto 8px auto; opacity: 0;">
           <!-- Photo Container (1:1 mask) -->
           <div style="position: absolute; inset: 8px; overflow: hidden; border-radius: 16px; z-index: 1; box-shadow: 0 10px 30px rgba(92, 61, 46, 0.12); border: 1px solid rgba(255, 255, 255, 0.15);">
             <img v-if="invitation.bride_photo" :src="resolveAssetUrl(invitation.bride_photo, apiBase)" alt="Bride" style="width: 100%; height: 100%; object-fit: cover;" />
@@ -156,7 +156,7 @@
           />
         </div>
         
-        <div ref="rightPhotoWrapper" style="position: relative; width: clamp(228px, 62.4vw, 288px); height: clamp(228px, 62.4vw, 288px); margin: 0 auto 8px auto; opacity: 0;">
+        <div ref="rightPhotoWrapper" style="position: relative; width: clamp(200px, 35dvh, 288px); height: clamp(200px, 35dvh, 288px); margin: 0 auto 8px auto; opacity: 0;">
           <!-- Photo Container (1:1 mask) -->
           <div style="position: absolute; inset: 8px; overflow: hidden; border-radius: 16px; z-index: 1; box-shadow: 0 10px 30px rgba(92, 61, 46, 0.12); border: 1px solid rgba(255, 255, 255, 0.15);">
             <img v-if="invitation.groom_photo" :src="resolveAssetUrl(invitation.groom_photo, apiBase)" alt="Groom" style="width: 100%; height: 100%; object-fit: cover;" />
