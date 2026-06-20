@@ -146,7 +146,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
     className: 'anim-pohon-kanan',
     style: {
       position: 'absolute',
-      top: '23%',
+      top: '15%',
       right: '-250px',
       width: '350px',
       '--base-transform': 'rotate(-15deg) scale(1)',
@@ -161,7 +161,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
     className: 'anim-pohon-kiri',
     style: {
       position: 'absolute',
-      bottom: '25%',
+      bottom: '30%',
       left: '-40%',
       width: '310px',
       '--base-transform': 'rotate(12deg) scale(1)',
@@ -426,9 +426,11 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
   overflow: visible;
   filter: url(#waterfall-distortion);
-  mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+  mask-image: radial-gradient(ellipse at 50% 45%, black 20%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 45%, black 20%, transparent 85%);
   opacity: 0.85; /* Increased opacity to highlight the falling waves */
+  transform: rotate(3deg);
+  transform-origin: top center;
 }
 
 .waterfall-stream {

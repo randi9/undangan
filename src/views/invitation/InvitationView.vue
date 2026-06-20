@@ -482,7 +482,9 @@ function animateHeroOval() {
   gsap.set(heroOval.value, { scale: 0.6, opacity: 0 });
   gsap.set(heroTextItems.value, { y: 30, opacity: 0 });
 
-  const tl = gsap.timeline({ delay: 0.2 });
+  // Wait for all flowers to finish their entry animation (delay + duration = 5.3s) in fairytale garden theme
+  const startDelay = themeName.value === 'fairytale_garden' ? 5.4 : 0.2;
+  const tl = gsap.timeline({ delay: startDelay });
 
   tl.to(heroOval.value, {
     scale: 1,
