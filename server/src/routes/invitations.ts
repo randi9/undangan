@@ -42,9 +42,9 @@ function validateInvitationPayload(
 
   if (
     body.theme !== undefined &&
-    !["elegant", "minimalist", "floral"].includes(body.theme)
+    !["elegant", "minimalist", "floral", "elegant_blue", "floral_blue", "nyunda", "fairytale_garden"].includes(body.theme)
   ) {
-    return { ok: false, error: "theme must be elegant, minimalist, or floral" };
+    return { ok: false, error: "theme is invalid" };
   }
 
   if (body.photos !== undefined && !Array.isArray(body.photos)) {
