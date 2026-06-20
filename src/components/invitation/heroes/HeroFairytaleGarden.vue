@@ -187,7 +187,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   {
     name: 'bunga 2',
     src: 'https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_90a53a4b-4dce-4779-a421-1c48ca4b7f93.webp',
-    className: 'anim-flower pair-2',
+    className: 'anim-flower pair-3',
     style: {
       position: 'absolute',
       bottom: '-40px',
@@ -215,7 +215,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   {
     name: 'bunga 3',
     src: 'https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_373980a6-6fcb-4798-bba7-cd4e9c6eea5b.webp',
-    className: 'anim-flower pair-3',
+    className: 'anim-flower pair-2',
     style: {
       position: 'absolute',
       bottom: '-20px',

@@ -40,7 +40,7 @@ export const invitationCreateSchema = z.object({
     .min(3, "Slug minimal 3 karakter")
     .max(64, "Slug maksimal 64 karakter")
     .regex(slugRegex, "Slug hanya boleh huruf kecil, angka, dan strip"),
-  theme: z.enum(["elegant", "minimalist", "floral", "elegant_blue", "floral_blue", "nyunda"]),
+  theme: z.enum(["elegant", "minimalist", "floral", "elegant_blue", "floral_blue", "nyunda", "fairytale_garden"]),
   groom_name: z
     .string()
     .trim()

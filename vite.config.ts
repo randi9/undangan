@@ -12,6 +12,14 @@ export default defineConfig({
     vueDevTools(),
     tailwindcss(),
   ],
+  esbuild: {
+    target: 'esnext'
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext'
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
