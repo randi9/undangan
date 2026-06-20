@@ -1,6 +1,25 @@
 <template>
   <section style="height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 48px 16px; background-image: url('https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_0eacac4b-3d0f-4388-9d77-3d02cbbb6c9c.webp'); background-size: cover; background-position: center; position: relative; overflow: hidden;">
     
+    <!-- Hidden SVG Filter for Realistic Water Distortion -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
+      <filter id="waterfall-distortion" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035 0.05" numOctaves="4" result="noise">
+          <animate attributeName="seed" from="1" to="100" dur="18s" repeatCount="indefinite" />
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
+    <!-- Dynamic Waterfall Animation Overlay -->
+    <div class="waterfall-container">
+      <div class="waterfall-stream stream-1"></div>
+      <div class="waterfall-stream stream-2"></div>
+      <div class="waterfall-mist-container">
+        <div v-for="n in 8" :key="n" :class="['mist-particle', `mist-${n}`]"></div>
+      </div>
+    </div>
+
     <!-- Configurable Decorative Assets -->
     <img 
       v-for="(asset, index) in DECORATIVE_ASSETS" 
@@ -54,7 +73,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   {
     name: 'gazebo',
     src: 'https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_48c13914-302a-45a6-88af-b607ce04cb6c.webp',
-    className: 'anim-gazebo',
+    className: 'anim-static',
     style: {
       position: 'absolute',
       bottom: '270px',
@@ -68,7 +87,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   {
     name: 'pohon ijo',
     src: 'https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_3eb9571f-8d1d-4713-917e-c16867e656a1.webp',
-    className: 'anim-pohon-ijo',
+    className: 'anim-static',
     style: {
       position: 'absolute',
       bottom: '240px',
@@ -246,28 +265,19 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   transition: opacity 1.5s ease-out;
 }
 
-/* Gazebo slide from right edge */
-.anim-gazebo {
-  transform: translateX(250px);
-  transition: transform 2.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 2.2s ease-out;
-}
-.anim-gazebo.animate-active {
-  opacity: 1;
-  transform: translateX(0);
-}
-
 /* Pohon Kanan slide from right + sway */
 .anim-pohon-kanan {
   transform-origin: bottom right;
   --base-transform: rotate(-15deg) scale(1);
   transform: translateX(350px) var(--base-transform);
   transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 2.5s ease-out;
+  transition-delay: 1.0s;
 }
 .anim-pohon-kanan.animate-active {
   opacity: 0.95;
   transform: translateX(0) var(--base-transform);
   animation: sway-kanan 4.5s ease-in-out infinite alternate;
-  animation-delay: 2.5s;
+  animation-delay: 3.5s;
 }
 
 /* Pohon Kiri slide from left + sway */
@@ -276,25 +286,13 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   --base-transform: rotate(12deg) scale(1);
   transform: translateX(-350px) var(--base-transform);
   transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 2.5s ease-out;
+  transition-delay: 0.3s;
 }
 .anim-pohon-kiri.animate-active {
   opacity: 0.9;
   transform: translateX(0) var(--base-transform);
   animation: sway-kiri 4.8s ease-in-out infinite alternate;
-  animation-delay: 2.5s;
-}
-
-/* Pohon Ijo fade/up + sway */
-.anim-pohon-ijo {
-  transform-origin: bottom center;
-  transform: translateY(120px);
-  transition: transform 2s cubic-bezier(0.25, 1, 0.5, 1), opacity 2s ease-out;
-}
-.anim-pohon-ijo.animate-active {
-  opacity: 1;
-  transform: translateY(0);
-  animation: sway-general 4s ease-in-out infinite alternate;
-  animation-delay: 2s;
+  animation-delay: 2.8s;
 }
 
 /* Ground layers entry */
@@ -335,27 +333,27 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
 
 /* Flower Pair delays & individual sway configurations */
 .pair-1 {
-  transition-delay: 0.5s;
+  transition-delay: 1.7s;
 }
 .pair-1.animate-active {
   animation: sway-flower-p1 3.5s ease-in-out infinite alternate;
-  animation-delay: 2.7s;
+  animation-delay: 3.9s;
 }
 
 .pair-2 {
-  transition-delay: 1.1s;
+  transition-delay: 2.4s;
 }
 .pair-2.animate-active {
   animation: sway-flower-p2 4s ease-in-out infinite alternate;
-  animation-delay: 3.3s;
+  animation-delay: 4.6s;
 }
 
 .pair-3 {
-  transition-delay: 1.7s;
+  transition-delay: 3.1s;
 }
 .pair-3.animate-active {
   animation: sway-flower-p3 4.5s ease-in-out infinite alternate;
-  animation-delay: 3.9s;
+  animation-delay: 5.3s;
 }
 
 /* Keyframes for Tree Swaying (Wind Effect) */
@@ -411,6 +409,115 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   }
   100% {
     transform: rotate(-3.5deg);
+  }
+}
+
+/* ========================================================= */
+/* DYNAMIC WATERFALL ANIMATION OVERLAY                        */
+/* ========================================================= */
+.waterfall-container {
+  position: absolute;
+  top: 23%;
+  left: 43%; /* Shifted right to match the background waterfall */
+  width: 23%;
+  height: 44%;
+  z-index: 2;
+  pointer-events: none;
+  clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+  overflow: visible;
+  filter: url(#waterfall-distortion);
+  mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+  opacity: 0.85; /* Increased opacity to highlight the falling waves */
+}
+
+.waterfall-stream {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: screen; /* Changed to screen for brighter, more pronounced highlights */
+}
+
+.stream-1 {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 15%,
+    rgba(255, 255, 255, 0.7) 25%,
+    rgba(255, 255, 255, 0.75) 35%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 100% 220px;
+  animation: waterfall-flow-down 8s linear infinite; /* Slower, more elegant flow */
+}
+
+.stream-2 {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.25) 20%,
+    rgba(255, 255, 255, 0.5) 35%,
+    rgba(255, 255, 255, 0.55) 45%,
+    rgba(255, 255, 255, 0.25) 60%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  background-size: 100% 300px;
+  transform: scaleX(-1);
+  animation: waterfall-flow-down 12s linear infinite; /* Slower secondary flow */
+}
+
+@keyframes waterfall-flow-down {
+  0% {
+    background-position-y: 0px;
+  }
+  100% {
+    background-position-y: 1000px;
+  }
+}
+
+/* Mist Particles at the bottom */
+.waterfall-mist-container {
+  position: absolute;
+  bottom: -15px;
+  left: -10%;
+  width: 120%;
+  height: 40px;
+  pointer-events: none;
+}
+
+.mist-particle {
+  position: absolute;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  filter: blur(10px);
+  opacity: 0;
+}
+
+/* Staggered Mist Semburan */
+.mist-1 { left: 10%; width: 35px; height: 35px; animation: mist-rise-up 2.2s ease-out infinite; animation-delay: 0.1s; }
+.mist-2 { left: 23%; width: 28px; height: 28px; animation: mist-rise-up 1.8s ease-out infinite; animation-delay: 0.5s; }
+.mist-3 { left: 38%; width: 32px; height: 32px; animation: mist-rise-up 2.5s ease-out infinite; animation-delay: 0.9s; }
+.mist-4 { left: 50%; width: 40px; height: 40px; animation: mist-rise-up 2.1s ease-out infinite; animation-delay: 0.3s; }
+.mist-5 { left: 62%; width: 25px; height: 25px; animation: mist-rise-up 1.9s ease-out infinite; animation-delay: 1.2s; }
+.mist-6 { left: 75%; width: 30px; height: 30px; animation: mist-rise-up 2.4s ease-out infinite; animation-delay: 0.7s; }
+.mist-7 { left: 88%; width: 36px; height: 36px; animation: mist-rise-up 2.0s ease-out infinite; animation-delay: 1.5s; }
+.mist-8 { left: 45%; width: 32px; height: 32px; animation: mist-rise-up 2.3s ease-out infinite; animation-delay: 1.8s; }
+
+@keyframes mist-rise-up {
+  0% {
+    transform: translateY(15px) scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-25px) scale(1.7);
+    opacity: 0;
   }
 }
 </style>
