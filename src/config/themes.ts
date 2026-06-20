@@ -10,7 +10,7 @@
 import type { ThemeConfig } from "@/types/theme";
 
 export interface ThemeRegistryEntry {
-  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda";
+  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden";
   name: string;
   thumbnail: string;
   description: string;
@@ -257,6 +257,43 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
         "linear-gradient(180deg, rgba(92,61,46,0.5) 0%, rgba(92,61,46,0.8) 100%)",
       coverImage:
         "https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80",
+    },
+  },
+  fairytale_garden: {
+    id: "fairytale_garden",
+    name: "Fairytale Garden",
+    thumbnail:
+      "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?w=400&q=80",
+    description: "Nuansa taman dongeng yang manis dan romantis",
+    icon: "solar:magic-stick-bold-duotone",
+    color: "#D9A9AF",
+    bgGradient: "linear-gradient(135deg, #AEB8A3 0%, #D9A9AF 100%)",
+    sampleUrl: "/sample/fairytale_garden",
+    defaultGalleryType: "carousel",
+    previewStyle: {
+      bg: "#F8F3EE",
+      color: "#6A4E42",
+      headerText: "The Wedding",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 3px; color: #AEB8A3; text-transform: uppercase;",
+      nameText: "John & Sarah",
+      nameStyle:
+        "font-family: 'Great Vibes', cursive; font-size: 20px; margin-top: 4px; color: #D9A9AF;",
+    },
+    themeConfig: {
+      name: "fairytale_garden",
+      bg: "#F8F3EE",
+      surface: "#EBCFD1",
+      primary: "#D9A9AF",
+      secondary: "#AEB8A3",
+      text: "#6A4E42",
+      textLight: "#9A7B6B",
+      fontHeading: "'Great Vibes', cursive",
+      fontBody: "'Cormorant Garamond', serif",
+      overlayGradient:
+        "linear-gradient(180deg, rgba(106,78,66,0.4) 0%, rgba(106,78,66,0.85) 100%)",
+      coverImage:
+        "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?w=1080&q=80",
     },
   },
 };

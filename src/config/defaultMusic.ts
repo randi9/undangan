@@ -31,6 +31,10 @@ export const DEFAULT_MUSIC: Record<string, DefaultMusicEntry> = {
     url: "https://music.mengundanganda.com/music%20flora/Nadhif%20Basalamah%20-%20bergema%20sampai%20selamanya%20Official%20Lyric%20Video.mp3",
     label: "Nadhif Basalamah - Bergema Sampai Selamanya",
   },
+  fairytale_garden: {
+    url: "https://music.mengundanganda.com/elengant-blue/Christina%20Perri%20-%20A%20Thousand%20Years%20Piano%20%26%20Cello%20Cover%20-%20The%20Piano%20Guys.mp3",
+    label: "Christina Perri - A Thousand Years (Piano & Cello)",
+  },
 };
 
 /**

@@ -62,6 +62,9 @@ const coverComponents: Record<string, Component> = {
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/covers/CoverNyunda.vue"),
   ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/covers/CoverFairytaleGarden.vue"),
+  ),
 };
 
 const heroComponents: Record<string, Component> = {
@@ -82,6 +85,9 @@ const heroComponents: Record<string, Component> = {
   ),
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/heroes/HeroNyunda.vue"),
+  ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/heroes/HeroFairytaleGarden.vue"),
   ),
 };
 
@@ -104,6 +110,9 @@ const quoteComponents: Record<string, Component> = {
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/quotes/QuoteNyunda.vue"),
   ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/quotes/QuoteFairytaleGarden.vue"),
+  ),
 };
 
 const coupleComponents: Record<string, Component> = {
@@ -124,6 +133,9 @@ const coupleComponents: Record<string, Component> = {
   ),
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/couples/CoupleNyunda.vue"),
+  ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/couples/CoupleFairytaleGarden.vue"),
   ),
 };
 
@@ -146,6 +158,9 @@ const countdownComponents: Record<string, Component> = {
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/countdowns/CountdownNyunda.vue"),
   ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/countdowns/CountdownFairytaleGarden.vue"),
+  ),
 };
 
 const eventsComponents: Record<string, Component> = {
@@ -166,6 +181,9 @@ const eventsComponents: Record<string, Component> = {
   ),
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/events/EventsNyunda.vue"),
+  ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/events/EventsFairytaleGarden.vue"),
   ),
 };
 
@@ -188,6 +206,9 @@ const loveStoryComponents: Record<string, Component> = {
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/lovestory/LoveStoryNyunda.vue"),
   ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/lovestory/LoveStoryFairytaleGarden.vue"),
+  ),
 };
 
 const galleryComponents: Record<string, Component> = {
@@ -208,6 +229,9 @@ const galleryComponents: Record<string, Component> = {
   ),
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/gallery/GalleryNyunda.vue"),
+  ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/gallery/GalleryFairytaleGarden.vue"),
   ),
 };
 
@@ -230,6 +254,9 @@ const rsvpComponents: Record<string, Component> = {
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/rsvp/RsvpNyunda.vue"),
   ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/rsvp/RsvpFairytaleGarden.vue"),
+  ),
 };
 
 const giftComponents: Record<string, Component> = {
@@ -251,6 +278,9 @@ const giftComponents: Record<string, Component> = {
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/gift/GiftNyunda.vue"),
   ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/gift/GiftFairytaleGarden.vue"),
+  ),
 };
 
 const footerComponents: Record<string, Component> = {
@@ -271,6 +301,9 @@ const footerComponents: Record<string, Component> = {
   ),
   nyunda: defineAsyncComponent(
     () => import("@/components/invitation/footer/FooterNyunda.vue"),
+  ),
+  fairytale_garden: defineAsyncComponent(
+    () => import("@/components/invitation/footer/FooterFairytaleGarden.vue"),
   ),
 };
 
@@ -1039,7 +1072,7 @@ onBeforeUnmount(() => {
             ref="heroOval"
             :class="[
               'flex flex-col gap-4 opacity-0 p-6 md:p-10 relative z-10',
-              !['elegant_blue', 'floral_blue', 'nyunda'].includes(themeName)
+              !['elegant_blue', 'floral_blue', 'nyunda', 'fairytale_garden'].includes(themeName)
                 ? 'items-center justify-center mx-auto text-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
                 : themeName === 'nyunda'
                   ? ''
@@ -1048,7 +1081,7 @@ onBeforeUnmount(() => {
                     : 'items-center justify-center mx-auto text-center w-full max-w-[600px]',
             ]"
             :style="
-              themeName === 'nyunda'
+              ['nyunda', 'fairytale_garden'].includes(themeName)
                 ? {
                     display: 'flex',
                     flexDirection: 'column',

@@ -1007,6 +1007,19 @@ const themesData = [
     sampleUrl: "/sample/floral_blue",
     icon: "solar:leaf-bold-duotone",
   },
+  {
+    id: "fairytale_garden",
+    name: "Fairytale Garden",
+    thumbnail:
+      "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?w=400&q=80",
+    description:
+      "Nuansa taman dongeng manis romantis dengan kombinasi warna rose, blush pink, dan sage green. Memberikan kesan magis dan asri.",
+    color: "#D9A9AF",
+    bgColor: "#F8F3EE",
+    bgGradient: "linear-gradient(135deg, #AEB8A3, #D9A9AF)",
+    sampleUrl: "/sample/fairytale_garden",
+    icon: "solar:magic-stick-bold-duotone",
+  },
 ];
 </script>
 
