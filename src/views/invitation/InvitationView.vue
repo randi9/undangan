@@ -1080,7 +1080,9 @@ onBeforeUnmount(() => {
                   ? ''
                   : themeName === 'elegant_blue'
                     ? 'items-center justify-center mx-auto text-center w-[360px] h-[520px] sm:w-[440px] sm:h-[640px] md:w-[500px] md:h-[720px] lg:w-[580px] lg:h-[840px] max-w-[95vw]'
-                    : 'items-center justify-center mx-auto text-center w-full max-w-[600px]',
+                    : themeName === 'fairytale_garden'
+                      ? 'fairytale-hero-card'
+                      : 'items-center justify-center mx-auto text-center w-full max-w-[600px]',
             ]"
             :style="
               ['nyunda', 'fairytale_garden'].includes(themeName)
@@ -1530,6 +1532,27 @@ onBeforeUnmount(() => {
   font-weight: 700;
   color: #0284c7; /* Warna biru identitas logo */
   line-height: 1.2;
+}
+
+/* Fairytale Theme Arch Glass Card */
+.fairytale-hero-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  text-align: center;
+  width: 85%;
+  max-width: 320px;
+  height: 420px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  /* Arch shape: semi-circle top, rounded bottom corners */
+  border-radius: 160px 160px 24px 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03), inset 0 0 8px rgba(255, 255, 255, 0.1);
+  padding: 48px 24px 24px 24px;
 }
 </style>
 

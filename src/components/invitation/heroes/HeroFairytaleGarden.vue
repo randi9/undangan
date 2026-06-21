@@ -1,5 +1,5 @@
 <template>
-  <section style="height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 48px 16px; background-image: url('https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_0eacac4b-3d0f-4388-9d77-3d02cbbb6c9c.webp'); background-size: cover; background-position: center; position: relative; overflow: hidden;">
+  <section style="height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 48px 16px; background-image: url('https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_808a2f2b-d48a-4099-a3d2-b4a59147644c.webp'); background-size: cover; background-position: center; position: relative; overflow: hidden;">
     
     <!-- Hidden SVG Filter for Realistic Water Distortion -->
     <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
@@ -11,6 +11,30 @@
       </filter>
     </svg>
 
+    <!-- Cloud Left & Right Overlays -->
+    <img 
+      src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_fd4ee1ea-950e-433a-8026-cf80364cb6a9.webp" 
+      alt="Cloud Left" 
+      class="cloud-anim-left"
+      :class="{ 'animate-active': isMounted }"
+      style="position: absolute; top: 0; right: -250px; width: 100%; height: 40%; object-fit: cover; z-index: 1; pointer-events: none;"
+    />
+    <img 
+      src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a01c891e-0f65-4b5e-a411-c0bc480efcf2.webp" 
+      alt="Cloud Right" 
+      class="cloud-anim-right"
+      :class="{ 'animate-active': isMounted }"
+      style="position: absolute; top: 100px; left: -160px; width: 100%; height: 40%; object-fit: cover; z-index: 1; pointer-events: none;"
+    />
+
+    <!-- Foreground Cliff Overlay (without sky) -->
+    <img 
+      src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_e5766616-8b07-419a-b12f-cb576a738daa.webp" 
+      alt="Cliff Overlay" 
+      class="bg-cliff-layer" 
+      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; pointer-events: none;"
+    />
+
     <!-- Dynamic Waterfall Animation Overlay -->
     <div class="waterfall-container">
       <div class="waterfall-stream stream-1"></div>
@@ -18,6 +42,13 @@
       <div class="waterfall-mist-container">
         <div v-for="n in 8" :key="n" :class="['mist-particle', `mist-${n}`]"></div>
       </div>
+    </div>
+
+    <!-- Large Rolling Fog/Mist at the bottom of the waterfall -->
+    <div class="waterfall-fog-container">
+      <div class="fog-layer fog-1"></div>
+      <div class="fog-layer fog-2"></div>
+      <div class="fog-layer fog-3"></div>
     </div>
 
     <!-- Configurable Decorative Assets -->
@@ -31,7 +62,7 @@
     />
 
     <!-- Content slot -->
-    <div style="width: 100%; max-width: 600px; margin: 0 auto; color: #6A4E42; z-index: 20; position: relative; transform: translateY(8vh);">
+    <div style="width: 100%; max-width: 600px; margin: 0 auto; color: #6A4E42; z-index: 3; position: relative; transform: translateY(8vh);">
       <slot />
     </div>
   </section>
@@ -142,30 +173,30 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   },
   {
     name: 'pohon kanan',
-    src: 'https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_f24d0c0a-8ce3-48db-8af8-e0b7beabcda5.webp',
+    src: 'https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_05679a4e-ee34-4138-85f9-528f6f06630e.webp',
     className: 'anim-pohon-kanan',
     style: {
       position: 'absolute',
-      top: '15%',
-      right: '-250px',
-      width: '350px',
+      top: '16%',
+      right: '-240px',
+      width: '300px',
       '--base-transform': 'rotate(-15deg) scale(1)',
-      zIndex: 4,
+      zIndex: 5,
       opacity: 0.95,
       pointerEvents: 'none',
     } as CSSProperties
   },
   {
     name: 'pohon kiri',
-    src: 'https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_8dd723f4-1823-457a-adf2-9f4e5cb1e84d.webp',
+    src: 'https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_efe194b7-b4cb-46c1-ab20-28d9fc85e3f5.webp',
     className: 'anim-pohon-kiri',
     style: {
       position: 'absolute',
       bottom: '30%',
-      left: '-40%',
-      width: '310px',
+      left: '-30%',
+      width: '210px',
       '--base-transform': 'rotate(12deg) scale(1)',
-      zIndex: 3,
+      zIndex: 5,
       opacity: 0.9,
       pointerEvents: 'none',
     } as CSSProperties
@@ -258,6 +289,17 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
 </script>
 
 <style scoped>
+.bg-cliff-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2;
+  pointer-events: none;
+}
+
 /* Base configuration for decorative assets */
 .decor-asset {
   opacity: 0;
@@ -421,7 +463,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   left: 43%; /* Shifted right to match the background waterfall */
   width: 23%;
   height: 44%;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
   clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
   overflow: visible;
@@ -520,6 +562,155 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   100% {
     transform: translateY(-25px) scale(1.7);
     opacity: 0;
+  }
+}
+
+/* Cloud Animations */
+.cloud-anim-left {
+  opacity: 0;
+  transform: translateX(250px);
+}
+.cloud-anim-left.animate-active {
+  animation: cloud-left-entry 8s cubic-bezier(0.25, 1, 0.5, 1) forwards, cloud-float-left 24s ease-in-out infinite alternate 8s;
+}
+
+.cloud-anim-right {
+  opacity: 0;
+  transform: translateX(-250px);
+}
+.cloud-anim-right.animate-active {
+  animation: cloud-right-entry 8s cubic-bezier(0.25, 1, 0.5, 1) forwards, cloud-float-right 28s ease-in-out infinite alternate 8s;
+}
+
+@keyframes cloud-left-entry {
+  0% {
+    opacity: 0;
+    transform: translateX(250px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes cloud-float-left {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-8px, -3px);
+  }
+  100% {
+    transform: translate(4px, 3px);
+  }
+}
+
+@keyframes cloud-right-entry {
+  0% {
+    opacity: 0;
+    transform: translateX(-250px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes cloud-right-float {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(8px, 3px);
+  }
+  100% {
+    transform: translate(-4px, -3px);
+  }
+}
+
+/* Waterfall Bottom Fog/Mist Animations */
+.waterfall-fog-container {
+  position: absolute;
+  top: 60%;
+  left: 38%;
+  width: 32%;
+  height: 120px;
+  z-index: 3;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.fog-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.4) 55%,
+    rgba(255, 255, 255, 0) 80%
+  );
+  filter: blur(22px);
+  border-radius: 50%;
+  transform-origin: center center;
+}
+
+.fog-1 {
+  animation: roll-fog-1 25s ease-in-out infinite alternate;
+  opacity: 0.9;
+}
+
+.fog-2 {
+  animation: roll-fog-2 30s ease-in-out infinite alternate;
+  opacity: 0.8;
+  filter: blur(30px);
+  height: 80%;
+  bottom: 10px;
+}
+
+.fog-3 {
+  animation: roll-fog-3 20s ease-in-out infinite alternate;
+  opacity: 0.85;
+  filter: blur(22px);
+  height: 60%;
+  bottom: -5px;
+}
+
+@keyframes roll-fog-1 {
+  0% {
+    transform: translate(-15px, 0) scale(1);
+  }
+  50% {
+    transform: translate(20px, -5px) scale(1.15);
+  }
+  100% {
+    transform: translate(-8px, 6px) scale(0.95);
+  }
+}
+
+@keyframes roll-fog-2 {
+  0% {
+    transform: translate(20px, 6px) scale(0.85);
+  }
+  50% {
+    transform: translate(-15px, -3px) scale(1.2);
+  }
+  100% {
+    transform: translate(8px, 10px) scale(0.95);
+  }
+}
+
+@keyframes roll-fog-3 {
+  0% {
+    transform: translate(8px, -10px) scale(1.1);
+  }
+  50% {
+    transform: translate(-20px, 5px) scale(0.85);
+  }
+  100% {
+    transform: translate(15px, -3px) scale(1.15);
   }
 }
 </style>
