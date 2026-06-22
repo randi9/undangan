@@ -1077,7 +1077,7 @@ onBeforeUnmount(() => {
     <!-- MAIN INVITATION CONTENT -->
     <div v-if="isOpened" class="animate-fade-in" style="overflow-anchor: none">
       <!-- HERO WRAPPER (prevents layout shift flash of quotes) -->
-      <div style="min-height: 100vh; width: 100%">
+      <div style="min-height: 100dvh; width: 100%">
         <!-- HERO (Dynamic per theme) -->
         <component
           :is="activeHero"

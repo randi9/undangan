@@ -31,7 +31,7 @@
         style="position: absolute; top: 0; right: -250px; width: 100%; height: 40%; object-fit: cover; z-index: 1; pointer-events: none;"
       />
       <img 
-        src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a01c891e-0f65-4b5e-a411-c0bc480efcf2.webp" 
+        src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_4c1a0785-54c4-4f62-a27b-c6277249360d.webp" 
         alt="Cloud Right" 
         class="cloud-anim-right"
         style="position: absolute; top: 100px; left: -160px; width: 100%; height: 40%; object-fit: cover; z-index: 1; pointer-events: none;"
