@@ -1,5 +1,5 @@
 <template>
-  <footer ref="footerSection" class="py-24 px-6 text-center text-white relative overflow-hidden flex flex-col items-center justify-center min-h-[50vh]">
+  <footer ref="footerSection" class="py-24 px-6 text-center text-white relative overflow-hidden flex flex-col items-center justify-center min-h-[50dvh]">
     <!-- Backgrounds -->
     <div class="absolute inset-0 z-0 bg-[#6A4E42]"></div>
     <div class="absolute inset-0 z-[1] opacity-90" :style="{ background: themeConfig.overlayGradient }"></div>

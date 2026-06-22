@@ -1,7 +1,7 @@
 <template>
   <section ref="heroSection" class="relative min-h-[100dvh] flex flex-col items-center justify-center text-center px-4 overflow-hidden" :style="{ backgroundColor: 'var(--theme-bg)' }">
-    <!-- Background wrapper (extends 200vh for seamless quote transition) -->
-    <div class="absolute top-0 left-0 w-full h-[200vh] z-0 overflow-hidden pointer-events-none">
+    <!-- Background wrapper (extends 200dvh for seamless quote transition) -->
+    <div class="absolute top-0 left-0 w-full h-[200dvh] z-0 overflow-hidden pointer-events-none">
       <!-- Gold tint overlay -->
       <div class="absolute inset-0 z-10 w-full h-full" style="background: linear-gradient(180deg, rgba(201,169,110,0.06) 0%, transparent 60%); mix-blend-mode: multiply;"></div>
       
@@ -30,7 +30,7 @@
     </div>
 
     <!-- INTRO TEXT (reveals then fades) -->
-    <div ref="introText" class="absolute inset-0 z-[5] flex items-center justify-center px-6 pointer-events-none pb-[15vh] opacity-0">
+    <div ref="introText" class="absolute inset-0 z-[5] flex items-center justify-center px-6 pointer-events-none pb-[15dvh] opacity-0">
       <h2 class="tracking-[0.25em] font-semibold text-center uppercase" :style="{ color: 'var(--theme-text-light)', fontFamily: themeConfig?.fontHeading || 'inherit', fontSize: 'clamp(0.8rem, 2vw, 1rem)' }">
         <div class="block">THE WEDDING OF</div>
         <div class="block mt-3" :style="{ color: 'var(--theme-secondary)' }">— ♥ —</div>

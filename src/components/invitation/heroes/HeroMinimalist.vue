@@ -10,7 +10,7 @@
     </div>
 
     <!-- Entrance Outline Animation & Glass Frame -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[380px] h-[75vh] md:h-[80vh] pointer-events-none z-[5] flex justify-center items-center">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[380px] h-[75dvh] md:h-[80dvh] pointer-events-none z-[5] flex justify-center items-center">
       <!-- Glowing Glassmorphic Backing -->
       <div ref="glassPill" class="absolute inset-0 rounded-[200px] bg-white/40 backdrop-blur-md border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.03)] opacity-0 scale-95"></div>
       

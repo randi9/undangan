@@ -1,5 +1,5 @@
 <template>
-  <section v-if="quote" ref="quoteSection" class="min-h-[60vh] flex items-center justify-center py-24 px-6 text-center relative overflow-hidden bg-white">
+  <section v-if="quote" ref="quoteSection" class="min-h-[60dvh] flex items-center justify-center py-24 px-6 text-center relative overflow-hidden bg-white">
     <!-- Minimalist Background Accent -->
     <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-50 to-white -z-10"></div>
     <div ref="lineAccent" class="absolute top-1/2 left-0 w-0 h-[1px] bg-gray-200 -z-10 transform -translate-y-1/2"></div>

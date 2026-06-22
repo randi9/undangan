@@ -111,7 +111,7 @@ onUnmounted(() => {
 .masonry-img {
   display: block;
   width: 100%;
-  height: auto;
+  aspect-ratio: 2/3;
   object-fit: cover;
   transition: transform 0.7s ease;
 }

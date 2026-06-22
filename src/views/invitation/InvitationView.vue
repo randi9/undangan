@@ -630,6 +630,20 @@ function openInvitation() {
     });
   });
 
+  // Request fullscreen mode on user click gesture (for supported browsers, handled gracefully if rejected/unsupported)
+  if (!isRecordMode.value) {
+    const docEl = document.documentElement;
+    if (docEl.requestFullscreen) {
+      docEl.requestFullscreen().catch((err) => {
+        console.warn("Fullscreen request rejected:", err);
+      });
+    } else if ((docEl as any).webkitRequestFullscreen) {
+      (docEl as any).webkitRequestFullscreen().catch((err: any) => {
+        console.warn("WebKit fullscreen request rejected:", err);
+      });
+    }
+  }
+
   if (invitation.value?.music_url && musicPlayer.value && !isRecordMode.value) {
     musicPlayer.value
       .play()

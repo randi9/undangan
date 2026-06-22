@@ -1,7 +1,7 @@
 <template>
   <!-- Shared Static Background specifically for Floral Blue -->
   <div v-if="stories.length > 0" class="fixed inset-0 z-[-10] pointer-events-none flex items-center justify-center overflow-hidden bg-[var(--theme-bg)]">
-    <img src="https://media.mengundanganda.com/floral-blue/randidewi_b6067503-cc9c-40b2-8adf-deaf357fa954.webp" style="height: 100vh; width: auto; max-width: none; opacity: 0.3; object-fit: cover; min-width: 100vw;" />
+    <img src="https://media.mengundanganda.com/floral-blue/randidewi_b6067503-cc9c-40b2-8adf-deaf357fa954.webp" style="height: 100dvh; width: auto; max-width: none; opacity: 0.3; object-fit: cover; min-width: 100vw;" />
   </div>
 
   <section v-if="stories.length > 0" class="py-12 px-4 sm:px-8 max-w-3xl mx-auto text-center my-12 relative min-h-[100dvh] flex flex-col justify-center">
