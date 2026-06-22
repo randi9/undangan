@@ -483,8 +483,16 @@ function animateHeroOval() {
   gsap.set(heroTextItems.value, { y: 30, opacity: 0 });
 
   // Wait for all flowers to finish their entry animation (delay + duration = 5.3s) in fairytale garden theme
-  const startDelay = themeName.value === 'fairytale_garden' ? 5.4 : 0.2;
-  const tl = gsap.timeline({ delay: startDelay });
+  const startDelay = themeName.value === 'fairytale_garden' ? 7.3 : 0.2;
+  const tl = gsap.timeline({ 
+    delay: startDelay,
+    onComplete: () => {
+      // Re-enable scroll after the card and texts finish animating in
+      if (themeName.value === 'fairytale_garden') {
+        startScroll();
+      }
+    }
+  });
 
   tl.to(heroOval.value, {
     scale: 1,
@@ -515,6 +523,10 @@ watch(isOpened, (val) => {
     if (!isRecordMode.value) {
       setTimeout(() => {
         initSmoothScroll();
+        // Prevent scrolling during the entry animations in Fairytale Garden theme
+        if (themeName.value === 'fairytale_garden') {
+          stopScroll();
+        }
       }, 200);
     }
 
@@ -626,9 +638,10 @@ function openInvitation() {
       })
       .catch((e) => console.error("Audio blocked by browser:", e));
   }
+  const closeDelay = themeName.value === 'fairytale_garden' ? 3200 : 1400;
   setTimeout(() => {
     isClosingOverlay.value = false;
-  }, 1400);
+  }, closeDelay);
 }
 
 function toggleMusic() {
@@ -1069,6 +1082,8 @@ onBeforeUnmount(() => {
         <component
           :is="activeHero"
           :overlay-gradient="activeTheme.overlayGradient"
+          :quote="invitation.quote"
+          :theme-config="activeTheme"
         >
           <div
             ref="heroOval"
@@ -1545,13 +1560,13 @@ onBeforeUnmount(() => {
   width: 85%;
   max-width: 320px;
   height: 420px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
   /* Arch shape: semi-circle top, rounded bottom corners */
   border-radius: 160px 160px 24px 24px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03), inset 0 0 8px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05), inset 0 0 12px rgba(255, 255, 255, 0.2);
   padding: 48px 24px 24px 24px;
 }
 </style>

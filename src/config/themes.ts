@@ -263,7 +263,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     id: "fairytale_garden",
     name: "Fairytale Garden",
     thumbnail:
-      "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?w=400&q=80",
+      "https://media.mengundanganda.com/fairygarden/cover%20section/dewirandi_e782ab8b-eee1-44b8-85af-ce428272bb40.webp",
     description: "Nuansa taman dongeng yang manis dan romantis",
     icon: "solar:magic-stick-bold-duotone",
     color: "#D9A9AF",
@@ -293,7 +293,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       overlayGradient:
         "linear-gradient(180deg, rgba(106,78,66,0.4) 0%, rgba(106,78,66,0.85) 100%)",
       coverImage:
-        "https://images.unsplash.com/photo-1545232979-8bf34eb9757b?w=1080&q=80",
+        "https://media.mengundanganda.com/fairygarden/cover%20section/dewirandi_e782ab8b-eee1-44b8-85af-ce428272bb40.webp",
     },
   },
 };

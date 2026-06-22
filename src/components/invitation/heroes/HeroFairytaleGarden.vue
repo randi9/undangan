@@ -1,5 +1,8 @@
 <template>
-  <section style="height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 48px 16px; background-image: url('https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_808a2f2b-d48a-4099-a3d2-b4a59147644c.webp'); background-size: cover; background-position: center; position: relative; overflow: hidden;">
+  <section 
+    ref="heroSection"
+    style="height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 48px 16px; position: relative; overflow: hidden; background-color: transparent;"
+  >
     
     <!-- Hidden SVG Filter for Realistic Water Distortion -->
     <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
@@ -11,78 +14,395 @@
       </filter>
     </svg>
 
-    <!-- Cloud Left & Right Overlays -->
-    <img 
-      src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_fd4ee1ea-950e-433a-8026-cf80364cb6a9.webp" 
-      alt="Cloud Left" 
-      class="cloud-anim-left"
-      :class="{ 'animate-active': isMounted }"
-      style="position: absolute; top: 0; right: -250px; width: 100%; height: 40%; object-fit: cover; z-index: 1; pointer-events: none;"
-    />
-    <img 
-      src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a01c891e-0f65-4b5e-a411-c0bc480efcf2.webp" 
-      alt="Cloud Right" 
-      class="cloud-anim-right"
-      :class="{ 'animate-active': isMounted }"
-      style="position: absolute; top: 100px; left: -160px; width: 100%; height: 40%; object-fit: cover; z-index: 1; pointer-events: none;"
-    />
+    <!-- Scenic Backdrop Container (animates zoom and blur on mount) -->
+    <div
+      class="hero-scenic-backdrop"
+    >
+      <!-- Sky Background Image (was on parent section style) -->
+      <div
+        style="position: absolute; inset: 0; background-image: url('https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_808a2f2b-d48a-4099-a3d2-b4a59147644c.webp'); background-size: cover; background-position: center; z-index: 0;"
+      ></div>
 
-    <!-- Foreground Cliff Overlay (without sky) -->
-    <img 
-      src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_e5766616-8b07-419a-b12f-cb576a738daa.webp" 
-      alt="Cliff Overlay" 
-      class="bg-cliff-layer" 
-      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; pointer-events: none;"
-    />
+      <!-- Cloud Left & Right Overlays -->
+      <img 
+        src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_fd4ee1ea-950e-433a-8026-cf80364cb6a9.webp" 
+        alt="Cloud Left" 
+        class="cloud-anim-left"
+        style="position: absolute; top: 0; right: -250px; width: 100%; height: 40%; object-fit: cover; z-index: 1; pointer-events: none;"
+      />
+      <img 
+        src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a01c891e-0f65-4b5e-a411-c0bc480efcf2.webp" 
+        alt="Cloud Right" 
+        class="cloud-anim-right"
+        style="position: absolute; top: 100px; left: -160px; width: 100%; height: 40%; object-fit: cover; z-index: 1; pointer-events: none;"
+      />
 
-    <!-- Dynamic Waterfall Animation Overlay -->
-    <div class="waterfall-container">
-      <div class="waterfall-stream stream-1"></div>
-      <div class="waterfall-stream stream-2"></div>
-      <div class="waterfall-mist-container">
-        <div v-for="n in 8" :key="n" :class="['mist-particle', `mist-${n}`]"></div>
+      <!-- Foreground Cliff Overlay (without sky) -->
+      <img 
+        src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_e5766616-8b07-419a-b12f-cb576a738daa.webp" 
+        alt="Cliff Overlay" 
+        class="bg-cliff-layer" 
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; pointer-events: none;"
+      />
+
+      <!-- Dynamic Waterfall Animation Overlay -->
+      <div class="waterfall-container">
+        <div class="waterfall-stream stream-1"></div>
+        <div class="waterfall-stream stream-2"></div>
+        <div class="waterfall-mist-container">
+          <div v-for="n in 8" :key="n" :class="['mist-particle', `mist-${n}`]"></div>
+        </div>
       </div>
+
+      <!-- Large Rolling Fog/Mist at the bottom of the waterfall -->
+      <div class="waterfall-fog-container">
+        <div class="fog-layer fog-1"></div>
+        <div class="fog-layer fog-2"></div>
+        <div class="fog-layer fog-3"></div>
+      </div>
+
+      <!-- Static Decorative Assets inside backdrop to zoom/blur together -->
+      <img 
+        v-for="(asset, index) in DECORATIVE_ASSETS.filter(a => a.className === 'anim-static')" 
+        :key="'static-' + index" 
+        :src="asset.src" 
+        :alt="asset.name" 
+        class="decor-asset anim-static"
+        :style="asset.style" 
+      />
     </div>
 
-    <!-- Large Rolling Fog/Mist at the bottom of the waterfall -->
-    <div class="waterfall-fog-container">
-      <div class="fog-layer fog-1"></div>
-      <div class="fog-layer fog-2"></div>
-      <div class="fog-layer fog-3"></div>
-    </div>
-
-    <!-- Configurable Decorative Assets -->
+    <!-- Dynamic Foreground/Entrance Decorative Assets (trees, shrubs, flowers) -->
     <img 
-      v-for="(asset, index) in DECORATIVE_ASSETS" 
-      :key="index" 
+      v-for="(asset, index) in DECORATIVE_ASSETS.filter(a => a.className !== 'anim-static')" 
+      :key="'dynamic-' + index" 
       :src="asset.src" 
       :alt="asset.name" 
-      :class="['decor-asset', asset.className, { 'animate-active': isMounted }]"
+      :class="['decor-asset', asset.className]"
       :style="asset.style" 
     />
 
     <!-- Content slot -->
-    <div style="width: 100%; max-width: 600px; margin: 0 auto; color: #6A4E42; z-index: 3; position: relative; transform: translateY(8vh);">
+    <div 
+      ref="heroContentContainer"
+      style="width: 100%; max-width: 600px; margin: 0 auto; color: #6A4E42; z-index: 3; position: relative; transform: translateY(8vh); will-change: opacity, transform;"
+    >
       <slot />
+    </div>
+
+    <!-- Quotes Container (fades in as hero content fades out) -->
+    <div 
+      v-if="quote"
+      ref="quoteCardRef"
+      class="fairytale-quote-container"
+      style="position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transform: translateY(15vh); will-change: opacity, transform;"
+    >
+      <div class="fairytale-quote-card">
+        <!-- Quote Icon -->
+        <div class="quote-icon-wrapper mb-4 text-[#D9A9AF]">
+          <svg class="w-8 h-8 mx-auto" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+          </svg>
+        </div>
+        
+        <!-- Quote Content -->
+        <blockquote class="quote-text text-base md:text-lg font-light text-[#6A4E42] leading-relaxed md:leading-loose tracking-wide break-words whitespace-pre-line px-4" :style="{ fontFamily: themeConfig?.fontBody }">
+          {{ quote }}
+        </blockquote>
+        
+        <!-- Bottom Accent Line -->
+        <div class="w-12 h-[1px] bg-[#D9A9AF] mx-auto mt-4"></div>
+      </div>
+
+      <!-- Bottom Decoration Asset -->
+      <img 
+        src="https://media.mengundanganda.com/fairygarden/quotes%20section/dewirandi_16ea4f80-300c-41c5-91b1-4ba941ed161a.webp" 
+        alt="Quotes bottom decoration" 
+        class="absolute bottom-0 left-0 w-full object-contain z-10 pointer-events-none origin-bottom scale-[1.35]"
+      />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import type { CSSProperties } from 'vue';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-defineProps<{
+gsap.registerPlugin(ScrollTrigger);
+
+const props = defineProps<{
   overlayGradient: string;
+  quote?: string;
+  themeConfig?: any;
 }>();
 
-const isMounted = ref(false);
+const heroSection = ref<HTMLElement | null>(null);
+const heroContentContainer = ref<HTMLElement | null>(null);
+const quoteCardRef = ref<HTMLElement | null>(null);
 
-onMounted(() => {
-  // Trigger animation shortly after mounting for maximum reliability
-  setTimeout(() => {
-    isMounted.value = true;
-  }, 100);
+let scrollTl: gsap.core.Timeline | null = null;
+let triggerInstance: ScrollTrigger | null = null;
+
+onMounted(async () => {
+  await nextTick();
+  if (!heroSection.value) return;
+
+  let activated = false;
+  let activateScrollAnimations = () => {};
+
+  // --- BACKGROUND ENTRANCE ANIMATION VIA GSAP ---
+  const semakKanan = heroSection.value.querySelector('.anim-semak-kanan');
+  const semakKiri = heroSection.value.querySelector('.anim-semak-kiri');
+  const pohonKanan = heroSection.value.querySelector('.anim-pohon-kanan');
+  const pohonKiri = heroSection.value.querySelector('.anim-pohon-kiri');
+  const flowers1 = heroSection.value.querySelectorAll('.pair-1');
+  const flowers2 = heroSection.value.querySelectorAll('.pair-2');
+  const flowers3 = heroSection.value.querySelectorAll('.pair-3');
+  const cloudLeft = heroSection.value.querySelector('.cloud-anim-left');
+  const cloudRight = heroSection.value.querySelector('.cloud-anim-right');
+
+  // Set initial states in GSAP to match the CSS starting values exactly
+  gsap.set([semakKanan, semakKiri], { y: 100, opacity: 0 });
+  gsap.set(pohonKanan, { x: 350, rotation: -15, scale: 1, opacity: 0 });
+  gsap.set(pohonKiri, { x: -350, rotation: 12, scale: 1, opacity: 0 });
+  gsap.set(flowers1, { y: 200, rotation: 0, opacity: 0 });
+  gsap.set(flowers2, { y: 200, rotation: 0, opacity: 0 });
+  gsap.set(flowers3, { y: 200, rotation: 0, opacity: 0 });
+  gsap.set(cloudLeft, { x: 250, opacity: 0 });
+  gsap.set(cloudRight, { x: -250, opacity: 0 });
+
+  // Semak Kanan & Kiri entry (delay 3.2s, duration 1.8s)
+  gsap.to([semakKanan, semakKiri], {
+    y: 0,
+    opacity: (index) => index === 0 ? 1 : 0.95,
+    duration: 1.8,
+    ease: 'power2.out',
+    delay: 3.2,
+  });
+
+  // Pohon Kanan entry (delay 3.2s, duration 2.5s)
+  gsap.to(pohonKanan, {
+    x: 0,
+    rotation: -15,
+    opacity: 0.95,
+    duration: 2.5,
+    ease: 'power2.out',
+    delay: 3.2,
+    onComplete: () => {
+      // Start sway animation
+      gsap.to(pohonKanan, {
+        rotation: -11,
+        duration: 4.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+  });
+
+  // Pohon Kiri entry (delay 4.5s, duration 2.5s)
+  gsap.to(pohonKiri, {
+    x: 0,
+    rotation: 12,
+    opacity: 0.9,
+    duration: 2.5,
+    ease: 'power2.out',
+    delay: 4.5,
+    onComplete: () => {
+      gsap.to(pohonKiri, {
+        rotation: 8,
+        duration: 4.8,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+  });
+
+  // Flowers pair 1 (delay 3.8s, duration 2.2s)
+  gsap.to(flowers1, {
+    y: 0,
+    rotation: 0,
+    opacity: 1,
+    duration: 2.2,
+    ease: 'power2.out',
+    delay: 3.8,
+    onComplete: () => {
+      gsap.to(flowers1, {
+        rotation: -4.5,
+        duration: 3.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+  });
+
+  // Flowers pair 2 (delay 4.4s, duration 2.2s)
+  gsap.to(flowers2, {
+    y: 0,
+    rotation: 0,
+    opacity: 1,
+    duration: 2.2,
+    ease: 'power2.out',
+    delay: 4.4,
+    onComplete: () => {
+      gsap.to(flowers2, {
+        rotation: 4,
+        duration: 4,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+  });
+
+  // Flowers pair 3 (delay 5.0s, duration 2.2s)
+  gsap.to(flowers3, {
+    y: 0,
+    rotation: 0,
+    opacity: 1,
+    duration: 2.2,
+    ease: 'power2.out',
+    delay: 5.0,
+    onComplete: () => {
+      gsap.to(flowers3, {
+        rotation: -3.5,
+        duration: 4.5,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+      // Activate scroll animations once entrance completes naturally
+      if (scrollTl && !activated) {
+        activateScrollAnimations();
+      }
+    }
+  });
+
+  // Cloud Left (delay 3.2s, duration 8s)
+  gsap.to(cloudLeft, {
+    x: 0,
+    opacity: 1,
+    duration: 8,
+    ease: 'power2.out',
+    delay: 3.2,
+    onComplete: () => {
+      gsap.to(cloudLeft, {
+        x: -8,
+        y: -3,
+        duration: 24,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+  });
+
+  // Cloud Right (delay 3.2s, duration 8s)
+  gsap.to(cloudRight, {
+    x: 0,
+    opacity: 1,
+    duration: 8,
+    ease: 'power2.out',
+    delay: 3.2,
+    onComplete: () => {
+      gsap.to(cloudRight, {
+        x: 8,
+        y: 3,
+        duration: 28,
+        ease: 'sine.inOut',
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+  });
+
+  const allFlowers = heroSection.value.querySelectorAll('.anim-flower');
+  const fadeOutTargets = [semakKanan, semakKiri, ...Array.from(allFlowers)].filter(Boolean);
+
+  activateScrollAnimations = () => {
+    if (activated) return;
+    activated = true;
+
+    // Stop entrance animations on y and opacity so they don't fight with the scrub timeline
+    gsap.killTweensOf(fadeOutTargets, 'y,opacity');
+
+    if (scrollTl) {
+      // Add the fade out tween to the timeline at the very beginning (position 0)
+      scrollTl.to(fadeOutTargets, {
+        opacity: 0,
+        y: 200,
+        ease: 'power1.inOut',
+        duration: 1,
+      }, 0);
+
+      // Invalidate the timeline to record correct start values
+      scrollTl.invalidate();
+    }
+  };
+
+  // --- SCROLLTRIGGER PINNING TIMELINE ---
+  if (props.quote) {
+    scrollTl = gsap.timeline();
+
+    // Fade out hero card and slide it up slightly
+    scrollTl.to(heroContentContainer.value, {
+      opacity: 0,
+      y: '-8vh',
+      ease: 'power1.inOut',
+      duration: 1,
+    });
+
+    // Fade in quote container (Quote Card & Bridge decoration) and slide it up from y: 15vh to 0vh
+    scrollTl.to(quoteCardRef.value, {
+      opacity: 1,
+      y: '0vh',
+      ease: 'power1.inOut',
+      duration: 1,
+      onUpdate: function() {
+        const progress = this.progress();
+        if (quoteCardRef.value) {
+          if (progress > 0.5) {
+            quoteCardRef.value.style.pointerEvents = 'auto';
+          } else {
+            quoteCardRef.value.style.pointerEvents = 'none';
+          }
+        }
+      }
+    }, '-=0.5');
+
+    // Keep showing the quote for a little bit of scroll duration before unpinning
+    scrollTl.to({}, { duration: 0.8 });
+
+    triggerInstance = ScrollTrigger.create({
+      trigger: heroSection.value,
+      start: 'top top',
+      end: '+=150%', // Scroll distance of 1.5 screens
+      pin: true,
+      scrub: true, // Smooth scrub linked to scrollbar
+      animation: scrollTl,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        // If the user starts scrolling (scrolled past 20px), activate the animations immediately
+        if (!activated && self.scroll() > 20) {
+          activateScrollAnimations();
+        }
+      }
+    });
+  }
+});
+
+onBeforeUnmount(() => {
+  if (scrollTl) scrollTl.kill();
+  if (triggerInstance) triggerInstance.kill();
+  // Kill entry animations and sway loops
+  const elements = heroSection.value?.querySelectorAll('.decor-asset, .cloud-anim-left, .cloud-anim-right');
+  if (elements) {
+    elements.forEach(el => gsap.killTweensOf(el));
+  }
 });
 
 /**
@@ -304,7 +624,6 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
 .decor-asset {
   opacity: 0;
   transform-origin: bottom center;
-  transition: opacity 1.5s ease-out;
 }
 
 /* Pohon Kanan slide from right + sway */
@@ -312,14 +631,6 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   transform-origin: bottom right;
   --base-transform: rotate(-15deg) scale(1);
   transform: translateX(350px) var(--base-transform);
-  transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 2.5s ease-out;
-  transition-delay: 1.0s;
-}
-.anim-pohon-kanan.animate-active {
-  opacity: 0.95;
-  transform: translateX(0) var(--base-transform);
-  animation: sway-kanan 4.5s ease-in-out infinite alternate;
-  animation-delay: 3.5s;
 }
 
 /* Pohon Kiri slide from left + sway */
@@ -327,76 +638,29 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   transform-origin: bottom left;
   --base-transform: rotate(12deg) scale(1);
   transform: translateX(-350px) var(--base-transform);
-  transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 2.5s ease-out;
-  transition-delay: 0.3s;
-}
-.anim-pohon-kiri.animate-active {
-  opacity: 0.9;
-  transform: translateX(0) var(--base-transform);
-  animation: sway-kiri 4.8s ease-in-out infinite alternate;
-  animation-delay: 2.8s;
 }
 
 /* Ground layers entry */
 .decor-asset.anim-static {
   opacity: 1 !important;
   transform: none !important;
-  transition: none !important;
 }
 
 .anim-semak-kanan {
   transform: translateY(100px);
-  transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.8s ease-out;
-}
-.anim-semak-kanan.animate-active {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .anim-semak-kiri {
   transform: translateY(100px);
-  transition: transform 1.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.8s ease-out;
-}
-.anim-semak-kiri.animate-active {
-  opacity: 0.95;
-  transform: translateY(0);
 }
 
 /* Flowers entry & sway animations */
 .anim-flower {
   transform-origin: bottom center;
   transform: translateY(200px);
-  transition: transform 2.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 2.2s ease-out;
-}
-.anim-flower.animate-active {
-  opacity: 1;
-  transform: translateY(0);
 }
 
-/* Flower Pair delays & individual sway configurations */
-.pair-1 {
-  transition-delay: 1.7s;
-}
-.pair-1.animate-active {
-  animation: sway-flower-p1 3.5s ease-in-out infinite alternate;
-  animation-delay: 3.9s;
-}
 
-.pair-2 {
-  transition-delay: 2.4s;
-}
-.pair-2.animate-active {
-  animation: sway-flower-p2 4s ease-in-out infinite alternate;
-  animation-delay: 4.6s;
-}
-
-.pair-3 {
-  transition-delay: 3.1s;
-}
-.pair-3.animate-active {
-  animation: sway-flower-p3 4.5s ease-in-out infinite alternate;
-  animation-delay: 5.3s;
-}
 
 /* Keyframes for Tree Swaying (Wind Effect) */
 @keyframes sway-kanan {
@@ -570,16 +834,10 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   opacity: 0;
   transform: translateX(250px);
 }
-.cloud-anim-left.animate-active {
-  animation: cloud-left-entry 8s cubic-bezier(0.25, 1, 0.5, 1) forwards, cloud-float-left 24s ease-in-out infinite alternate 8s;
-}
 
 .cloud-anim-right {
   opacity: 0;
   transform: translateX(-250px);
-}
-.cloud-anim-right.animate-active {
-  animation: cloud-right-entry 8s cubic-bezier(0.25, 1, 0.5, 1) forwards, cloud-float-right 28s ease-in-out infinite alternate 8s;
 }
 
 @keyframes cloud-left-entry {
@@ -712,5 +970,66 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   100% {
     transform: translate(15px, -3px) scale(1.15);
   }
+}
+
+/* Scenic backdrop entry zoom-fade and blur */
+.hero-scenic-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  transform: scale(0.88);
+  filter: blur(12px);
+  opacity: 0;
+  animation: hero-backdrop-zoom-in 3.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes hero-backdrop-zoom-in {
+  0% {
+    transform: scale(0.88);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/* Fairytale Theme Quote Card & Container styling */
+.fairytale-quote-container {
+  box-sizing: border-box;
+}
+
+.fairytale-quote-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 0;
+  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.2);
+  padding: 40px 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.quote-decor-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  object-fit: contain;
+  z-index: 0;
+  pointer-events: none;
 }
 </style>
