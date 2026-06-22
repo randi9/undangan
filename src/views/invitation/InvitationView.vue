@@ -630,8 +630,8 @@ function openInvitation() {
     });
   });
 
-  // Request fullscreen mode on user click gesture (for supported browsers, handled gracefully if rejected/unsupported)
-  if (!isRecordMode.value) {
+  // Request fullscreen mode on user click gesture (only on mobile devices/screens, and not inside iframe)
+  if (!isRecordMode.value && !isInsideIframe && window.innerWidth <= 768) {
     const docEl = document.documentElement;
     if (docEl.requestFullscreen) {
       docEl.requestFullscreen().catch((err) => {
