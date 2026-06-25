@@ -927,8 +927,8 @@ onMounted(async () => {
       }
     }, undefined, 'coupleSectionFullyOpen');
 
-    // Add a pause of 2.0 scroll duration to let the user scroll while seeing the Groom info
-    scrollTl.to({}, { duration: 2.0 });
+    // Add a pause of 0.8 scroll duration to let the user scroll while seeing the Groom info
+    scrollTl.to({}, { duration: 0.8 });
 
     // Ensure leafFlyInTl is complete before starting the fade-out
     scrollTl.call(() => {
@@ -941,24 +941,24 @@ onMounted(async () => {
     // Groom Info fades out on scroll
     scrollTl.to(groomInfoRef.value, {
       opacity: 0,
-      duration: 1.0,
+      duration: 0.6,
       ease: 'power1.inOut'
     });
 
-    // Bride Info fades in on scroll
+    // Bride Info fades in on scroll (crossfading for faster transition)
     scrollTl.to(brideInfoRef.value, {
       opacity: 1,
-      duration: 1.0,
+      duration: 0.6,
       ease: 'power1.inOut'
-    }, '+=0.2');
+    }, '-=0.2');
 
     // Pause on bride info
-    scrollTl.to({}, { duration: 1.8 });
+    scrollTl.to({}, { duration: 0.8 });
 
     // After showing the bride info, Bride Info fades out and leaf flies to the right
     scrollTl.to(brideInfoRef.value, {
       opacity: 0,
-      duration: 1.0,
+      duration: 0.6,
       ease: 'power1.inOut'
     });
 
@@ -970,7 +970,7 @@ onMounted(async () => {
       scale: 0.15,
       opacity: 0,
       filter: 'blur(3px)',
-      duration: 1.5,
+      duration: 1.2,
       ease: 'power1.inOut',
       onStart: () => {
         stopIdleAnimation();
@@ -982,12 +982,12 @@ onMounted(async () => {
 
     scrollTl.to(focusLeafInnerRef.value, {
       rotation: 120,
-      duration: 1.5,
+      duration: 1.2,
       ease: 'power1.inOut'
     }, '<');
 
     // Final pause of couple section exit transition
-    scrollTl.to({}, { duration: 1.0 });
+    scrollTl.to({}, { duration: 0.8 });
 
     triggerInstance = ScrollTrigger.create({
       trigger: heroSection.value,
