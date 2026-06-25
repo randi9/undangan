@@ -1098,6 +1098,8 @@ onBeforeUnmount(() => {
           :overlay-gradient="activeTheme.overlayGradient"
           :quote="invitation.quote"
           :theme-config="activeTheme"
+          :invitation="invitation"
+          :api-base="apiBase"
         >
           <div
             ref="heroOval"

@@ -98,28 +98,259 @@
       style="position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transform: translateY(15vh); will-change: opacity, transform;"
     >
       <div class="fairytale-quote-card">
-        <!-- Quote Icon -->
-        <div class="quote-icon-wrapper mb-4 text-[#D9A9AF]">
-          <svg class="w-8 h-8 mx-auto" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-          </svg>
+        <!-- Inner Wrapper to translate the text up while keeping the background cover full screen -->
+        <div class="quote-inner-wrapper flex flex-col items-center justify-center" style="transform: translateY(-6vh);">
+          <!-- Quote Icon -->
+          <div class="quote-icon-wrapper mb-8 text-[#8A4E56]">
+            <svg class="w-8 h-8 mx-auto" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+            </svg>
+          </div>
+          
+          <!-- Quote Content -->
+          <blockquote class="quote-text text-lg md:text-xl font-bold text-[#8A4E56] leading-relaxed md:leading-loose tracking-wide break-words whitespace-pre-line px-4" :style="{ fontFamily: themeConfig?.fontBody }">
+            {{ quote }}
+          </blockquote>
+          
+          <!-- Bottom Accent Line -->
+          <div class="w-12 h-[1px] bg-[#8A4E56] mx-auto mt-4"></div>
         </div>
-        
-        <!-- Quote Content -->
-        <blockquote class="quote-text text-base md:text-lg font-light text-[#6A4E42] leading-relaxed md:leading-loose tracking-wide break-words whitespace-pre-line px-4" :style="{ fontFamily: themeConfig?.fontBody }">
-          {{ quote }}
-        </blockquote>
-        
-        <!-- Bottom Accent Line -->
-        <div class="w-12 h-[1px] bg-[#D9A9AF] mx-auto mt-4"></div>
+      </div>
+    </div>
+
+    <!-- Pinned Bridge Asset -->
+    <img 
+      v-if="quote"
+      ref="bridgeRef"
+      src="https://media.mengundanganda.com/fairygarden/quotes%20section/dewirandi_16ea4f80-300c-41c5-91b1-4ba941ed161a.webp" 
+      alt="Quotes bottom decoration" 
+      class="absolute bottom-0 left-0 w-full object-contain pointer-events-none origin-bottom scale-[1.6]"
+      style="z-index: 12; opacity: 0; transform: translateY(100px); will-change: transform, opacity;"
+    />
+
+    <!-- Couple Background Cover -->
+    <div
+      ref="coupleBgRef"
+      style="position: absolute; inset: 0; background-image: url('https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b42881e0-cb77-4565-8f1f-d4603ff53253.webp'); background-size: cover; background-position: center; z-index: 8; opacity: 0; pointer-events: none;"
+    ></div>
+
+    <!-- Leaves Animation Container -->
+    <div
+      ref="leavesContainerRef"
+      class="absolute inset-0 overflow-hidden pointer-events-none z-[11]"
+      style="opacity: 0;"
+    >
+      <!-- Background Leaves -->
+      <img
+        v-for="(n, index) in 22"
+        :key="'bg-leaf-' + n"
+        :ref="el => { if (el) bgLeavesRefs[index] = el as HTMLElement }"
+        src="https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_f558ffe0-5a6f-400f-a20c-22300414bcd6.webp"
+        alt="flying leaf"
+        class="absolute pointer-events-none select-none"
+        style="width: 40px; height: 40px; object-fit: contain; transform-origin: center center;"
+      />
+    </div>
+
+    <!-- Focus Leaf Container -->
+    <div
+      ref="focusLeafContainerRef"
+      class="absolute pointer-events-none z-[14] select-none flex items-center justify-center w-[380px] h-[380px] md:w-[580px] md:h-[580px]"
+      style="display: none; left: 50%; top: 50%; transform: translate(-50%, -50%);"
+    >
+      <!-- Leaf Image container (sways/rotates) -->
+      <div
+        ref="focusLeafInnerRef"
+        class="absolute inset-0 flex items-center justify-center w-full h-full"
+      >
+        <img
+          ref="focusLeafRef"
+          src="https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_f558ffe0-5a6f-400f-a20c-22300414bcd6.webp"
+          class="w-full h-full object-contain"
+          style="transform-origin: center center;"
+        />
       </div>
 
-      <!-- Bottom Decoration Asset -->
-      <img 
-        src="https://media.mengundanganda.com/fairygarden/quotes%20section/dewirandi_16ea4f80-300c-41c5-91b1-4ba941ed161a.webp" 
-        alt="Quotes bottom decoration" 
-        class="absolute bottom-0 left-0 w-full object-contain z-10 pointer-events-none origin-bottom scale-[1.35]"
-      />
+      <!-- Couple Names Overlay (stays upright, centered exactly on parent) -->
+      <div
+        ref="coupleNamesRef"
+        class="absolute inset-0 flex items-center justify-center w-full h-full"
+        style="z-index: 15;"
+      >
+        <!-- Groom Info -->
+        <div
+          ref="groomInfoRef"
+          class="absolute flex flex-col items-center text-center px-6 w-full animate-fade"
+          style="opacity: 0; pointer-events: none; transform: translateY(-15px);"
+        >
+          <!-- Title -->
+          <span 
+            class="text-xs md:text-sm tracking-[0.3em] text-[#7A3E45] uppercase font-extrabold pb-1 border-b border-[#7A3E45] mb-3 md:mb-4"
+            style="font-family: 'Cormorant Garamond', serif; position: relative; top: -25px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);"
+          >
+            The Groom
+          </span>
+
+          <!-- Groom Name -->
+          <h2 
+            class="text-4xl md:text-6xl text-[#5A1E25] font-bold leading-none mb-2 md:mb-3"
+            style="font-family: 'Great Vibes', cursive; text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);"
+          >
+            {{ invitation?.groom_name }}
+          </h2>
+          
+          <!-- Groom Full Name -->
+          <p 
+            class="text-sm md:text-lg tracking-[0.2em] text-[#5A1E25] uppercase font-bold mb-4 md:mb-6 max-w-[260px] md:max-w-[420px] mx-auto break-words whitespace-normal leading-relaxed"
+            style="font-family: 'Cormorant Garamond', serif; text-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 0 16px rgba(255, 255, 255, 0.8), 0 0 24px rgba(255, 255, 255, 0.6);"
+          >
+            {{ getSubName(invitation?.groom_full_name, invitation?.groom_name) }}
+          </p>
+
+          <!-- Parent Info -->
+          <p 
+            v-if="invitation?.groom_father || invitation?.groom_mother"
+            class="text-xs md:text-sm leading-relaxed text-[#7A3E45] font-semibold"
+            style="font-family: 'Cormorant Garamond', serif; text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);"
+          >
+            Putra dari<br/>
+            <span v-if="invitation?.groom_father" class="font-bold text-[#5A1E25]">Bapak {{ invitation?.groom_father }}</span>
+            <br v-if="invitation?.groom_father && invitation?.groom_mother"/>
+            <span v-if="invitation?.groom_mother" class="font-bold text-[#5A1E25]"><span v-if="invitation?.groom_father">&amp; </span>Ibu {{ invitation?.groom_mother }}</span>
+          </p>
+        </div>
+
+        <!-- Bride Info -->
+        <div
+          ref="brideInfoRef"
+          class="absolute flex flex-col items-center text-center px-6 w-full animate-fade"
+          style="opacity: 0; pointer-events: none; transform: translateY(-15px);"
+        >
+          <!-- Title -->
+          <span 
+            class="text-xs md:text-sm tracking-[0.3em] text-[#7A3E45] uppercase font-extrabold pb-1 border-b border-[#7A3E45] mb-3 md:mb-4"
+            style="font-family: 'Cormorant Garamond', serif; position: relative; top: -25px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);"
+          >
+            The Bride
+          </span>
+
+          <!-- Bride Name -->
+          <h2 
+            class="text-4xl md:text-6xl text-[#5A1E25] font-bold leading-none mb-2 md:mb-3"
+            style="font-family: 'Great Vibes', cursive; text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);"
+          >
+            {{ invitation?.bride_name }}
+          </h2>
+          
+          <!-- Bride Full Name -->
+          <p 
+            class="text-sm md:text-lg tracking-[0.2em] text-[#5A1E25] uppercase font-bold mb-4 md:mb-6 max-w-[260px] md:max-w-[420px] mx-auto break-words whitespace-normal leading-relaxed"
+            style="font-family: 'Cormorant Garamond', serif; text-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 0 16px rgba(255, 255, 255, 0.8), 0 0 24px rgba(255, 255, 255, 0.6);"
+          >
+            {{ getSubName(invitation?.bride_full_name, invitation?.bride_name) }}
+          </p>
+
+          <!-- Parent Info -->
+          <p 
+            v-if="invitation?.bride_father || invitation?.bride_mother"
+            class="text-xs md:text-sm leading-relaxed text-[#7A3E45] font-semibold"
+            style="font-family: 'Cormorant Garamond', serif; text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);"
+          >
+            Putri dari<br/>
+            <span v-if="invitation?.bride_father" class="font-bold text-[#5A1E25]">Bapak {{ invitation?.bride_father }}</span>
+            <br v-if="invitation?.bride_father && invitation?.bride_mother"/>
+            <span v-if="invitation?.bride_mother" class="font-bold text-[#5A1E25]"><span v-if="invitation?.bride_father">&amp; </span>Ibu {{ invitation?.bride_mother }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Couple Content (fades in after bridge moves to center) -->
+    <div 
+      v-if="false"
+      ref="coupleContentRef"
+      class="absolute inset-0 z-[13] flex flex-col items-center justify-center px-4 py-8 md:px-6 md:py-12"
+      style="opacity: 0; pointer-events: none; transform: translateY(20px); will-change: transform, opacity;"
+    >
+      <div class="max-w-5xl w-full mx-auto flex flex-col justify-between h-full max-h-[85vh] md:max-h-[80vh]">
+        <!-- Section Header -->
+        <div class="mb-4 md:mb-8 text-center">
+          <h2 class="text-3xl md:text-5xl mb-2 text-[#D9A9AF]" :style="{ fontFamily: themeConfig?.fontHeading }">Mempelai</h2>
+          <div class="flex items-center justify-center gap-4">
+            <svg viewBox="0 0 60 2" class="w-12 md:w-16" style="opacity: 0.4;"><rect width="60" height="1.5" rx="0.75" fill="#AEB8A3"/></svg>
+            <svg viewBox="0 0 24 24" class="w-4 h-4 md:w-5 md:h-5 text-[#D9A9AF]" style="opacity: 0.8;">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+            </svg>
+            <svg viewBox="0 0 60 2" class="w-12 md:w-16" style="opacity: 0.4;"><rect width="60" height="1.5" rx="0.75" fill="#AEB8A3"/></svg>
+          </div>
+        </div>
+        
+        <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 flex-1">
+          <!-- Groom -->
+          <div class="flex-1 flex flex-col items-center">
+            <!-- Photo with botanical frame -->
+            <div class="relative w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 mb-4 md:mb-6">
+              <!-- Sage Green Ring with Leaf Details -->
+              <svg viewBox="0 0 240 240" class="absolute inset-0 w-full h-full z-[2] pointer-events-none text-[#AEB8A3]">
+                <circle cx="120" cy="120" r="114" fill="none" stroke="currentColor" stroke-width="2" />
+                <circle cx="120" cy="120" r="110" fill="none" stroke="#D9A9AF" stroke-width="1" stroke-dasharray="4,4" />
+                <circle cx="120" cy="6" r="5" fill="#EBCFD1" stroke="#6A4E42" stroke-width="1" />
+                <circle cx="120" cy="234" r="5" fill="#EBCFD1" stroke="#6A4E42" stroke-width="1" />
+                <circle cx="6" cy="120" r="5" fill="#EBCFD1" stroke="#6A4E42" stroke-width="1" />
+                <circle cx="234" cy="120" r="5" fill="#EBCFD1" stroke="#6A4E42" stroke-width="1" />
+              </svg>
+              <!-- Photo -->
+              <div class="absolute inset-[10px] rounded-full overflow-hidden z-[1]">
+                <img v-if="invitation?.groom_photo" :src="resolveAssetUrl(invitation?.groom_photo || '', apiBase)" class="w-full h-full object-cover" alt="Groom" />
+                <div v-else class="w-full h-full flex items-center justify-center text-3xl bg-[#EBCFD1] text-[#6A4E42]">👤</div>
+              </div>
+            </div>
+            <h3 class="text-xl sm:text-2xl md:text-3xl font-normal mb-1 md:mb-2 text-[#6A4E42]" :style="{ fontFamily: themeConfig?.fontHeading }">{{ invitation?.groom_full_name || invitation?.groom_name }}</h3>
+            <p v-if="invitation?.groom_father || invitation?.groom_mother" class="text-xs sm:text-sm md:text-base leading-relaxed text-[#9A7B6B]">
+              Putra dari<br/>
+              <span v-if="invitation?.groom_father" class="text-[#6A4E42] font-semibold">Bapak {{ invitation?.groom_father }}</span>
+              <span v-if="invitation?.groom_father && invitation?.groom_mother"> &amp; </span>
+              <span v-if="invitation?.groom_mother" class="text-[#6A4E42] font-semibold">Ibu {{ invitation?.groom_mother }}</span>
+            </p>
+          </div>
+          
+          <!-- Divider -->
+          <div class="hidden md:block my-2 md:my-0">
+            <svg viewBox="0 0 60 80" class="w-10 md:w-16" style="opacity: 0.5;">
+              <line x1="30" y1="0" x2="30" y2="25" stroke="#AEB8A3" stroke-width="1" opacity="0.6"/>
+              <text x="30" y="52" text-anchor="middle" fill="#D9A9AF" font-size="36" :style="{ fontFamily: themeConfig?.fontHeading }">&amp;</text>
+              <line x1="30" y1="62" x2="30" y2="80" stroke="#AEB8A3" stroke-width="1" opacity="0.6"/>
+            </svg>
+          </div>
+          <div class="md:hidden text-lg font-semibold text-[#D9A9AF] my-1">&amp;</div>
+          
+          <!-- Bride -->
+          <div class="flex-1 flex flex-col items-center">
+            <!-- Photo with botanical frame -->
+            <div class="relative w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 mb-4 md:mb-6">
+              <svg viewBox="0 0 240 240" class="absolute inset-0 w-full h-full z-[2] pointer-events-none text-[#AEB8A3]">
+                <circle cx="120" cy="120" r="114" fill="none" stroke="currentColor" stroke-width="2" />
+                <circle cx="120" cy="120" r="110" fill="none" stroke="#D9A9AF" stroke-width="1" stroke-dasharray="4,4" />
+                <circle cx="120" cy="6" r="5" fill="#EBCFD1" stroke="#6A4E42" stroke-width="1" />
+                <circle cx="120" cy="234" r="5" fill="#EBCFD1" stroke="#6A4E42" stroke-width="1" />
+                <circle cx="6" cy="120" r="5" fill="#EBCFD1" stroke="#6A4E42" stroke-width="1" />
+                <circle cx="234" cy="120" r="5" fill="#EBCFD1" stroke="#6A4E42" stroke-width="1" />
+              </svg>
+              <div class="absolute inset-[10px] rounded-full overflow-hidden z-[1]">
+                <img v-if="invitation?.bride_photo" :src="resolveAssetUrl(invitation?.bride_photo || '', apiBase)" class="w-full h-full object-cover" alt="Bride" />
+                <div v-else class="w-full h-full flex items-center justify-center text-3xl bg-[#EBCFD1] text-[#6A4E42]">👤</div>
+              </div>
+            </div>
+            <h3 class="text-xl sm:text-2xl md:text-3xl font-normal mb-1 md:mb-2 text-[#6A4E42]" :style="{ fontFamily: themeConfig?.fontHeading }">{{ invitation?.bride_full_name || invitation?.bride_name }}</h3>
+            <p v-if="invitation?.bride_father || invitation?.bride_mother" class="text-xs sm:text-sm md:text-base leading-relaxed text-[#9A7B6B]">
+              Putri dari<br/>
+              <span v-if="invitation?.bride_father" class="text-[#6A4E42] font-semibold">Bapak {{ invitation?.bride_father }}</span>
+              <span v-if="invitation?.bride_father && invitation?.bride_mother"> &amp; </span>
+              <span v-if="invitation?.bride_mother" class="text-[#6A4E42] font-semibold">Ibu {{ invitation?.bride_mother }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -129,25 +360,174 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import type { CSSProperties } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+import type { ThemeConfig } from '@/types/theme';
+import type { Invitation } from '@/types/invitation';
+import { resolveAssetUrl } from '@/utils/url';
+import { useSmoothScroll } from '@/composables/useSmoothScroll';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 const props = defineProps<{
   overlayGradient: string;
   quote?: string;
-  themeConfig?: any;
+  themeConfig?: ThemeConfig;
+  invitation?: Invitation;
+  apiBase?: string;
 }>();
+
+function getSubName(fullName: string | undefined, firstName: string | undefined): string {
+  if (!fullName) return '';
+  if (!firstName) return fullName;
+  
+  const cleanFull = fullName.trim();
+  const cleanFirst = firstName.trim();
+  
+  if (cleanFull.toLowerCase().startsWith(cleanFirst.toLowerCase())) {
+    return cleanFull.substring(cleanFirst.length).trim();
+  }
+  return cleanFull;
+}
 
 const heroSection = ref<HTMLElement | null>(null);
 const heroContentContainer = ref<HTMLElement | null>(null);
 const quoteCardRef = ref<HTMLElement | null>(null);
+const bridgeRef = ref<HTMLElement | null>(null);
+const coupleBgRef = ref<HTMLElement | null>(null);
+const coupleContentRef = ref<HTMLElement | null>(null);
+const coupleNamesRef = ref<HTMLElement | null>(null);
+
+const bgLeavesRefs = ref<HTMLElement[]>([]);
+const focusLeafRef = ref<HTMLElement | null>(null);
+const focusLeafContainerRef = ref<HTMLElement | null>(null);
+const focusLeafInnerRef = ref<HTMLElement | null>(null);
+const leavesContainerRef = ref<HTMLElement | null>(null);
+const groomInfoRef = ref<HTMLElement | null>(null);
+const brideInfoRef = ref<HTMLElement | null>(null);
+
+const { stop: stopScroll, start: startScroll } = useSmoothScroll();
+
+let lockedScrollPos = 0;
+let isLeafAnimating = false;
+
+const handleScrollLock = () => {
+  if (isLeafAnimating && triggerInstance) {
+    window.scrollTo(0, lockedScrollPos);
+  }
+};
 
 let scrollTl: gsap.core.Timeline | null = null;
 let triggerInstance: ScrollTrigger | null = null;
 
+let idleTween: gsap.core.Timeline | gsap.core.Tween | null = null;
+let leafFlyInTl: gsap.core.Timeline | null = null;
+
+function animateLeaf(leafEl: any, index: number, isInitial = false) {
+  let scale, opacity, blurVal;
+  if (index % 3 === 0) {
+    scale = gsap.utils.random(0.15, 0.25);
+    opacity = gsap.utils.random(0.2, 0.4);
+    blurVal = 2;
+  } else if (index % 3 === 1) {
+    scale = gsap.utils.random(0.3, 0.4);
+    opacity = gsap.utils.random(0.5, 0.7);
+    blurVal = 0;
+  } else {
+    scale = gsap.utils.random(0.45, 0.6);
+    opacity = gsap.utils.random(0.7, 0.9);
+    blurVal = 0;
+  }
+
+  leafEl._originalScale = scale;
+  leafEl._originalOpacity = opacity;
+
+  const startXVal = isInitial ? gsap.utils.random(-10, 100) : -15;
+  const startYVal = gsap.utils.random(10, 90);
+
+  gsap.set(leafEl, {
+    scale: scale,
+    opacity: opacity,
+    filter: blurVal > 0 ? `blur(${blurVal}px)` : 'none',
+    x: `${startXVal}vw`,
+    y: `${startYVal}vh`,
+    rotation: gsap.utils.random(0, 360),
+    rotationZ: gsap.utils.random(0, 360),
+  });
+
+  const duration = gsap.utils.random(4, 8);
+  const remainingFraction = isInitial ? (115 - startXVal) / 130 : 1;
+  const adjustedDuration = duration * remainingFraction;
+
+  const path = [];
+  if (isInitial) {
+    path.push({ x: `${startXVal}vw`, y: `${startYVal}vh` });
+    if (startXVal < 40) {
+      path.push({ x: `${gsap.utils.random(40, 60)}vw`, y: `${startYVal + gsap.utils.random(-3, 3)}vh` });
+    }
+    if (startXVal < 80) {
+      path.push({ x: `${gsap.utils.random(70, 90)}vw`, y: `${startYVal + gsap.utils.random(-3, 3)}vh` });
+    }
+    path.push({ x: '115vw', y: `${startYVal + gsap.utils.random(-3, 3)}vh` });
+  } else {
+    path.push({ x: '-15vw', y: `${startYVal}vh` });
+    path.push({ x: `${gsap.utils.random(20, 40)}vw`, y: `${startYVal + gsap.utils.random(-3, 3)}vh` });
+    path.push({ x: `${gsap.utils.random(60, 80)}vw`, y: `${startYVal + gsap.utils.random(-3, 3)}vh` });
+    path.push({ x: '115vw', y: `${startYVal + gsap.utils.random(-3, 3)}vh` });
+  }
+
+  const tween = gsap.to(leafEl, {
+    motionPath: {
+      path: path,
+      curviness: 1.2,
+      autoRotate: false
+    },
+    duration: adjustedDuration,
+    ease: 'none',
+    onComplete: () => {
+      animateLeaf(leafEl, index, false);
+    }
+  });
+
+  const rotTween = gsap.to(leafEl, {
+    rotation: `+=${gsap.utils.random(180, 720)}`,
+    rotationZ: `+=${gsap.utils.random(90, 360)}`,
+    duration: adjustedDuration,
+    ease: 'sine.inOut',
+  });
+
+  leafEl._gsapTween = tween;
+  leafEl._gsapRotTween = rotTween;
+}
+
+
+
+function startIdleAnimation() {
+  if (idleTween) idleTween.kill();
+  idleTween = gsap.timeline({ repeat: -1, yoyo: true });
+  idleTween.to(focusLeafInnerRef.value, {
+    x: 0, // stay centered
+    y: '+=4',
+    rotation: -32,
+    duration: 2.5,
+    ease: 'sine.inOut'
+  });
+}
+
+function stopIdleAnimation() {
+  if (idleTween) {
+    idleTween.kill();
+    idleTween = null;
+  }
+}
+
 onMounted(async () => {
   await nextTick();
   if (!heroSection.value) return;
+
+  // Initialize background leaves
+  bgLeavesRefs.value.forEach((leafEl, idx) => {
+    animateLeaf(leafEl, idx, true);
+  });
 
   let activated = false;
   let activateScrollAnimations = () => {};
@@ -348,7 +728,7 @@ onMounted(async () => {
   if (props.quote) {
     scrollTl = gsap.timeline();
 
-    // Fade out hero card and slide it up slightly
+    // --- PHASE 1: HERO OUT ---
     scrollTl.to(heroContentContainer.value, {
       opacity: 0,
       y: '-8vh',
@@ -356,7 +736,7 @@ onMounted(async () => {
       duration: 1,
     });
 
-    // Fade in quote container (Quote Card & Bridge decoration) and slide it up from y: 15vh to 0vh
+    // --- PHASE 2: QUOTE IN ---
     scrollTl.to(quoteCardRef.value, {
       opacity: 1,
       y: '0vh',
@@ -374,13 +754,245 @@ onMounted(async () => {
       }
     }, '-=0.5');
 
-    // Keep showing the quote for a little bit of scroll duration before unpinning
-    scrollTl.to({}, { duration: 0.8 });
+    scrollTl.to(bridgeRef.value, {
+      opacity: 1,
+      y: 0,
+      ease: 'power1.inOut',
+      duration: 1,
+    }, '-=1');
+
+    // Pause on quotes
+    scrollTl.to({}, { duration: 1.2 });
+
+    // --- PHASE 3: QUOTE OUT & COUPLE BG IN & BRIDGE SWIPE TO CENTER ---
+    scrollTl.to(quoteCardRef.value, {
+      opacity: 0,
+      y: '0vh',
+      ease: 'power1.inOut',
+      duration: 1,
+      onComplete: () => {
+        if (quoteCardRef.value) quoteCardRef.value.style.pointerEvents = 'none';
+      }
+    });
+
+    scrollTl.to(coupleBgRef.value, {
+      opacity: 1,
+      ease: 'power1.inOut',
+      duration: 1.2,
+    }, '-=0.8');
+
+    scrollTl.to(bridgeRef.value, {
+      y: '-35dvh',
+      scale: 1.5,
+      ease: 'power2.inOut',
+      duration: 1.5,
+    }, '-=1.2');
+
+    scrollTl.to(leavesContainerRef.value, {
+      opacity: 1,
+      ease: 'power1.inOut',
+      duration: 1.2,
+    }, '-=1.2');
+
+    scrollTl.addLabel('coupleSectionFullyOpen');
+
+    gsap.set(focusLeafContainerRef.value, {
+      xPercent: -50,
+      yPercent: -50
+    });
+
+    // Define the real-time automatic leaf fly-in timeline
+    leafFlyInTl = gsap.timeline({
+      paused: true,
+      onStart: () => {
+        gsap.set(focusLeafContainerRef.value, { display: 'flex' });
+        gsap.set(coupleNamesRef.value, { display: 'flex' });
+        stopScroll();
+        isLeafAnimating = true;
+        if (triggerInstance) {
+          const progress = (triggerInstance as any).progress;
+          lockedScrollPos = (triggerInstance as any).start + ((triggerInstance as any).end - (triggerInstance as any).start) * progress;
+          window.scrollTo(0, lockedScrollPos);
+        }
+        window.addEventListener('scroll', handleScrollLock, { passive: true });
+      },
+      onComplete: () => {
+        startIdleAnimation();
+        startScroll();
+        isLeafAnimating = false;
+        window.removeEventListener('scroll', handleScrollLock);
+      },
+      onReverseComplete: () => {
+        stopIdleAnimation();
+        gsap.set(focusLeafContainerRef.value, { display: 'none' });
+        gsap.set(coupleNamesRef.value, { display: 'none' });
+        startScroll();
+        isLeafAnimating = false;
+        window.removeEventListener('scroll', handleScrollLock);
+      }
+    });
+
+    // Set initial position
+    leafFlyInTl.set(focusLeafContainerRef.value, {
+      xPercent: -50,
+      yPercent: -50,
+      x: '-100vw',
+      y: '10vh',
+      scale: 0.15,
+      opacity: 0,
+      filter: 'blur(3px)'
+    });
+    leafFlyInTl.set(focusLeafInnerRef.value, {
+      rotation: 120,
+      rotationZ: 0
+    });
+    leafFlyInTl.set([groomInfoRef.value, brideInfoRef.value], {
+      opacity: 0
+    });
+
+    // Animate leaf & name container flying from far left directly to center (position only)
+    leafFlyInTl.to(focusLeafContainerRef.value, {
+      xPercent: -50,
+      yPercent: -50,
+      x: 0,
+      y: 0,
+      duration: 2.2, // slow duration
+      ease: 'power2.out'
+    });
+
+    // Animate scale, opacity, and blur with keyframes to make it stay small initially
+    // and start zooming from the middle
+    leafFlyInTl.to(focusLeafContainerRef.value, {
+      keyframes: [
+        {
+          scale: 0.22,
+          opacity: 0.4,
+          filter: 'blur(2px)',
+          duration: 1.0,
+          ease: 'power1.in'
+        },
+        {
+          scale: 1.1,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          ease: 'power2.out'
+        }
+      ]
+    }, '<');
+
+    // Rotate the leaf during fly-in (rotating from 120 to 45, then to -35)
+    leafFlyInTl.to(focusLeafInnerRef.value, {
+      keyframes: [
+        { rotation: 45, duration: 1.0, ease: 'sine.inOut' },
+        { rotation: -35, duration: 1.2, ease: 'power2.out' }
+      ]
+    }, '<');
+
+    // Fade in groom info on the leaf
+    leafFlyInTl.to(groomInfoRef.value, {
+      opacity: 1,
+      duration: 0.8,
+      ease: 'power1.out'
+    }, '-=0.6');
+
+    // Trigger leaf fly-in automatically when the couple section is fully open!
+    scrollTl.call(() => {
+      const isBackward = triggerInstance && triggerInstance.direction === -1;
+      if (isBackward) {
+        if (leafFlyInTl) {
+          isLeafAnimating = true;
+          stopScroll();
+          if (triggerInstance) {
+            const progress = (triggerInstance as any).progress;
+            lockedScrollPos = (triggerInstance as any).start + ((triggerInstance as any).end - (triggerInstance as any).start) * progress;
+            window.scrollTo(0, lockedScrollPos);
+          }
+          window.addEventListener('scroll', handleScrollLock, { passive: true });
+          leafFlyInTl.reverse();
+          stopIdleAnimation();
+        }
+      } else {
+        if (leafFlyInTl) {
+          isLeafAnimating = true;
+          stopScroll();
+          if (triggerInstance) {
+            const progress = (triggerInstance as any).progress;
+            lockedScrollPos = (triggerInstance as any).start + ((triggerInstance as any).end - (triggerInstance as any).start) * progress;
+            window.scrollTo(0, lockedScrollPos);
+          }
+          window.addEventListener('scroll', handleScrollLock, { passive: true });
+          leafFlyInTl.play(0);
+        }
+      }
+    }, undefined, 'coupleSectionFullyOpen');
+
+    // Add a pause of 2.0 scroll duration to let the user scroll while seeing the Groom info
+    scrollTl.to({}, { duration: 2.0 });
+
+    // Ensure leafFlyInTl is complete before starting the fade-out
+    scrollTl.call(() => {
+      const isBackward = triggerInstance && triggerInstance.direction === -1;
+      if (!isBackward && leafFlyInTl) {
+        leafFlyInTl.progress(1);
+      }
+    });
+
+    // Groom Info fades out on scroll
+    scrollTl.to(groomInfoRef.value, {
+      opacity: 0,
+      duration: 1.0,
+      ease: 'power1.inOut'
+    });
+
+    // Bride Info fades in on scroll
+    scrollTl.to(brideInfoRef.value, {
+      opacity: 1,
+      duration: 1.0,
+      ease: 'power1.inOut'
+    }, '+=0.2');
+
+    // Pause on bride info
+    scrollTl.to({}, { duration: 1.8 });
+
+    // After showing the bride info, Bride Info fades out and leaf flies to the right
+    scrollTl.to(brideInfoRef.value, {
+      opacity: 0,
+      duration: 1.0,
+      ease: 'power1.inOut'
+    });
+
+    scrollTl.to(focusLeafContainerRef.value, {
+      xPercent: -50,
+      yPercent: -50,
+      x: '100vw',
+      y: '-10vh',
+      scale: 0.15,
+      opacity: 0,
+      filter: 'blur(3px)',
+      duration: 1.5,
+      ease: 'power1.inOut',
+      onStart: () => {
+        stopIdleAnimation();
+      },
+      onReverseComplete: () => {
+        startIdleAnimation();
+      }
+    }, '<');
+
+    scrollTl.to(focusLeafInnerRef.value, {
+      rotation: 120,
+      duration: 1.5,
+      ease: 'power1.inOut'
+    }, '<');
+
+    // Final pause of couple section exit transition
+    scrollTl.to({}, { duration: 1.0 });
 
     triggerInstance = ScrollTrigger.create({
       trigger: heroSection.value,
       start: 'top top',
-      end: '+=150%', // Scroll distance of 1.5 screens
+      end: '+=450%', // Increased scroll distance to accommodate the exit fly-off phase smoothly
       pin: true,
       scrub: true, // Smooth scrub linked to scrollbar
       animation: scrollTl,
@@ -396,13 +1008,28 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScrollLock);
   if (scrollTl) scrollTl.kill();
   if (triggerInstance) triggerInstance.kill();
+  if (leafFlyInTl) leafFlyInTl.kill();
   // Kill entry animations and sway loops
   const elements = heroSection.value?.querySelectorAll('.decor-asset, .cloud-anim-left, .cloud-anim-right');
   if (elements) {
     elements.forEach(el => gsap.killTweensOf(el));
   }
+  if (bridgeRef.value) gsap.killTweensOf(bridgeRef.value);
+  if (coupleBgRef.value) gsap.killTweensOf(coupleBgRef.value);
+  if (coupleContentRef.value) gsap.killTweensOf(coupleContentRef.value);
+  if (coupleNamesRef.value) gsap.killTweensOf(coupleNamesRef.value);
+
+  // Kill leaf animations
+  if (bgLeavesRefs.value) {
+    bgLeavesRefs.value.forEach((leaf: any) => {
+      if (leaf._gsapTween) leaf._gsapTween.kill();
+      if (leaf._gsapRotTween) leaf._gsapRotTween.kill();
+    });
+  }
+  if (idleTween) idleTween.kill();
 });
 
 /**

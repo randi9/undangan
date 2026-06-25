@@ -17,11 +17,11 @@ import { ref, type Ref } from 'vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
-export function useSmoothScroll() {
-  const lenis: Ref<Lenis | null> = ref(null)
+// Module-level variables to share the same Lenis instance across components
+const lenis: Ref<Lenis | null> = ref(null)
+let tickerCallback: ((time: number) => void) | null = null
 
-  // Keep a reference to the ticker callback so we can properly remove it on destroy
-  let tickerCallback: ((time: number) => void) | null = null
+export function useSmoothScroll() {
 
   function init() {
     // Prevent double-init

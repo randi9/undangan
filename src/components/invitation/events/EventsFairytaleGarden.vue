@@ -47,157 +47,239 @@
       "
     />
 
-    <!-- Title and Introduction Header -->
-    <div 
-      ref="headerRef"
-      class="absolute top-[10%] left-1/2 -translate-x-1/2 w-[90%] max-w-xl z-10 flex flex-col items-center pointer-events-none"
-    >
-      <div v-if="invitation.groom_name && invitation.bride_name" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: -0.25rem;">
-        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '2.5rem', color: '#D9A9AF', transform: 'rotate(-5deg)' }">{{ invitation.groom_name.charAt(0).toUpperCase() }}</span>
-        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '1.5rem', color: '#AEB8A3', fontStyle: 'italic', opacity: 0.8 }">&amp;</span>
-        <span :style="{ fontFamily: themeConfig.fontHeading, fontSize: '2.5rem', color: '#D9A9AF', transform: 'rotate(5deg)' }">{{ invitation.bride_name.charAt(0).toUpperCase() }}</span>
-      </div>
-      <h2 class="text-3xl md:text-5xl mb-2 text-[#D9A9AF]" :style="{ fontFamily: themeConfig.fontHeading }">Acara</h2>
-      <div class="flex items-center justify-center gap-4 text-[#AEB8A3]">
-        <div class="h-px w-16 bg-[#AEB8A3] opacity-50"></div>
-        <Icon icon="ph:calendar-heart-duotone" class="w-8 h-8" />
-        <div class="h-px w-16 bg-[#AEB8A3] opacity-50"></div>
-      </div>
-    </div>
 
-    <!-- Step 1: Akad Nikah Card (Bottom) -->
+    <!-- Step 1: Akad Nikah Section (Overlay on bridge and water) -->
     <div 
       v-if="invitation.akad_venue"
       ref="akadCardRef"
-      class="absolute bottom-[8%] left-1/2 -translate-x-1/2 w-[90%] max-w-[500px] p-6 md:p-8 rounded-3xl text-left shadow-lg pointer-events-auto"
-      style="
-        background: rgba(255, 255, 255, 0.45);
-        backdrop-filter: blur(12px) saturate(120%);
-        -webkit-backdrop-filter: blur(12px) saturate(120%);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.2);
-        z-index: 10;
-        opacity: 0;
-      "
+      class="absolute inset-0 z-10 pointer-events-none opacity-0"
     >
-      <div class="flex items-center gap-4 mb-4">
-        <Icon icon="ph:rings-duotone" class="w-10 h-10 text-[#AEB8A3]" />
-        <h3 class="text-2xl font-normal text-[#D9A9AF]" :style="{ fontFamily: themeConfig.fontHeading }">Akad Nikah</h3>
-      </div>
-      <div class="space-y-3 text-sm md:text-base text-[#6A4E42]">
-        <div v-if="invitation.akad_date" class="flex gap-3">
-          <Icon icon="ph:calendar-blank-duotone" class="w-5 h-5 flex-shrink-0 mt-0.5 text-[#AEB8A3]" /> 
-          <span>{{ formatDateLong(invitation.akad_date) }}</span>
-        </div>
-        <div v-if="invitation.akad_time" class="flex gap-3">
-          <Icon icon="ph:clock-duotone" class="w-5 h-5 flex-shrink-0 mt-0.5 text-[#AEB8A3]" /> 
-          <span>{{ invitation.akad_time }}</span>
-        </div>
-        <div v-if="invitation.akad_venue" class="flex gap-3">
-          <Icon icon="ph:map-pin-duotone" class="w-5 h-5 flex-shrink-0 mt-0.5 text-[#AEB8A3]" />
-          <span>
-            <strong class="text-[#6A4E42]">{{ invitation.akad_venue }}</strong>
-            <br v-if="invitation.akad_address" />
-            <span class="text-xs text-[#9A7B6B]">{{ invitation.akad_address }}</span>
-          </span>
-        </div>
-      </div>
-      <div class="flex flex-wrap gap-2 mt-6">
-        <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#AEB8A3] text-white font-medium text-xs hover:bg-[#9A7B6B] transition-colors">
-          <Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Buka Maps
-        </a>
-        <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#AEB8A3] text-[#6A4E42] font-medium text-xs hover:bg-white/35 transition-colors">
-          <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4 text-[#AEB8A3]" /> Ingatkan Saya
-        </a>
-      </div>
-    </div>
-
-    <!-- Step 2: Resepsi & Live Streaming Card (Top) -->
-    <div 
-      v-if="invitation.resepsi_venue || (invitation.streaming_enabled && invitation.streaming_url)"
-      ref="resepsiCardRef"
-      class="absolute top-[6%] left-1/2 -translate-x-1/2 w-[90%] max-w-[700px] p-6 md:p-8 rounded-3xl text-left shadow-lg pointer-events-auto"
-      style="
-        background: rgba(255, 255, 255, 0.45);
-        backdrop-filter: blur(12px) saturate(120%);
-        -webkit-backdrop-filter: blur(12px) saturate(120%);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.2);
-        max-height: 88dvh;
-        overflow-y: auto;
-        z-index: 10;
-        opacity: 0;
-      "
-    >
-      <div 
-        :class="[
-          'grid gap-6 w-full',
-          invitation.resepsi_venue && invitation.streaming_enabled && invitation.streaming_url 
-            ? 'md:grid-cols-2' 
-            : 'grid-cols-1'
-        ]"
+      <!-- Title on the bridge wood (Curved SVG text Path) -->
+      <svg 
+        viewBox="0 0 600 150" 
+        class="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] h-[150px] pointer-events-none"
       >
-        <!-- Resepsi Column -->
-        <div v-if="invitation.resepsi_venue" class="flex flex-col justify-between">
-          <div>
-            <div class="flex items-center gap-4 mb-4">
-              <Icon icon="ph:confetti-duotone" class="w-10 h-10 text-[#AEB8A3]" />
-              <h3 class="text-2xl font-normal text-[#D9A9AF]" :style="{ fontFamily: themeConfig.fontHeading }">Resepsi</h3>
+        <defs>
+          <filter id="shadow-akad" x="-20%" y="-20%" width="140%" height="140%">
+            <!-- Sharp dark shadow -->
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.9" />
+            <!-- Soft ambient shadow -->
+            <feDropShadow dx="0" dy="1" stdDeviation="8" flood-color="#000000" flood-opacity="0.5" />
+          </filter>
+        </defs>
+        <path 
+          id="bridge-curve-akad" 
+          d="M 50 110 Q 300 75 550 110" 
+          fill="transparent" 
+        />
+        <text 
+          fill="white" 
+          text-anchor="middle"
+          filter="url(#shadow-akad)"
+          :style="{ 
+            fontFamily: themeConfig.fontHeading,
+            fontSize: '65px'
+          }"
+        >
+          <textPath href="#bridge-curve-akad" xlink:href="#bridge-curve-akad" startOffset="50%">
+            Akad Nikah
+          </textPath>
+        </text>
+      </svg>
+
+      <!-- Info in the water below the bridge -->
+      <div 
+        class="absolute top-[58%] left-1/2 -translate-x-1/2 w-[90%] max-w-[450px] flex flex-col items-center px-6 py-6 pointer-events-auto max-h-[38dvh] overflow-y-auto"
+      >
+        <!-- Heart Divider (Top) -->
+        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-bottom: 20px;">
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        </div>
+
+        <!-- Details block wrapper (centered on card, left-aligned content) -->
+        <div class="w-full flex justify-center">
+          <div class="space-y-3.5 text-white text-sm md:text-base font-semibold flex flex-col items-start text-left w-fit max-w-[290px] xs:max-w-xs sm:max-w-sm">
+            <div v-if="invitation.akad_date" class="flex items-center gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
+              <Icon icon="ph:calendar-blank-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+              <span>{{ formatDateLong(invitation.akad_date) }}</span>
             </div>
-            <div class="space-y-3 text-sm text-[#6A4E42]">
-              <div v-if="invitation.resepsi_date" class="flex gap-3">
-                <Icon icon="ph:calendar-blank-duotone" class="w-5 h-5 flex-shrink-0 mt-0.5 text-[#AEB8A3]" /> 
-                <span>{{ formatDateLong(invitation.resepsi_date) }}</span>
-              </div>
-              <div v-if="invitation.resepsi_time" class="flex gap-3">
-                <Icon icon="ph:clock-duotone" class="w-5 h-5 flex-shrink-0 mt-0.5 text-[#AEB8A3]" /> 
-                <span>{{ invitation.resepsi_time }}</span>
-              </div>
-              <div v-if="invitation.resepsi_venue" class="flex gap-3">
-                <Icon icon="ph:map-pin-duotone" class="w-5 h-5 flex-shrink-0 mt-0.5 text-[#AEB8A3]" />
-                <span>
-                  <strong class="text-[#6A4E42]">{{ invitation.resepsi_venue }}</strong>
-                  <br v-if="invitation.resepsi_address" />
-                  <span class="text-xs text-[#9A7B6B]">{{ invitation.resepsi_address }}</span>
+            <div v-if="invitation.akad_time" class="flex items-center gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
+              <Icon icon="ph:clock-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+              <span>{{ formatTime(invitation.akad_time) }}</span>
+            </div>
+            <div v-if="invitation.akad_venue" class="flex items-start gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
+              <Icon icon="ph:map-pin-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 mt-0.5 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+              <div>
+                <strong class="font-bold block">{{ invitation.akad_venue }}</strong>
+                <span v-if="invitation.akad_address" class="text-xs text-white/95 font-medium leading-relaxed block mt-0.5 max-w-[280px]">
+                  {{ invitation.akad_address }}
                 </span>
               </div>
             </div>
           </div>
-          <div class="flex flex-wrap gap-2 mt-6">
-            <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#AEB8A3] text-white font-medium text-xs hover:bg-[#9A7B6B] transition-colors">
-              <Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Buka Maps
-            </a>
-            <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#AEB8A3] text-[#6A4E42] font-medium text-xs hover:bg-white/35 transition-colors">
-              <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4 text-[#AEB8A3]" /> Ingatkan Saya
-            </a>
+        </div>
+
+        <!-- Heart Divider (Bottom) -->
+        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-top: 20px; margin-bottom: 24px;">
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3 w-full">
+          <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9999px; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Buka Maps
+          </a>
+          <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4 text-white" /> Ingatkan Saya
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Curved SVG Title on Bridge -->
+    <div 
+      v-if="invitation.resepsi_venue || (invitation.streaming_enabled && invitation.streaming_url)"
+      ref="resepsiTitleRef"
+      class="absolute inset-0 z-10 pointer-events-none opacity-0"
+    >
+      <svg 
+        viewBox="0 0 600 150" 
+        class="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] h-[150px] pointer-events-none"
+      >
+        <defs>
+          <filter id="shadow-resepsi" x="-20%" y="-20%" width="140%" height="140%">
+            <!-- Sharp dark shadow -->
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.9" />
+            <!-- Soft ambient shadow -->
+            <feDropShadow dx="0" dy="1" stdDeviation="8" flood-color="#000000" flood-opacity="0.5" />
+          </filter>
+        </defs>
+        <path 
+          id="bridge-curve-resepsi" 
+          d="M 50 110 Q 300 75 550 110" 
+          fill="transparent" 
+        />
+        <text 
+          fill="white" 
+          text-anchor="middle"
+          filter="url(#shadow-resepsi)"
+          :style="{ 
+            fontFamily: themeConfig.fontHeading,
+            fontSize: '65px'
+          }"
+        >
+          <textPath href="#bridge-curve-resepsi" xlink:href="#bridge-curve-resepsi" startOffset="50%">
+            Resepsi
+          </textPath>
+        </text>
+      </svg>
+    </div>
+
+    <!-- Step 2: Resepsi Section (Info above the bridge) -->
+    <div 
+      v-if="invitation.resepsi_venue"
+      ref="resepsiCardRef"
+      class="absolute inset-0 z-10 pointer-events-none opacity-0"
+    >
+      <div 
+        class="absolute top-[10dvh] left-1/2 -translate-x-1/2 w-[90%] max-w-[450px] flex flex-col items-center px-6 py-6 pointer-events-auto max-h-[32dvh] overflow-y-auto"
+      >
+        <!-- Heart Divider (Top) -->
+        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-bottom: 20px;">
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        </div>
+
+        <div class="w-full flex justify-center">
+          <div class="space-y-3.5 text-white text-sm md:text-base font-semibold flex flex-col items-start text-left w-fit max-w-[290px] xs:max-w-xs sm:max-w-sm">
+            <div v-if="invitation.resepsi_date" class="flex items-center gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
+              <Icon icon="ph:calendar-blank-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+              <span>{{ formatDateLong(invitation.resepsi_date) }}</span>
+            </div>
+            <div v-if="invitation.resepsi_time" class="flex items-center gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
+              <Icon icon="ph:clock-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+              <span>{{ formatTime(invitation.resepsi_time) }}</span>
+            </div>
+            <div v-if="invitation.resepsi_venue" class="flex items-start gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
+              <Icon icon="ph:map-pin-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 mt-0.5 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+              <div>
+                <strong class="font-bold block">{{ invitation.resepsi_venue }}</strong>
+                <span v-if="invitation.resepsi_address" class="text-xs text-white/95 font-medium leading-relaxed block mt-0.5 max-w-[280px]">
+                  {{ invitation.resepsi_address }}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Live Streaming Column -->
-        <div v-if="invitation.streaming_enabled && invitation.streaming_url" class="flex flex-col justify-between border-t md:border-t-0 md:border-l border-[#EBCFD1]/30 pt-6 md:pt-0 md:pl-6">
-          <div>
-            <div class="flex items-center gap-4 mb-4">
-              <Icon icon="ph:video-camera-duotone" class="w-10 h-10 text-[#AEB8A3]" />
-              <h3 class="text-2xl font-normal text-[#D9A9AF]" :style="{ fontFamily: themeConfig.fontHeading }">Live Streaming</h3>
-            </div>
-            <p class="text-xs text-[#6A4E42] mb-4">
-              Bagi keluarga & sahabat yang berhalangan hadir secara langsung, Anda dapat mengikuti acara kami secara virtual melalui tautan berikut:
-            </p>
-            <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-md border border-black/5 bg-black/5">
-              <iframe 
-                :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
-                class="absolute top-0 left-0 w-full h-full"
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen>
-              </iframe>
-            </div>
+        <!-- Heart Divider (Bottom) -->
+        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-top: 20px; margin-bottom: 24px;">
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-2 w-full">
+          <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9999px; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Buka Maps
+          </a>
+          <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4 text-white" /> Ingatkan Saya
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Live Streaming Section (Info above the bridge) -->
+    <div 
+      v-if="invitation.streaming_enabled && invitation.streaming_url"
+      ref="streamingCardRef"
+      class="absolute inset-0 z-10 pointer-events-none opacity-0"
+    >
+      <div 
+        class="absolute top-[10dvh] left-1/2 -translate-x-1/2 w-[90%] max-w-[450px] flex flex-col items-center px-4 py-4 pointer-events-auto max-h-[38dvh] overflow-y-auto"
+      >
+        <!-- Heart Divider (Top) -->
+        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-bottom: 12px;">
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        </div>
+
+        <div class="space-y-2 flex flex-col items-center w-full text-center">
+          <div class="flex items-center gap-2 justify-center w-full">
+            <Icon icon="ph:video-camera-duotone" class="w-4 h-4 text-[#EBCFD1] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+            <span class="font-bold text-sm text-white">Live Streaming</span>
           </div>
-          <div class="mt-4">
-            <a :href="invitation.streaming_url" target="_blank" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#D9A9AF] text-white font-medium text-xs hover:bg-[#c8989e] transition-colors">
-              <Icon icon="ph:play-circle-duotone" class="w-4 h-4" /> Gabung Live
-            </a>
+          <p class="text-[11px] text-white/95 font-medium leading-relaxed max-w-[260px]" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8)">
+            Anda dapat mengikuti acara kami secara virtual melalui tautan berikut:
+          </p>
+          <div class="relative w-full max-w-[200px] aspect-video rounded-lg overflow-hidden shadow-sm border border-white/10 bg-black/25">
+            <iframe 
+              :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
+              class="absolute top-0 left-0 w-full h-full"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen>
+            </iframe>
           </div>
+        </div>
+
+        <!-- Heart Divider (Bottom) -->
+        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-top: 12px; margin-bottom: 16px;">
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        </div>
+
+        <div class="flex justify-center w-full">
+          <a :href="invitation.streaming_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 12px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:play-circle-duotone" class="w-3.5 h-3.5" /> Gabung Live
+          </a>
         </div>
       </div>
     </div>
@@ -225,7 +307,9 @@ const eventSectionRef = ref<HTMLElement | null>(null);
 const boatRef = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
 const akadCardRef = ref<HTMLElement | null>(null);
+const resepsiTitleRef = ref<HTMLElement | null>(null);
 const resepsiCardRef = ref<HTMLElement | null>(null);
+const streamingCardRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
 
@@ -233,12 +317,14 @@ onMounted(() => {
   ctx = gsap.context(() => {
     if (!eventSectionRef.value || !boatRef.value) return;
 
+    const hasStreaming = !!(props.invitation.streaming_enabled && props.invitation.streaming_url);
+
     // Create scroll timeline with ScrollTrigger pinning
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: eventSectionRef.value,
         start: 'top top',
-        end: '+=300%', // 3 scroll steps
+        end: hasStreaming ? '+=400%' : '+=300%',
         pin: true,
         scrub: 1, // smooth scroll link
         anticipatePin: 1,
@@ -256,21 +342,29 @@ onMounted(() => {
       gsap.set(headerRef.value, { opacity: 1, y: 0, scale: 1 });
     }
     if (akadCardRef.value) {
-      gsap.set(akadCardRef.value, { opacity: 0, y: 50, scale: 0.95 });
+      gsap.set(akadCardRef.value, { opacity: 0, scale: 0.95 });
+    }
+    if (resepsiTitleRef.value) {
+      gsap.set(resepsiTitleRef.value, { opacity: 0, scale: 0.95 });
     }
     if (resepsiCardRef.value) {
-      gsap.set(resepsiCardRef.value, { opacity: 0, y: -50, scale: 0.95 });
+      gsap.set(resepsiCardRef.value, { opacity: 0, scale: 0.95 });
+    }
+    if (streamingCardRef.value) {
+      gsap.set(streamingCardRef.value, { opacity: 0, scale: 0.95 });
     }
 
     // --- Phase 1: Scroll 1 ---
     // - Header fades out
     // - Boat moves to top: 10%
-    // - Akad card fades in at the bottom
-    tl.to(boatRef.value, {
-      top: '10%',
-      duration: 1.0,
-      ease: 'power1.inOut',
-    }, 0);
+    // - Akad card fades in (title on bridge, info below)
+    tl.fromTo(boatRef.value,
+      { top: '-25%' },
+      {
+        top: '10%',
+        duration: 1.0,
+        ease: 'power1.inOut',
+      }, 0);
 
     if (headerRef.value) {
       tl.to(headerRef.value, {
@@ -285,7 +379,6 @@ onMounted(() => {
     if (akadCardRef.value) {
       tl.to(akadCardRef.value, {
         opacity: 1,
-        y: 0,
         scale: 1,
         duration: 0.8,
         ease: 'power2.out',
@@ -297,28 +390,37 @@ onMounted(() => {
 
     // --- Phase 2: Scroll 2 ---
     // - Akad card fades out
-    // - Boat moves to top: 50%, size increases to 260px
+    // - Boat moves to top: 50%
     // - Resepsi card fades in at the top
     if (akadCardRef.value) {
       tl.to(akadCardRef.value, {
         opacity: 0,
-        y: 50,
         scale: 0.95,
         duration: 0.6,
         ease: 'power2.in',
       });
     }
 
-    tl.to(boatRef.value, {
-      top: '50%',
-      duration: 1.0,
-      ease: 'power1.inOut',
-    }, '+=0.1');
+    tl.fromTo(boatRef.value,
+      { top: '10%' },
+      {
+        top: '50%',
+        duration: 1.0,
+        ease: 'power1.inOut',
+      }, '+=0.1');
+
+    if (resepsiTitleRef.value) {
+      tl.to(resepsiTitleRef.value, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+      }, '+=0.2');
+    }
 
     if (resepsiCardRef.value) {
       tl.to(resepsiCardRef.value, {
         opacity: 1,
-        y: 0,
         scale: 1,
         duration: 0.8,
         ease: 'power2.out',
@@ -328,24 +430,85 @@ onMounted(() => {
     // Spacer pause at the end of Phase 2 to let user read Resepsi Card
     tl.to({}, { duration: 0.4 });
 
-    // --- Phase 3: Scroll 3 ---
-    // - Resepsi card fades out
-    // - Boat moves past the bottom to top: 120% and size increases to 600px
-    if (resepsiCardRef.value) {
-      tl.to(resepsiCardRef.value, {
-        opacity: 0,
-        y: -50,
-        scale: 0.95,
-        duration: 0.6,
-        ease: 'power2.in',
-      });
-    }
+    // --- Phase 3 (Conditional: Live Streaming, or Departure) ---
+    if (hasStreaming) {
+      // 1. Resepsi info & Title fade out (boat remains at 50%)
+      if (resepsiCardRef.value) {
+        tl.to(resepsiCardRef.value, {
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.6,
+          ease: 'power2.in',
+        });
+      }
+      if (resepsiTitleRef.value) {
+        tl.to(resepsiTitleRef.value, {
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.6,
+          ease: 'power2.in',
+        }, '<');
+      }
 
-    tl.to(boatRef.value, {
-      top: '120%',
-      duration: 0.8, // Boat sails away off screen quickly
-      ease: 'power1.in',
-    }, '+=0.1');
+      // 2. Streaming card fades in (boat remains at 50%)
+      if (streamingCardRef.value) {
+        tl.to(streamingCardRef.value, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: 'power2.out',
+        }, '+=0.2');
+      }
+
+      // Spacer pause at the end of streaming card to let user read/watch
+      tl.to({}, { duration: 0.4 });
+
+      // 3. Streaming card fades out
+      if (streamingCardRef.value) {
+        tl.to(streamingCardRef.value, {
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.6,
+          ease: 'power2.in',
+        });
+      }
+
+      // 4. Boat sails away to 120%
+      tl.fromTo(boatRef.value,
+        { top: '50%' },
+        {
+          top: '120%',
+          duration: 0.8,
+          ease: 'power1.in',
+        }, '+=0.1');
+
+    } else {
+      // No streaming: immediately fade out Resepsi Card & Title and sail away
+      if (resepsiCardRef.value) {
+        tl.to(resepsiCardRef.value, {
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.6,
+          ease: 'power2.in',
+        });
+      }
+      if (resepsiTitleRef.value) {
+        tl.to(resepsiTitleRef.value, {
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.6,
+          ease: 'power2.in',
+        }, '<');
+      }
+
+      tl.fromTo(boatRef.value,
+        { top: '50%' },
+        {
+          top: '120%',
+          duration: 0.8,
+          ease: 'power1.in',
+        }, '+=0.1');
+    }
 
   }, eventSectionRef.value as HTMLElement);
 });
@@ -386,5 +549,14 @@ function formatDateLong(dateStr: string) {
     month: 'long',
     year: 'numeric',
   });
+}
+
+function formatTime(timeStr?: string) {
+  if (!timeStr) return '';
+  const trimmed = timeStr.trim();
+  if (trimmed.toUpperCase().endsWith('WIB')) {
+    return trimmed;
+  }
+  return `${trimmed} WIB`;
 }
 </script>
