@@ -92,7 +92,10 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  if (tl) tl.kill();
-  ScrollTrigger.getAll().forEach(st => st.kill());
+  if (tl) {
+    tl.kill();
+    if (tl.scrollTrigger) tl.scrollTrigger.kill();
+  }
 });
+
 </script>

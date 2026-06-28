@@ -16,7 +16,7 @@ import { DotLottieVue } from "@lottiefiles/dotlottie-vue";
 // On desktop, we render the invitation inside an iframe so vw units work like mobile
 const isInsideIframe = window.self !== window.top;
 const windowWidth = ref(window.innerWidth);
-const isDesktop = computed(() => windowWidth.value > 768 && !isInsideIframe);
+const isDesktop = computed(() => windowWidth.value > 500 && !isInsideIframe);
 
 function onResize() {
   windowWidth.value = window.innerWidth;
@@ -28,6 +28,12 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+  ScrollTrigger.clearScrollMemory("manual");
+}
 import { useRoute, useRouter } from "vue-router";
 import { useInvitationStore } from "@/stores/invitation";
 import { useAuthStore } from "@/stores/auth";
@@ -631,7 +637,7 @@ function openInvitation() {
   });
 
   // Request fullscreen mode on user click gesture (only on mobile devices/screens, and not inside iframe)
-  if (!isRecordMode.value && !isInsideIframe && window.innerWidth <= 768) {
+  if (!isRecordMode.value && !isInsideIframe && window.innerWidth <= 500) {
     const docEl = document.documentElement;
     if (docEl.requestFullscreen) {
       docEl.requestFullscreen().catch((err) => {

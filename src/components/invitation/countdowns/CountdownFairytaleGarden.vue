@@ -1,5 +1,5 @@
 <template>
-  <section v-if="hasDate" ref="countdownSection" class="py-24 px-6 text-center relative overflow-hidden bg-[#F8F3EE]">
+  <section v-if="hasDate" ref="countdownSection" class="px-6 text-center relative overflow-hidden bg-[#F8F3EE]" style="height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
     <!-- Warm subtle fairytale gradient -->
     <div class="absolute inset-0 w-full h-full bg-gradient-to-b from-[#F8F3EE] via-[#EBCFD1]/10 to-[#F8F3EE] -z-10"></div>
     
@@ -54,38 +54,43 @@ const units = computed(() => [
   { value: props.countdown.seconds, label: 'Detik' },
 ]);
 
+let ctx: gsap.Context | null = null;
+
 onMounted(() => {
-  if (!countdownSection.value) return;
+  ctx = gsap.context(() => {
+    if (!countdownSection.value) return;
 
-  // Header entrance
-  gsap.to(headerRef.value, {
-    opacity: 1,
-    y: 0,
-    duration: 1.2,
-    ease: 'power3.out',
-    scrollTrigger: {
-      trigger: countdownSection.value,
-      start: 'top 85%',
-      toggleActions: 'play none none none',
-    },
-  });
+    // Header entrance
+    gsap.to(headerRef.value, {
+      opacity: 1,
+      y: 0,
+      duration: 1.2,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: countdownSection.value,
+        start: 'top 85%',
+        toggleActions: 'play none none none',
+      },
+    });
 
-  // Digit cards stagger entrance
-  gsap.to(digitRefs.value, {
-    opacity: 1,
-    y: 0,
-    duration: 1,
-    ease: 'power3.out',
-    stagger: 0.15,
-    scrollTrigger: {
-      trigger: countdownSection.value,
-      start: 'top 80%',
-      toggleActions: 'play none none none',
-    },
+    // Digit cards stagger entrance
+    gsap.to(digitRefs.value, {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'power3.out',
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: countdownSection.value,
+        start: 'top 80%',
+        toggleActions: 'play none none none',
+      },
+    });
   });
 });
 
 onBeforeUnmount(() => {
-  ScrollTrigger.getAll().forEach(st => st.kill());
+  if (ctx) ctx.revert();
 });
+
 </script>

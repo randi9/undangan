@@ -5,12 +5,30 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 
+// Force full-reload for invitation components to prevent GSAP ScrollTrigger + HMR conflicts.
+// GSAP injects pin-spacer wrappers and inline styles directly into the DOM which Vue's
+// virtual DOM diffing cannot reconcile during hot module replacement, causing layout chaos.
+function invitationFullReloadPlugin() {
+  return {
+    name: 'invitation-full-reload',
+    handleHotUpdate({ file, server }: { file: string; server: any }) {
+      const normalized = file.replace(/\\/g, '/');
+      if (normalized.includes('/src/components/invitation/') || 
+          normalized.includes('/src/views/invitation/')) {
+        server.ws.send({ type: 'full-reload' });
+        return [];
+      }
+    },
+  };
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
     tailwindcss(),
+    invitationFullReloadPlugin(),
   ],
   esbuild: {
     target: 'esnext'

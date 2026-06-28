@@ -1233,6 +1233,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
     }
   },
 ];
+
 </script>
 
 <style scoped>
