@@ -23,7 +23,7 @@
         transform: translateX(-50%);
         width: 108%;
         max-width: 600px;
-        z-index: 2;
+        z-index: 3;
         pointer-events: none;
       "
     />
@@ -48,11 +48,11 @@
     />
 
 
-    <!-- Step 1: Akad Nikah Section (Overlay on bridge and water) -->
+    <!-- Step 1: Akad Title Section (Overlay on bridge wood) -->
     <div 
       v-if="invitation.akad_venue"
-      ref="akadCardRef"
-      class="absolute inset-0 z-10 pointer-events-none opacity-0"
+      ref="akadTitleRef"
+      class="absolute inset-0 z-[4] pointer-events-none opacity-0"
     >
       <!-- Title on the bridge wood (Curved SVG text Path) -->
       <svg 
@@ -86,34 +86,56 @@
           </textPath>
         </text>
       </svg>
+    </div>
 
+    <!-- Step 1: Akad Info Section (Under the bridge) -->
+    <div 
+      v-if="invitation.akad_venue"
+      ref="akadCardRef"
+      class="absolute inset-0 z-[2] pointer-events-none opacity-0"
+    >
       <!-- Info in the water below the bridge -->
       <div 
-        class="absolute top-[58%] left-1/2 -translate-x-1/2 w-[90%] max-w-[450px] flex flex-col items-center px-6 py-6 pointer-events-auto max-h-[38dvh] overflow-y-auto"
+        style="
+          position: absolute;
+          top: 45dvh;                 /* MUDAH DIEDIT: Posisi dari atas */
+          left: 50%;
+          transform: translateX(-50%);
+          width: 85%;
+          max-width: 350px;
+          height: 52dvh;              /* MUDAH DIEDIT: Tinggi kontainer */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 85px 20px 24px 20px; /* MUDAH DIEDIT: Padding kontainer (pt tebal untuk di bawah jembatan) */
+          overflow: hidden;           /* NO SCROLL */
+          pointer-events: auto;
+          background: rgba(255, 255, 255, 0.65);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1.5px solid rgba(255, 255, 255, 0.55);
+          border-radius: 0px 0px 9999px 9999px;
+          box-shadow: 0px 10px 30px rgba(106, 78, 66, 0.1);
+        "
       >
-        <!-- Heart Divider (Top) -->
-        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-bottom: 20px;">
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
-          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
-        </div>
+
 
         <!-- Details block wrapper (centered on card, left-aligned content) -->
-        <div class="w-full flex justify-center">
-          <div class="space-y-3.5 text-white text-sm md:text-base font-semibold flex flex-col items-start text-left w-fit max-w-[290px] xs:max-w-xs sm:max-w-sm">
-            <div v-if="invitation.akad_date" class="flex items-center gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
-              <Icon icon="ph:calendar-blank-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+        <div style="width: 100%; display: flex; justify-content: center; margin-top: 4px; margin-bottom: 4px;">
+          <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; width: fit-content; max-width: 290px; gap: 10px; color: #6A4E42; font-weight: 600; font-size: 13px;">
+            <div v-if="invitation.akad_date" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+              <Icon icon="ph:calendar-blank-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0;" />
               <span>{{ formatDateLong(invitation.akad_date) }}</span>
             </div>
-            <div v-if="invitation.akad_time" class="flex items-center gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
-              <Icon icon="ph:clock-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+            <div v-if="invitation.akad_time" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+              <Icon icon="ph:clock-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0;" />
               <span>{{ formatTime(invitation.akad_time) }}</span>
             </div>
-            <div v-if="invitation.akad_venue" class="flex items-start gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
-              <Icon icon="ph:map-pin-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 mt-0.5 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+            <div v-if="invitation.akad_venue" style="display: flex; align-items: flex-start; gap: 10px; width: 100%;">
+              <Icon icon="ph:map-pin-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0; margin-top: 2px;" />
               <div>
-                <strong class="font-bold block">{{ invitation.akad_venue }}</strong>
-                <span v-if="invitation.akad_address" class="text-xs text-white/95 font-medium leading-relaxed block mt-0.5 max-w-[280px]">
+                <strong style="font-weight: 700; display: block; color: #5A1E25; font-size: 13.5px;">{{ invitation.akad_venue }}</strong>
+                <span v-if="invitation.akad_address" style="font-size: 11px; color: rgba(106, 78, 66, 0.85); font-weight: 500; line-height: 1.5; display: block; margin-top: 2px; max-width: 280px;">
                   {{ invitation.akad_address }}
                 </span>
               </div>
@@ -121,19 +143,12 @@
           </div>
         </div>
 
-        <!-- Heart Divider (Bottom) -->
-        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-top: 20px; margin-bottom: 24px;">
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
-          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
-        </div>
-
-        <div class="flex flex-wrap justify-center gap-3 w-full">
-          <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9999px; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Buka Maps
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; margin-top: 4px; margin-bottom: 4px;">
+          <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 18px; border-radius: 9999px; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 11.5px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:map-trifold-duotone" style="width: 14px; height: 14px;" /> Buka Maps
           </a>
-          <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4 text-white" /> Ingatkan Saya
+          <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 18px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 11.5px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:calendar-plus-duotone" style="width: 14px; height: 14px; color: white;" /> Ingatkan Saya
           </a>
         </div>
       </div>
@@ -143,7 +158,7 @@
     <div 
       v-if="invitation.resepsi_venue || (invitation.streaming_enabled && invitation.streaming_url)"
       ref="resepsiTitleRef"
-      class="absolute inset-0 z-10 pointer-events-none opacity-0"
+      class="absolute inset-0 z-[4] pointer-events-none opacity-0"
     >
       <svg 
         viewBox="0 0 600 150" 
@@ -182,33 +197,54 @@
     <div 
       v-if="invitation.resepsi_venue"
       ref="resepsiCardRef"
-      class="absolute inset-0 z-10 pointer-events-none opacity-0"
+      class="absolute inset-0 z-[2] pointer-events-none opacity-0"
     >
       <div 
-        class="absolute top-[10dvh] left-1/2 -translate-x-1/2 w-[90%] max-w-[450px] flex flex-col items-center px-6 py-6 pointer-events-auto max-h-[32dvh] overflow-y-auto"
+        style="
+          position: absolute;
+          top: 5dvh;                  /* MUDAH DIEDIT: Posisi dari atas */
+          left: 50%;
+          transform: translateX(-50%);
+          width: 85%;
+          max-width: 350px;
+          height: 41dvh;              /* MUDAH DIEDIT: Tinggi kontainer */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 24px 20px 24px 20px; /* MUDAH DIEDIT: Padding kontainer */
+          overflow: hidden;           /* NO SCROLL */
+          pointer-events: auto;
+          background: rgba(255, 255, 255, 0.65);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1.5px solid rgba(255, 255, 255, 0.55);
+          border-radius: 9999px 9999px 0px 0px;
+          box-shadow: 0px 10px 30px rgba(106, 78, 66, 0.1);
+        "
       >
         <!-- Heart Divider (Top) -->
-        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-bottom: 20px;">
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
-          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; opacity: 0.8; margin-top: 5px; margin-bottom: 12px;">
+          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
+          <Icon icon="ph:heart-fill" style="width: 12px; height: 12px; color: #BA7D85;" />
+          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
         </div>
 
-        <div class="w-full flex justify-center">
-          <div class="space-y-3.5 text-white text-sm md:text-base font-semibold flex flex-col items-start text-left w-fit max-w-[290px] xs:max-w-xs sm:max-w-sm">
-            <div v-if="invitation.resepsi_date" class="flex items-center gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
-              <Icon icon="ph:calendar-blank-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+        <!-- Details block wrapper (centered on card, left-aligned content) -->
+        <div style="width: 100%; display: flex; justify-content: center; margin-top: 4px; margin-bottom: 4px;">
+          <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; width: fit-content; max-width: 290px; gap: 10px; color: #6A4E42; font-weight: 600; font-size: 13px;">
+            <div v-if="invitation.resepsi_date" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+              <Icon icon="ph:calendar-blank-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0;" />
               <span>{{ formatDateLong(invitation.resepsi_date) }}</span>
             </div>
-            <div v-if="invitation.resepsi_time" class="flex items-center gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
-              <Icon icon="ph:clock-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+            <div v-if="invitation.resepsi_time" style="display: flex; align-items: center; gap: 10px; width: 100%;">
+              <Icon icon="ph:clock-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0;" />
               <span>{{ formatTime(invitation.resepsi_time) }}</span>
             </div>
-            <div v-if="invitation.resepsi_venue" class="flex items-start gap-3 w-full" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">
-              <Icon icon="ph:map-pin-duotone" class="w-5 h-5 text-[#EBCFD1] flex-shrink-0 mt-0.5 filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
+            <div v-if="invitation.resepsi_venue" style="display: flex; align-items: flex-start; gap: 10px; width: 100%;">
+              <Icon icon="ph:map-pin-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0; margin-top: 2px;" />
               <div>
-                <strong class="font-bold block">{{ invitation.resepsi_venue }}</strong>
-                <span v-if="invitation.resepsi_address" class="text-xs text-white/95 font-medium leading-relaxed block mt-0.5 max-w-[280px]">
+                <strong style="font-weight: 700; display: block; color: #5A1E25; font-size: 13.5px;">{{ invitation.resepsi_venue }}</strong>
+                <span v-if="invitation.resepsi_address" style="font-size: 11px; color: rgba(106, 78, 66, 0.85); font-weight: 500; line-height: 1.5; display: block; margin-top: 2px; max-width: 280px;">
                   {{ invitation.resepsi_address }}
                 </span>
               </div>
@@ -217,18 +253,18 @@
         </div>
 
         <!-- Heart Divider (Bottom) -->
-        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-top: 20px; margin-bottom: 24px;">
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
-          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; opacity: 0.8; margin-top: 12px; margin-bottom: 14px;">
+          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
+          <Icon icon="ph:heart-fill" style="width: 12px; height: 12px; color: #BA7D85;" />
+          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
         </div>
 
-        <div class="flex flex-wrap justify-center gap-2 w-full">
-          <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9999px; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Buka Maps
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; margin-top: 4px; margin-bottom: 4px;">
+          <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 18px; border-radius: 9999px; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 11.5px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:map-trifold-duotone" style="width: 14px; height: 14px;" /> Buka Maps
           </a>
-          <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 13px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4 text-white" /> Ingatkan Saya
+          <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 18px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 11.5px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:calendar-plus-duotone" style="width: 14px; height: 14px; color: white;" /> Ingatkan Saya
           </a>
         </div>
       </div>
@@ -238,31 +274,50 @@
     <div 
       v-if="invitation.streaming_enabled && invitation.streaming_url"
       ref="streamingCardRef"
-      class="absolute inset-0 z-10 pointer-events-none opacity-0"
+      class="absolute inset-0 z-[2] pointer-events-none opacity-0"
     >
       <div 
-        class="absolute top-[10dvh] left-1/2 -translate-x-1/2 w-[90%] max-w-[450px] flex flex-col items-center px-4 py-4 pointer-events-auto max-h-[38dvh] overflow-y-auto"
+        style="
+          position: absolute;
+          top: 5dvh;                  /* MUDAH DIEDIT: Posisi dari atas */
+          left: 50%;
+          transform: translateX(-50%);
+          width: 85%;
+          max-width: 350px;
+          height: 38dvh;              /* MUDAH DIEDIT: Tinggi kontainer */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 24px 20px 24px 20px; /* MUDAH DIEDIT: Padding kontainer */
+          overflow: hidden;           /* NO SCROLL */
+          pointer-events: auto;
+          background: rgba(255, 255, 255, 0.65);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1.5px solid rgba(255, 255, 255, 0.55);
+          border-radius: 9999px 9999px 0px 0px;
+          box-shadow: 0px 10px 30px rgba(106, 78, 66, 0.1);
+        "
       >
         <!-- Heart Divider (Top) -->
-        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-bottom: 12px;">
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
-          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; opacity: 0.8; margin-top: 5px; margin-bottom: 8px;">
+          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
+          <Icon icon="ph:heart-fill" style="width: 12px; height: 12px; color: #BA7D85;" />
+          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
         </div>
 
-        <div class="space-y-2 flex flex-col items-center w-full text-center">
-          <div class="flex items-center gap-2 justify-center w-full">
-            <Icon icon="ph:video-camera-duotone" class="w-4 h-4 text-[#EBCFD1] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
-            <span class="font-bold text-sm text-white">Live Streaming</span>
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; margin-top: 4px; margin-bottom: 4px;">
+          <div style="display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%; margin-bottom: 6px;">
+            <Icon icon="ph:video-camera-duotone" style="width: 16px; height: 16px; color: #BA7D85;" />
+            <span style="font-weight: 700; font-size: 13.5px; color: #5A1E25;">Live Streaming</span>
           </div>
-          <p class="text-[11px] text-white/95 font-medium leading-relaxed max-w-[260px]" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8)">
+          <p style="font-size: 11px; color: rgba(106, 78, 66, 0.9); font-weight: 500; line-height: 1.5; max-width: 260px; margin-bottom: 8px;">
             Anda dapat mengikuti acara kami secara virtual melalui tautan berikut:
           </p>
-          <div class="relative w-full max-w-[200px] aspect-video rounded-lg overflow-hidden shadow-sm border border-white/10 bg-black/25">
+          <div style="position: relative; width: 100%; max-width: 180px; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; box-shadow: 0px 2px 8px rgba(0,0,0,0.1); border: 1px solid rgba(186, 125, 133, 0.2); background: rgba(0,0,0,0.05);">
             <iframe 
               :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
-              class="absolute top-0 left-0 w-full h-full"
-              frameborder="0" 
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
               allowfullscreen>
             </iframe>
@@ -270,15 +325,15 @@
         </div>
 
         <!-- Heart Divider (Bottom) -->
-        <div class="flex items-center justify-center gap-3 w-full opacity-80" style="margin-top: 12px; margin-bottom: 16px;">
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
-          <Icon icon="ph:heart-fill" class="w-3.5 h-3.5 text-[#BA7D85] filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />
-          <span class="h-[1px] w-12 bg-[#BA7D85]/50"></span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; opacity: 0.8; margin-top: 8px; margin-bottom: 12px;">
+          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
+          <Icon icon="ph:heart-fill" style="width: 12px; height: 12px; color: #BA7D85;" />
+          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
         </div>
 
-        <div class="flex justify-center w-full">
-          <a :href="invitation.streaming_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 12px; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:play-circle-duotone" class="w-3.5 h-3.5" /> Gabung Live
+        <div style="display: flex; justify-content: center; width: 100%; margin-top: 4px; margin-bottom: 4px;">
+          <a :href="invitation.streaming_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 18px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 11px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:play-circle-duotone" style="width: 12px; height: 12px;" /> Gabung Live
           </a>
         </div>
       </div>
@@ -306,6 +361,7 @@ const props = defineProps<{
 const eventSectionRef = ref<HTMLElement | null>(null);
 const boatRef = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
+const akadTitleRef = ref<HTMLElement | null>(null);
 const akadCardRef = ref<HTMLElement | null>(null);
 const resepsiTitleRef = ref<HTMLElement | null>(null);
 const resepsiCardRef = ref<HTMLElement | null>(null);
@@ -340,6 +396,9 @@ onMounted(() => {
 
     if (headerRef.value) {
       gsap.set(headerRef.value, { opacity: 1, y: 0, scale: 1 });
+    }
+    if (akadTitleRef.value) {
+      gsap.set(akadTitleRef.value, { opacity: 0, scale: 0.95 });
     }
     if (akadCardRef.value) {
       gsap.set(akadCardRef.value, { opacity: 0, scale: 0.95 });
@@ -376,6 +435,14 @@ onMounted(() => {
       }, 0);
     }
 
+    if (akadTitleRef.value) {
+      tl.to(akadTitleRef.value, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+      }, 0.3);
+    }
     if (akadCardRef.value) {
       tl.to(akadCardRef.value, {
         opacity: 1,
@@ -392,13 +459,21 @@ onMounted(() => {
     // - Akad card fades out
     // - Boat moves to top: 50%
     // - Resepsi card fades in at the top
+    if (akadTitleRef.value) {
+      tl.to(akadTitleRef.value, {
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.6,
+        ease: 'power2.in',
+      }, '<');
+    }
     if (akadCardRef.value) {
       tl.to(akadCardRef.value, {
         opacity: 0,
         scale: 0.95,
         duration: 0.6,
         ease: 'power2.in',
-      });
+      }, '<');
     }
 
     tl.fromTo(boatRef.value,

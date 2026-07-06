@@ -1281,6 +1281,14 @@ onBeforeUnmount(() => {
         :is="activeFooter"
         :invitation="invitation"
         :theme-config="activeTheme"
+        :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"
+        :submitting="rsvpSubmitting"
+        :stories="loveStory"
+        :photos="invitation.photos || []"
+        :gallery-type="invitation.gallery_type || 'carousel'"
+        :api-base="apiBase"
+        @submit-rsvp="handleSubmitRsvp"
+        @open-lightbox="openLightbox"
       />
 
       <!-- Powered by branding (trial only, sticky bottom) -->

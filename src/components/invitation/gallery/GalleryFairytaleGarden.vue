@@ -1,21 +1,13 @@
 <template>
-  <component 
-    :is="activeComponent" 
-    :photos="photos"
-    :theme-config="themeConfig"
-    :api-base="apiBase"
-    @open-lightbox="(i: number) => $emit('openLightbox', i)"
-  />
+  <!-- Empty placeholder because this section is combined with the Footer for pinning -->
+  <div class="hidden"></div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { ThemeConfig } from '@/types/theme';
-import type { Photo } from '@/types/invitation';
-import GalleryFairytaleGardenCarousel from './GalleryFairytaleGardenCarousel.vue';
-import GalleryFairytaleGardenMasonry from './GalleryFairytaleGardenMasonry.vue';
+import type { ThemeConfig } from "@/types/theme";
+import type { Photo } from "@/types/invitation";
 
-const props = defineProps<{
+defineProps<{
   photos: Photo[];
   themeConfig: ThemeConfig;
   apiBase: string;
@@ -25,8 +17,4 @@ const props = defineProps<{
 defineEmits<{
   (e: 'openLightbox', index: number): void;
 }>();
-
-const activeComponent = computed(() => {
-  return props.galleryType === 'masonry' ? GalleryFairytaleGardenMasonry : GalleryFairytaleGardenCarousel;
-});
 </script>
