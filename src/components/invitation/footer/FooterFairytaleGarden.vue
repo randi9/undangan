@@ -2,7 +2,7 @@
   <footer
     ref="footerSection"
     class="px-6 text-center text-white relative overflow-hidden flex flex-col items-center justify-center"
-    style="height: 100dvh;"
+    style="min-height: 100dvh;"
   >
     <!-- Background Cover Image (Scale 2.4) -->
     <div 
@@ -22,18 +22,19 @@
     <div
       v-show="stories && stories.length > 0"
       ref="lovestoryWrapper"
-      class="absolute inset-0 z-10 flex flex-col items-center justify-center px-4"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-start px-4 overflow-y-auto pt-48 pb-32 hide-scrollbar"
+      data-lenis-prevent
     >
       <div 
-        class="hide-scrollbar flex flex-col" 
-        style="width: 100%; max-width: 600px; padding: 40px 12px 80px 12px; overflow-y: auto; max-height: 82dvh; gap: 24px; box-sizing: border-box;"
+        class="flex flex-col" 
+        style="width: 100%; max-width: 600px; padding: 0 12px; gap: 24px; box-sizing: border-box;"
       >
         <!-- Header -->
-        <div class="text-center" style="margin-bottom: 12px;">
+        <div class="text-center" style="margin-bottom: 12px; padding-top: 24px;">
           <h2
-            class="text-3xl md:text-5xl mb-2 drop-shadow-md"
+            class="text-5xl md:text-7xl mb-2 drop-shadow-md"
             :style="{ fontFamily: themeConfig.fontHeading }"
-            style="color: #8A4E56; font-weight: 700; text-shadow: 0 1px 3px rgba(255,255,255,0.85);"
+            style="color: #8A4E56; font-weight: 700; text-shadow: 0 1px 3px rgba(255,255,255,0.85); line-height: 1.3; padding-top: 24px;"
           >
             Love Story
           </h2>
@@ -59,6 +60,7 @@
             padding: 24px 24px 38px 24px; 
             box-sizing: border-box;
             transition: all 0.3s ease;
+            flex-shrink: 0;
           "
           class="hover:shadow-[0_12px_40px_rgba(106,78,66,0.1)] hover:-translate-y-1"
         >
@@ -180,12 +182,13 @@
       ref="galleryWrapper"
       class="absolute inset-0 z-10 flex flex-col items-center justify-center px-4"
     >
-      <div class="w-full max-w-2xl px-4 py-2 overflow-y-auto max-h-[85dvh] hide-scrollbar flex flex-col gap-6">
+      <div class="w-full max-w-2xl px-4 py-2 flex flex-col gap-6">
         <!-- Header -->
         <div class="text-center">
           <h2
-            class="text-3xl md:text-5xl mb-2 text-[#EBCFD1] drop-shadow-md font-medium"
+            class="text-5xl md:text-7xl mb-2 drop-shadow-md"
             :style="{ fontFamily: themeConfig.fontHeading }"
+            style="color: #8A4E56; font-weight: 700; text-shadow: 0 1px 3px rgba(255,255,255,0.85); line-height: 1.3; padding-top: 12px;"
           >
             Galeri Foto
           </h2>
@@ -203,24 +206,23 @@
         </div>
 
         <!-- Gallery content -->
-        <div class="bg-white/95 backdrop-blur-md p-5 rounded-3xl border border-[#EBCFD1] shadow-xl w-full">
+        <div class="w-full">
           <!-- Dispatch Masonry or Carousel dynamically inside the footer card -->
-          <div v-if="galleryType === 'masonry'" class="w-full">
+          <div v-if="galleryType === 'masonry'" class="bg-white/95 backdrop-blur-md p-5 rounded-3xl border border-[#EBCFD1] shadow-xl w-full">
             <GalleryMasonryLayout
               :photos="photos"
               :api-base="apiBase"
               @open-lightbox="(i) => $emit('openLightbox', i)"
             />
           </div>
-          <div v-else class="w-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 py-2 items-center">
-            <div 
-              v-for="(photo, i) in photos" 
-              :key="i" 
-              @click="$emit('openLightbox', i)" 
-              class="snap-center flex-shrink-0 w-[55vw] md:w-[240px] aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer group shadow-md border border-[#EBCFD1] bg-white transition-all hover:scale-102"
-            >
-              <img :src="resolveAssetUrl(photo.url, apiBase)" alt="Galeri Photo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-            </div>
+          <div v-else class="w-full">
+            <GalleryFairytaleGardenCarousel
+              :photos="photos"
+              :theme-config="themeConfig"
+              :api-base="apiBase"
+              :is-inline="true"
+              @open-lightbox="(i) => $emit('openLightbox', i)"
+            />
           </div>
         </div>
       </div>
@@ -229,17 +231,20 @@
     <!-- Slide 3: RSVP Section Content -->
     <div
       ref="rsvpWrapper"
-      class="absolute inset-0 z-10 flex flex-col items-center justify-center px-4"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-start overflow-y-auto py-24 hide-scrollbar"
+      style="padding-left: 24px; padding-right: 24px; box-sizing: border-box;"
+      data-lenis-prevent
     >
       <!-- RSVP container (scrollable for mobile screens) -->
-      <div class="w-full max-w-2xl px-4 py-2 overflow-y-auto max-h-[85dvh] hide-scrollbar flex flex-col gap-6">
+      <div style="width: 100%; max-width: 580px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; box-sizing: border-box;">
         <!-- Header -->
-        <div class="text-center">
+        <div class="text-center" style="margin-bottom: 8px;">
           <h2
-            class="text-3xl md:text-5xl mb-2 text-[#EBCFD1] drop-shadow-md font-medium"
+            class="text-5xl md:text-7xl mb-2 drop-shadow-md"
             :style="{ fontFamily: themeConfig.fontHeading }"
+            style="color: #8A4E56; font-weight: 700; text-shadow: 0 1px 3px rgba(255,255,255,0.85); line-height: 1.3; padding-top: 12px;"
           >
-            RSVP & Ucapan
+            Reservasi & Ucapan
           </h2>
           <div class="flex items-center justify-center gap-4 mb-2 text-[#EBCFD1] opacity-80">
             <svg viewBox="0 0 60 2" class="w-10 md:w-14 opacity-40">
@@ -256,67 +261,145 @@
         </div>
 
         <!-- RSVP Form & Messages side-by-side or stacked -->
-        <div class="grid md:grid-cols-2 gap-6 text-left items-start">
+        <div class="grid md:grid-cols-2 gap-4 text-left items-start" style="position: relative; z-index: 10;">
           <!-- Form -->
-          <div class="bg-white/95 backdrop-blur-md p-5 rounded-2xl border border-[#EBCFD1] shadow-xl">
-            <form @submit.prevent="onSubmit" class="space-y-4">
+          <div 
+            style="
+              position: relative; 
+              background: rgba(252, 248, 244, 0.97); 
+              backdrop-filter: blur(16px); 
+              -webkit-backdrop-filter: blur(16px);
+              padding: 16px 14px; 
+              border-radius: 20px 40px 20px 40px; 
+              border: 1.5px solid #EBCFD1; 
+              box-shadow: 0px 10px 25px rgba(106, 78, 66, 0.05);
+              box-sizing: border-box;
+            "
+          >
+            <!-- Elegant dashed inner border -->
+            <div style="position: absolute; top: 6px; bottom: 6px; left: 6px; right: 6px; border: 1px dashed rgba(174, 184, 163, 0.4); border-radius: 14px 34px 14px 34px; pointer-events: none; box-sizing: border-box;"></div>
+
+            <form @submit.prevent="onSubmit" class="space-y-3" style="position: relative; z-index: 10;">
               <div>
-                <label class="block text-xs font-semibold text-[#6A4E42] mb-1 font-sans">Nama Lengkap</label>
-                <input v-model="form.guest_name" type="text" maxlength="50" placeholder="Nama Anda" required class="w-full px-4 py-2.5 rounded-lg border border-[#EBCFD1] bg-[#F8F3EE]/30 text-[#6A4E42] focus:bg-white focus:border-[#D9A9AF] outline-none text-xs font-light font-sans" />
+                <label style="display: block; font-size: 10px; font-weight: 700; color: #6A4E42; margin-bottom: 4px; letter-spacing: 0.08em; text-transform: uppercase; font-family: sans-serif;">Nama Lengkap</label>
+                <input v-model="form.guest_name" type="text" maxlength="50" placeholder="Nama Anda" required class="premium-input" style="width: 100%; px-4; height: 34px; padding-left: 10px; padding-right: 10px; rounded-lg; border: 1.5px solid #EBCFD1; background: rgba(255,255,255,0.85); color: #6A4E42; font-size: 12px; outline: none; border-radius: 10px; box-sizing: border-box;" />
               </div>
               
               <div>
-                <label class="block text-[10px] uppercase tracking-widest text-[#9A7B6B] font-bold mb-2 font-sans">Konfirmasi Kehadiran</label>
+                <label style="display: block; font-size: 10px; font-weight: 700; color: #6A4E42; margin-bottom: 6px; letter-spacing: 0.08em; text-transform: uppercase; font-family: sans-serif;">Konfirmasi Kehadiran</label>
                 <div class="flex gap-2">
-                  <button type="button" @click="form.attendance = 'hadir'" :class="['flex-1 py-2.5 rounded-lg border flex items-center justify-center font-medium text-xs transition-all font-sans', form.attendance === 'hadir' ? 'border-[#D9A9AF] bg-[#D9A9AF] text-white shadow-sm' : 'border-[#EBCFD1] text-[#9A7B6B] bg-white hover:bg-gray-50']">
+                  <button 
+                    type="button" 
+                    @click="form.attendance = 'hadir'" 
+                    :style="form.attendance === 'hadir' 
+                      ? 'flex: 1; py-2; height: 34px; rounded-xl; border: none; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: white; font-weight: 700; font-size: 12px; cursor: pointer; border-radius: 10px; box-shadow: 0 4px 12px rgba(110,135,92,0.2);' 
+                      : 'flex: 1; py-2; height: 34px; rounded-xl; border: 1.5px dashed #AEB8A3; background: transparent; color: #6E875C; font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 10px;'"
+                  >
                     Hadir
                   </button>
-                  <button type="button" @click="form.attendance = 'tidak_hadir'" :class="['flex-1 py-2.5 rounded-lg border flex items-center justify-center font-medium text-xs transition-all font-sans', form.attendance === 'tidak_hadir' ? 'border-red-200 bg-red-50 text-red-600 shadow-sm' : 'border-[#EBCFD1] text-[#9A7B6B] bg-white hover:bg-gray-50']">
+                  <button 
+                    type="button" 
+                    @click="form.attendance = 'tidak_hadir'" 
+                    :style="form.attendance === 'tidak_hadir' 
+                      ? 'flex: 1; py-2; height: 34px; rounded-xl; border: none; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: white; font-weight: 700; font-size: 12px; cursor: pointer; border-radius: 10px; box-shadow: 0 4px 12px rgba(186,125,133,0.2);' 
+                      : 'flex: 1; py-2; height: 34px; rounded-xl; border: 1.5px dashed #EBCFD1; background: transparent; color: #BA7D85; font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 10px;'"
+                  >
                     Absen
                   </button>
                 </div>
               </div>
               
               <div v-show="form.attendance === 'hadir'">
-                <label class="block text-xs font-semibold text-[#6A4E42] mb-1 font-sans">Jumlah Tamu</label>
-                <div class="flex items-center justify-between rounded-lg border border-[#EBCFD1] bg-[#F8F3EE]/30 overflow-hidden text-xs">
-                  <button type="button" @click="form.guest_count = Math.max(1, form.guest_count - 1)" class="w-10 h-9 flex items-center justify-center text-[#9A7B6B] hover:bg-gray-100 font-sans">-</button>
-                  <span class="text-[#6A4E42] font-semibold font-sans">{{ form.guest_count }} Orang</span>
-                  <button type="button" @click="form.guest_count = Math.min(10, form.guest_count + 1)" class="w-10 h-9 flex items-center justify-center text-[#9A7B6B] hover:bg-gray-100 font-sans">+</button>
+                <label style="display: block; font-size: 10px; font-weight: 700; color: #6A4E42; margin-bottom: 4px; letter-spacing: 0.08em; text-transform: uppercase; font-family: sans-serif;">Jumlah Tamu</label>
+                <div style="display: flex; align-items: center; justify-content: space-between; rounded-lg; border: 1.5px solid #EBCFD1; background: rgba(255,255,255,0.85); overflow: hidden; height: 34px; border-radius: 10px; box-sizing: border-box;">
+                  <button type="button" @click="form.guest_count = Math.max(1, form.guest_count - 1)" style="width: 34px; height: 100%; display: flex; align-items: center; justify-content: center; color: #6E875C; font-weight: bold; background: transparent; border: none; cursor: pointer;">-</button>
+                  <span style="color: #6A4E42; font-weight: 700; font-size: 12px; font-family: sans-serif;">{{ form.guest_count }} Orang</span>
+                  <button type="button" @click="form.guest_count = Math.min(10, form.guest_count + 1)" style="width: 34px; height: 100%; display: flex; align-items: center; justify-content: center; color: #6E875C; font-weight: bold; background: transparent; border: none; cursor: pointer;">+</button>
                 </div>
               </div>
               
               <div>
-                <label class="block text-xs font-semibold text-[#6A4E42] mb-1 font-sans">Ucapan &amp; Doa</label>
-                <textarea v-model="form.message" rows="2" maxlength="500" placeholder="Tulis ucapan selamat..." class="w-full px-4 py-2.5 rounded-lg border border-[#EBCFD1] bg-[#F8F3EE]/30 text-[#6A4E42] focus:bg-white focus:border-[#D9A9AF] outline-none text-xs font-light resize-none font-sans"></textarea>
+                <label style="display: block; font-size: 10px; font-weight: 700; color: #6A4E42; margin-bottom: 4px; letter-spacing: 0.08em; text-transform: uppercase; font-family: sans-serif;">Ucapan &amp; Doa</label>
+                <textarea v-model="form.message" rows="2" maxlength="500" placeholder="Tulis ucapan selamat..." class="premium-input" style="width: 100%; padding: 8px 10px; rounded-lg; border: 1.5px solid #EBCFD1; background: rgba(255,255,255,0.85); color: #6A4E42; font-size: 12px; outline: none; border-radius: 10px; resize: none; box-sizing: border-box; font-family: var(--font-body), sans-serif;"></textarea>
               </div>
               
-              <button type="submit" :disabled="submitting" class="w-full py-3 rounded-lg bg-[#AEB8A3] text-white font-semibold text-xs uppercase tracking-widest hover:bg-[#9A7B6B] transition-all disabled:opacity-50 font-sans">
+              <button 
+                type="submit" 
+                :disabled="submitting" 
+                class="premium-submit-btn"
+                style="width: 100%; py-2.5; height: 38px; rounded-lg; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: white; font-weight: 700; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; border: none; border-radius: 10px; box-shadow: 0 6px 15px rgba(110,135,92,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center;"
+              >
                 {{ submitting ? 'Mengirim...' : 'Kirim Ucapan' }}
               </button>
             </form>
           </div>
 
           <!-- Messages List -->
-          <div class="bg-white/95 backdrop-blur-md p-5 rounded-2xl border border-[#EBCFD1] shadow-xl self-stretch flex flex-col">
-            <div class="flex items-center justify-between mb-3 border-b border-[#EBCFD1]/30 pb-2">
-              <span class="font-semibold text-sm text-[#6A4E42] font-sans">Pesan Tamu</span>
-              <span class="bg-[#EBCFD1] text-[#6A4E42] px-2.5 py-0.5 rounded-full text-[10px] font-bold font-sans">{{ rsvpMessages.length }}</span>
+          <div 
+            style="
+              position: relative; 
+              background: rgba(252, 248, 244, 0.97); 
+              backdrop-filter: blur(16px); 
+              -webkit-backdrop-filter: blur(16px);
+              padding: 16px 14px; 
+              border-radius: 40px 20px 40px 20px; 
+              border: 1.5px solid #EBCFD1; 
+              box-shadow: 0px 10px 25px rgba(106, 78, 66, 0.05);
+              box-sizing: border-box;
+              align-self: stretch;
+              display: flex;
+              flex-direction: column;
+            "
+          >
+            <!-- Elegant dashed inner border -->
+            <div style="position: absolute; top: 8px; bottom: 8px; left: 8px; right: 8px; border: 1px dashed rgba(174, 184, 163, 0.4); border-radius: 34px 14px 34px 14px; pointer-events: none; box-sizing: border-box;"></div>
+
+            <div style="position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed rgba(235, 207, 209, 0.6); padding-bottom: 8px; box-sizing: border-box;">
+              <span style="font-size: 12px; font-weight: 700; color: #6A4E42; font-family: var(--font-body), sans-serif; letter-spacing: 0.05em; text-transform: uppercase;">Pesan Tamu</span>
+              <span style="background: #EBCFD1; color: #8A4E56; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 700; font-family: sans-serif;">{{ rsvpMessages.length }}</span>
             </div>
             
-            <div class="flex-1 overflow-y-auto pr-1 space-y-3 max-h-[220px] md:max-h-[250px] hide-scrollbar">
-              <div v-if="rsvpMessages.length === 0" class="text-center py-8 text-xs text-gray-400 font-light font-sans">Belum ada ucapan</div>
-              <div v-else v-for="msg in rsvpMessages" :key="msg.id" class="p-3 bg-[#F8F3EE]/30 rounded-xl border border-[#EBCFD1]/50 text-xs">
-                <div class="flex justify-between items-center gap-2 mb-1.5">
-                  <span class="font-bold text-[#6A4E42] truncate max-w-[120px] font-sans">{{ msg.guest_name }}</span>
-                  <span class="text-[8px] uppercase tracking-widest px-2 py-0.5 rounded font-bold font-sans" :class="msg.attendance === 'hadir' ? 'bg-[#EBCFD1]/50 text-[#6A4E42]' : 'bg-red-50 text-red-500'">
+            <div class="flex-1 overflow-y-auto pr-1 space-y-3 max-h-[210px] md:max-h-[240px]" style="position: relative; z-index: 10; overscroll-behavior: contain;" data-lenis-prevent>
+              <div v-if="rsvpMessages.length === 0" class="text-center py-12 text-xs text-gray-400 font-light font-sans">Belum ada ucapan</div>
+              <div 
+                v-else 
+                v-for="msg in rsvpMessages" 
+                :key="msg.id" 
+                style="
+                  position: relative;
+                  padding: 16px; 
+                  background: rgba(255, 255, 255, 0.92); 
+                  border-radius: 12px 24px 12px 24px; 
+                  border: 1.5px solid rgba(235, 207, 209, 0.4); 
+                  box-shadow: 0 4px 15px rgba(106, 78, 66, 0.03);
+                  box-sizing: border-box;
+                "
+              >
+                <!-- Card Inner Info -->
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; box-sizing: border-box;">
+                  <span style="font-weight: 700; font-size: 12.5px; color: #5A1E25; font-family: sans-serif; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ msg.guest_name }}</span>
+                  <span 
+                    :style="msg.attendance === 'hadir' 
+                      ? 'font-size: 8.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; background: rgba(110, 135, 92, 0.12); color: #6E875C; font-family: sans-serif;' 
+                      : 'font-size: 8.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; background: rgba(186, 125, 133, 0.12); color: #BA7D85; font-family: sans-serif;'"
+                  >
                     {{ msg.attendance === 'hadir' ? 'Hadir' : 'Absen' }}
                   </span>
                 </div>
-                <p class="text-[#9A7B6B] font-light leading-relaxed break-words font-sans">{{ msg.message }}</p>
-                <div v-if="msg.reply_text" class="mt-2 bg-white/70 p-2.5 rounded-lg border border-[#EBCFD1]/40 text-[11px]">
-                  <div class="text-[8px] uppercase tracking-widest font-bold text-[#9A7B6B] mb-1 font-sans">Balasan Mempelai</div>
-                  <p class="text-[#6A4E42] font-light leading-relaxed font-sans">{{ msg.reply_text }}</p>
+                <p style="font-size: 11.5px; line-height: 1.6; color: #6A4E42; font-weight: 400; font-family: var(--font-body), sans-serif; margin: 0; white-space: pre-line; word-break: break-word;">{{ msg.message }}</p>
+                <div 
+                  v-if="msg.reply_text" 
+                  style="
+                    margin-top: 10px; 
+                    background: rgba(252, 248, 244, 0.9); 
+                    padding: 10px; 
+                    border-radius: 8px 16px 8px 16px; 
+                    border: 1px dashed rgba(235, 207, 209, 0.7);
+                    box-sizing: border-box;
+                  "
+                >
+                  <div style="font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #BA7D85; margin-bottom: 4px; display: block; font-family: sans-serif;">Balasan Mempelai</div>
+                  <p style="font-size: 11px; line-height: 1.5; color: #6A4E42; font-weight: 400; font-family: var(--font-body), sans-serif; margin: 0; word-break: break-word;">{{ msg.reply_text }}</p>
                 </div>
               </div>
             </div>
@@ -329,13 +412,15 @@
     <div
       v-show="bankList.length > 0 || invitation.gift_address"
       ref="giftWrapper"
-      class="absolute inset-0 z-10 flex flex-col items-center justify-center px-4"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-start px-4 overflow-y-auto py-32 hide-scrollbar"
+      data-lenis-prevent
     >
       <!-- Header -->
       <div class="mb-8">
         <h2
-          class="text-3xl md:text-5xl mb-3 text-[#EBCFD1] drop-shadow-md font-medium"
+          class="text-5xl md:text-7xl mb-3 drop-shadow-md"
           :style="{ fontFamily: themeConfig.fontHeading }"
+          style="color: #8A4E56; font-weight: 700; text-shadow: 0 1px 3px rgba(255,255,255,0.85); line-height: 1.3; padding-top: 12px;"
         >
           Wedding Gift
         </h2>
@@ -361,7 +446,7 @@
       </div>
 
       <!-- Gift Cards Container (Horizontal on Desktop, Vertical on Mobile) -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-4xl px-4 py-2 overflow-y-auto max-h-[55dvh]">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-4xl px-4 py-2">
         
         <!-- Bank Accounts -->
         <div
@@ -593,6 +678,7 @@ import { Icon } from '@iconify/vue';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation, BankAccount, Rsvp, LoveStoryItem, Photo } from '@/types/invitation';
 import GalleryMasonryLayout from '../gallery/GalleryMasonryLayout.vue';
+import GalleryFairytaleGardenCarousel from '../gallery/GalleryFairytaleGardenCarousel.vue';
 import { resolveAssetUrl } from '@/utils/url';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -877,7 +963,27 @@ onBeforeUnmount(() => {
   animation: fadeIn 0.3s ease forwards;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.premium-input {
+  transition: all 0.3s ease !important;
+}
+.premium-input:focus {
+  border-color: #BA7D85 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(186, 125, 133, 0.15) !important;
+}
+.premium-submit-btn {
+  transition: all 0.3s ease !important;
+}
+.premium-submit-btn:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 10px 22px rgba(110, 135, 92, 0.35) !important;
+  filter: brightness(1.03);
+}
+.premium-submit-btn:active {
+  transform: translateY(0) scale(1);
 }
 </style>
