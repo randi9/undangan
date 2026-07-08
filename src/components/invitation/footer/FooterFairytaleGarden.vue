@@ -22,158 +22,16 @@
     <div
       v-show="stories && stories.length > 0"
       ref="lovestoryWrapper"
-      class="absolute inset-0 z-10 flex flex-col items-center justify-start px-4 overflow-y-auto pt-48 pb-32 hide-scrollbar"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-start px-4 overflow-y-auto hide-scrollbar"
+      style="padding-top: 8dvh; padding-bottom: 8dvh; padding-left: 24px; padding-right: 24px; box-sizing: border-box;"
       data-lenis-prevent
     >
-      <div 
-        class="flex flex-col" 
-        style="width: 100%; max-width: 600px; padding: 0 12px; gap: 24px; box-sizing: border-box;"
-      >
-        <!-- Header -->
-        <div class="text-center" style="margin-bottom: 12px; padding-top: 24px;">
-          <h2
-            class="text-5xl md:text-7xl mb-2 drop-shadow-md"
-            :style="{ fontFamily: themeConfig.fontHeading }"
-            style="color: #8A4E56; font-weight: 700; text-shadow: 0 1px 3px rgba(255,255,255,0.85); line-height: 1.3; padding-top: 24px;"
-          >
-            Love Story
-          </h2>
-        </div>
-
-        <!-- Stories Stack of Individual Cards -->
-        <div 
-          v-for="(story, i) in stories" 
-          :key="i" 
-          style="
-            position: relative; 
-            width: 100%; 
-            max-width: 520px; 
-            margin: 0 auto; 
-            text-align: left; 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid #EBCFD1; 
-            border-radius: 16px 36px 16px 36px;
-            box-shadow: 0px 8px 30px rgba(106, 78, 66, 0.05); 
-            overflow: hidden; 
-            padding: 24px 24px 38px 24px; 
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-          "
-          class="hover:shadow-[0_12px_40px_rgba(106,78,66,0.1)] hover:-translate-y-1"
-        >
-          
-          <!-- Elegant dashed inner border for fairytale parchment feel -->
-          <div 
-            style="
-              position: absolute; 
-              top: 10px; 
-              bottom: 10px; 
-              left: 10px; 
-              right: 10px; 
-              border: 1px dashed rgba(174, 184, 163, 0.35); 
-              border-radius: 10px 30px 10px 30px; 
-              pointer-events: none; 
-              box-sizing: border-box;
-            "
-          ></div>
-          
-          <!-- Botanical Line SVG Illustration in background (corner decoration) -->
-          <svg viewBox="0 0 100 100" class="absolute bottom-2 right-2 w-16 h-16 text-[#AEB8A3]/15 pointer-events-none" fill="currentColor">
-            <!-- Elegant single leaf/vine -->
-            <path d="M15,85 Q45,65 85,25" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" />
-            <!-- Small leaves along the vine -->
-            <path d="M35,62 Q25,52 30,45 Q40,50 35,62 Z" fill="currentColor" />
-            <path d="M55,48 Q65,38 70,44 Q60,54 55,48 Z" fill="currentColor" />
-            <path d="M45,55 Q35,45 40,39 Q50,45 45,55 Z" fill="currentColor" />
-            <path d="M68,36 Q78,26 83,32 Q78,42 68,36 Z" fill="currentColor" />
-            <path d="M78,30 C82,24 84,20 85,26 C82,29 80,30 78,30 Z" fill="currentColor" />
-          </svg>
-
-          <!-- Card Content -->
-          <div style="position: relative; z-index: 10; display: flex; flex-direction: column; height: auto; box-sizing: border-box;">
-            <!-- Top Row: Date Badge and Story Number -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; box-sizing: border-box;">
-              <span 
-                style="
-                  display: inline-block; 
-                  padding: 4px 12px; 
-                  font-size: 10px; 
-                  font-weight: 700; 
-                  letter-spacing: 0.15em; 
-                  text-transform: uppercase; 
-                  background-color: rgba(235, 207, 209, 0.35); 
-                  color: #8A4E56; 
-                  border-radius: 9999px;
-                  font-family: sans-serif;
-                "
-              >
-                {{ story.date }}
-              </span>
-              <span 
-                style="
-                  font-size: 10px; 
-                  font-weight: 800; 
-                  letter-spacing: 0.1em; 
-                  color: #6E875C; 
-                  text-transform: uppercase;
-                  font-family: sans-serif;
-                "
-              >
-                Chapter {{ i + 1 }}
-              </span>
-            </div>
-            
-            <!-- Story Title -->
-            <h4 
-              :style="{ fontFamily: themeConfig.fontHeading }"
-              style="
-                font-size: 18px; 
-                font-weight: 700; 
-                color: #5A1E25; 
-                margin-top: 0px; 
-                margin-bottom: 12px; 
-                line-height: 1.4;
-              "
-            >
-              {{ story.title }}
-            </h4>
-            
-            <!-- Story Image (Only if exists) -->
-            <div 
-              v-if="story.photo" 
-              style="
-                width: 100%; 
-                border-radius: 12px; 
-                overflow: hidden; 
-                margin-bottom: 16px; 
-                border: 1px solid rgba(235, 207, 209, 0.4); 
-                aspect-ratio: 16/10;
-                box-sizing: border-box;
-              "
-            >
-              <img :src="resolveAssetUrl(story.photo, apiBase)" :alt="story.title" style="width: 100%; height: 100%; object-fit: cover;" />
-            </div>
-            
-            <!-- Story Description -->
-            <p 
-              style="
-                font-size: 13.5px; 
-                line-height: 1.68; 
-                color: #5C3E35; 
-                font-weight: 400; 
-                margin: 0; 
-                font-family: var(--font-body), sans-serif;
-                white-space: pre-line;
-              "
-            >
-              {{ story.description }}
-            </p>
-          </div>
-        </div>
-      </div>
+      <LoveStoryFairytaleGarden
+        :stories="stories"
+        :theme-config="themeConfig"
+        :is-inline="true"
+        :api-base="apiBase"
+      />
     </div>
 
     <!-- Slide 2: Gallery Section Content -->
@@ -359,7 +217,22 @@
               <span style="background: #EBCFD1; color: #8A4E56; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 700; font-family: sans-serif;">{{ rsvpMessages.length }}</span>
             </div>
             
-            <div class="flex-1 overflow-y-auto pr-1 space-y-3 max-h-[210px] md:max-h-[240px]" style="position: relative; z-index: 10; overscroll-behavior: contain;" data-lenis-prevent>
+            <div 
+              class="pr-1 space-y-3" 
+              style="
+                position: relative; 
+                z-index: 20; 
+                overflow-y: auto !important; 
+                height: 210px; 
+                max-height: 210px; 
+                overscroll-behavior: contain; 
+                -webkit-overflow-scrolling: touch;
+              " 
+              data-lenis-prevent
+              @touchstart.stop
+              @touchmove.stop
+              @wheel.stop
+            >
               <div v-if="rsvpMessages.length === 0" class="text-center py-12 text-xs text-gray-400 font-light font-sans">Belum ada ucapan</div>
               <div 
                 v-else 
@@ -408,168 +281,31 @@
       </div>
     </div>
 
-    <!-- Slide 2: Gift Section Content -->
+    <!-- Slide 4: Gift Section Content -->
     <div
-      v-show="bankList.length > 0 || invitation.gift_address"
+      v-show="hasGift"
       ref="giftWrapper"
-      class="absolute inset-0 z-10 flex flex-col items-center justify-start px-4 overflow-y-auto py-32 hide-scrollbar"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-start px-4 overflow-y-auto hide-scrollbar"
+      style="padding: 4dvh 16px; box-sizing: border-box;"
       data-lenis-prevent
     >
-      <!-- Header -->
-      <div class="mb-8">
-        <h2
-          class="text-5xl md:text-7xl mb-3 drop-shadow-md"
-          :style="{ fontFamily: themeConfig.fontHeading }"
-          style="color: #8A4E56; font-weight: 700; text-shadow: 0 1px 3px rgba(255,255,255,0.85); line-height: 1.3; padding-top: 12px;"
-        >
-          Wedding Gift
-        </h2>
-        <div class="flex items-center justify-center gap-4 mb-3 text-[#EBCFD1] opacity-80">
-          <svg viewBox="0 0 60 2" class="w-10 md:w-14" style="opacity: 0.4">
-            <rect width="60" height="1" fill="currentColor" />
-          </svg>
-          <svg viewBox="0 0 24 24" class="w-4 h-4" style="opacity: 0.6">
-            <path
-              d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 11 8.76l1-1.36 1 1.36L15.38 12 17 10.83 14.92 8H20v6z"
-              fill="currentColor"
-            />
-          </svg>
-          <svg viewBox="0 0 60 2" class="w-10 md:w-14" style="opacity: 0.4">
-            <rect width="60" height="1" fill="currentColor" />
-          </svg>
-        </div>
-        <p class="max-w-md mx-auto text-xs md:text-sm leading-relaxed text-[#F8F3EE] opacity-90 px-4">
-          Doa restu Anda merupakan karunia yang sangat berarti bagi kami.<br />
-          Namun, apabila Anda ingin memberikan tanda kasih, kami menyediakan
-          amplop digital di bawah ini.
-        </p>
-      </div>
-
-      <!-- Gift Cards Container (Horizontal on Desktop, Vertical on Mobile) -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-4xl px-4 py-2">
-        
-        <!-- Bank Accounts -->
-        <div
-          v-for="(bank, index) in bankList"
-          :key="index"
-          class="flex flex-col items-center gap-2 w-full max-w-[340px]"
-        >
-          <!-- Debit Card Design -->
-          <div
-            class="group w-full aspect-[1.58] bg-white/95 p-5 rounded-2xl shadow-xl border border-[#EBCFD1] relative overflow-hidden flex flex-col justify-between text-left transition-transform duration-500 hover:scale-[1.02]"
-          >
-            <!-- Elegant Pattern Decor -->
-            <div class="absolute -right-12 -top-12 w-48 h-48 border-[1.5px] border-[#EBCFD1]/30 rounded-full pointer-events-none"></div>
-            <div class="absolute -right-6 -top-6 w-32 h-32 border-[1.5px] border-[#EBCFD1]/40 rounded-full pointer-events-none"></div>
-            <div class="absolute -left-12 -bottom-12 w-40 h-40 border-[1px] border-[#EBCFD1]/20 rounded-full pointer-events-none"></div>
-
-            <!-- Top Row: Chip and Bank Name -->
-            <div class="flex justify-between items-start z-10">
-              <!-- EMV Chip -->
-              <div class="w-10 h-7 rounded-md relative overflow-hidden shadow-sm border border-black/10 bg-gradient-to-br from-[#EBCFD1] to-[#D9A9AF]">
-                <div class="absolute inset-y-0 left-2.5 w-px bg-black/10"></div>
-                <div class="absolute inset-y-0 right-2.5 w-px bg-black/10"></div>
-                <div class="absolute inset-x-0 top-2.5 h-px bg-black/10"></div>
-                <div class="absolute inset-x-0 bottom-2.5 h-px bg-black/10"></div>
-              </div>
-
-              <div class="font-bold text-base tracking-widest uppercase text-[#D9A9AF]">
-                {{ bank.bank_name }}
-              </div>
-            </div>
-
-            <!-- Middle: Account Number -->
-            <div class="z-10 mt-auto mb-4 relative">
-              <div class="text-lg md:text-xl font-bold tracking-[0.12em] font-mono drop-shadow-sm flex items-center gap-2 text-[#6A4E42]">
-                {{ bank.bank_account }}
-                <button
-                  @click="copyAccount(index)"
-                  title="Salin Nomor"
-                  class="bg-white border border-[#EBCFD1] text-gray-700 p-1.5 rounded-lg hover:bg-gray-50 transition-all shadow-sm flex items-center justify-center hover:scale-105 active:scale-95"
-                >
-                  <svg v-if="copiedIndex !== index" viewBox="0 0 24 24" class="w-3.5 h-3.5 text-[#AEB8A3] fill-current">
-                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-                  </svg>
-                  <svg v-else viewBox="0 0 24 24" class="w-3.5 h-3.5 text-green-600 fill-current">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                  </svg>
-                </button>
-              </div>
-              <div
-                v-show="copiedIndex === index"
-                class="absolute mt-0.5 text-[9px] font-bold uppercase tracking-wider text-green-600 animate-fade-in"
-              >
-                Berhasil Disalin!
-              </div>
-            </div>
-
-            <!-- Bottom Row: Card Holder & Rings -->
-            <div class="flex justify-between items-end z-10">
-              <div class="flex flex-col">
-                <span class="text-[8px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">A.N. Rekening</span>
-                <span class="text-xs md:text-sm font-bold uppercase tracking-widest leading-tight text-[#6A4E42]">
-                  {{ bank.bank_holder }}
-                </span>
-              </div>
-              <!-- Debit Card Rings Mock -->
-              <div class="flex opacity-50 items-center drop-shadow-sm">
-                <div class="w-7 h-7 rounded-full mix-blend-multiply bg-[#AEB8A3]"></div>
-                <div class="w-7 h-7 rounded-full mix-blend-multiply -ml-3 bg-[#EBCFD1]"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Physical Gift Address Card -->
-        <div
-          v-if="invitation.gift_address"
-          class="flex flex-col items-center gap-2 w-full max-w-[340px]"
-        >
-          <div class="group w-full p-5 rounded-2xl shadow-xl border border-[#EBCFD1] bg-white/95 relative overflow-hidden flex flex-col justify-between text-left transition-transform duration-500 hover:scale-[1.02]">
-            <!-- Pattern decor -->
-            <div class="absolute -right-12 -top-12 w-48 h-48 border-[1.5px] border-[#EBCFD1]/30 rounded-full pointer-events-none"></div>
-
-            <div class="flex justify-between items-start z-10 mb-2">
-              <div class="font-bold text-xs tracking-wider uppercase text-[#D9A9AF]">
-                Kirim Kado
-              </div>
-              <svg viewBox="0 0 24 24" class="w-4 h-4 text-[#AEB8A3] fill-current">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-              </svg>
-            </div>
-
-            <div class="z-10 mb-2">
-              <p class="text-xs text-[#6A4E42] leading-relaxed font-semibold mb-2" style="white-space: pre-line">
-                {{ invitation.gift_address }}
-              </p>
-              <div class="text-[8px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">
-                Penerima
-              </div>
-              <div class="text-xs font-bold uppercase tracking-wider text-[#D9A9AF]">
-                {{ invitation.gift_recipient || "-" }}
-              </div>
-              <div v-if="invitation.gift_phone" class="text-[10px] text-gray-500 mt-0.5 font-mono">
-                Telp: {{ invitation.gift_phone }}
-              </div>
-            </div>
-
-            <div class="flex justify-between items-center z-10 mt-1">
-              <button
-                @click="copyAddress"
-                class="bg-white border border-[#EBCFD1] text-[#6A4E42] px-3.5 py-1.5 rounded-lg hover:bg-gray-50 transition-all shadow-sm flex items-center justify-center gap-1.5 text-[10px] font-semibold hover:scale-102 active:scale-95"
-              >
-                <svg v-if="!copiedAddress" viewBox="0 0 24 24" class="w-3.5 h-3.5 text-[#AEB8A3] fill-current">
-                  <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-                </svg>
-                <svg v-else viewBox="0 0 24 24" class="w-3.5 h-3.5 text-green-600 fill-current">
-                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                </svg>
-                {{ copiedAddress ? "Alamat Disalin!" : "Salin Alamat" }}
-              </button>
-            </div>
-          </div>
-        </div>
-
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+          max-width: 600px;
+          margin-top: auto;
+          margin-bottom: auto;
+          box-sizing: border-box;
+        "
+      >
+        <GiftFairytaleGarden
+          :invitation="invitation"
+          :theme-config="themeConfig"
+          :is-inline="true"
+        />
       </div>
     </div>
 
@@ -679,6 +415,8 @@ import type { ThemeConfig } from '@/types/theme';
 import type { Invitation, BankAccount, Rsvp, LoveStoryItem, Photo } from '@/types/invitation';
 import GalleryMasonryLayout from '../gallery/GalleryMasonryLayout.vue';
 import GalleryFairytaleGardenCarousel from '../gallery/GalleryFairytaleGardenCarousel.vue';
+import GiftFairytaleGarden from '../gift/GiftFairytaleGarden.vue';
+import LoveStoryFairytaleGarden from '../lovestory/LoveStoryFairytaleGarden.vue';
 import { resolveAssetUrl } from '@/utils/url';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -710,9 +448,6 @@ const footerWrapper = ref<HTMLElement | null>(null);
 const leftGateRef = ref<HTMLElement | null>(null);
 const rightGateRef = ref<HTMLElement | null>(null);
 
-const copiedIndex = ref<number | null>(null);
-const copiedAddress = ref(false);
-
 const form = reactive({
   guest_name: '',
   attendance: 'hadir' as 'hadir' | 'tidak_hadir',
@@ -730,37 +465,6 @@ function onSubmit() {
   form.message = '';
 }
 
-// --- Gift Logic & Computations ---
-const bankList = computed<BankAccount[]>(() => {
-  if (
-    props.invitation.banks &&
-    Array.isArray(props.invitation.banks) &&
-    props.invitation.banks.length > 0
-  ) {
-    return props.invitation.banks.filter((b) => b.bank_name || b.bank_account);
-  }
-  if (props.invitation.bank_name) {
-    return [
-      {
-        bank_name: props.invitation.bank_name,
-        bank_account: props.invitation.bank_account,
-        bank_holder: props.invitation.bank_holder,
-      },
-    ];
-  }
-  return [];
-});
-
-function copyAccount(index: number) {
-  const bank = bankList.value[index];
-  if (!bank?.bank_account) return;
-  navigator.clipboard.writeText(bank.bank_account);
-  copiedIndex.value = index;
-  setTimeout(() => {
-    copiedIndex.value = null;
-  }, 2500);
-}
-
 // Custom CSS class to hide scrollbars cleanly inside scrollable divs
 if (typeof document !== 'undefined') {
   const style = document.createElement('style');
@@ -776,42 +480,32 @@ if (typeof document !== 'undefined') {
   document.head.appendChild(style);
 }
 
-function copyAddress() {
-  if (!props.invitation.gift_address) return;
-  let text = props.invitation.gift_address;
-  if (props.invitation.gift_recipient) {
-    text += `\n(Penerima: ${props.invitation.gift_recipient}`;
-    if (props.invitation.gift_phone)
-      text += `, Telp: ${props.invitation.gift_phone}`;
-    text += `)`;
-  }
-  navigator.clipboard.writeText(text);
-  copiedAddress.value = true;
-  setTimeout(() => {
-    copiedAddress.value = false;
-  }, 2500);
-}
+const hasGift = computed(() => {
+  return (props.invitation.banks && props.invitation.banks.length > 0) || 
+         !!props.invitation.bank_name || 
+         !!props.invitation.gift_address;
+});
 
 onMounted(() => {
   const hasLoveStory = props.stories && props.stories.length > 0;
   const hasGallery = props.photos && props.photos.length > 0;
-  const hasGift = bankList.value.length > 0 || !!props.invitation.gift_address;
+  const hasGiftVal = hasGift.value;
 
   if (footerSection.value) {
     // Initial states: Slide 1 starts at y: "0%", others start below the screen at y: "100%"
     // We keep opacity: 1 on all of them, since they are hidden off-screen by translating y
     if (hasLoveStory) {
-      gsap.set(lovestoryWrapper.value, { y: "0%", opacity: 1 });
+      gsap.set(lovestoryWrapper.value, { y: "0%", opacity: 1, pointerEvents: "auto" });
     }
     if (hasGallery) {
-      gsap.set(galleryWrapper.value, { y: hasLoveStory ? "100%" : "0%", opacity: 1 });
+      gsap.set(galleryWrapper.value, { y: hasLoveStory ? "100%" : "0%", opacity: 1, pointerEvents: hasLoveStory ? "none" : "auto" });
     }
     const rsvpStartBelow = hasLoveStory || hasGallery;
-    gsap.set(rsvpWrapper.value, { y: rsvpStartBelow ? "100%" : "0%", opacity: 1 });
-    if (hasGift) {
-      gsap.set(giftWrapper.value, { y: "100%", opacity: 1 });
+    gsap.set(rsvpWrapper.value, { y: rsvpStartBelow ? "100%" : "0%", opacity: 1, pointerEvents: rsvpStartBelow ? "none" : "auto" });
+    if (hasGiftVal) {
+      gsap.set(giftWrapper.value, { y: "100%", opacity: 1, pointerEvents: "none" });
     }
-    gsap.set(footerWrapper.value, { opacity: 0, y: 40 });
+    gsap.set(footerWrapper.value, { opacity: 0, y: 40, pointerEvents: "none" });
     // Gates start wide open (swung inward) and invisible
     gsap.set(leftGateRef.value, { rotateY: -60, opacity: 0 });
     gsap.set(rightGateRef.value, { rotateY: 60, opacity: 0 });
@@ -820,7 +514,7 @@ onMounted(() => {
     let scrollEndMultiplier = 250;
     if (hasLoveStory) scrollEndMultiplier += 110;
     if (hasGallery) scrollEndMultiplier += 110;
-    if (hasGift) scrollEndMultiplier += 110;
+    if (hasGiftVal) scrollEndMultiplier += 110;
 
     pinTimeline = gsap.timeline({
       scrollTrigger: {
@@ -848,11 +542,13 @@ onMounted(() => {
           y: "-100%",
           duration: 1.0,
           ease: 'power2.inOut',
+          pointerEvents: "none",
         });
         pinTimeline.to(galleryWrapper.value, {
           y: "0%",
           duration: 1.0,
           ease: 'power2.inOut',
+          pointerEvents: "auto",
         }, '<');
       }
       activeWrapper = galleryWrapper.value;
@@ -864,26 +560,30 @@ onMounted(() => {
         y: "-100%",
         duration: 1.0,
         ease: 'power2.inOut',
+        pointerEvents: "none",
       });
       pinTimeline.to(rsvpWrapper.value, {
         y: "0%",
         duration: 1.0,
         ease: 'power2.inOut',
+        pointerEvents: "auto",
       }, '<');
     }
     activeWrapper = rsvpWrapper.value;
 
     // Slide 4: Gift
-    if (hasGift) {
+    if (hasGiftVal) {
       pinTimeline.to(activeWrapper, {
         y: "-100%",
         duration: 1.0,
         ease: 'power2.inOut',
+        pointerEvents: "none",
       });
       pinTimeline.to(giftWrapper.value, {
         y: "0%",
         duration: 1.0,
         ease: 'power2.inOut',
+        pointerEvents: "auto",
       }, '<');
       activeWrapper = giftWrapper.value;
     }
@@ -893,6 +593,7 @@ onMounted(() => {
       y: "-100%",
       duration: 1.0,
       ease: 'power2.inOut',
+      pointerEvents: "none",
     });
 
     // Background zooms out first
@@ -937,6 +638,7 @@ onMounted(() => {
       y: 0,
       duration: 1.2,
       ease: 'power2.out',
+      pointerEvents: "auto",
     }, '-=0.3');
   } else {
     // Standard layout (no dynamic sections): footerWrapper is immediately fully visible
