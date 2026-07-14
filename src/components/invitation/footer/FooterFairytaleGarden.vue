@@ -27,7 +27,7 @@
     <div
       v-show="stories && stories.length > 0"
       ref="lovestoryWrapper"
-      class="absolute inset-0 z-10 flex flex-col items-center justify-start px-4 overflow-y-auto hide-scrollbar"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-start px-4 overflow-hidden"
       style="
         padding-top: 8dvh;
         padding-bottom: 8dvh;
@@ -35,16 +35,18 @@
         padding-right: 24px;
         box-sizing: border-box;
       "
-      @wheel="lovestoryScroll.handleWheel"
-      @touchstart="lovestoryScroll.handleTouchStart"
-      @touchmove="lovestoryScroll.handleTouchMove"
     >
-      <LoveStoryFairytaleGarden
-        :stories="stories"
-        :theme-config="themeConfig"
-        :is-inline="true"
-        :api-base="apiBase"
-      />
+      <div
+        ref="lovestoryInner"
+        style="width: 100%; display: flex; flex-direction: column; align-items: center;"
+      >
+        <LoveStoryFairytaleGarden
+          :stories="stories"
+          :theme-config="themeConfig"
+          :is-inline="true"
+          :api-base="apiBase"
+        />
+      </div>
     </div>
 
     <!-- Slide 2: Gallery Section Content -->
@@ -186,413 +188,412 @@
           </p>
         </div>
 
-        <!-- RSVP Form & Messages side-by-side or stacked -->
+        <!-- RSVP Form & Messages inside single card -->
+        <!-- RSVP Form & Messages inside single card -->
         <div
-          class="grid md:grid-cols-2 gap-4 text-left items-start"
-          style="position: relative; z-index: 10"
+          style="
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 460px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0px 15px 35px rgba(106, 78, 66, 0.08);
+            border: 1px solid rgba(235, 207, 209, 0.6);
+            padding: 28px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: left;
+          "
         >
-          <!-- Form -->
+          <!-- Card Background Image with diagonal opacity mask -->
           <div
             style="
-              position: relative;
-              background: rgba(252, 248, 244, 0.97);
-              backdrop-filter: blur(16px);
-              -webkit-backdrop-filter: blur(16px);
-              padding: 16px 14px;
-              border-radius: 20px 40px 20px 40px;
-              border: 1.5px solid #ebcfd1;
-              box-shadow: 0px 10px 25px rgba(106, 78, 66, 0.05);
-              box-sizing: border-box;
+              position: absolute;
+              inset: 0;
+              background-image: url('https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b98ad2d7-375d-453a-9f0d-b60141522925.webp');
+              background-size: cover;
+              background-position: center;
+              z-index: 1;
+              pointer-events: none;
+              mask-image: linear-gradient(to bottom left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 35%, rgba(0, 0, 0, 0) 65%);
+              -webkit-mask-image: linear-gradient(to bottom left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 35%, rgba(0, 0, 0, 0) 65%);
             "
-          >
-            <!-- Elegant dashed inner border -->
-            <div
+          ></div>
+
+        <!-- Form -->
+        <form
+          @submit.prevent="onSubmit"
+          style="
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+          "
+        >
+          <div>
+            <label
               style="
-                position: absolute;
-                top: 6px;
-                bottom: 6px;
-                left: 6px;
-                right: 6px;
-                border: 1px dashed rgba(174, 184, 163, 0.4);
-                border-radius: 14px 34px 14px 34px;
-                pointer-events: none;
-                box-sizing: border-box;
+                display: block;
+                font-size: 11px;
+                font-weight: 600;
+                color: #4A4A4A;
+                margin-bottom: 6px;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                font-family: sans-serif;
               "
-            ></div>
-
-            <form
-              @submit.prevent="onSubmit"
-              class="space-y-3"
-              style="position: relative; z-index: 10"
+              >Nama Lengkap</label
             >
-              <div>
-                <label
-                  style="
-                    display: block;
-                    font-size: 10px;
-                    font-weight: 700;
-                    color: #6a4e42;
-                    margin-bottom: 4px;
-                    letter-spacing: 0.08em;
-                    text-transform: uppercase;
-                    font-family: sans-serif;
-                  "
-                  >Nama Lengkap</label
-                >
-                <input
-                  v-model="form.guest_name"
-                  type="text"
-                  maxlength="50"
-                  placeholder="Nama Anda"
-                  required
-                  class="premium-input"
-                  style="width: 100%; px-4; height: 34px; padding-left: 10px; padding-right: 10px; rounded-lg; border: 1.5px solid #EBCFD1; background: rgba(255,255,255,0.85); color: #6A4E42; font-size: 12px; outline: none; border-radius: 10px; box-sizing: border-box;"
-                />
-              </div>
-
-              <div>
-                <label
-                  style="
-                    display: block;
-                    font-size: 10px;
-                    font-weight: 700;
-                    color: #6a4e42;
-                    margin-bottom: 6px;
-                    letter-spacing: 0.08em;
-                    text-transform: uppercase;
-                    font-family: sans-serif;
-                  "
-                  >Konfirmasi Kehadiran</label
-                >
-                <div class="flex gap-2">
-                  <button
-                    type="button"
-                    @click="form.attendance = 'hadir'"
-                    :style="
-                      form.attendance === 'hadir'
-                        ? 'flex: 1; py-2; height: 34px; rounded-xl; border: none; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: white; font-weight: 700; font-size: 12px; cursor: pointer; border-radius: 10px; box-shadow: 0 4px 12px rgba(110,135,92,0.2);'
-                        : 'flex: 1; py-2; height: 34px; rounded-xl; border: 1.5px dashed #AEB8A3; background: transparent; color: #6E875C; font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 10px;'
-                    "
-                  >
-                    Hadir
-                  </button>
-                  <button
-                    type="button"
-                    @click="form.attendance = 'tidak_hadir'"
-                    :style="
-                      form.attendance === 'tidak_hadir'
-                        ? 'flex: 1; py-2; height: 34px; rounded-xl; border: none; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: white; font-weight: 700; font-size: 12px; cursor: pointer; border-radius: 10px; box-shadow: 0 4px 12px rgba(186,125,133,0.2);'
-                        : 'flex: 1; py-2; height: 34px; rounded-xl; border: 1.5px dashed #EBCFD1; background: transparent; color: #BA7D85; font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 10px;'
-                    "
-                  >
-                    Absen
-                  </button>
-                </div>
-              </div>
-
-              <div v-show="form.attendance === 'hadir'">
-                <label
-                  style="
-                    display: block;
-                    font-size: 10px;
-                    font-weight: 700;
-                    color: #6a4e42;
-                    margin-bottom: 4px;
-                    letter-spacing: 0.08em;
-                    text-transform: uppercase;
-                    font-family: sans-serif;
-                  "
-                  >Jumlah Tamu</label
-                >
-                <div
-                  style="display: flex; align-items: center; justify-content: space-between; rounded-lg; border: 1.5px solid #EBCFD1; background: rgba(255,255,255,0.85); overflow: hidden; height: 34px; border-radius: 10px; box-sizing: border-box;"
-                >
-                  <button
-                    type="button"
-                    @click="
-                      form.guest_count = Math.max(1, form.guest_count - 1)
-                    "
-                    style="
-                      width: 34px;
-                      height: 100%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      color: #6e875c;
-                      font-weight: bold;
-                      background: transparent;
-                      border: none;
-                      cursor: pointer;
-                    "
-                  >
-                    -
-                  </button>
-                  <span
-                    style="
-                      color: #6a4e42;
-                      font-weight: 700;
-                      font-size: 12px;
-                      font-family: sans-serif;
-                    "
-                    >{{ form.guest_count }} Orang</span
-                  >
-                  <button
-                    type="button"
-                    @click="
-                      form.guest_count = Math.min(10, form.guest_count + 1)
-                    "
-                    style="
-                      width: 34px;
-                      height: 100%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      color: #6e875c;
-                      font-weight: bold;
-                      background: transparent;
-                      border: none;
-                      cursor: pointer;
-                    "
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label
-                  style="
-                    display: block;
-                    font-size: 10px;
-                    font-weight: 700;
-                    color: #6a4e42;
-                    margin-bottom: 4px;
-                    letter-spacing: 0.08em;
-                    text-transform: uppercase;
-                    font-family: sans-serif;
-                  "
-                  >Ucapan &amp; Doa</label
-                >
-                <textarea
-                  v-model="form.message"
-                  rows="2"
-                  maxlength="500"
-                  placeholder="Tulis ucapan selamat..."
-                  class="premium-input"
-                  style="width: 100%; padding: 8px 10px; rounded-lg; border: 1.5px solid #EBCFD1; background: rgba(255,255,255,0.85); color: #6A4E42; font-size: 12px; outline: none; border-radius: 10px; resize: none; box-sizing: border-box; font-family: var(--font-body), sans-serif;"
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                :disabled="submitting"
-                class="premium-submit-btn"
-                style="width: 100%; py-2.5; height: 38px; rounded-lg; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: white; font-weight: 700; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; border: none; border-radius: 10px; box-shadow: 0 6px 15px rgba(110,135,92,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center;"
-              >
-                {{ submitting ? "Mengirim..." : "Kirim Ucapan" }}
-              </button>
-            </form>
+            <input
+              v-model="form.guest_name"
+              type="text"
+              maxlength="50"
+              placeholder="Nama Anda"
+              required
+              class="premium-input"
+              style="width: 100%; height: 38px; padding-left: 12px; padding-right: 12px; border: 1.5px solid #EBCFD1; background: #ffffff; color: #4A4A4A; font-size: 12px; outline: none; border-radius: 8px; box-sizing: border-box;"
+            />
           </div>
 
-          <!-- Messages List -->
-          <div
+          <div>
+            <label
+              style="
+                display: block;
+                font-size: 11px;
+                font-weight: 600;
+                color: #4A4A4A;
+                margin-bottom: 6px;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                font-family: sans-serif;
+              "
+              >Konfirmasi Kehadiran</label
+            >
+            <div
+              style="
+                display: flex;
+                background: #ffffff;
+                border: 1.5px solid #EBCFD1;
+                border-radius: 8px;
+                padding: 2px;
+              "
+            >
+              <button
+                type="button"
+                @click="form.attendance = 'hadir'"
+                :style="
+                  form.attendance === 'hadir'
+                    ? 'background: #EAA7A9; color: #ffffff; box-shadow: 0 2px 8px rgba(234, 167, 169, 0.3);'
+                    : 'background: transparent; color: #4A4A4A;'
+                "
+                style="flex: 1; height: 34px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;"
+              >
+                Hadir
+              </button>
+              <button
+                type="button"
+                @click="form.attendance = 'tidak_hadir'"
+                :style="
+                  form.attendance === 'tidak_hadir'
+                    ? 'background: #EAA7A9; color: #ffffff; box-shadow: 0 2px 8px rgba(234, 167, 169, 0.3);'
+                    : 'background: transparent; color: #4A4A4A;'
+                "
+                style="flex: 1; height: 34px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;"
+              >
+                Absen
+              </button>
+            </div>
+          </div>
+
+          <div v-show="form.attendance === 'hadir'">
+            <label
+              style="
+                display: block;
+                font-size: 11px;
+                font-weight: 600;
+                color: #4A4A4A;
+                margin-bottom: 6px;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                font-family: sans-serif;
+              "
+              >Jumlah Tamu</label
+            >
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button
+                type="button"
+                @click="form.guest_count = Math.max(1, form.guest_count - 1)"
+                style="
+                  width: 36px;
+                  height: 36px;
+                  background: #EAA7A9;
+                  color: white;
+                  border: none;
+                  border-radius: 8px;
+                  font-weight: bold;
+                  font-size: 16px;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  transition: all 0.2s ease;
+                "
+                onmouseover="this.style.opacity='0.9'"
+                onmouseout="this.style.opacity='1'"
+              >
+                -
+              </button>
+              <div
+                style="
+                  flex: 1;
+                  height: 36px;
+                  background: #FCE8E9;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #BA7D85;
+                  font-weight: 600;
+                  font-size: 12px;
+                "
+              >
+                {{ form.guest_count }} Orang
+              </div>
+              <button
+                type="button"
+                @click="form.guest_count = Math.min(10, form.guest_count + 1)"
+                style="
+                  width: 36px;
+                  height: 36px;
+                  background: #EAA7A9;
+                  color: white;
+                  border: none;
+                  border-radius: 8px;
+                  font-weight: bold;
+                  font-size: 16px;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  transition: all 0.2s ease;
+                "
+                onmouseover="this.style.opacity='0.9'"
+                onmouseout="this.style.opacity='1'"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label
+              style="
+                display: block;
+                font-size: 11px;
+                font-weight: 600;
+                color: #4A4A4A;
+                margin-bottom: 6px;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                font-family: sans-serif;
+              "
+              >Ucapan &amp; Doa</label
+            >
+            <textarea
+              v-model="form.message"
+              rows="3"
+              maxlength="500"
+              placeholder="Tulis ucapan selamat..."
+              class="premium-input"
+              style="width: 100%; padding: 10px 12px; border: 1.5px solid #EBCFD1; background: #ffffff; color: #4A4A4A; font-size: 12px; outline: none; border-radius: 8px; resize: none; box-sizing: border-box; font-family: var(--font-body), sans-serif;"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            :disabled="submitting"
+            class="premium-submit-btn"
             style="
-              position: relative;
-              background: rgba(252, 248, 244, 0.97);
-              backdrop-filter: blur(16px);
-              -webkit-backdrop-filter: blur(16px);
-              padding: 16px 14px;
-              border-radius: 40px 20px 40px 20px;
-              border: 1.5px solid #ebcfd1;
-              box-shadow: 0px 10px 25px rgba(106, 78, 66, 0.05);
-              box-sizing: border-box;
-              align-self: stretch;
+              width: 100%;
+              height: 42px;
+              border-radius: 9999px;
+              background: linear-gradient(135deg, #F4A4A8 0%, #EAA7A9 100%);
+              color: white;
+              font-weight: bold;
+              font-size: 12px;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              border: none;
+              box-shadow: 0 4px 14px rgba(234, 167, 169, 0.4);
+              cursor: pointer;
               display: flex;
-              flex-direction: column;
+              align-items: center;
+              justify-content: center;
             "
           >
-            <!-- Elegant dashed inner border -->
-            <div
-              style="
-                position: absolute;
-                top: 8px;
-                bottom: 8px;
-                left: 8px;
-                right: 8px;
-                border: 1px dashed rgba(174, 184, 163, 0.4);
-                border-radius: 34px 14px 34px 14px;
-                pointer-events: none;
-                box-sizing: border-box;
-              "
-            ></div>
+            {{ submitting ? "Mengirim..." : "Kirim Ucapan" }}
+          </button>
+        </form>
 
+        <!-- Divider Line -->
+        <div style="border-top: 1px dashed rgba(235, 207, 209, 0.8); margin: 5px 0; position: relative; z-index: 10;"></div>
+
+        <!-- Messages Section -->
+        <div style="position: relative; z-index: 10;">
+          <!-- Header List Ucapan -->
+          <h3
+            style="
+              font-family: 'Cormorant Garamond', serif;
+              color: #BA7D85;
+              font-size: 16px;
+              font-weight: 600;
+              margin: 0 0 12px 0;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+            "
+          >
+            Pesan Tamu ({{ rsvpMessages.length }})
+          </h3>
+
+          <div
+            class="pr-1 space-y-3 wishes-scroll-container"
+            style="
+              position: relative;
+              z-index: 20;
+              overflow-y: auto !important;
+              height: 220px;
+              max-height: 220px;
+              overscroll-behavior: contain;
+              -webkit-overflow-scrolling: touch;
+              touch-action: pan-y !important;
+            "
+            data-lenis-prevent
+          >
             <div
-              style="
-                position: relative;
-                z-index: 10;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 12px;
-                border-bottom: 1px dashed rgba(235, 207, 209, 0.6);
-                padding-bottom: 8px;
-                box-sizing: border-box;
-              "
+              v-if="rsvpMessages.length === 0"
+              class="text-center py-12 text-xs text-gray-400 font-light font-sans"
             >
-              <span
-                style="
-                  font-size: 12px;
-                  font-weight: 700;
-                  color: #6a4e42;
-                  font-family: var(--font-body), sans-serif;
-                  letter-spacing: 0.05em;
-                  text-transform: uppercase;
-                "
-                >Pesan Tamu</span
-              >
-              <span
-                style="
-                  background: #ebcfd1;
-                  color: #8a4e56;
-                  padding: 2px 8px;
-                  border-radius: 9999px;
-                  font-size: 10px;
-                  font-weight: 700;
-                  font-family: sans-serif;
-                "
-                >{{ rsvpMessages.length }}</span
-              >
+              Belum ada ucapan
             </div>
-
             <div
-              class="pr-1 space-y-3"
+              v-else
+              v-for="msg in rsvpMessages"
+              :key="msg.id"
               style="
-                position: relative;
-                z-index: 20;
-                overflow-y: auto !important;
-                height: 210px;
-                max-height: 210px;
-                overscroll-behavior: contain;
-                -webkit-overflow-scrolling: touch;
+                padding: 12px 14px;
+                background: #ffffff;
+                border-radius: 12px;
+                border: 1px solid #EBCFD1;
+                box-sizing: border-box;
+                margin-bottom: 10px;
               "
-              data-lenis-prevent
-              @touchstart.stop
-              @touchmove.stop
-              @wheel.stop
             >
+              <!-- Card Inner Info -->
               <div
-                v-if="rsvpMessages.length === 0"
-                class="text-center py-12 text-xs text-gray-400 font-light font-sans"
-              >
-                Belum ada ucapan
-              </div>
-              <div
-                v-else
-                v-for="msg in rsvpMessages"
-                :key="msg.id"
                 style="
-                  position: relative;
-                  padding: 16px;
-                  background: rgba(255, 255, 255, 0.92);
-                  border-radius: 12px 24px 12px 24px;
-                  border: 1.5px solid rgba(235, 207, 209, 0.4);
-                  box-shadow: 0 4px 15px rgba(106, 78, 66, 0.03);
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  gap: 8px;
+                  margin-bottom: 6px;
                   box-sizing: border-box;
                 "
               >
-                <!-- Card Inner Info -->
-                <div
+                <span
                   style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 8px;
-                    margin-bottom: 8px;
-                    box-sizing: border-box;
+                    font-weight: 700;
+                    font-size: 13px;
+                    color: #BA7D85;
+                    font-family: sans-serif;
+                    max-width: 160px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                  "
+                  >{{ msg.guest_name }}</span
+                >
+                <span
+                  :style="
+                    msg.attendance === 'hadir'
+                      ? 'background: #FCE8E9; color: #BA7D85;'
+                      : 'background: #F5F5F5; color: #999999;'
+                  "
+                  style="
+                    font-size: 9px;
+                    font-weight: 700;
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    text-transform: uppercase;
+                    font-family: sans-serif;
                   "
                 >
-                  <span
-                    style="
-                      font-weight: 700;
-                      font-size: 12.5px;
-                      color: #5a1e25;
-                      font-family: sans-serif;
-                      max-width: 130px;
-                      overflow: hidden;
-                      text-overflow: ellipsis;
-                      white-space: nowrap;
-                    "
-                    >{{ msg.guest_name }}</span
-                  >
-                  <span
-                    :style="
-                      msg.attendance === 'hadir'
-                        ? 'font-size: 8.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; background: rgba(110, 135, 92, 0.12); color: #6E875C; font-family: sans-serif;'
-                        : 'font-size: 8.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; background: rgba(186, 125, 133, 0.12); color: #BA7D85; font-family: sans-serif;'
-                    "
-                  >
-                    {{ msg.attendance === "hadir" ? "Hadir" : "Absen" }}
-                  </span>
+                  {{ msg.attendance === "hadir" ? "Hadir" : "Absen" }}
+                </span>
+              </div>
+              <p
+                style="
+                  font-size: 12px;
+                  line-height: 1.5;
+                  color: #4A4A4A;
+                  font-weight: 400;
+                  font-family: var(--font-body), sans-serif;
+                  margin: 0;
+                  white-space: pre-line;
+                  word-break: break-word;
+                "
+              >
+                {{ msg.message }}
+              </p>
+              <div
+                v-if="msg.reply_text"
+                style="
+                  margin-top: 10px;
+                  background: #FFF5F5;
+                  padding: 8px 10px;
+                  border-radius: 8px;
+                  border: 1px dashed rgba(235, 207, 209, 0.7);
+                  box-sizing: border-box;
+                "
+              >
+                <div
+                  style="
+                    font-size: 8px;
+                    font-weight: 800;
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    color: #BA7D85;
+                    margin-bottom: 4px;
+                    display: block;
+                    font-family: sans-serif;
+                  "
+                >
+                  Balasan Mempelai
                 </div>
                 <p
                   style="
-                    font-size: 11.5px;
-                    line-height: 1.6;
-                    color: #6a4e42;
+                    font-size: 11px;
+                    line-height: 1.4;
+                    color: #4A4A4A;
                     font-weight: 400;
                     font-family: var(--font-body), sans-serif;
                     margin: 0;
-                    white-space: pre-line;
                     word-break: break-word;
                   "
                 >
-                  {{ msg.message }}
+                  {{ msg.reply_text }}
                 </p>
-                <div
-                  v-if="msg.reply_text"
-                  style="
-                    margin-top: 10px;
-                    background: rgba(252, 248, 244, 0.9);
-                    padding: 10px;
-                    border-radius: 8px 16px 8px 16px;
-                    border: 1px dashed rgba(235, 207, 209, 0.7);
-                    box-sizing: border-box;
-                  "
-                >
-                  <div
-                    style="
-                      font-size: 8px;
-                      font-weight: 800;
-                      text-transform: uppercase;
-                      letter-spacing: 0.1em;
-                      color: #ba7d85;
-                      margin-bottom: 4px;
-                      display: block;
-                      font-family: sans-serif;
-                    "
-                  >
-                    Balasan Mempelai
-                  </div>
-                  <p
-                    style="
-                      font-size: 11px;
-                      line-height: 1.5;
-                      color: #6a4e42;
-                      font-weight: 400;
-                      font-family: var(--font-body), sans-serif;
-                      margin: 0;
-                      word-break: break-word;
-                    "
-                  >
-                    {{ msg.reply_text }}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
     <!-- Slide 4: Gift Section Content -->
     <div
@@ -851,6 +852,7 @@ const footerSection = ref<HTMLElement | null>(null);
 const bgImageRef = ref<HTMLElement | null>(null);
 const whiteOverlayRef = ref<HTMLElement | null>(null);
 const lovestoryWrapper = ref<HTMLElement | null>(null);
+const lovestoryInner = ref<HTMLElement | null>(null);
 const galleryWrapper = ref<HTMLElement | null>(null);
 const rsvpWrapper = ref<HTMLElement | null>(null);
 const giftWrapper = ref<HTMLElement | null>(null);
@@ -906,6 +908,11 @@ function createScrollHandler(wrapperRef: { value: HTMLElement | null }) {
         }
       }
 
+      // Allow scroll events inside the wishes-scroll-container to bypass slide scroll hijacking
+      if (e.target && (e.target as HTMLElement).closest(".wishes-scroll-container")) {
+        return;
+      }
+
       const isScrollingDown = e.deltaY > 0;
       const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
       const isScrollingUp = e.deltaY < 0;
@@ -932,6 +939,11 @@ function createScrollHandler(wrapperRef: { value: HTMLElement | null }) {
         }
       }
 
+      // Allow touch scroll events inside the wishes-scroll-container to bypass slide touch hijacking
+      if (e.target && (e.target as HTMLElement).closest(".wishes-scroll-container")) {
+        return;
+      }
+
       const touchCurrentY = e.touches[0].clientY;
       const deltaY = touchStartY - touchCurrentY;
 
@@ -951,7 +963,7 @@ function createScrollHandler(wrapperRef: { value: HTMLElement | null }) {
   };
 }
 
-const lovestoryScroll = createScrollHandler(lovestoryWrapper);
+// const lovestoryScroll = createScrollHandler(lovestoryWrapper);
 const galleryScroll = createScrollHandler(galleryWrapper);
 const rsvpScroll = createScrollHandler(rsvpWrapper);
 const giftScroll = createScrollHandler(giftWrapper);
@@ -1014,7 +1026,7 @@ onMounted(() => {
 
     // Calculate dynamic length based on active sections
     let scrollEndMultiplier = 250;
-    if (hasLoveStory) scrollEndMultiplier += 110;
+    if (hasLoveStory) scrollEndMultiplier += 160;
     if (hasGallery) scrollEndMultiplier += 110;
     if (hasGiftVal) scrollEndMultiplier += 110;
 
@@ -1034,6 +1046,18 @@ onMounted(() => {
     // Slide 1: Love Story
     if (hasLoveStory) {
       activeWrapper = lovestoryWrapper.value;
+      const innerEl = lovestoryInner.value;
+      if (innerEl) {
+        pinTimeline.to(innerEl, {
+          y: () => {
+            const wrapperHeight = window.innerHeight * 0.84;
+            const diff = innerEl.scrollHeight - wrapperHeight;
+            return diff > 0 ? -diff : 0;
+          },
+          duration: 1.5,
+          ease: "none",
+        });
+      }
     }
 
     // Slide 2: Gallery
@@ -1228,7 +1252,7 @@ onBeforeUnmount(() => {
   transition: all 0.3s ease !important;
 }
 .premium-input:focus {
-  border-color: #ba7d85 !important;
+  border-color: #BA7D85 !important;
   background-color: #ffffff !important;
   box-shadow: 0 0 0 3px rgba(186, 125, 133, 0.15) !important;
 }
@@ -1237,10 +1261,26 @@ onBeforeUnmount(() => {
 }
 .premium-submit-btn:hover {
   transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 10px 22px rgba(110, 135, 92, 0.35) !important;
+  box-shadow: 0 10px 22px rgba(234, 167, 169, 0.35) !important;
   filter: brightness(1.03);
 }
 .premium-submit-btn:active {
   transform: translateY(0) scale(1);
+}
+
+/* Scrollbar Kustom untuk List Pesan */
+.wishes-scroll-container::-webkit-scrollbar {
+  width: 4px;
+}
+.wishes-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.wishes-scroll-container::-webkit-scrollbar-thumb {
+  background: #EAA7A9;
+  border-radius: 10px;
+}
+.wishes-scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: #EAA7A9 transparent;
 }
 </style>
