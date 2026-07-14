@@ -48,7 +48,7 @@
         style="
           position: absolute;
           inset: 0;
-          background-image: url(&quot;https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_55a618a5-052e-4be3-ac4b-2fbed28dd8c2.webp&quot;);
+          background-image: url('https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_55a618a5-052e-4be3-ac4b-2fbed28dd8c2.webp');
           background-size: cover;
           background-position: center;
           z-index: 0;
@@ -209,7 +209,7 @@
       style="
         position: absolute;
         inset: 0;
-        background-image: url(&quot;https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b42881e0-cb77-4565-8f1f-d4603ff53253.webp&quot;);
+        background-image: url('https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b42881e0-cb77-4565-8f1f-d4603ff53253.webp');
         background-size: cover;
         background-position: center;
         z-index: 8;
@@ -285,7 +285,7 @@
           <span
             class="text-xs md:text-sm tracking-[0.3em] text-[#7A3E45] uppercase font-extrabold pb-1 border-b border-[#7A3E45] mb-3 md:mb-4"
             style="
-              font-family: &quot;Cormorant Garamond&quot;, serif;
+              font-family: 'Cormorant Garamond', serif;
               position: relative;
               top: -25px;
               text-shadow:
@@ -301,7 +301,7 @@
           <h2
             class="text-4xl md:text-6xl text-[#5A1E25] font-bold leading-none mb-2 md:mb-3"
             style="
-              font-family: &quot;Great Vibes&quot;, cursive;
+              font-family: 'Great Vibes', cursive;
               text-shadow:
                 0 0 10px rgba(255, 255, 255, 0.95),
                 0 0 20px rgba(255, 255, 255, 0.8),
@@ -315,7 +315,7 @@
           <p
             class="text-sm md:text-lg tracking-[0.2em] text-[#5A1E25] uppercase font-bold mb-4 md:mb-6 max-w-[260px] md:max-w-[420px] mx-auto break-words whitespace-normal leading-relaxed"
             style="
-              font-family: &quot;Cormorant Garamond&quot;, serif;
+              font-family: 'Cormorant Garamond', serif;
               text-shadow:
                 0 0 8px rgba(255, 255, 255, 0.95),
                 0 0 16px rgba(255, 255, 255, 0.8),
@@ -332,7 +332,7 @@
             v-if="invitation?.groom_father || invitation?.groom_mother"
             class="text-xs md:text-sm leading-relaxed text-[#7A3E45] font-semibold"
             style="
-              font-family: &quot;Cormorant Garamond&quot;, serif;
+              font-family: 'Cormorant Garamond', serif;
               text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
             "
           >
@@ -362,7 +362,7 @@
           <span
             class="text-xs md:text-sm tracking-[0.3em] text-[#7A3E45] uppercase font-extrabold pb-1 border-b border-[#7A3E45] mb-3 md:mb-4"
             style="
-              font-family: &quot;Cormorant Garamond&quot;, serif;
+              font-family: 'Cormorant Garamond', serif;
               position: relative;
               top: -25px;
               text-shadow:
@@ -378,7 +378,7 @@
           <h2
             class="text-4xl md:text-6xl text-[#5A1E25] font-bold leading-none mb-2 md:mb-3"
             style="
-              font-family: &quot;Great Vibes&quot;, cursive;
+              font-family: 'Great Vibes', cursive;
               text-shadow:
                 0 0 10px rgba(255, 255, 255, 0.95),
                 0 0 20px rgba(255, 255, 255, 0.8),
@@ -392,7 +392,7 @@
           <p
             class="text-sm md:text-lg tracking-[0.2em] text-[#5A1E25] uppercase font-bold mb-4 md:mb-6 max-w-[260px] md:max-w-[420px] mx-auto break-words whitespace-normal leading-relaxed"
             style="
-              font-family: &quot;Cormorant Garamond&quot;, serif;
+              font-family: 'Cormorant Garamond', serif;
               text-shadow:
                 0 0 8px rgba(255, 255, 255, 0.95),
                 0 0 16px rgba(255, 255, 255, 0.8),
@@ -409,7 +409,7 @@
             v-if="invitation?.bride_father || invitation?.bride_mother"
             class="text-xs md:text-sm leading-relaxed text-[#7A3E45] font-semibold"
             style="
-              font-family: &quot;Cormorant Garamond&quot;, serif;
+              font-family: 'Cormorant Garamond', serif;
               text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
             "
           >

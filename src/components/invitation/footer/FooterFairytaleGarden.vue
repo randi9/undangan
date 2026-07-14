@@ -16,11 +16,11 @@
       "
     ></div>
 
-    <!-- White Overlay Layer -->
+    <!-- White Overlay Layer (initially hidden/clear for clean section entry) -->
     <div
       ref="whiteOverlayRef"
-      class="absolute inset-0 z-[1] bg-white pointer-events-none"
-      style="opacity: 0.5"
+      class="absolute inset-0 z-[1] pointer-events-none"
+      style="background: rgba(255, 255, 255, 0.45); opacity: 0"
     ></div>
 
     <!-- Slide 1: Love Story Section Content -->
@@ -38,7 +38,12 @@
     >
       <div
         ref="lovestoryInner"
-        style="width: 100%; display: flex; flex-direction: column; align-items: center;"
+        style="
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        "
       >
         <LoveStoryFairytaleGarden
           :stories="stories"
@@ -60,7 +65,7 @@
         paddingBottom: '8dvh',
         paddingLeft: galleryType === 'masonry' ? '24px' : '0px',
         paddingRight: galleryType === 'masonry' ? '24px' : '0px',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
       }"
       @wheel="galleryScroll.handleWheel"
       @touchstart="galleryScroll.handleTouchStart"
@@ -69,7 +74,7 @@
       <div
         :class="[
           'w-full flex flex-col gap-6 flex-shrink-0',
-          galleryType === 'masonry' ? 'max-w-2xl px-4 py-2' : 'py-2'
+          galleryType === 'masonry' ? 'max-w-2xl px-4 py-2' : 'py-2',
         ]"
       >
         <!-- Header -->
@@ -183,7 +188,7 @@
               <rect width="60" height="1" fill="currentColor" />
             </svg>
           </div>
-          <p class="text-xs md:text-sm opacity-90" style="color: #8A4E56;">
+          <p class="text-xs md:text-sm opacity-90" style="color: #8a4e56">
             Kehadiran Anda merupakan kebahagiaan bagi kami
           </p>
         </div>
@@ -214,386 +219,445 @@
             style="
               position: absolute;
               inset: 0;
-              background-image: url('https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b98ad2d7-375d-453a-9f0d-b60141522925.webp');
+              background-image: url(&quot;https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b98ad2d7-375d-453a-9f0d-b60141522925.webp&quot;);
               background-size: cover;
               background-position: center;
               z-index: 1;
               pointer-events: none;
-              mask-image: linear-gradient(to bottom left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 35%, rgba(0, 0, 0, 0) 65%);
-              -webkit-mask-image: linear-gradient(to bottom left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 35%, rgba(0, 0, 0, 0) 65%);
+              mask-image: linear-gradient(
+                to bottom left,
+                rgba(0, 0, 0, 0.85) 0%,
+                rgba(0, 0, 0, 0.2) 35%,
+                rgba(0, 0, 0, 0) 65%
+              );
+              -webkit-mask-image: linear-gradient(
+                to bottom left,
+                rgba(0, 0, 0, 0.85) 0%,
+                rgba(0, 0, 0, 0.2) 35%,
+                rgba(0, 0, 0, 0) 65%
+              );
             "
           ></div>
 
-        <!-- Form -->
-        <form
-          @submit.prevent="onSubmit"
-          style="
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-          "
-        >
-          <div>
-            <label
-              style="
-                display: block;
-                font-size: 11px;
-                font-weight: 600;
-                color: #4A4A4A;
-                margin-bottom: 6px;
-                letter-spacing: 0.05em;
-                text-transform: uppercase;
-                font-family: sans-serif;
-              "
-              >Nama Lengkap</label
-            >
-            <input
-              v-model="form.guest_name"
-              type="text"
-              maxlength="50"
-              placeholder="Nama Anda"
-              required
-              class="premium-input"
-              style="width: 100%; height: 38px; padding-left: 12px; padding-right: 12px; border: 1.5px solid #EBCFD1; background: #ffffff; color: #4A4A4A; font-size: 12px; outline: none; border-radius: 8px; box-sizing: border-box;"
-            />
-          </div>
-
-          <div>
-            <label
-              style="
-                display: block;
-                font-size: 11px;
-                font-weight: 600;
-                color: #4A4A4A;
-                margin-bottom: 6px;
-                letter-spacing: 0.05em;
-                text-transform: uppercase;
-                font-family: sans-serif;
-              "
-              >Konfirmasi Kehadiran</label
-            >
-            <div
-              style="
-                display: flex;
-                background: #ffffff;
-                border: 1.5px solid #EBCFD1;
-                border-radius: 8px;
-                padding: 2px;
-              "
-            >
-              <button
-                type="button"
-                @click="form.attendance = 'hadir'"
-                :style="
-                  form.attendance === 'hadir'
-                    ? 'background: #EAA7A9; color: #ffffff; box-shadow: 0 2px 8px rgba(234, 167, 169, 0.3);'
-                    : 'background: transparent; color: #4A4A4A;'
-                "
-                style="flex: 1; height: 34px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;"
-              >
-                Hadir
-              </button>
-              <button
-                type="button"
-                @click="form.attendance = 'tidak_hadir'"
-                :style="
-                  form.attendance === 'tidak_hadir'
-                    ? 'background: #EAA7A9; color: #ffffff; box-shadow: 0 2px 8px rgba(234, 167, 169, 0.3);'
-                    : 'background: transparent; color: #4A4A4A;'
-                "
-                style="flex: 1; height: 34px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;"
-              >
-                Absen
-              </button>
-            </div>
-          </div>
-
-          <div v-show="form.attendance === 'hadir'">
-            <label
-              style="
-                display: block;
-                font-size: 11px;
-                font-weight: 600;
-                color: #4A4A4A;
-                margin-bottom: 6px;
-                letter-spacing: 0.05em;
-                text-transform: uppercase;
-                font-family: sans-serif;
-              "
-              >Jumlah Tamu</label
-            >
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <button
-                type="button"
-                @click="form.guest_count = Math.max(1, form.guest_count - 1)"
-                style="
-                  width: 36px;
-                  height: 36px;
-                  background: #EAA7A9;
-                  color: white;
-                  border: none;
-                  border-radius: 8px;
-                  font-weight: bold;
-                  font-size: 16px;
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  transition: all 0.2s ease;
-                "
-                onmouseover="this.style.opacity='0.9'"
-                onmouseout="this.style.opacity='1'"
-              >
-                -
-              </button>
-              <div
-                style="
-                  flex: 1;
-                  height: 36px;
-                  background: #FCE8E9;
-                  border-radius: 8px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  color: #BA7D85;
-                  font-weight: 600;
-                  font-size: 12px;
-                "
-              >
-                {{ form.guest_count }} Orang
-              </div>
-              <button
-                type="button"
-                @click="form.guest_count = Math.min(10, form.guest_count + 1)"
-                style="
-                  width: 36px;
-                  height: 36px;
-                  background: #EAA7A9;
-                  color: white;
-                  border: none;
-                  border-radius: 8px;
-                  font-weight: bold;
-                  font-size: 16px;
-                  cursor: pointer;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  transition: all 0.2s ease;
-                "
-                onmouseover="this.style.opacity='0.9'"
-                onmouseout="this.style.opacity='1'"
-              >
-                +
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label
-              style="
-                display: block;
-                font-size: 11px;
-                font-weight: 600;
-                color: #4A4A4A;
-                margin-bottom: 6px;
-                letter-spacing: 0.05em;
-                text-transform: uppercase;
-                font-family: sans-serif;
-              "
-              >Ucapan &amp; Doa</label
-            >
-            <textarea
-              v-model="form.message"
-              rows="3"
-              maxlength="500"
-              placeholder="Tulis ucapan selamat..."
-              class="premium-input"
-              style="width: 100%; padding: 10px 12px; border: 1.5px solid #EBCFD1; background: #ffffff; color: #4A4A4A; font-size: 12px; outline: none; border-radius: 8px; resize: none; box-sizing: border-box; font-family: var(--font-body), sans-serif;"
-            ></textarea>
-          </div>
-
-          <button
-            type="submit"
-            :disabled="submitting"
-            class="premium-submit-btn"
-            style="
-              width: 100%;
-              height: 42px;
-              border-radius: 9999px;
-              background: linear-gradient(135deg, #F4A4A8 0%, #EAA7A9 100%);
-              color: white;
-              font-weight: bold;
-              font-size: 12px;
-              letter-spacing: 0.1em;
-              text-transform: uppercase;
-              border: none;
-              box-shadow: 0 4px 14px rgba(234, 167, 169, 0.4);
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            "
-          >
-            {{ submitting ? "Mengirim..." : "Kirim Ucapan" }}
-          </button>
-        </form>
-
-        <!-- Divider Line -->
-        <div style="border-top: 1px dashed rgba(235, 207, 209, 0.8); margin: 5px 0; position: relative; z-index: 10;"></div>
-
-        <!-- Messages Section -->
-        <div style="position: relative; z-index: 10;">
-          <!-- Header List Ucapan -->
-          <h3
-            style="
-              font-family: 'Cormorant Garamond', serif;
-              color: #BA7D85;
-              font-size: 16px;
-              font-weight: 600;
-              margin: 0 0 12px 0;
-              text-transform: uppercase;
-              letter-spacing: 0.05em;
-            "
-          >
-            Pesan Tamu ({{ rsvpMessages.length }})
-          </h3>
-
-          <div
-            class="pr-1 space-y-3 wishes-scroll-container"
+          <!-- Form -->
+          <form
+            @submit.prevent="onSubmit"
             style="
               position: relative;
-              z-index: 20;
-              overflow-y: auto !important;
-              height: 220px;
-              max-height: 220px;
-              overscroll-behavior: contain;
-              -webkit-overflow-scrolling: touch;
-              touch-action: pan-y !important;
+              z-index: 10;
+              display: flex;
+              flex-direction: column;
+              gap: 16px;
             "
-            data-lenis-prevent
           >
-            <div
-              v-if="rsvpMessages.length === 0"
-              class="text-center py-12 text-xs text-gray-400 font-light font-sans"
-            >
-              Belum ada ucapan
+            <div>
+              <label
+                style="
+                  display: block;
+                  font-size: 11px;
+                  font-weight: 600;
+                  color: #4a4a4a;
+                  margin-bottom: 6px;
+                  letter-spacing: 0.05em;
+                  text-transform: uppercase;
+                  font-family: sans-serif;
+                "
+                >Nama Lengkap</label
+              >
+              <input
+                v-model="form.guest_name"
+                type="text"
+                maxlength="50"
+                placeholder="Nama Anda"
+                required
+                class="premium-input"
+                style="
+                  width: 100%;
+                  height: 38px;
+                  padding-left: 12px;
+                  padding-right: 12px;
+                  border: 1.5px solid #ebcfd1;
+                  background: #ffffff;
+                  color: #4a4a4a;
+                  font-size: 12px;
+                  outline: none;
+                  border-radius: 8px;
+                  box-sizing: border-box;
+                "
+              />
             </div>
-            <div
-              v-else
-              v-for="msg in rsvpMessages"
-              :key="msg.id"
-              style="
-                padding: 12px 14px;
-                background: #ffffff;
-                border-radius: 12px;
-                border: 1px solid #EBCFD1;
-                box-sizing: border-box;
-                margin-bottom: 10px;
-              "
-            >
-              <!-- Card Inner Info -->
+
+            <div>
+              <label
+                style="
+                  display: block;
+                  font-size: 11px;
+                  font-weight: 600;
+                  color: #4a4a4a;
+                  margin-bottom: 6px;
+                  letter-spacing: 0.05em;
+                  text-transform: uppercase;
+                  font-family: sans-serif;
+                "
+                >Konfirmasi Kehadiran</label
+              >
               <div
                 style="
                   display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                  gap: 8px;
-                  margin-bottom: 6px;
-                  box-sizing: border-box;
-                "
-              >
-                <span
-                  style="
-                    font-weight: 700;
-                    font-size: 13px;
-                    color: #BA7D85;
-                    font-family: sans-serif;
-                    max-width: 160px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                  "
-                  >{{ msg.guest_name }}</span
-                >
-                <span
-                  :style="
-                    msg.attendance === 'hadir'
-                      ? 'background: #FCE8E9; color: #BA7D85;'
-                      : 'background: #F5F5F5; color: #999999;'
-                  "
-                  style="
-                    font-size: 9px;
-                    font-weight: 700;
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    text-transform: uppercase;
-                    font-family: sans-serif;
-                  "
-                >
-                  {{ msg.attendance === "hadir" ? "Hadir" : "Absen" }}
-                </span>
-              </div>
-              <p
-                style="
-                  font-size: 12px;
-                  line-height: 1.5;
-                  color: #4A4A4A;
-                  font-weight: 400;
-                  font-family: var(--font-body), sans-serif;
-                  margin: 0;
-                  white-space: pre-line;
-                  word-break: break-word;
-                "
-              >
-                {{ msg.message }}
-              </p>
-              <div
-                v-if="msg.reply_text"
-                style="
-                  margin-top: 10px;
-                  background: #FFF5F5;
-                  padding: 8px 10px;
+                  background: #ffffff;
+                  border: 1.5px solid #ebcfd1;
                   border-radius: 8px;
-                  border: 1px dashed rgba(235, 207, 209, 0.7);
-                  box-sizing: border-box;
+                  padding: 2px;
                 "
               >
+                <button
+                  type="button"
+                  @click="form.attendance = 'hadir'"
+                  :style="
+                    form.attendance === 'hadir'
+                      ? 'background: #EAA7A9; color: #ffffff; box-shadow: 0 2px 8px rgba(234, 167, 169, 0.3);'
+                      : 'background: transparent; color: #4A4A4A;'
+                  "
+                  style="
+                    flex: 1;
+                    height: 34px;
+                    border-radius: 6px;
+                    border: none;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                  "
+                >
+                  Hadir
+                </button>
+                <button
+                  type="button"
+                  @click="form.attendance = 'tidak_hadir'"
+                  :style="
+                    form.attendance === 'tidak_hadir'
+                      ? 'background: #EAA7A9; color: #ffffff; box-shadow: 0 2px 8px rgba(234, 167, 169, 0.3);'
+                      : 'background: transparent; color: #4A4A4A;'
+                  "
+                  style="
+                    flex: 1;
+                    height: 34px;
+                    border-radius: 6px;
+                    border: none;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                  "
+                >
+                  Absen
+                </button>
+              </div>
+            </div>
+
+            <div v-show="form.attendance === 'hadir'">
+              <label
+                style="
+                  display: block;
+                  font-size: 11px;
+                  font-weight: 600;
+                  color: #4a4a4a;
+                  margin-bottom: 6px;
+                  letter-spacing: 0.05em;
+                  text-transform: uppercase;
+                  font-family: sans-serif;
+                "
+                >Jumlah Tamu</label
+              >
+              <div style="display: flex; gap: 8px; align-items: center">
+                <button
+                  type="button"
+                  @click="form.guest_count = Math.max(1, form.guest_count - 1)"
+                  style="
+                    width: 36px;
+                    height: 36px;
+                    background: #eaa7a9;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s ease;
+                  "
+                  onmouseover="this.style.opacity = '0.9'"
+                  onmouseout="this.style.opacity = '1'"
+                >
+                  -
+                </button>
                 <div
                   style="
-                    font-size: 8px;
-                    font-weight: 800;
-                    text-transform: uppercase;
-                    letter-spacing: 0.1em;
-                    color: #BA7D85;
-                    margin-bottom: 4px;
-                    display: block;
-                    font-family: sans-serif;
+                    flex: 1;
+                    height: 36px;
+                    background: #fce8e9;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #ba7d85;
+                    font-weight: 600;
+                    font-size: 12px;
                   "
                 >
-                  Balasan Mempelai
+                  {{ form.guest_count }} Orang
+                </div>
+                <button
+                  type="button"
+                  @click="form.guest_count = Math.min(10, form.guest_count + 1)"
+                  style="
+                    width: 36px;
+                    height: 36px;
+                    background: #eaa7a9;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-weight: bold;
+                    font-size: 16px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.2s ease;
+                  "
+                  onmouseover="this.style.opacity = '0.9'"
+                  onmouseout="this.style.opacity = '1'"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label
+                style="
+                  display: block;
+                  font-size: 11px;
+                  font-weight: 600;
+                  color: #4a4a4a;
+                  margin-bottom: 6px;
+                  letter-spacing: 0.05em;
+                  text-transform: uppercase;
+                  font-family: sans-serif;
+                "
+                >Ucapan &amp; Doa</label
+              >
+              <textarea
+                v-model="form.message"
+                rows="3"
+                maxlength="500"
+                placeholder="Tulis ucapan selamat..."
+                class="premium-input"
+                style="
+                  width: 100%;
+                  padding: 10px 12px;
+                  border: 1.5px solid #ebcfd1;
+                  background: #ffffff;
+                  color: #4a4a4a;
+                  font-size: 12px;
+                  outline: none;
+                  border-radius: 8px;
+                  resize: none;
+                  box-sizing: border-box;
+                  font-family: var(--font-body), sans-serif;
+                "
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              :disabled="submitting"
+              class="premium-submit-btn"
+              style="
+                width: 100%;
+                height: 42px;
+                border-radius: 9999px;
+                background: linear-gradient(135deg, #f4a4a8 0%, #eaa7a9 100%);
+                color: white;
+                font-weight: bold;
+                font-size: 12px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border: none;
+                box-shadow: 0 4px 14px rgba(234, 167, 169, 0.4);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              {{ submitting ? "Mengirim..." : "Kirim Ucapan" }}
+            </button>
+          </form>
+
+          <!-- Divider Line -->
+          <div
+            style="
+              border-top: 1px dashed rgba(235, 207, 209, 0.8);
+              margin: 5px 0;
+              position: relative;
+              z-index: 10;
+            "
+          ></div>
+
+          <!-- Messages Section -->
+          <div style="position: relative; z-index: 10">
+            <!-- Header List Ucapan -->
+            <h3
+              style="
+                font-family: &quot;Cormorant Garamond&quot;, serif;
+                color: #ba7d85;
+                font-size: 16px;
+                font-weight: 600;
+                margin: 0 0 12px 0;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+              "
+            >
+              Pesan Tamu ({{ rsvpMessages.length }})
+            </h3>
+
+            <div
+              class="pr-1 space-y-3 wishes-scroll-container"
+              style="
+                position: relative;
+                z-index: 20;
+                overflow-y: auto !important;
+                height: 220px;
+                max-height: 220px;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                touch-action: pan-y !important;
+              "
+              data-lenis-prevent
+            >
+              <div
+                v-if="rsvpMessages.length === 0"
+                class="text-center py-12 text-xs text-gray-400 font-light font-sans"
+              >
+                Belum ada ucapan
+              </div>
+              <div
+                v-else
+                v-for="msg in rsvpMessages"
+                :key="msg.id"
+                style="
+                  padding: 12px 14px;
+                  background: #ffffff;
+                  border-radius: 12px;
+                  border: 1px solid #ebcfd1;
+                  box-sizing: border-box;
+                  margin-bottom: 10px;
+                "
+              >
+                <!-- Card Inner Info -->
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 6px;
+                    box-sizing: border-box;
+                  "
+                >
+                  <span
+                    style="
+                      font-weight: 700;
+                      font-size: 13px;
+                      color: #ba7d85;
+                      font-family: sans-serif;
+                      max-width: 160px;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      white-space: nowrap;
+                    "
+                    >{{ msg.guest_name }}</span
+                  >
+                  <span
+                    :style="
+                      msg.attendance === 'hadir'
+                        ? 'background: #FCE8E9; color: #BA7D85;'
+                        : 'background: #F5F5F5; color: #999999;'
+                    "
+                    style="
+                      font-size: 9px;
+                      font-weight: 700;
+                      padding: 2px 6px;
+                      border-radius: 4px;
+                      text-transform: uppercase;
+                      font-family: sans-serif;
+                    "
+                  >
+                    {{ msg.attendance === "hadir" ? "Hadir" : "Absen" }}
+                  </span>
                 </div>
                 <p
                   style="
-                    font-size: 11px;
-                    line-height: 1.4;
-                    color: #4A4A4A;
+                    font-size: 12px;
+                    line-height: 1.5;
+                    color: #4a4a4a;
                     font-weight: 400;
                     font-family: var(--font-body), sans-serif;
                     margin: 0;
+                    white-space: pre-line;
                     word-break: break-word;
                   "
                 >
-                  {{ msg.reply_text }}
+                  {{ msg.message }}
                 </p>
+                <div
+                  v-if="msg.reply_text"
+                  style="
+                    margin-top: 10px;
+                    background: #fff5f5;
+                    padding: 8px 10px;
+                    border-radius: 8px;
+                    border: 1px dashed rgba(235, 207, 209, 0.7);
+                    box-sizing: border-box;
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 8px;
+                      font-weight: 800;
+                      text-transform: uppercase;
+                      letter-spacing: 0.1em;
+                      color: #ba7d85;
+                      margin-bottom: 4px;
+                      display: block;
+                      font-family: sans-serif;
+                    "
+                  >
+                    Balasan Mempelai
+                  </div>
+                  <p
+                    style="
+                      font-size: 11px;
+                      line-height: 1.4;
+                      color: #4a4a4a;
+                      font-weight: 400;
+                      font-family: var(--font-body), sans-serif;
+                      margin: 0;
+                      word-break: break-word;
+                    "
+                  >
+                    {{ msg.reply_text }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
     <!-- Slide 4: Gift Section Content -->
     <div
@@ -909,7 +973,10 @@ function createScrollHandler(wrapperRef: { value: HTMLElement | null }) {
       }
 
       // Allow scroll events inside the wishes-scroll-container to bypass slide scroll hijacking
-      if (e.target && (e.target as HTMLElement).closest(".wishes-scroll-container")) {
+      if (
+        e.target &&
+        (e.target as HTMLElement).closest(".wishes-scroll-container")
+      ) {
         return;
       }
 
@@ -940,7 +1007,10 @@ function createScrollHandler(wrapperRef: { value: HTMLElement | null }) {
       }
 
       // Allow touch scroll events inside the wishes-scroll-container to bypass slide touch hijacking
-      if (e.target && (e.target as HTMLElement).closest(".wishes-scroll-container")) {
+      if (
+        e.target &&
+        (e.target as HTMLElement).closest(".wishes-scroll-container")
+      ) {
         return;
       }
 
@@ -987,28 +1057,24 @@ onMounted(() => {
     if (hasLoveStory) {
       gsap.set(lovestoryWrapper.value, {
         y: "0%",
-        opacity: 1,
-        pointerEvents: "auto",
+        opacity: 0,
       });
     }
     if (hasGallery) {
       gsap.set(galleryWrapper.value, {
         y: hasLoveStory ? "100%" : "0%",
-        opacity: 1,
-        pointerEvents: hasLoveStory ? "none" : "auto",
+        opacity: 0,
       });
     }
     const rsvpStartBelow = hasLoveStory || hasGallery;
     gsap.set(rsvpWrapper.value, {
       y: rsvpStartBelow ? "100%" : "0%",
-      opacity: 1,
-      pointerEvents: rsvpStartBelow ? "none" : "auto",
+      opacity: 0,
     });
     if (hasGiftVal) {
       gsap.set(giftWrapper.value, {
         y: "100%",
         opacity: 1,
-        pointerEvents: "none",
       });
       // Set initial states for gift cards: odd indices (from right), even indices (from left)
       const giftCards = giftWrapper.value?.querySelectorAll(".gift-card-anim");
@@ -1020,6 +1086,9 @@ onMounted(() => {
       }
     }
     gsap.set(footerWrapper.value, { opacity: 0, y: 40, pointerEvents: "none" });
+    if (whiteOverlayRef.value) {
+      gsap.set(whiteOverlayRef.value, { opacity: 0 });
+    }
     // Gates start wide open (swung inward) and invisible
     gsap.set(leftGateRef.value, { rotateY: -60, opacity: 0 });
     gsap.set(rightGateRef.value, { rotateY: 60, opacity: 0 });
@@ -1037,11 +1106,41 @@ onMounted(() => {
         end: `+=${scrollEndMultiplier}%`,
         pin: true,
         scrub: 1.2,
+        anticipatePin: 1,
         invalidateOnRefresh: true,
       },
     });
 
     let activeWrapper: any = null;
+
+    // Determine the first visible slide and fade it in at the start of the timeline
+    const firstSlideRef = hasLoveStory
+      ? lovestoryWrapper.value
+      : hasGallery
+        ? galleryWrapper.value
+        : rsvpWrapper.value;
+
+    if (firstSlideRef) {
+      pinTimeline.to(firstSlideRef, {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+    }
+
+    if (whiteOverlayRef.value) {
+      pinTimeline.to(
+        whiteOverlayRef.value,
+        {
+          opacity: 1,
+          backdropFilter: "blur(12px)",
+          webkitBackdropFilter: "blur(12px)",
+          duration: 0.5,
+          ease: "power2.out",
+        },
+        "<",
+      );
+    }
 
     // Slide 1: Love Story
     if (hasLoveStory) {
@@ -1068,15 +1167,14 @@ onMounted(() => {
           y: "-100%",
           duration: 1.0,
           ease: "power2.inOut",
-          pointerEvents: "none",
         });
         pinTimeline.to(
           galleryWrapper.value,
           {
             y: "0%",
+            opacity: 1,
             duration: 1.0,
             ease: "power2.inOut",
-            pointerEvents: "auto",
           },
           "<",
         );
@@ -1090,15 +1188,14 @@ onMounted(() => {
         y: "-100%",
         duration: 1.0,
         ease: "power2.inOut",
-        pointerEvents: "none",
       });
       pinTimeline.to(
         rsvpWrapper.value,
         {
           y: "0%",
+          opacity: 1,
           duration: 1.0,
           ease: "power2.inOut",
-          pointerEvents: "auto",
         },
         "<",
       );
@@ -1111,15 +1208,14 @@ onMounted(() => {
         y: "-100%",
         duration: 1.0,
         ease: "power2.inOut",
-        pointerEvents: "none",
       });
       pinTimeline.to(
         giftWrapper.value,
         {
           y: "0%",
+          opacity: 1,
           duration: 1.0,
           ease: "power2.inOut",
-          pointerEvents: "auto",
         },
         "<",
       );
@@ -1136,7 +1232,7 @@ onMounted(() => {
               duration: 0.9,
               ease: "back.out(1.1)",
             },
-            "-=0.7"
+            "-=0.7",
           );
         });
       }
@@ -1149,7 +1245,6 @@ onMounted(() => {
       y: "-100%",
       duration: 1.0,
       ease: "power2.inOut",
-      pointerEvents: "none",
     });
 
     // Background zooms out first
@@ -1165,6 +1260,8 @@ onMounted(() => {
         whiteOverlayRef.value,
         {
           opacity: 0,
+          backdropFilter: "blur(0px)",
+          webkitBackdropFilter: "blur(0px)",
           duration: 1.5,
           ease: "power2.inOut",
         },
@@ -1252,7 +1349,7 @@ onBeforeUnmount(() => {
   transition: all 0.3s ease !important;
 }
 .premium-input:focus {
-  border-color: #BA7D85 !important;
+  border-color: #ba7d85 !important;
   background-color: #ffffff !important;
   box-shadow: 0 0 0 3px rgba(186, 125, 133, 0.15) !important;
 }
@@ -1276,11 +1373,11 @@ onBeforeUnmount(() => {
   background: transparent;
 }
 .wishes-scroll-container::-webkit-scrollbar-thumb {
-  background: #EAA7A9;
+  background: #eaa7a9;
   border-radius: 10px;
 }
 .wishes-scroll-container {
   scrollbar-width: thin;
-  scrollbar-color: #EAA7A9 transparent;
+  scrollbar-color: #eaa7a9 transparent;
 }
 </style>

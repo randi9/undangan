@@ -972,7 +972,7 @@ onBeforeUnmount(() => {
   <div
     v-else-if="!invitation"
     class="min-h-[100dvh] flex flex-col items-center justify-center p-6 lg:p-10 bg-[#f8fafc] relative overflow-hidden"
-    style="font-family: var(--font-sans, &quot;Inter&quot;, sans-serif)"
+    style="font-family: var(--font-sans, 'Inter', sans-serif)"
   >
     <!-- Modern ambient blobs -->
     <div
@@ -1243,7 +1243,7 @@ onBeforeUnmount(() => {
             left: 50%;
             transform: translateX(-50%);
             width: 100vw;
-            background-image: url(&quot;https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_1cd310ab-cb74-40d2-942c-07e3f50c594d.webp&quot;);
+            background-image: url('https://media.mengundanganda.com/floral-blue/rsv%20section/randidewi_1cd310ab-cb74-40d2-942c-07e3f50c594d.webp');
             background-size: cover;
             background-position: center;
             z-index: -1;

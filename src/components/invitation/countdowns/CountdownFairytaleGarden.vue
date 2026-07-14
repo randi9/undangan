@@ -26,7 +26,7 @@
       style="
         width: 90vw;
         height: 86dvh;
-        background-image: url(&quot;https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_00144412-c4d7-4fe2-b445-9f6051ec6c59.webp&quot;);
+        background-image: url('https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_00144412-c4d7-4fe2-b445-9f6051ec6c59.webp');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
