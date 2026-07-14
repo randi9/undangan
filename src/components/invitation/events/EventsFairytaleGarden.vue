@@ -5,6 +5,23 @@
     class="w-full min-h-[100dvh] relative overflow-hidden flex flex-col items-center justify-center bg-[#F8F3EE]"
     style="background-image: url('https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_00144412-c4d7-4fe2-b445-9f6051ec6c59.webp'); background-size: cover; background-position: center;"
   >
+    <!-- Header Title (Save the Date / Acara Pernikahan) -->
+    <div 
+      ref="headerRef" 
+      class="absolute top-[12dvh] left-1/2 -translate-x-1/2 text-center z-[4] pointer-events-none opacity-100"
+      style="width: 100%; max-width: 90vw;"
+    >
+      <p style="font-size: 1.2dvh; letter-spacing: 0.25em; color: #BA7D85; font-weight: 700; margin-bottom: 0.5dvh; text-transform: uppercase;">
+        Save The Date
+      </p>
+      <h2 
+        :style="{ fontFamily: themeConfig.fontHeading }"
+        style="font-size: 3.8dvh; font-weight: 700; color: #6A4E42; margin: 0; text-shadow: 0 1px 2px rgba(255,255,255,0.85);"
+      >
+        Acara Pernikahan
+      </h2>
+    </div>
+
     <!-- 
       Asset Jembatan Tengah
       Silakan ubah/sesuaikan style inline di bawah untuk mengatur posisi dan ukuran jembatan:

@@ -625,6 +625,20 @@ function openInvitation() {
   isClosingOverlay.value = true;
   isOpened.value = true;
 
+  // Preload background images for Fairytale Garden theme to prevent blank flashes when scrolling
+  if (themeName.value === "fairytale_garden") {
+    const imagesToPreload = [
+      "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_55a618a5-052e-4be3-ac4b-2fbed28dd8c2.webp",
+      "https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_00144412-c4d7-4fe2-b445-9f6051ec6c59.webp",
+      "https://media.mengundanganda.com/fairygarden/footer%20section/dewirandi_b928e5b1-d044-45bc-b314-24b25b4ca215.webp",
+      "https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b98ad2d7-375d-453a-9f0d-b60141522925.webp",
+    ];
+    imagesToPreload.forEach((url) => {
+      const img = new Image();
+      img.src = url;
+    });
+  }
+
   // Reset scroll position to top when opening the invitation
   window.scrollTo({ top: 0, behavior: "instant" });
 
