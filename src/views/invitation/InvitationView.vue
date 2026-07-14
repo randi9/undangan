@@ -427,11 +427,47 @@ const invitationContainer = ref<HTMLElement | null>(null);
 let resizeObserver: ResizeObserver | null = null;
 
 // Preload all images/backgrounds used in the invitation
+// Preload all images/backgrounds used in the invitation
 async function preloadAllAssets() {
   await nextTick(); // wait for DOM to render
   await nextTick(); // extra tick for child components
 
   const urls = new Set<string>();
+
+  // Programmatically add database-driven invitation photos to preloader
+  if (invitation.value) {
+    const apiBaseUrl = import.meta.env.VITE_API_URL || "";
+    const resolve = (url: string) => resolveAssetUrl(url, apiBaseUrl);
+    
+    if (invitation.value.groom_photo) {
+      urls.add(resolve(invitation.value.groom_photo));
+    }
+    if (invitation.value.bride_photo) {
+      urls.add(resolve(invitation.value.bride_photo));
+    }
+    if (invitation.value.cover_photo) {
+      urls.add(resolve(invitation.value.cover_photo));
+    }
+    if (invitation.value.photos && Array.isArray(invitation.value.photos)) {
+      invitation.value.photos.forEach((p: any) => {
+        if (p.url) urls.add(resolve(p.url));
+      });
+    }
+  }
+
+  // Preload fairytale garden theme specific large backdrop and decoration assets
+  if (themeName.value === "fairytale_garden") {
+    urls.add("https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_55a618a5-052e-4be3-ac4b-2fbed28dd8c2.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_00144412-c4d7-4fe2-b445-9f6051ec6c59.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_b4ec478d-7d99-45e5-8de8-f6f41b3fec27.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_9df48ccf-e2e6-40d6-9877-9f82de6cd479.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b98ad2d7-375d-453a-9f0d-b60141522925.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/footer%20section/dewirandi_b928e5b1-d044-45bc-b314-24b25b4ca215.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_e5766616-8b07-419a-b12f-cb576a738daa.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/quotes%20section/dewirandi_16ea4f80-300c-41c5-91b1-4ba941ed161a.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b42881e0-cb77-4565-8f1f-d4603ff53253.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_f558ffe0-5a6f-400f-a20c-22300414bcd6.webp");
+  }
 
   // Collect all <img> src attributes
   document.querySelectorAll("img[src]").forEach((img) => {
@@ -473,7 +509,15 @@ async function preloadAllAssets() {
   loadingFadeOut.value = true;
   setTimeout(() => {
     assetsLoaded.value = true;
-    setTimeout(() => ScrollTrigger.refresh(), 50); // Refresh GSAP heights after loading screen goes away to prevent pin jumpers
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+      // Also refresh on font loaded
+      if (typeof document !== 'undefined' && document.fonts) {
+        document.fonts.ready.then(() => {
+          ScrollTrigger.refresh();
+        });
+      }
+    }, 50); // Refresh GSAP heights after loading screen goes away to prevent pin jumpers
   }, 800); // matches CSS transition duration
 }
 
@@ -537,6 +581,14 @@ watch(isOpened, (val) => {
           stopScroll();
         }
       }, 200);
+    }
+
+    // Refresh ScrollTrigger when web fonts are loaded and rendered
+    if (typeof document !== 'undefined' && document.fonts) {
+      document.fonts.ready.then(() => {
+        setTimeout(() => ScrollTrigger.refresh(true), 100);
+        setTimeout(() => ScrollTrigger.refresh(true), 500);
+      });
     }
 
     // Tunggu sampai ref heroOval benar-benar ada (terikat ke DOM)
