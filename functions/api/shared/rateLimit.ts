@@ -74,9 +74,12 @@ export function rateLimit(
  * Get the client IP from Cloudflare headers.
  */
 export function getClientIp(request: Request): string {
+  const host = request.headers.get("host") || "";
+  const isLocal = host.includes("127.0.0.1") || host.includes("localhost") || host.includes("::1");
   return (
     request.headers.get("CF-Connecting-IP") ||
     request.headers.get("X-Forwarded-For")?.split(",")[0]?.trim() ||
-    "unknown"
+    request.headers.get("X-Real-IP") ||
+    (isLocal ? "127.0.0.1" : "unknown")
   );
 }

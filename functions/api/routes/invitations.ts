@@ -202,7 +202,9 @@ async function bumpInvitationView(
 
   try {
     const existingView = await db
-      .prepare("SELECT id FROM invitation_views WHERE invitation_id = ? AND viewer_ip = ?")
+      .prepare(
+        "SELECT id FROM invitation_views WHERE invitation_id = ? AND viewer_ip = ? AND viewed_at >= datetime('now', '-24 hours')"
+      )
       .bind(invitation.id, viewerIp)
       .first();
 

@@ -1133,8 +1133,8 @@ onMounted(() => {
         whiteOverlayRef.value,
         {
           opacity: 1,
-          backdropFilter: "blur(12px)",
-          webkitBackdropFilter: "blur(12px)",
+          backdropFilter: "blur(8px)",
+          webkitBackdropFilter: "blur(8px)",
           duration: 0.5,
           ease: "power2.out",
         },
