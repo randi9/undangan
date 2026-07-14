@@ -41,51 +41,21 @@
       </filter>
     </svg>
 
-    <!-- Scenic Backdrop Container (animates zoom and blur on mount) -->
+    <!-- Scenic Backdrop Container (animates fade and blur on mount) -->
     <div class="hero-scenic-backdrop">
       <!-- Sky Background Image (was on parent section style) -->
       <div
         style="
           position: absolute;
           inset: 0;
-          background-image: url(&quot;https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_808a2f2b-d48a-4099-a3d2-b4a59147644c.webp&quot;);
+          background-image: url(&quot;https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_55a618a5-052e-4be3-ac4b-2fbed28dd8c2.webp&quot;);
           background-size: cover;
           background-position: center;
           z-index: 0;
         "
       ></div>
 
-      <!-- Cloud Left & Right Overlays -->
-      <img
-        src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_fd4ee1ea-950e-433a-8026-cf80364cb6a9.webp"
-        alt="Cloud Left"
-        class="cloud-anim-left"
-        style="
-          position: absolute;
-          top: 0;
-          right: -250px;
-          width: 100%;
-          height: 40%;
-          object-fit: cover;
-          z-index: 1;
-          pointer-events: none;
-        "
-      />
-      <img
-        src="https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_4c1a0785-54c4-4f62-a27b-c6277249360d.webp"
-        alt="Cloud Right"
-        class="cloud-anim-right"
-        style="
-          position: absolute;
-          top: 100px;
-          left: -160px;
-          width: 100%;
-          height: 40%;
-          object-fit: cover;
-          z-index: 1;
-          pointer-events: none;
-        "
-      />
+
 
       <!-- Foreground Cliff Overlay (without sky) -->
       <img
@@ -957,8 +927,7 @@ onMounted(async () => {
   const flowers1 = heroSection.value.querySelectorAll(".pair-1");
   const flowers2 = heroSection.value.querySelectorAll(".pair-2");
   const flowers3 = heroSection.value.querySelectorAll(".pair-3");
-  const cloudLeft = heroSection.value.querySelector(".cloud-anim-left");
-  const cloudRight = heroSection.value.querySelector(".cloud-anim-right");
+  const mirrorFlowers = heroSection.value.querySelectorAll(".mirror-flower");
 
   // Set initial states in GSAP to match the CSS starting values exactly
   gsap.set([semakKanan, semakKiri], { y: 100, opacity: 0 });
@@ -967,8 +936,7 @@ onMounted(async () => {
   gsap.set(flowers1, { y: 200, rotation: 0, opacity: 0 });
   gsap.set(flowers2, { y: 200, rotation: 0, opacity: 0 });
   gsap.set(flowers3, { y: 200, rotation: 0, opacity: 0 });
-  gsap.set(cloudLeft, { x: 250, opacity: 0 });
-  gsap.set(cloudRight, { x: -250, opacity: 0 });
+  gsap.set(mirrorFlowers, { scaleX: -1 });
 
   // Semak Kanan & Kiri entry (delay 3.2s, duration 1.8s)
   gsap.to([semakKanan, semakKiri], {
@@ -1079,43 +1047,6 @@ onMounted(async () => {
     },
   });
 
-  // Cloud Left (delay 3.2s, duration 8s)
-  gsap.to(cloudLeft, {
-    x: 0,
-    opacity: 1,
-    duration: 8,
-    ease: "power2.out",
-    delay: 3.2,
-    onComplete: () => {
-      gsap.to(cloudLeft, {
-        x: -8,
-        y: -3,
-        duration: 24,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
-    },
-  });
-
-  // Cloud Right (delay 3.2s, duration 8s)
-  gsap.to(cloudRight, {
-    x: 0,
-    opacity: 1,
-    duration: 8,
-    ease: "power2.out",
-    delay: 3.2,
-    onComplete: () => {
-      gsap.to(cloudRight, {
-        x: 8,
-        y: 3,
-        duration: 28,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      });
-    },
-  });
 
   const allFlowers = heroSection.value.querySelectorAll(".anim-flower");
   const fadeOutTargets = [
@@ -1523,7 +1454,7 @@ onBeforeUnmount(() => {
   if (leafFlyInTl) leafFlyInTl.kill();
   // Kill entry animations and sway loops
   const elements = heroSection.value?.querySelectorAll(
-    ".decor-asset, .cloud-anim-left, .cloud-anim-right",
+    ".decor-asset",
   );
   if (elements) {
     elements.forEach((el) => gsap.killTweensOf(el));
@@ -1631,7 +1562,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   },
   {
     name: "pohon kanan",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_05679a4e-ee34-4138-85f9-528f6f06630e.webp",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_be4f17c6-2a97-495d-8730-a982135c6b00.webp",
     className: "anim-pohon-kanan",
     style: {
       position: "absolute",
@@ -1646,7 +1577,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   },
   {
     name: "pohon kiri",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_efe194b7-b4cb-46c1-ab20-28d9fc85e3f5.webp",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a48adc2f-4ac8-4b8e-b35c-fb5f49257bc4.webp",
     className: "anim-pohon-kiri",
     style: {
       position: "absolute",
@@ -1660,13 +1591,13 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
     } as CSSProperties,
   },
   {
-    name: "bunga 1",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_99b2b330-5fbc-48e5-ab76-94f3d595c6b1.webp",
-    className: "anim-flower pair-1",
+    name: "bunga kiri 1",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a96dc0a6-f5df-4a46-9206-1d275932e127.webp",
+    className: "anim-flower pair-1 mirror-flower",
     style: {
       position: "absolute",
-      bottom: "50px",
-      left: "-9%",
+      bottom: "20px",
+      left: "-7%",
       width: "100px",
       zIndex: 6,
       opacity: 1,
@@ -1674,71 +1605,71 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
     },
   },
   {
-    name: "bunga 2",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_90a53a4b-4dce-4779-a421-1c48ca4b7f93.webp",
-    className: "anim-flower pair-3",
+    name: "bunga kiri 2",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_59ed644a-3232-49e0-b867-f92923ebcff9.webp",
+    className: "anim-flower pair-2 mirror-flower",
     style: {
       position: "absolute",
       bottom: "-40px",
-      left: "13%",
-      width: "120px",
-      zIndex: 6,
-      opacity: 1,
-      pointerEvents: "none",
-    },
-  },
-  {
-    name: "bunga 2",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_90a53a4b-4dce-4779-a421-1c48ca4b7f93.webp",
-    className: "anim-flower pair-2",
-    style: {
-      position: "absolute",
-      bottom: "-40px",
-      right: "-4%",
-      width: "120px",
+      left: "-4%",
+      width: "100px",
       zIndex: 7,
       opacity: 1,
       pointerEvents: "none",
     },
   },
   {
-    name: "bunga 3",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_373980a6-6fcb-4798-bba7-cd4e9c6eea5b.webp",
-    className: "anim-flower pair-2",
+    name: "bunga kanan 3",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_2280b382-1a37-49d8-9f2d-5446dbd878c0.webp",
+    className: "anim-flower pair-3 mirror-flower",
     style: {
       position: "absolute",
-      bottom: "-20px",
-      left: "-7%",
-      width: "120px",
-      zIndex: 6,
+      bottom: "-100px",
+      right: "3%",
+      width: "140px",
+      zIndex: 8,
       opacity: 1,
       pointerEvents: "none",
     },
   },
   {
-    name: "bunga 4",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_06344b3b-a7d2-46b4-8a7a-9f1f34a40033.webp",
+    name: "bunga kanan 1",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a96dc0a6-f5df-4a46-9206-1d275932e127.webp",
     className: "anim-flower pair-1",
     style: {
       position: "absolute",
       bottom: "20px",
       right: "-7%",
-      width: "120px",
+      width: "100px",
       zIndex: 6,
       opacity: 1,
       pointerEvents: "none",
     },
   },
   {
-    name: "bunga 3",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_373980a6-6fcb-4798-bba7-cd4e9c6eea5b.webp",
+    name: "bunga kanan 2",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_59ed644a-3232-49e0-b867-f92923ebcff9.webp",
+    className: "anim-flower pair-2",
+    style: {
+      position: "absolute",
+      bottom: "-40px",
+      right: "-4%",
+      width: "100px",
+      zIndex: 7,
+      opacity: 1,
+      pointerEvents: "none",
+    },
+  },
+  {
+    name: "bunga kiri 3",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_2280b382-1a37-49d8-9f2d-5446dbd878c0.webp",
     className: "anim-flower pair-3",
     style: {
       position: "absolute",
-      bottom: "-70px",
-      right: "17%",
-      width: "120px",
-      zIndex: 6,
+      bottom: "-100px",
+      left: "3%",
+      width: "140px",
+      zIndex: 8,
       opacity: 1,
       pointerEvents: "none",
     },
@@ -2017,62 +1948,6 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   }
 }
 
-/* Cloud Animations */
-.cloud-anim-left {
-  opacity: 0;
-  transform: translateX(250px);
-}
-
-.cloud-anim-right {
-  opacity: 0;
-  transform: translateX(-250px);
-}
-
-@keyframes cloud-left-entry {
-  0% {
-    opacity: 0;
-    transform: translateX(250px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes cloud-float-left {
-  0% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(-8px, -3px);
-  }
-  100% {
-    transform: translate(4px, 3px);
-  }
-}
-
-@keyframes cloud-right-entry {
-  0% {
-    opacity: 0;
-    transform: translateX(-250px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes cloud-right-float {
-  0% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(8px, 3px);
-  }
-  100% {
-    transform: translate(-4px, -3px);
-  }
-}
 
 /* Waterfall Bottom Fog/Mist Animations */
 .waterfall-fog-container {
@@ -2162,26 +2037,23 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   }
 }
 
-/* Scenic backdrop entry zoom-fade and blur */
+/* Scenic backdrop entry fade and blur (no zoom/scale) */
 .hero-scenic-backdrop {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  transform: scale(0.88);
   filter: blur(12px);
   opacity: 0;
-  animation: hero-backdrop-zoom-in 3.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: hero-backdrop-fade-in 3.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-@keyframes hero-backdrop-zoom-in {
+@keyframes hero-backdrop-fade-in {
   0% {
-    transform: scale(0.88);
     filter: blur(12px);
     opacity: 0;
   }
   100% {
-    transform: scale(1);
     filter: blur(0);
     opacity: 1;
   }

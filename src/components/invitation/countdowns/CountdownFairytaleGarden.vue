@@ -22,11 +22,11 @@
     <!-- Large overlapping image container -->
     <div
       ref="bigOvalRef"
-      class="absolute top-0 left-0 opacity-0 translate-y-6 z-[1] shadow-[8px_8px_40px_rgba(106,78,66,0.06)]"
+      class="absolute top-0 left-0 z-[1] shadow-[8px_8px_40px_rgba(106,78,66,0.06)]"
       style="
         width: 90vw;
         height: 86dvh;
-        background-image: url(&quot;https://media.mengundanganda.com/fairygarden/coundown%20section/dewirandi_82a7086f-8895-4b10-8183-cb8692f6334d.webp&quot;);
+        background-image: url(&quot;https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_00144412-c4d7-4fe2-b445-9f6051ec6c59.webp&quot;);
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -35,15 +35,6 @@
         overflow: hidden;
       "
     >
-      <!-- White overlay with reduced opacity -->
-      <div
-        style="
-          position: absolute;
-          inset: 0;
-          background-color: rgba(255, 255, 255, 0.25);
-          pointer-events: none;
-        "
-      ></div>
 
       <!-- Floating flowers on the river -->
       <img
@@ -67,7 +58,7 @@
     <!-- Small white/ivory container with text -->
     <div
       ref="headerRef"
-      class="absolute top-0 left-0 opacity-0 translate-y-6 z-20 text-left shadow-[6px_6px_30px_rgba(106,78,66,0.05)]"
+      class="absolute top-0 left-0 z-20 text-left shadow-[6px_6px_30px_rgba(106,78,66,0.05)]"
       style="
         width: 55vw;
         height: 35dvh;
@@ -109,7 +100,7 @@
             if (el) digitRefs[idx] = el as HTMLElement;
           }
         "
-        class="flex flex-col items-center opacity-0 translate-y-8"
+        class="flex flex-col items-center opacity-0"
       >
         <!-- Card with white background -->
         <div
@@ -281,18 +272,10 @@ onMounted(() => {
   ctx = gsap.context(() => {
     if (!countdownSection.value) return;
 
-    // Header & Big Oval entrance
-    gsap.to([bigOvalRef.value, headerRef.value], {
-      opacity: 1,
-      y: 0,
-      duration: 1.2,
-      ease: "power3.out",
-      stagger: 0.15,
-      scrollTrigger: {
-        trigger: countdownSection.value,
-        start: "top 85%",
-        toggleActions: "play none none none",
-      },
+    // Set initial states for digit cards alternating top/bottom
+    digitRefs.value.forEach((el, idx) => {
+      const startY = idx % 2 === 0 ? -32 : 32;
+      gsap.set(el, { opacity: 0, y: startY });
     });
 
     // Digit cards stagger entrance

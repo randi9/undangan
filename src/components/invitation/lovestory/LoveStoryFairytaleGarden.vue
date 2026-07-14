@@ -106,7 +106,6 @@
             border-radius: 16px 36px 16px 36px;
             box-shadow: 0 8px 30px rgba(106, 78, 66, 0.05);
             overflow: hidden;
-            padding: 20px 20px 24px 20px;
             box-sizing: border-box;
             transition: all 0.3s ease;
           "
@@ -124,6 +123,7 @@
               border-radius: 10px 30px 10px 30px;
               pointer-events: none;
               box-sizing: border-box;
+              z-index: 15;
             "
           ></div>
 
@@ -142,89 +142,35 @@
               z-index: 10;
               display: flex;
               flex-direction: column;
-              gap: 16px;
               width: 100%;
               box-sizing: border-box;
             "
-            :class="story.photo ? 'md:flex-row' : ''"
-            :style="story.photo && i % 2 !== 0 ? { flexDirection: 'row-reverse' } : {}"
           >
-            <!-- Image / Polaroid (if photo exists) -->
+            <!-- Image (if photo exists) -->
             <div
               v-if="story.photo"
               style="
+                position: relative;
                 width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+                aspect-ratio: 16/9;
+                overflow: hidden;
                 box-sizing: border-box;
               "
-              class="md:w-[42%] flex-shrink-0"
             >
-              <!-- Polaroid Frame -->
+              <img
+                :src="resolveAssetUrl(story.photo, apiBase)"
+                :alt="story.title"
+                style="width: 100%; height: 100%; object-fit: cover;"
+              />
+              <!-- Smooth gradient to blend the bottom of the image into the white card background -->
               <div
                 style="
-                  position: relative;
-                  background: #ffffff;
-                  border: 1px solid rgba(235, 207, 209, 0.4);
-                  padding: 8px 8px 16px 8px;
-                  border-radius: 4px;
-                  box-shadow: 0 4px 15px rgba(106, 78, 66, 0.08);
-                  box-sizing: border-box;
-                  width: 100%;
-                  max-width: 190px;
+                  position: absolute;
+                  inset: 0;
+                  background: linear-gradient(to bottom, transparent 55%, rgba(255, 255, 255, 0.95) 100%);
+                  pointer-events: none;
                 "
-                :style="{ transform: i % 2 === 0 ? 'rotate(-2deg)' : 'rotate(2deg)' }"
-              >
-                <!-- Washi Tape sticker at the top -->
-                <div
-                  style="
-                    position: absolute;
-                    top: -8px;
-                    left: 50%;
-                    transform: translateX(-50%) rotate(-4deg);
-                    width: 50px;
-                    height: 14px;
-                    background: rgba(235, 207, 209, 0.6);
-                    backdrop-filter: blur(1px);
-                    border: 1px dashed rgba(138, 78, 86, 0.2);
-                    z-index: 20;
-                  "
-                ></div>
-
-                <!-- Actual Image -->
-                <div
-                  style="
-                    width: 100%;
-                    aspect-ratio: 1;
-                    overflow: hidden;
-                    border: 1px solid rgba(0, 0, 0, 0.05);
-                    border-radius: 2px;
-                    box-sizing: border-box;
-                  "
-                >
-                  <img
-                    :src="resolveAssetUrl(story.photo, apiBase)"
-                    :alt="story.title"
-                    style="width: 100%; height: 100%; object-fit: cover;"
-                  />
-                </div>
-
-                <!-- Tiny Captions like handwritten text -->
-                <div
-                  style="
-                    text-align: center;
-                    margin-top: 8px;
-                    font-size: 8.5px;
-                    font-weight: 700;
-                    color: #8A4E56;
-                    font-family: sans-serif;
-                    letter-spacing: 0.05em;
-                  "
-                >
-                  ♥ {{ story.date }}
-                </div>
-              </div>
+              ></div>
             </div>
 
             <!-- Text Content -->
@@ -235,8 +181,9 @@
                 text-align: left;
                 box-sizing: border-box;
                 width: 100%;
+                padding: 20px 20px 24px 20px;
               "
-              :class="story.photo ? 'md:w-[58%]' : ''"
+              :style="story.photo ? { paddingTop: '8px' } : {}"
             >
               <!-- Chapter and Date row (always on top of text) -->
               <div
@@ -261,7 +208,6 @@
                   Chapter {{ i + 1 }}
                 </span>
                 <span
-                  v-if="!story.photo"
                   style="
                     display: inline-block;
                     padding: 3px 10px;

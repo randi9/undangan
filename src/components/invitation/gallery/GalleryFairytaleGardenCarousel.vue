@@ -3,7 +3,7 @@
     v-if="photos && photos.length > 0" 
     ref="gallerySection" 
     :class="[
-      'relative overflow-hidden w-full text-center',
+      'relative w-full text-center',
       isInline ? 'bg-transparent py-4' : 'bg-[#F8F3EE] pt-24 pb-32 max-w-5xl mx-auto'
     ]"
   >
@@ -27,16 +27,22 @@
     <!-- Horizon Carousel -->
     <div 
       ref="scrollRef" 
-      class="w-full flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-6 px-6 md:px-12 py-16 items-center relative z-10"
+      style="min-height: 520px;"
+      class="w-full flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-6 px-6 md:px-12 pt-32 pb-24 items-center relative z-10 flex-shrink-0"
     >
       <div 
         v-for="(photo, i) in extendedPhotos" 
         :key="i" 
         @click="$emit('openLightbox', getOriginalIndex(i))" 
         :ref="el => { if (el) itemRefs[i] = el as HTMLElement }"
-        :class="['snap-center flex-shrink-0 w-[60vw] sm:w-[45vw] md:w-[320px] aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer group shadow-[0_15px_40px_rgba(106,78,66,0.06)] border border-[#EBCFD1] bg-white focus:outline-none gallery-item', getOriginalIndex(i) % 2 === 0 ? 'stagger-even' : 'stagger-odd']"
+        :class="['snap-center flex-shrink-0 w-[60vw] sm:w-[45vw] md:w-[320px] h-[80vw] sm:h-[60vw] md:h-[426px] rounded-t-full rounded-b-xl overflow-hidden cursor-pointer group border-[8px] sm:border-[12px] md:border-[16px] border-white shadow-[0_0_0_1.5px_#EBCFD1,0_15px_40px_rgba(106,78,66,0.06)] focus:outline-none gallery-item', getOriginalIndex(i) % 2 === 0 ? 'stagger-even' : 'stagger-odd']"
       >
-        <img :src="resolveAssetUrl(photo.url, apiBase)" alt="Galeri Photo" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
+        <img 
+          :src="resolveAssetUrl(photo.url, apiBase)" 
+          alt="Galeri Photo" 
+          style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;" 
+          class="transition-all duration-700 group-hover:scale-105" 
+        />
       </div>
     </div>
   </div>

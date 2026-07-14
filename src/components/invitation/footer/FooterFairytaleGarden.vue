@@ -51,11 +51,27 @@
     <div
       v-show="photos && photos.length > 0"
       ref="galleryWrapper"
-      class="absolute inset-0 z-10 flex flex-col items-center justify-center px-4"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-start overflow-y-auto hide-scrollbar"
+      :class="galleryType === 'masonry' ? 'px-4' : ''"
+      :style="{
+        paddingTop: '8dvh',
+        paddingBottom: '8dvh',
+        paddingLeft: galleryType === 'masonry' ? '24px' : '0px',
+        paddingRight: galleryType === 'masonry' ? '24px' : '0px',
+        boxSizing: 'border-box'
+      }"
+      @wheel="galleryScroll.handleWheel"
+      @touchstart="galleryScroll.handleTouchStart"
+      @touchmove="galleryScroll.handleTouchMove"
     >
-      <div class="w-full max-w-2xl px-4 py-2 flex flex-col gap-6">
+      <div
+        :class="[
+          'w-full flex flex-col gap-6 flex-shrink-0',
+          galleryType === 'masonry' ? 'max-w-2xl px-4 py-2' : 'py-2'
+        ]"
+      >
         <!-- Header -->
-        <div class="text-center">
+        <div class="text-center px-6">
           <h2
             class="text-5xl md:text-7xl mb-2 drop-shadow-md"
             :style="{ fontFamily: themeConfig.fontHeading }"
@@ -100,7 +116,7 @@
               @open-lightbox="(i) => $emit('openLightbox', i)"
             />
           </div>
-          <div v-else class="w-full">
+          <div v-else class="w-full flex-shrink-0">
             <GalleryFairytaleGardenCarousel
               :photos="photos"
               :theme-config="themeConfig"
@@ -165,7 +181,7 @@
               <rect width="60" height="1" fill="currentColor" />
             </svg>
           </div>
-          <p class="text-xs md:text-sm text-[#F8F3EE] opacity-90">
+          <p class="text-xs md:text-sm opacity-90" style="color: #8A4E56;">
             Kehadiran Anda merupakan kebahagiaan bagi kami
           </p>
         </div>
@@ -882,6 +898,14 @@ function createScrollHandler(wrapperRef: { value: HTMLElement | null }) {
       const el = wrapperRef.value;
       if (!el) return;
 
+      // Prevent internal scrolling until the section is fully pinned at the top of the viewport
+      if (footerSection.value) {
+        const rect = footerSection.value.getBoundingClientRect();
+        if (rect.top > 5) {
+          return;
+        }
+      }
+
       const isScrollingDown = e.deltaY > 0;
       const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
       const isScrollingUp = e.deltaY < 0;
@@ -900,6 +924,14 @@ function createScrollHandler(wrapperRef: { value: HTMLElement | null }) {
       const el = wrapperRef.value;
       if (!el || !e.touches || e.touches.length !== 1 || !e.touches[0]) return;
 
+      // Prevent internal scrolling until the section is fully pinned at the top of the viewport
+      if (footerSection.value) {
+        const rect = footerSection.value.getBoundingClientRect();
+        if (rect.top > 5) {
+          return;
+        }
+      }
+
       const touchCurrentY = e.touches[0].clientY;
       const deltaY = touchStartY - touchCurrentY;
 
@@ -909,13 +941,18 @@ function createScrollHandler(wrapperRef: { value: HTMLElement | null }) {
       const isAtTop = el.scrollTop <= 0;
 
       if ((isScrollingDown && !isAtBottom) || (isScrollingUp && !isAtTop)) {
-        e.stopPropagation();
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+        el.scrollTop += deltaY;
+        touchStartY = touchCurrentY;
       }
     },
   };
 }
 
 const lovestoryScroll = createScrollHandler(lovestoryWrapper);
+const galleryScroll = createScrollHandler(galleryWrapper);
 const rsvpScroll = createScrollHandler(rsvpWrapper);
 const giftScroll = createScrollHandler(giftWrapper);
 
@@ -961,6 +998,14 @@ onMounted(() => {
         opacity: 1,
         pointerEvents: "none",
       });
+      // Set initial states for gift cards: odd indices (from right), even indices (from left)
+      const giftCards = giftWrapper.value?.querySelectorAll(".gift-card-anim");
+      if (giftCards) {
+        giftCards.forEach((card: any, idx: number) => {
+          const fromLeft = idx % 2 === 0;
+          gsap.set(card, { x: fromLeft ? -120 : 120, opacity: 0 });
+        });
+      }
     }
     gsap.set(footerWrapper.value, { opacity: 0, y: 40, pointerEvents: "none" });
     // Gates start wide open (swung inward) and invisible
@@ -1054,6 +1099,24 @@ onMounted(() => {
         },
         "<",
       );
+
+      // Animate the cards as the slide enters
+      const giftCards = giftWrapper.value?.querySelectorAll(".gift-card-anim");
+      if (giftCards) {
+        giftCards.forEach((card: any) => {
+          pinTimeline!.to(
+            card,
+            {
+              x: 0,
+              opacity: 1,
+              duration: 0.9,
+              ease: "back.out(1.1)",
+            },
+            "-=0.7"
+          );
+        });
+      }
+
       activeWrapper = giftWrapper.value;
     }
 

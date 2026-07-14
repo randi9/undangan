@@ -98,44 +98,45 @@
       <div 
         style="
           position: absolute;
-          top: 45dvh;                 /* MUDAH DIEDIT: Posisi dari atas */
+          top: 45dvh;
           left: 50%;
           transform: translateX(-50%);
-          width: 85%;
-          max-width: 350px;
-          height: 52dvh;              /* MUDAH DIEDIT: Tinggi kontainer */
+          width: 38dvh;
+          max-width: 85vw;
+          height: 44dvh;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 85px 20px 24px 20px; /* MUDAH DIEDIT: Padding kontainer (pt tebal untuk di bawah jembatan) */
-          overflow: hidden;           /* NO SCROLL */
+          justify-content: flex-start;
+          padding: 11.5dvh 2dvh 2.5dvh 2dvh;
+          overflow: hidden;
           pointer-events: auto;
           background: rgba(255, 255, 255, 0.65);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          border: 1.5px solid rgba(255, 255, 255, 0.55);
-          border-radius: 0px 0px 9999px 9999px;
-          box-shadow: 0px 10px 30px rgba(106, 78, 66, 0.1);
+          border: 0.2dvh solid rgba(255, 255, 255, 0.55);
+          border-radius: 0dvh 0dvh 30dvh 30dvh;
+          box-shadow: 0dvh 1dvh 3dvh rgba(106, 78, 66, 0.1);
         "
       >
 
 
         <!-- Details block wrapper (centered on card, left-aligned content) -->
-        <div style="width: 100%; display: flex; justify-content: center; margin-top: 4px; margin-bottom: 4px;">
-          <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; width: fit-content; max-width: 290px; gap: 10px; color: #6A4E42; font-weight: 600; font-size: 13px;">
-            <div v-if="invitation.akad_date" style="display: flex; align-items: center; gap: 10px; width: 100%;">
-              <Icon icon="ph:calendar-blank-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0;" />
+        <div style="width: 100%; display: flex; justify-content: center; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
+          <div style="display: flex; flex-direction: column; align-items: center; text-align: left; width: fit-content; max-width: 32dvh; gap: 1dvh; color: #6A4E42; font-weight: 600; font-size: 1.4dvh;">
+            <div v-if="invitation.akad_date" style="display: flex; align-items: center; gap: 1dvh; width: 100%;">
+              <Icon icon="ph:calendar-blank-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0;" />
               <span>{{ formatDateLong(invitation.akad_date) }}</span>
             </div>
-            <div v-if="invitation.akad_time" style="display: flex; align-items: center; gap: 10px; width: 100%;">
-              <Icon icon="ph:clock-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0;" />
+            <div v-if="invitation.akad_time" style="display: flex; align-items: center; gap: 1dvh; width: 100%;">
+              <Icon icon="ph:clock-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0;" />
               <span>{{ formatTime(invitation.akad_time) }}</span>
             </div>
-            <div v-if="invitation.akad_venue" style="display: flex; align-items: flex-start; gap: 10px; width: 100%;">
-              <Icon icon="ph:map-pin-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0; margin-top: 2px;" />
+            <div v-if="invitation.akad_venue" style="display: flex; align-items: flex-start; gap: 1dvh; width: 100%;">
+              <Icon icon="ph:map-pin-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0; margin-top: 0.2dvh;" />
               <div>
-                <strong style="font-weight: 700; display: block; color: #5A1E25; font-size: 13.5px;">{{ invitation.akad_venue }}</strong>
-                <span v-if="invitation.akad_address" style="font-size: 11px; color: rgba(106, 78, 66, 0.85); font-weight: 500; line-height: 1.5; display: block; margin-top: 2px; max-width: 280px;">
+                <strong style="font-weight: 700; display: block; color: #5A1E25; font-size: 1.5dvh;">{{ invitation.akad_venue }}</strong>
+                <span v-if="invitation.akad_address" style="font-size: 1.2dvh; color: rgba(106, 78, 66, 0.85); font-weight: 500; line-height: 1.5; display: block; margin-top: 0.2dvh; max-width: 30dvh;">
                   {{ invitation.akad_address }}
                 </span>
               </div>
@@ -143,12 +144,12 @@
           </div>
         </div>
 
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; margin-top: 4px; margin-bottom: 4px;">
-          <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 18px; border-radius: 9999px; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 11.5px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:map-trifold-duotone" style="width: 14px; height: 14px;" /> Buka Maps
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1dvh; width: 100%; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
+          <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.7dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 1.25dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:map-trifold-duotone" style="width: 1.5dvh; height: 1.5dvh;" /> Buka Maps
           </a>
-          <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 18px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 11.5px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:calendar-plus-duotone" style="width: 14px; height: 14px; color: white;" /> Ingatkan Saya
+          <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.7dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 1.25dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:calendar-plus-duotone" style="width: 1.5dvh; height: 1.5dvh; color: white;" /> Ingatkan Saya
           </a>
         </div>
       </div>
@@ -202,49 +203,44 @@
       <div 
         style="
           position: absolute;
-          top: 5dvh;                  /* MUDAH DIEDIT: Posisi dari atas */
+          top: 5dvh;
           left: 50%;
           transform: translateX(-50%);
-          width: 85%;
-          max-width: 350px;
-          height: 41dvh;              /* MUDAH DIEDIT: Tinggi kontainer */
+          width: 38dvh;
+          max-width: 85vw;
+          height: 41dvh;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 24px 20px 24px 20px; /* MUDAH DIEDIT: Padding kontainer */
-          overflow: hidden;           /* NO SCROLL */
+          justify-content: center;
+          padding: 2.5dvh 2dvh 2.5dvh 2dvh;
+          overflow: hidden;
           pointer-events: auto;
           background: rgba(255, 255, 255, 0.65);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          border: 1.5px solid rgba(255, 255, 255, 0.55);
-          border-radius: 9999px 9999px 0px 0px;
-          box-shadow: 0px 10px 30px rgba(106, 78, 66, 0.1);
+          border: 0.2dvh solid rgba(255, 255, 255, 0.55);
+          border-radius: 30dvh 30dvh 0dvh 0dvh;
+          box-shadow: 0dvh 1dvh 3dvh rgba(106, 78, 66, 0.1);
         "
       >
-        <!-- Heart Divider (Top) -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; opacity: 0.8; margin-top: 5px; margin-bottom: 12px;">
-          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
-          <Icon icon="ph:heart-fill" style="width: 12px; height: 12px; color: #BA7D85;" />
-          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
-        </div>
 
         <!-- Details block wrapper (centered on card, left-aligned content) -->
-        <div style="width: 100%; display: flex; justify-content: center; margin-top: 4px; margin-bottom: 4px;">
-          <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; width: fit-content; max-width: 290px; gap: 10px; color: #6A4E42; font-weight: 600; font-size: 13px;">
-            <div v-if="invitation.resepsi_date" style="display: flex; align-items: center; gap: 10px; width: 100%;">
-              <Icon icon="ph:calendar-blank-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0;" />
+        <div style="width: 100%; display: flex; justify-content: center; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
+          <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; width: fit-content; max-width: 32dvh; gap: 1dvh; color: #6A4E42; font-weight: 600; font-size: 1.4dvh;">
+            <div v-if="invitation.resepsi_date" style="display: flex; align-items: center; gap: 1dvh; width: 100%;">
+              <Icon icon="ph:calendar-blank-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0;" />
               <span>{{ formatDateLong(invitation.resepsi_date) }}</span>
             </div>
-            <div v-if="invitation.resepsi_time" style="display: flex; align-items: center; gap: 10px; width: 100%;">
-              <Icon icon="ph:clock-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0;" />
+            <div v-if="invitation.resepsi_time" style="display: flex; align-items: center; gap: 1dvh; width: 100%;">
+              <Icon icon="ph:clock-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0;" />
               <span>{{ formatTime(invitation.resepsi_time) }}</span>
             </div>
-            <div v-if="invitation.resepsi_venue" style="display: flex; align-items: flex-start; gap: 10px; width: 100%;">
-              <Icon icon="ph:map-pin-duotone" style="width: 17px; height: 17px; color: #BA7D85; flex-shrink: 0; margin-top: 2px;" />
+            <div v-if="invitation.resepsi_venue" style="display: flex; align-items: flex-start; gap: 1dvh; width: 100%;">
+              <Icon icon="ph:map-pin-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0; margin-top: 0.2dvh;" />
               <div>
-                <strong style="font-weight: 700; display: block; color: #5A1E25; font-size: 13.5px;">{{ invitation.resepsi_venue }}</strong>
-                <span v-if="invitation.resepsi_address" style="font-size: 11px; color: rgba(106, 78, 66, 0.85); font-weight: 500; line-height: 1.5; display: block; margin-top: 2px; max-width: 280px;">
+                <strong style="font-weight: 700; display: block; color: #5A1E25; font-size: 1.5dvh;">{{ invitation.resepsi_venue }}</strong>
+                <span v-if="invitation.resepsi_address" style="font-size: 1.2dvh; color: rgba(106, 78, 66, 0.85); font-weight: 500; line-height: 1.5; display: block; margin-top: 0.2dvh; max-width: 30dvh;">
                   {{ invitation.resepsi_address }}
                 </span>
               </div>
@@ -252,19 +248,12 @@
           </div>
         </div>
 
-        <!-- Heart Divider (Bottom) -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; opacity: 0.8; margin-top: 12px; margin-bottom: 14px;">
-          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
-          <Icon icon="ph:heart-fill" style="width: 12px; height: 12px; color: #BA7D85;" />
-          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
-        </div>
-
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; margin-top: 4px; margin-bottom: 4px;">
-          <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 18px; border-radius: 9999px; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 11.5px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:map-trifold-duotone" style="width: 14px; height: 14px;" /> Buka Maps
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1dvh; width: 100%; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
+          <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.7dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 1.25dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:map-trifold-duotone" style="width: 1.5dvh; height: 1.5dvh;" /> Buka Maps
           </a>
-          <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 18px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 11.5px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:calendar-plus-duotone" style="width: 14px; height: 14px; color: white;" /> Ingatkan Saya
+          <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.7dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 1.25dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:calendar-plus-duotone" style="width: 1.5dvh; height: 1.5dvh; color: white;" /> Ingatkan Saya
           </a>
         </div>
       </div>
@@ -279,42 +268,43 @@
       <div 
         style="
           position: absolute;
-          top: 5dvh;                  /* MUDAH DIEDIT: Posisi dari atas */
+          top: 5dvh;
           left: 50%;
           transform: translateX(-50%);
-          width: 85%;
-          max-width: 350px;
-          height: 38dvh;              /* MUDAH DIEDIT: Tinggi kontainer */
+          width: 38dvh;
+          max-width: 85vw;
+          height: 38dvh;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 24px 20px 24px 20px; /* MUDAH DIEDIT: Padding kontainer */
-          overflow: hidden;           /* NO SCROLL */
+          justify-content: center;
+          padding: 2.5dvh 2dvh 2.5dvh 2dvh;
+          overflow: hidden;
           pointer-events: auto;
           background: rgba(255, 255, 255, 0.65);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          border: 1.5px solid rgba(255, 255, 255, 0.55);
-          border-radius: 9999px 9999px 0px 0px;
-          box-shadow: 0px 10px 30px rgba(106, 78, 66, 0.1);
+          border: 0.2dvh solid rgba(255, 255, 255, 0.55);
+          border-radius: 30dvh 30dvh 0dvh 0dvh;
+          box-shadow: 0dvh 1dvh 3dvh rgba(106, 78, 66, 0.1);
         "
       >
         <!-- Heart Divider (Top) -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; opacity: 0.8; margin-top: 5px; margin-bottom: 8px;">
-          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
-          <Icon icon="ph:heart-fill" style="width: 12px; height: 12px; color: #BA7D85;" />
-          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 1.2dvh; width: 100%; opacity: 0.8; margin-top: 0.5dvh; margin-bottom: 0.8dvh;">
+          <span style="height: 0.1dvh; width: 4dvh; background: rgba(186, 125, 133, 0.5);"></span>
+          <Icon icon="ph:heart-fill" style="width: 1.2dvh; height: 1.2dvh; color: #BA7D85;" />
+          <span style="height: 0.1dvh; width: 4dvh; background: rgba(186, 125, 133, 0.5);"></span>
         </div>
 
-        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; margin-top: 4px; margin-bottom: 4px;">
-          <div style="display: flex; align-items: center; gap: 8px; justify-content: center; width: 100%; margin-bottom: 6px;">
-            <Icon icon="ph:video-camera-duotone" style="width: 16px; height: 16px; color: #BA7D85;" />
-            <span style="font-weight: 700; font-size: 13.5px; color: #5A1E25;">Live Streaming</span>
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
+          <div style="display: flex; align-items: center; gap: 0.8dvh; justify-content: center; width: 100%; margin-bottom: 0.6dvh;">
+            <Icon icon="ph:video-camera-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85;" />
+            <span style="font-weight: 700; font-size: 1.5dvh; color: #5A1E25;">Live Streaming</span>
           </div>
-          <p style="font-size: 11px; color: rgba(106, 78, 66, 0.9); font-weight: 500; line-height: 1.5; max-width: 260px; margin-bottom: 8px;">
+          <p style="font-size: 1.25dvh; color: rgba(106, 78, 66, 0.9); font-weight: 500; line-height: 1.5; max-width: 28dvh; margin-bottom: 1dvh;">
             Anda dapat mengikuti acara kami secara virtual melalui tautan berikut:
           </p>
-          <div style="position: relative; width: 100%; max-width: 180px; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; box-shadow: 0px 2px 8px rgba(0,0,0,0.1); border: 1px solid rgba(186, 125, 133, 0.2); background: rgba(0,0,0,0.05);">
+          <div style="position: relative; width: 100%; max-width: 20dvh; aspect-ratio: 16/9; border-radius: 1dvh; overflow: hidden; box-shadow: 0dvh 0.2dvh 0.8dvh rgba(0,0,0,0.1); border: 0.1dvh solid rgba(186, 125, 133, 0.2); background: rgba(0,0,0,0.05);">
             <iframe 
               :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
               style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
@@ -325,15 +315,15 @@
         </div>
 
         <!-- Heart Divider (Bottom) -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; opacity: 0.8; margin-top: 8px; margin-bottom: 12px;">
-          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
-          <Icon icon="ph:heart-fill" style="width: 12px; height: 12px; color: #BA7D85;" />
-          <span style="height: 1px; width: 40px; background: rgba(186, 125, 133, 0.5);"></span>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 1.2dvh; width: 100%; opacity: 0.8; margin-top: 0.8dvh; margin-bottom: 1.2dvh;">
+          <span style="height: 0.1dvh; width: 4dvh; background: rgba(186, 125, 133, 0.5);"></span>
+          <Icon icon="ph:heart-fill" style="width: 1.2dvh; height: 1.2dvh; color: #BA7D85;" />
+          <span style="height: 0.1dvh; width: 4dvh; background: rgba(186, 125, 133, 0.5);"></span>
         </div>
 
-        <div style="display: flex; justify-content: center; width: 100%; margin-top: 4px; margin-bottom: 4px;">
-          <a :href="invitation.streaming_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 18px; border-radius: 9999px; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 11px; text-decoration: none; box-shadow: 0px 3px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:play-circle-duotone" style="width: 12px; height: 12px;" /> Gabung Live
+        <div style="display: flex; justify-content: center; width: 100%; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
+          <a :href="invitation.streaming_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.6dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 1.2dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
+            <Icon icon="ph:play-circle-duotone" style="width: 1.4dvh; height: 1.4dvh;" /> Gabung Live
           </a>
         </div>
       </div>

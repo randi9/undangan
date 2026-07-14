@@ -74,6 +74,7 @@
       <div
         v-for="(bank, index) in bankList"
         :key="index"
+        class="gift-card-anim"
         style="
           display: flex;
           flex-direction: column;
@@ -94,7 +95,7 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid #EBCFD1;
             border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(106, 78, 66, 0.06);
+            box-shadow: 0 12px 30px rgba(106, 78, 66, 0.15);
             padding: 14px 18px;
             box-sizing: border-box;
             display: flex;
@@ -104,12 +105,27 @@
             transition: all 0.3s ease;
             overflow: hidden;
           "
-          class="group hover:shadow-[0_12px_35px_rgba(106,78,66,0.12)] hover:-translate-y-1"
+          class="group hover:shadow-[0_20px_40px_rgba(106,78,66,0.22)] hover:-translate-y-1"
         >
+          <!-- Card Background Image with diagonal opacity mask -->
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background-image: url('https://media.mengundanganda.com/fairygarden/gift%20section/dewirandi_339a033b-ee14-4c07-a74d-f6e061881ae5.webp');
+              background-size: cover;
+              background-position: center;
+              z-index: 1;
+              pointer-events: none;
+              mask-image: linear-gradient(to bottom left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 35%, rgba(0, 0, 0, 0) 65%);
+              -webkit-mask-image: linear-gradient(to bottom left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 35%, rgba(0, 0, 0, 0) 65%);
+            "
+          ></div>
+
           <!-- Elegant Pattern Decor -->
-          <div style="position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border: 1.5px solid rgba(235, 207, 209, 0.25); border-radius: 50%; pointer-events: none;"></div>
-          <div style="position: absolute; right: -20px; top: -20px; width: 100px; height: 100px; border: 1.5px solid rgba(235, 207, 209, 0.35); border-radius: 50%; pointer-events: none;"></div>
-          <div style="position: absolute; left: -40px; bottom: -40px; width: 130px; height: 130px; border: 1px solid rgba(235, 207, 209, 0.15); border-radius: 50%; pointer-events: none;"></div>
+          <div style="position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border: 1.5px solid rgba(235, 207, 209, 0.25); border-radius: 50%; pointer-events: none; z-index: 2;"></div>
+          <div style="position: absolute; right: -20px; top: -20px; width: 100px; height: 100px; border: 1.5px solid rgba(235, 207, 209, 0.35); border-radius: 50%; pointer-events: none; z-index: 2;"></div>
+          <div style="position: absolute; left: -40px; bottom: -40px; width: 130px; height: 130px; border: 1px solid rgba(235, 207, 209, 0.15); border-radius: 50%; pointer-events: none; z-index: 2;"></div>
 
           <!-- Top Row: Chip and Bank Name -->
           <div style="display: flex; justify-content: space-between; align-items: flex-start; z-index: 10;">
@@ -206,6 +222,7 @@
       <!-- Physical Gift Address Card -->
       <div
         v-if="invitation.gift_address"
+        class="gift-card-anim"
         style="
           display: flex;
           flex-direction: column;
@@ -225,7 +242,7 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid #EBCFD1;
             border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(106, 78, 66, 0.06);
+            box-shadow: 0 12px 30px rgba(106, 78, 66, 0.15);
             padding: 14px 18px;
             box-sizing: border-box;
             display: flex;
@@ -235,8 +252,23 @@
             transition: all 0.3s ease;
             overflow: hidden;
           "
-          class="group hover:shadow-[0_12px_35px_rgba(106,78,66,0.12)] hover:-translate-y-1"
+          class="group hover:shadow-[0_20px_40px_rgba(106,78,66,0.22)] hover:-translate-y-1"
         >
+          <!-- Card Background Image with diagonal opacity mask -->
+          <div
+            style="
+              position: absolute;
+              inset: 0;
+              background-image: url('https://media.mengundanganda.com/fairygarden/gift%20section/dewirandi_339a033b-ee14-4c07-a74d-f6e061881ae5.webp');
+              background-size: cover;
+              background-position: center;
+              z-index: 1;
+              pointer-events: none;
+              mask-image: linear-gradient(to bottom left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 35%, rgba(0, 0, 0, 0) 65%);
+              -webkit-mask-image: linear-gradient(to bottom left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 35%, rgba(0, 0, 0, 0) 65%);
+            "
+          ></div>
+
           <!-- Elegant dashed inner border (for postcard parchment feel) -->
           <div
             style="
@@ -249,6 +281,7 @@
               border-radius: 12px;
               pointer-events: none;
               box-sizing: border-box;
+              z-index: 2;
             "
           ></div>
 
