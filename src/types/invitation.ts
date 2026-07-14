@@ -77,6 +77,7 @@ export interface Invitation {
   streaming_enabled?: boolean;
   streaming_platform?: string;
   streaming_url?: string;
+  khutbah_nikah?: string;
   photos?: Photo[];
   rsvps?: Rsvp[];
   photo_count?: number;
@@ -138,6 +139,7 @@ export interface CreateInvitationPayload {
   streaming_enabled?: boolean;
   streaming_platform?: string;
   streaming_url?: string;
+  khutbah_nikah?: string;
   photos?: Photo[];
   gift_address?: string;
   gift_recipient?: string;

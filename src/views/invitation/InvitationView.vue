@@ -423,6 +423,9 @@ const isOpened = ref(false);
 const isClosingOverlay = ref(false);
 const isPlaying = ref(false);
 
+const invitationContainer = ref<HTMLElement | null>(null);
+let resizeObserver: ResizeObserver | null = null;
+
 // Preload all images/backgrounds used in the invitation
 async function preloadAllAssets() {
   await nextTick(); // wait for DOM to render
@@ -561,6 +564,24 @@ watch(lightboxOpen, (open) => {
     stopScroll();
   } else {
     startScroll();
+  }
+});
+
+watch(invitationContainer, (el) => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
+  }
+
+  if (el) {
+    let refreshTimeout: any = null;
+    resizeObserver = new ResizeObserver(() => {
+      if (refreshTimeout) clearTimeout(refreshTimeout);
+      refreshTimeout = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    });
+    resizeObserver.observe(el);
   }
 });
 const musicPlayer = ref<HTMLAudioElement>();
@@ -935,6 +956,10 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
+  }
   document.removeEventListener("visibilitychange", handleVisibilityChange);
   if (countdownTimer) clearInterval(countdownTimer);
   destroySmoothScroll();
@@ -1109,7 +1134,7 @@ onBeforeUnmount(() => {
     />
 
     <!-- MAIN INVITATION CONTENT -->
-    <div v-if="isOpened" class="animate-fade-in" style="overflow-anchor: none">
+    <div v-if="isOpened" ref="invitationContainer" class="animate-fade-in" style="overflow-anchor: none">
       <!-- HERO WRAPPER (prevents layout shift flash of quotes) -->
       <div style="min-height: 100dvh; width: 100%">
         <!-- HERO (Dynamic per theme) -->

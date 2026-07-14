@@ -1,22 +1,41 @@
 <template>
-  <section 
-    v-if="invitation.akad_venue || invitation.resepsi_venue" 
+  <section
+    v-if="invitation.akad_venue || invitation.resepsi_venue"
     ref="eventSectionRef"
     class="w-full min-h-[100dvh] relative overflow-hidden flex flex-col items-center justify-center bg-[#F8F3EE]"
-    style="background-image: url('https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_00144412-c4d7-4fe2-b445-9f6051ec6c59.webp'); background-size: cover; background-position: center;"
+    style="
+      background-image: url(&quot;https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_00144412-c4d7-4fe2-b445-9f6051ec6c59.webp&quot;);
+      background-size: cover;
+      background-position: center;
+    "
   >
     <!-- Header Title (Save the Date / Acara Pernikahan) -->
-    <div 
-      ref="headerRef" 
+    <div
+      ref="headerRef"
       class="absolute top-[12dvh] left-1/2 -translate-x-1/2 text-center z-[4] pointer-events-none opacity-100"
-      style="width: 100%; max-width: 90vw;"
+      style="width: 100%; max-width: 90vw"
     >
-      <p style="font-size: 1.2dvh; letter-spacing: 0.25em; color: #BA7D85; font-weight: 700; margin-bottom: 0.5dvh; text-transform: uppercase;">
+      <p
+        style="
+          font-size: 1.2dvh;
+          letter-spacing: 0.25em;
+          color: #ba7d85;
+          font-weight: 700;
+          margin-bottom: 0.5dvh;
+          text-transform: uppercase;
+        "
+      >
         Save The Date
       </p>
-      <h2 
+      <h2
         :style="{ fontFamily: themeConfig.fontHeading }"
-        style="font-size: 3.8dvh; font-weight: 700; color: #6A4E42; margin: 0; text-shadow: 0 1px 2px rgba(255,255,255,0.85);"
+        style="
+          font-size: 3.8dvh;
+          font-weight: 700;
+          color: #6a4e42;
+          margin: 0;
+          text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+        "
       >
         Acara Pernikahan
       </h2>
@@ -30,8 +49,8 @@
       - bottom: mengatur posisi jarak dari bawah layar (bisa px, %, atau dvh)
       - z-index: mengatur tumpukan visual (z-2 di depan perahu)
     -->
-    <img 
-      src="https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_b4ec478d-7d99-45e5-8de8-f6f41b3fec27.webp" 
+    <img
+      src="https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_b4ec478d-7d99-45e5-8de8-f6f41b3fec27.webp"
       alt="Bridge Decoration"
       style="
         position: absolute;
@@ -48,9 +67,9 @@
     <!-- 
       Asset Perahu Tengah (Controlled dynamically by GSAP)
     -->
-    <img 
+    <img
       ref="boatRef"
-      src="https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_9df48ccf-e2e6-40d6-9877-9f82de6cd479.webp" 
+      src="https://media.mengundanganda.com/fairygarden/event%20section/dewirandi_9df48ccf-e2e6-40d6-9877-9f82de6cd479.webp"
       alt="Boat Decoration"
       style="
         position: absolute;
@@ -64,41 +83,56 @@
       "
     />
 
-
     <!-- Step 1: Akad Title Section (Overlay on bridge wood) -->
-    <div 
+    <div
       v-if="invitation.akad_venue"
       ref="akadTitleRef"
       class="absolute inset-0 z-[4] pointer-events-none opacity-0"
     >
       <!-- Title on the bridge wood (Curved SVG text Path) -->
-      <svg 
-        viewBox="0 0 600 150" 
+      <svg
+        viewBox="0 0 600 150"
         class="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] h-[150px] pointer-events-none"
       >
         <defs>
           <filter id="shadow-akad" x="-20%" y="-20%" width="140%" height="140%">
             <!-- Sharp dark shadow -->
-            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.9" />
+            <feDropShadow
+              dx="0"
+              dy="3"
+              stdDeviation="4"
+              flood-color="#000000"
+              flood-opacity="0.9"
+            />
             <!-- Soft ambient shadow -->
-            <feDropShadow dx="0" dy="1" stdDeviation="8" flood-color="#000000" flood-opacity="0.5" />
+            <feDropShadow
+              dx="0"
+              dy="1"
+              stdDeviation="8"
+              flood-color="#000000"
+              flood-opacity="0.5"
+            />
           </filter>
         </defs>
-        <path 
-          id="bridge-curve-akad" 
-          d="M 50 110 Q 300 75 550 110" 
-          fill="transparent" 
+        <path
+          id="bridge-curve-akad"
+          d="M 50 110 Q 300 75 550 110"
+          fill="transparent"
         />
-        <text 
-          fill="white" 
+        <text
+          fill="white"
           text-anchor="middle"
           filter="url(#shadow-akad)"
-          :style="{ 
+          :style="{
             fontFamily: themeConfig.fontHeading,
-            fontSize: '65px'
+            fontSize: '65px',
           }"
         >
-          <textPath href="#bridge-curve-akad" xlink:href="#bridge-curve-akad" startOffset="50%">
+          <textPath
+            href="#bridge-curve-akad"
+            xlink:href="#bridge-curve-akad"
+            startOffset="50%"
+          >
             Akad Nikah
           </textPath>
         </text>
@@ -106,13 +140,13 @@
     </div>
 
     <!-- Step 1: Akad Info Section (Under the bridge) -->
-    <div 
+    <div
       v-if="invitation.akad_venue"
       ref="akadCardRef"
       class="absolute inset-0 z-[2] pointer-events-none opacity-0"
     >
       <!-- Info in the water below the bridge -->
-      <div 
+      <div
         style="
           position: absolute;
           top: 45dvh;
@@ -136,24 +170,101 @@
           box-shadow: 0dvh 1dvh 3dvh rgba(106, 78, 66, 0.1);
         "
       >
-
-
         <!-- Details block wrapper (centered on card, left-aligned content) -->
-        <div style="width: 100%; display: flex; justify-content: center; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
-          <div style="display: flex; flex-direction: column; align-items: center; text-align: left; width: fit-content; max-width: 32dvh; gap: 1dvh; color: #6A4E42; font-weight: 600; font-size: 1.4dvh;">
-            <div v-if="invitation.akad_date" style="display: flex; align-items: center; gap: 1dvh; width: 100%;">
-              <Icon icon="ph:calendar-blank-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0;" />
+        <div
+          style="
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 0.5dvh;
+            margin-bottom: 0.5dvh;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              text-align: left;
+              width: fit-content;
+              max-width: 32dvh;
+              gap: 1dvh;
+              color: #6a4e42;
+              font-weight: 600;
+              font-size: 1.4dvh;
+            "
+          >
+            <div
+              v-if="invitation.akad_date"
+              style="display: flex; align-items: center; gap: 1dvh; width: 100%"
+            >
+              <Icon
+                icon="ph:calendar-blank-duotone"
+                style="
+                  width: 1.8dvh;
+                  height: 1.8dvh;
+                  color: #ba7d85;
+                  flex-shrink: 0;
+                "
+              />
               <span>{{ formatDateLong(invitation.akad_date) }}</span>
             </div>
-            <div v-if="invitation.akad_time" style="display: flex; align-items: center; gap: 1dvh; width: 100%;">
-              <Icon icon="ph:clock-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0;" />
+            <div
+              v-if="invitation.akad_time"
+              style="display: flex; align-items: center; gap: 1dvh; width: 100%"
+            >
+              <Icon
+                icon="ph:clock-duotone"
+                style="
+                  width: 1.8dvh;
+                  height: 1.8dvh;
+                  color: #ba7d85;
+                  flex-shrink: 0;
+                "
+              />
               <span>{{ formatTime(invitation.akad_time) }}</span>
             </div>
-            <div v-if="invitation.akad_venue" style="display: flex; align-items: flex-start; gap: 1dvh; width: 100%;">
-              <Icon icon="ph:map-pin-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0; margin-top: 0.2dvh;" />
+            <div
+              v-if="invitation.akad_venue"
+              style="
+                display: flex;
+                align-items: flex-start;
+                gap: 1dvh;
+                width: 100%;
+              "
+            >
+              <Icon
+                icon="ph:map-pin-duotone"
+                style="
+                  width: 1.8dvh;
+                  height: 1.8dvh;
+                  color: #ba7d85;
+                  flex-shrink: 0;
+                  margin-top: 0.2dvh;
+                "
+              />
               <div>
-                <strong style="font-weight: 700; display: block; color: #5A1E25; font-size: 1.5dvh;">{{ invitation.akad_venue }}</strong>
-                <span v-if="invitation.akad_address" style="font-size: 1.2dvh; color: rgba(106, 78, 66, 0.85); font-weight: 500; line-height: 1.5; display: block; margin-top: 0.2dvh; max-width: 30dvh;">
+                <strong
+                  style="
+                    font-weight: 700;
+                    display: block;
+                    color: #5a1e25;
+                    font-size: 1.5dvh;
+                  "
+                  >{{ invitation.akad_venue }}</strong
+                >
+                <span
+                  v-if="invitation.akad_address"
+                  style="
+                    font-size: 1.2dvh;
+                    color: rgba(106, 78, 66, 0.85);
+                    font-weight: 500;
+                    line-height: 1.5;
+                    display: block;
+                    margin-top: 0.2dvh;
+                    max-width: 30dvh;
+                  "
+                >
                   {{ invitation.akad_address }}
                 </span>
               </div>
@@ -161,50 +272,131 @@
           </div>
         </div>
 
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1dvh; width: 100%; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
-          <a v-if="invitation.akad_map_url" :href="invitation.akad_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.7dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 1.25dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:map-trifold-duotone" style="width: 1.5dvh; height: 1.5dvh;" /> Buka Maps
+        <div
+          style="
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1dvh;
+            width: 100%;
+            margin-top: 0.5dvh;
+            margin-bottom: 0.5dvh;
+          "
+        >
+          <a
+            v-if="invitation.akad_map_url"
+            :href="invitation.akad_map_url"
+            target="_blank"
+            class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+            style="
+              display: inline-flex;
+              align-items: center;
+              gap: 0.7dvh;
+              padding: 0.8dvh 2dvh;
+              border-radius: 10dvh;
+              background: linear-gradient(135deg, #8fa47f 0%, #6e875c 100%);
+              color: #ffffff !important;
+              font-weight: 700;
+              font-size: 1.25dvh;
+              text-decoration: none;
+              box-shadow: 0dvh 0.3dvh 1dvh rgba(0, 0, 0, 0.15);
+              border: 0.1dvh solid rgba(255, 255, 255, 0.25);
+            "
+          >
+            <Icon
+              icon="ph:map-trifold-duotone"
+              style="width: 1.5dvh; height: 1.5dvh"
+            />
+            Buka Maps
           </a>
-          <a v-if="invitation.akad_date" :href="getAkadCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.7dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 1.25dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:calendar-plus-duotone" style="width: 1.5dvh; height: 1.5dvh; color: white;" /> Ingatkan Saya
+          <a
+            v-if="invitation.akad_date"
+            :href="getAkadCalendarUrl()"
+            target="_blank"
+            class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+            style="
+              display: inline-flex;
+              align-items: center;
+              gap: 0.7dvh;
+              padding: 0.8dvh 2dvh;
+              border-radius: 10dvh;
+              background: linear-gradient(135deg, #d49ba2 0%, #ba7d85 100%);
+              color: #ffffff !important;
+              font-weight: 700;
+              font-size: 1.25dvh;
+              text-decoration: none;
+              box-shadow: 0dvh 0.3dvh 1dvh rgba(0, 0, 0, 0.15);
+              border: 0.1dvh solid rgba(255, 255, 255, 0.25);
+            "
+          >
+            <Icon
+              icon="ph:calendar-plus-duotone"
+              style="width: 1.5dvh; height: 1.5dvh; color: white"
+            />
+            Ingatkan Saya
           </a>
         </div>
       </div>
     </div>
 
     <!-- Curved SVG Title on Bridge -->
-    <div 
-      v-if="invitation.resepsi_venue || (invitation.streaming_enabled && invitation.streaming_url)"
+    <div
+      v-if="
+        invitation.resepsi_venue ||
+        (invitation.streaming_enabled && invitation.streaming_url)
+      "
       ref="resepsiTitleRef"
       class="absolute inset-0 z-[4] pointer-events-none opacity-0"
     >
-      <svg 
-        viewBox="0 0 600 150" 
+      <svg
+        viewBox="0 0 600 150"
         class="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[600px] h-[150px] pointer-events-none"
       >
         <defs>
-          <filter id="shadow-resepsi" x="-20%" y="-20%" width="140%" height="140%">
+          <filter
+            id="shadow-resepsi"
+            x="-20%"
+            y="-20%"
+            width="140%"
+            height="140%"
+          >
             <!-- Sharp dark shadow -->
-            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.9" />
+            <feDropShadow
+              dx="0"
+              dy="3"
+              stdDeviation="4"
+              flood-color="#000000"
+              flood-opacity="0.9"
+            />
             <!-- Soft ambient shadow -->
-            <feDropShadow dx="0" dy="1" stdDeviation="8" flood-color="#000000" flood-opacity="0.5" />
+            <feDropShadow
+              dx="0"
+              dy="1"
+              stdDeviation="8"
+              flood-color="#000000"
+              flood-opacity="0.5"
+            />
           </filter>
         </defs>
-        <path 
-          id="bridge-curve-resepsi" 
-          d="M 50 110 Q 300 75 550 110" 
-          fill="transparent" 
+        <path
+          id="bridge-curve-resepsi"
+          d="M 50 110 Q 300 75 550 110"
+          fill="transparent"
         />
-        <text 
-          fill="white" 
+        <text
+          fill="white"
           text-anchor="middle"
           filter="url(#shadow-resepsi)"
-          :style="{ 
+          :style="{
             fontFamily: themeConfig.fontHeading,
-            fontSize: '65px'
+            fontSize: '65px',
           }"
         >
-          <textPath href="#bridge-curve-resepsi" xlink:href="#bridge-curve-resepsi" startOffset="50%">
+          <textPath
+            href="#bridge-curve-resepsi"
+            xlink:href="#bridge-curve-resepsi"
+            startOffset="50%"
+          >
             Resepsi
           </textPath>
         </text>
@@ -212,12 +404,12 @@
     </div>
 
     <!-- Step 2: Resepsi Section (Info above the bridge) -->
-    <div 
+    <div
       v-if="invitation.resepsi_venue"
       ref="resepsiCardRef"
       class="absolute inset-0 z-[2] pointer-events-none opacity-0"
     >
-      <div 
+      <div
         style="
           position: absolute;
           top: 5dvh;
@@ -241,23 +433,101 @@
           box-shadow: 0dvh 1dvh 3dvh rgba(106, 78, 66, 0.1);
         "
       >
-
         <!-- Details block wrapper (centered on card, left-aligned content) -->
-        <div style="width: 100%; display: flex; justify-content: center; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
-          <div style="display: flex; flex-direction: column; align-items: flex-start; text-align: left; width: fit-content; max-width: 32dvh; gap: 1dvh; color: #6A4E42; font-weight: 600; font-size: 1.4dvh;">
-            <div v-if="invitation.resepsi_date" style="display: flex; align-items: center; gap: 1dvh; width: 100%;">
-              <Icon icon="ph:calendar-blank-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0;" />
+        <div
+          style="
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 0.5dvh;
+            margin-bottom: 0.5dvh;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              text-align: left;
+              width: fit-content;
+              max-width: 32dvh;
+              gap: 1dvh;
+              color: #6a4e42;
+              font-weight: 600;
+              font-size: 1.4dvh;
+            "
+          >
+            <div
+              v-if="invitation.resepsi_date"
+              style="display: flex; align-items: center; gap: 1dvh; width: 100%"
+            >
+              <Icon
+                icon="ph:calendar-blank-duotone"
+                style="
+                  width: 1.8dvh;
+                  height: 1.8dvh;
+                  color: #ba7d85;
+                  flex-shrink: 0;
+                "
+              />
               <span>{{ formatDateLong(invitation.resepsi_date) }}</span>
             </div>
-            <div v-if="invitation.resepsi_time" style="display: flex; align-items: center; gap: 1dvh; width: 100%;">
-              <Icon icon="ph:clock-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0;" />
+            <div
+              v-if="invitation.resepsi_time"
+              style="display: flex; align-items: center; gap: 1dvh; width: 100%"
+            >
+              <Icon
+                icon="ph:clock-duotone"
+                style="
+                  width: 1.8dvh;
+                  height: 1.8dvh;
+                  color: #ba7d85;
+                  flex-shrink: 0;
+                "
+              />
               <span>{{ formatTime(invitation.resepsi_time) }}</span>
             </div>
-            <div v-if="invitation.resepsi_venue" style="display: flex; align-items: flex-start; gap: 1dvh; width: 100%;">
-              <Icon icon="ph:map-pin-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85; flex-shrink: 0; margin-top: 0.2dvh;" />
+            <div
+              v-if="invitation.resepsi_venue"
+              style="
+                display: flex;
+                align-items: flex-start;
+                gap: 1dvh;
+                width: 100%;
+              "
+            >
+              <Icon
+                icon="ph:map-pin-duotone"
+                style="
+                  width: 1.8dvh;
+                  height: 1.8dvh;
+                  color: #ba7d85;
+                  flex-shrink: 0;
+                  margin-top: 0.2dvh;
+                "
+              />
               <div>
-                <strong style="font-weight: 700; display: block; color: #5A1E25; font-size: 1.5dvh;">{{ invitation.resepsi_venue }}</strong>
-                <span v-if="invitation.resepsi_address" style="font-size: 1.2dvh; color: rgba(106, 78, 66, 0.85); font-weight: 500; line-height: 1.5; display: block; margin-top: 0.2dvh; max-width: 30dvh;">
+                <strong
+                  style="
+                    font-weight: 700;
+                    display: block;
+                    color: #5a1e25;
+                    font-size: 1.5dvh;
+                  "
+                  >{{ invitation.resepsi_venue }}</strong
+                >
+                <span
+                  v-if="invitation.resepsi_address"
+                  style="
+                    font-size: 1.2dvh;
+                    color: rgba(106, 78, 66, 0.85);
+                    font-weight: 500;
+                    line-height: 1.5;
+                    display: block;
+                    margin-top: 0.2dvh;
+                    max-width: 30dvh;
+                  "
+                >
                   {{ invitation.resepsi_address }}
                 </span>
               </div>
@@ -265,24 +535,80 @@
           </div>
         </div>
 
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1dvh; width: 100%; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
-          <a v-if="invitation.resepsi_map_url" :href="invitation.resepsi_map_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.7dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #8FA47F 0%, #6E875C 100%); color: #ffffff !important; font-weight: 700; font-size: 1.25dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:map-trifold-duotone" style="width: 1.5dvh; height: 1.5dvh;" /> Buka Maps
+        <div
+          style="
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1dvh;
+            width: 100%;
+            margin-top: 0.5dvh;
+            margin-bottom: 0.5dvh;
+          "
+        >
+          <a
+            v-if="invitation.resepsi_map_url"
+            :href="invitation.resepsi_map_url"
+            target="_blank"
+            class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+            style="
+              display: inline-flex;
+              align-items: center;
+              gap: 0.7dvh;
+              padding: 0.8dvh 2dvh;
+              border-radius: 10dvh;
+              background: linear-gradient(135deg, #8fa47f 0%, #6e875c 100%);
+              color: #ffffff !important;
+              font-weight: 700;
+              font-size: 1.25dvh;
+              text-decoration: none;
+              box-shadow: 0dvh 0.3dvh 1dvh rgba(0, 0, 0, 0.15);
+              border: 0.1dvh solid rgba(255, 255, 255, 0.25);
+            "
+          >
+            <Icon
+              icon="ph:map-trifold-duotone"
+              style="width: 1.5dvh; height: 1.5dvh"
+            />
+            Buka Maps
           </a>
-          <a v-if="invitation.resepsi_date" :href="getResepsiCalendarUrl()" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.7dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 1.25dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:calendar-plus-duotone" style="width: 1.5dvh; height: 1.5dvh; color: white;" /> Ingatkan Saya
+          <a
+            v-if="invitation.resepsi_date"
+            :href="getResepsiCalendarUrl()"
+            target="_blank"
+            class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+            style="
+              display: inline-flex;
+              align-items: center;
+              gap: 0.7dvh;
+              padding: 0.8dvh 2dvh;
+              border-radius: 10dvh;
+              background: linear-gradient(135deg, #d49ba2 0%, #ba7d85 100%);
+              color: #ffffff !important;
+              font-weight: 700;
+              font-size: 1.25dvh;
+              text-decoration: none;
+              box-shadow: 0dvh 0.3dvh 1dvh rgba(0, 0, 0, 0.15);
+              border: 0.1dvh solid rgba(255, 255, 255, 0.25);
+            "
+          >
+            <Icon
+              icon="ph:calendar-plus-duotone"
+              style="width: 1.5dvh; height: 1.5dvh; color: white"
+            />
+            Ingatkan Saya
           </a>
         </div>
       </div>
     </div>
 
     <!-- Step 3: Live Streaming Section (Info above the bridge) -->
-    <div 
+    <div
       v-if="invitation.streaming_enabled && invitation.streaming_url"
       ref="streamingCardRef"
       class="absolute inset-0 z-[2] pointer-events-none opacity-0"
     >
-      <div 
+      <div
         style="
           position: absolute;
           top: 5dvh;
@@ -290,12 +616,12 @@
           transform: translateX(-50%);
           width: 38dvh;
           max-width: 85vw;
-          height: 38dvh;
+          height: 40dvh;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 2.5dvh 2dvh 2.5dvh 2dvh;
+          padding: 2dvh 2dvh 4dvh 2dvh;
           overflow: hidden;
           pointer-events: auto;
           background: rgba(255, 255, 255, 0.65);
@@ -306,41 +632,199 @@
           box-shadow: 0dvh 1dvh 3dvh rgba(106, 78, 66, 0.1);
         "
       >
-        <!-- Heart Divider (Top) -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 1.2dvh; width: 100%; opacity: 0.8; margin-top: 0.5dvh; margin-bottom: 0.8dvh;">
-          <span style="height: 0.1dvh; width: 4dvh; background: rgba(186, 125, 133, 0.5);"></span>
-          <Icon icon="ph:heart-fill" style="width: 1.2dvh; height: 1.2dvh; color: #BA7D85;" />
-          <span style="height: 0.1dvh; width: 4dvh; background: rgba(186, 125, 133, 0.5);"></span>
-        </div>
-
-        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
-          <div style="display: flex; align-items: center; gap: 0.8dvh; justify-content: center; width: 100%; margin-bottom: 0.6dvh;">
-            <Icon icon="ph:video-camera-duotone" style="width: 1.8dvh; height: 1.8dvh; color: #BA7D85;" />
-            <span style="font-weight: 700; font-size: 1.5dvh; color: #5A1E25;">Live Streaming</span>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            margin-top: 0.2dvh;
+            margin-bottom: 0.2dvh;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.8dvh;
+              justify-content: center;
+              width: 100%;
+              margin-bottom: 0.4dvh;
+            "
+          >
+            <Icon
+              icon="ph:video-camera-duotone"
+              style="width: 1.8dvh; height: 1.8dvh; color: #ba7d85"
+            />
+            <span style="font-weight: 700; font-size: 1.5dvh; color: #5a1e25"
+              >Live Streaming</span
+            >
           </div>
-          <p style="font-size: 1.25dvh; color: rgba(106, 78, 66, 0.9); font-weight: 500; line-height: 1.5; max-width: 28dvh; margin-bottom: 1dvh;">
-            Anda dapat mengikuti acara kami secara virtual melalui tautan berikut:
+
+          <p
+            style="
+              font-size: 1.2dvh;
+              color: rgba(106, 78, 66, 0.9);
+              font-weight: 500;
+              line-height: 1.4;
+              max-width: 28dvh;
+              margin-bottom: 0.6dvh;
+            "
+          >
+            Anda dapat mengikuti acara kami secara virtual melalui tautan
+            berikut:
           </p>
-          <div style="position: relative; width: 100%; max-width: 20dvh; aspect-ratio: 16/9; border-radius: 1dvh; overflow: hidden; box-shadow: 0dvh 0.2dvh 0.8dvh rgba(0,0,0,0.1); border: 0.1dvh solid rgba(186, 125, 133, 0.2); background: rgba(0,0,0,0.05);">
-            <iframe 
-              :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''" 
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              allowfullscreen>
+
+          <!-- Platform Placeholder (if not YouTube or YouTube URL is not embeddable) -->
+          <div
+            v-if="
+              !isYoutube || !getEmbedUrl(invitation.streaming_url, 'youtube')
+            "
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              gap: 0.6dvh;
+              width: 100%;
+              max-width: 18dvh;
+              height: 9dvh;
+              border-radius: 1.2dvh;
+              background: rgba(255, 255, 255, 0.8);
+              border: 0.1dvh solid rgba(186, 125, 133, 0.15);
+              box-shadow: inset 0 0.1dvh 0.4dvh rgba(0, 0, 0, 0.02);
+              margin-bottom: 0.6dvh;
+            "
+          >
+            <Icon
+              :icon="getPlatformIcon(invitation.streaming_platform)"
+              style="width: 3dvh; height: 3dvh; color: #ba7d85"
+            />
+            <span
+              style="
+                font-size: 1dvh;
+                color: #6a4e42;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+              "
+            >
+              {{ invitation.streaming_platform || "Live Streaming" }}
+            </span>
+          </div>
+
+          <!-- Embed Video Iframe (Only for YouTube URL) -->
+          <div
+            v-else
+            style="
+              position: relative;
+              width: 100%;
+              max-width: 20dvh;
+              aspect-ratio: 16/9;
+              border-radius: 1dvh;
+              overflow: hidden;
+              box-shadow: 0dvh 0.2dvh 0.8dvh rgba(0, 0, 0, 0.1);
+              border: 0.1dvh solid rgba(186, 125, 133, 0.2);
+              background: rgba(0, 0, 0, 0.05);
+              margin-bottom: 0.6dvh;
+            "
+          >
+            <iframe
+              :src="getEmbedUrl(invitation.streaming_url, 'youtube') || ''"
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+              "
+              allow="
+                accelerometer;
+                autoplay;
+                clipboard-write;
+                encrypted-media;
+                gyroscope;
+                picture-in-picture;
+                web-share;
+              "
+              allowfullscreen
+            >
             </iframe>
           </div>
+
+          <!-- Khutbah Nikah Block -->
+          <div
+            v-if="invitation.khutbah_nikah"
+            style="
+              margin-top: 0.4dvh;
+              margin-bottom: 0.4dvh;
+              text-align: center;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 0.1dvh;
+            "
+          >
+            <span
+              style="
+                font-size: 0.95dvh;
+                letter-spacing: 0.08em;
+                color: #ba7d85;
+                font-weight: 700;
+                text-transform: uppercase;
+              "
+            >
+              Khutbah Nikah
+            </span>
+            <span
+              style="
+                font-size: 1.1dvh;
+                color: #6a4e42;
+                font-weight: 600;
+                line-height: 1.2;
+                max-width: 26dvh;
+              "
+            >
+              {{ invitation.khutbah_nikah }}
+            </span>
+          </div>
         </div>
 
-        <!-- Heart Divider (Bottom) -->
-        <div style="display: flex; align-items: center; justify-content: center; gap: 1.2dvh; width: 100%; opacity: 0.8; margin-top: 0.8dvh; margin-bottom: 1.2dvh;">
-          <span style="height: 0.1dvh; width: 4dvh; background: rgba(186, 125, 133, 0.5);"></span>
-          <Icon icon="ph:heart-fill" style="width: 1.2dvh; height: 1.2dvh; color: #BA7D85;" />
-          <span style="height: 0.1dvh; width: 4dvh; background: rgba(186, 125, 133, 0.5);"></span>
-        </div>
-
-        <div style="display: flex; justify-content: center; width: 100%; margin-top: 0.5dvh; margin-bottom: 0.5dvh;">
-          <a :href="invitation.streaming_url" target="_blank" class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300" style="display: inline-flex; align-items: center; gap: 0.6dvh; padding: 0.8dvh 2dvh; border-radius: 10dvh; background: linear-gradient(135deg, #D49BA2 0%, #BA7D85 100%); color: #ffffff !important; font-weight: 700; font-size: 1.2dvh; text-decoration: none; box-shadow: 0dvh 0.3dvh 1dvh rgba(0,0,0,0.15); border: 0.1dvh solid rgba(255,255,255,0.25);">
-            <Icon icon="ph:play-circle-duotone" style="width: 1.4dvh; height: 1.4dvh;" /> Gabung Live
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 0.2dvh;
+            margin-bottom: 0.2dvh;
+          "
+        >
+          <a
+            :href="invitation.streaming_url"
+            target="_blank"
+            class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+            style="
+              display: inline-flex;
+              align-items: center;
+              gap: 0.6dvh;
+              padding: 0.8dvh 2dvh;
+              border-radius: 10dvh;
+              background: linear-gradient(135deg, #d49ba2 0%, #ba7d85 100%);
+              color: #ffffff !important;
+              font-weight: 700;
+              font-size: 1.2dvh;
+              text-decoration: none;
+              box-shadow: 0dvh 0.3dvh 1dvh rgba(0, 0, 0, 0.15);
+              border: 0.1dvh solid rgba(255, 255, 255, 0.25);
+            "
+          >
+            <Icon
+              icon="ph:play-circle-duotone"
+              style="width: 1.4dvh; height: 1.4dvh"
+            />
+            Gabung Live
           </a>
         </div>
       </div>
@@ -349,14 +833,33 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
-import type { ThemeConfig } from '@/types/theme';
-import type { Invitation } from '@/types/invitation';
-import { generateGoogleCalendarUrl } from '@/utils/calendar';
-import { getEmbedUrl } from '@/utils/streaming';
-import { Icon } from '@iconify/vue';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { onMounted, onBeforeUnmount, ref, computed } from "vue";
+import type { ThemeConfig } from "@/types/theme";
+import type { Invitation } from "@/types/invitation";
+
+const isYoutube = computed(
+  () => props.invitation.streaming_platform === "youtube",
+);
+
+function getPlatformIcon(platform?: string) {
+  switch (platform?.toLowerCase()) {
+    case "youtube":
+      return "ph:youtube-logo-duotone";
+    case "instagram":
+      return "ph:instagram-logo-duotone";
+    case "zoom":
+      return "ph:video-camera-duotone";
+    case "meet":
+      return "ph:video-camera-duotone";
+    default:
+      return "ph:broadcast-duotone";
+  }
+}
+import { generateGoogleCalendarUrl } from "@/utils/calendar";
+import { getEmbedUrl } from "@/utils/streaming";
+import { Icon } from "@iconify/vue";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -380,18 +883,20 @@ onMounted(() => {
   ctx = gsap.context(() => {
     if (!eventSectionRef.value || !boatRef.value) return;
 
-    const hasStreaming = !!(props.invitation.streaming_enabled && props.invitation.streaming_url);
+    const hasStreaming = !!(
+      props.invitation.streaming_enabled && props.invitation.streaming_url
+    );
 
     // Create scroll timeline with ScrollTrigger pinning
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: eventSectionRef.value,
-        start: 'top top',
-        end: hasStreaming ? '+=400%' : '+=300%',
+        start: "top top",
+        end: hasStreaming ? "+=400%" : "+=300%",
         pin: true,
         scrub: 1, // smooth scroll link
         anticipatePin: 1,
-      }
+      },
     });
 
     // Refresh ScrollTrigger to ensure pinning calculations are accurate
@@ -404,8 +909,8 @@ onMounted(() => {
 
     // Set initial states
     gsap.set(boatRef.value, {
-      top: '-25%',
-      left: '50%',
+      top: "-25%",
+      left: "50%",
       xPercent: -50,
     });
 
@@ -432,39 +937,54 @@ onMounted(() => {
     // - Header fades out
     // - Boat moves to top: 10%
     // - Akad card fades in (title on bridge, info below)
-    tl.fromTo(boatRef.value,
-      { top: '-25%' },
+    tl.fromTo(
+      boatRef.value,
+      { top: "-25%" },
       {
-        top: '10%',
+        top: "10%",
         duration: 1.0,
-        ease: 'power1.inOut',
-      }, 0);
+        ease: "power1.inOut",
+      },
+      0,
+    );
 
     if (headerRef.value) {
-      tl.to(headerRef.value, {
-        opacity: 0,
-        y: -30,
-        scale: 0.95,
-        duration: 0.6,
-        ease: 'power1.inOut',
-      }, 0);
+      tl.to(
+        headerRef.value,
+        {
+          opacity: 0,
+          y: -30,
+          scale: 0.95,
+          duration: 0.6,
+          ease: "power1.inOut",
+        },
+        0,
+      );
     }
 
     if (akadTitleRef.value) {
-      tl.to(akadTitleRef.value, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-      }, 0.3);
+      tl.to(
+        akadTitleRef.value,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        0.3,
+      );
     }
     if (akadCardRef.value) {
-      tl.to(akadCardRef.value, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-      }, 0.3);
+      tl.to(
+        akadCardRef.value,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        0.3,
+      );
     }
 
     // Spacer pause at the end of Phase 1 to let user read Akad Card
@@ -475,46 +995,65 @@ onMounted(() => {
     // - Boat moves to top: 50%
     // - Resepsi card fades in at the top
     if (akadTitleRef.value) {
-      tl.to(akadTitleRef.value, {
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.6,
-        ease: 'power2.in',
-      }, '<');
+      tl.to(
+        akadTitleRef.value,
+        {
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.6,
+          ease: "power2.in",
+        },
+        "<",
+      );
     }
     if (akadCardRef.value) {
-      tl.to(akadCardRef.value, {
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.6,
-        ease: 'power2.in',
-      }, '<');
+      tl.to(
+        akadCardRef.value,
+        {
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.6,
+          ease: "power2.in",
+        },
+        "<",
+      );
     }
 
-    tl.fromTo(boatRef.value,
-      { top: '10%' },
+    tl.fromTo(
+      boatRef.value,
+      { top: "10%" },
       {
-        top: '50%',
+        top: "50%",
         duration: 1.0,
-        ease: 'power1.inOut',
-      }, '+=0.1');
+        ease: "power1.inOut",
+      },
+      "+=0.1",
+    );
 
     if (resepsiTitleRef.value) {
-      tl.to(resepsiTitleRef.value, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-      }, '+=0.2');
+      tl.to(
+        resepsiTitleRef.value,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        "+=0.2",
+      );
     }
 
     if (resepsiCardRef.value) {
-      tl.to(resepsiCardRef.value, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-      }, '+=0.2');
+      tl.to(
+        resepsiCardRef.value,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        "+=0.2",
+      );
     }
 
     // Spacer pause at the end of Phase 2 to let user read Resepsi Card
@@ -528,26 +1067,34 @@ onMounted(() => {
           opacity: 0,
           scale: 0.95,
           duration: 0.6,
-          ease: 'power2.in',
+          ease: "power2.in",
         });
       }
       if (resepsiTitleRef.value) {
-        tl.to(resepsiTitleRef.value, {
-          opacity: 0,
-          scale: 0.95,
-          duration: 0.6,
-          ease: 'power2.in',
-        }, '<');
+        tl.to(
+          resepsiTitleRef.value,
+          {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.6,
+            ease: "power2.in",
+          },
+          "<",
+        );
       }
 
       // 2. Streaming card fades in (boat remains at 50%)
       if (streamingCardRef.value) {
-        tl.to(streamingCardRef.value, {
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-        }, '+=0.2');
+        tl.to(
+          streamingCardRef.value,
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: "power2.out",
+          },
+          "+=0.2",
+        );
       }
 
       // Spacer pause at the end of streaming card to let user read/watch
@@ -559,19 +1106,21 @@ onMounted(() => {
           opacity: 0,
           scale: 0.95,
           duration: 0.6,
-          ease: 'power2.in',
+          ease: "power2.in",
         });
       }
 
       // 4. Boat sails away to 120%
-      tl.fromTo(boatRef.value,
-        { top: '50%' },
+      tl.fromTo(
+        boatRef.value,
+        { top: "50%" },
         {
-          top: '120%',
+          top: "120%",
           duration: 0.8,
-          ease: 'power1.in',
-        }, '+=0.1');
-
+          ease: "power1.in",
+        },
+        "+=0.1",
+      );
     } else {
       // No streaming: immediately fade out Resepsi Card & Title and sail away
       if (resepsiCardRef.value) {
@@ -579,27 +1128,33 @@ onMounted(() => {
           opacity: 0,
           scale: 0.95,
           duration: 0.6,
-          ease: 'power2.in',
+          ease: "power2.in",
         });
       }
       if (resepsiTitleRef.value) {
-        tl.to(resepsiTitleRef.value, {
-          opacity: 0,
-          scale: 0.95,
-          duration: 0.6,
-          ease: 'power2.in',
-        }, '<');
+        tl.to(
+          resepsiTitleRef.value,
+          {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.6,
+            ease: "power2.in",
+          },
+          "<",
+        );
       }
 
-      tl.fromTo(boatRef.value,
-        { top: '50%' },
+      tl.fromTo(
+        boatRef.value,
+        { top: "50%" },
         {
-          top: '120%',
+          top: "120%",
           duration: 0.8,
-          ease: 'power1.in',
-        }, '+=0.1');
+          ease: "power1.in",
+        },
+        "+=0.1",
+      );
     }
-
   }, eventSectionRef.value as HTMLElement);
 });
 
@@ -611,43 +1166,42 @@ onBeforeUnmount(() => {
 
 function getAkadCalendarUrl() {
   return generateGoogleCalendarUrl({
-    title: `Akad Nikah ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+    title: `Akad Nikah ${props.invitation.groom_name || ""} & ${props.invitation.bride_name || ""}`,
     date: props.invitation.akad_date!,
     time: props.invitation.akad_time,
     venue: props.invitation.akad_venue,
     address: props.invitation.akad_address,
-    description: `Undangan Pernikahan ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+    description: `Undangan Pernikahan ${props.invitation.groom_name || ""} & ${props.invitation.bride_name || ""}`,
   });
 }
 
 function getResepsiCalendarUrl() {
   return generateGoogleCalendarUrl({
-    title: `Resepsi ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+    title: `Resepsi ${props.invitation.groom_name || ""} & ${props.invitation.bride_name || ""}`,
     date: props.invitation.resepsi_date!,
     time: props.invitation.resepsi_time,
     venue: props.invitation.resepsi_venue,
     address: props.invitation.resepsi_address,
-    description: `Undangan Pernikahan ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
+    description: `Undangan Pernikahan ${props.invitation.groom_name || ""} & ${props.invitation.bride_name || ""}`,
   });
 }
 
 function formatDateLong(dateStr: string) {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString('id-ID', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+  if (!dateStr) return "";
+  return new Date(dateStr).toLocaleDateString("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   });
 }
 
 function formatTime(timeStr?: string) {
-  if (!timeStr) return '';
+  if (!timeStr) return "";
   const trimmed = timeStr.trim();
-  if (trimmed.toUpperCase().endsWith('WIB')) {
+  if (trimmed.toUpperCase().endsWith("WIB")) {
     return trimmed;
   }
   return `${trimmed} WIB`;
 }
-
 </script>

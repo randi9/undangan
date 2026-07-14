@@ -95,7 +95,7 @@ function buildInvitationUpdateData(body: any) {
     "cover_photo", "akad_date", "akad_time", "akad_venue", "akad_address", "akad_map_url",
     "resepsi_date", "resepsi_time", "resepsi_venue", "resepsi_address", "resepsi_map_url",
     "quote", "bank_name", "bank_account", "bank_holder", "music_url", "wa_message",
-    "gallery_type", "streaming_enabled", "streaming_platform", "streaming_url",
+    "gallery_type", "streaming_enabled", "streaming_platform", "streaming_url", "khutbah_nikah",
     "gift_address", "gift_recipient", "gift_phone",
   ];
 
@@ -571,7 +571,7 @@ async function handleInvitationCreate(
     resepsi_date, resepsi_time, resepsi_venue, resepsi_address, resepsi_map_url,
     love_story, quote, bank_name, bank_account, bank_holder, music_url,
     wa_message, banks, gallery_type,
-    streaming_enabled, streaming_platform, streaming_url,
+    streaming_enabled, streaming_platform, streaming_url, khutbah_nikah,
     gift_address, gift_recipient, gift_phone,
     payment_status, trial_expires_at, view_count, max_views, paid_at,
     created_at, updated_at
@@ -584,7 +584,7 @@ async function handleInvitationCreate(
     ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?, ?,
     ?, ?, ?,
-    ?, ?, ?,
+    ?, ?, ?, ?,
     ?, ?, ?,
     ?, ?, ?, ?, ?,
     ?, ?
@@ -608,7 +608,7 @@ async function handleInvitationCreate(
     stringifyJsonColumn(Array.isArray(body.banks) ? body.banks : []),
     body.gallery_type || "carousel",
     body.streaming_enabled ? 1 : 0, body.streaming_platform || "youtube",
-    body.streaming_url || "",
+    body.streaming_url || "", body.khutbah_nikah || "",
     body.gift_address || "", body.gift_recipient || "", body.gift_phone || "",
     paymentStatus, trialExpiresAt, 0, 25, paidAtValue,
     now, now,

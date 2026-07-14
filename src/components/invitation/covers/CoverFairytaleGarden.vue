@@ -33,7 +33,7 @@
     <div 
       class="relative z-10 flex flex-col items-center justify-between text-center px-6 w-full max-w-[450px] transition-all duration-[700ms] ease-out"
       :class="isClosing ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'"
-      style="height: 100dvh; padding-top: 15dvh; padding-bottom: 15dvh; box-sizing: border-box;"
+      style="height: 100dvh; padding-top: 21dvh; padding-bottom: 21dvh; box-sizing: border-box;"
     >
       
       <!-- Fairytale garden logo/ornament removed -->

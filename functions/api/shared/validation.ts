@@ -83,6 +83,7 @@ export const invitationCreateSchema = z.object({
   streaming_enabled: z.boolean().optional().default(false),
   streaming_platform: z.string().max(50).optional().default(""),
   streaming_url: z.string().optional().default(""),
+  khutbah_nikah: z.string().optional().default(""),
   photos: z.array(z.any()).optional(),
   gift_address: z.string().max(500).optional().default(""),
   gift_recipient: z.string().max(150).optional().default(""),

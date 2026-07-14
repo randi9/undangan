@@ -36,6 +36,7 @@ export interface InvitationFormData {
   streaming_enabled: boolean
   streaming_platform: string
   streaming_url: string
+  khutbah_nikah: string
   gift_address: string
   gift_recipient: string
   gift_phone: string
@@ -76,6 +77,7 @@ function createEmptyForm(theme?: string): InvitationFormData {
     streaming_enabled: false,
     streaming_platform: 'youtube',
     streaming_url: '',
+    khutbah_nikah: '',
     gift_address: '',
     gift_recipient: '',
     gift_phone: '',
@@ -151,6 +153,7 @@ export function useInvitationForm(initialTheme?: string) {
     form.streaming_enabled = data.streaming_enabled || false
     form.streaming_platform = data.streaming_platform || 'youtube'
     form.streaming_url = data.streaming_url || ''
+    form.khutbah_nikah = data.khutbah_nikah || ''
     form.gift_address = data.gift_address || ''
     form.gift_recipient = data.gift_recipient || ''
     form.gift_phone = data.gift_phone || ''

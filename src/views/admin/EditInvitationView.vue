@@ -1343,6 +1343,14 @@
                         placeholder="https://..."
                       />
                     </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label class="form-label">Khutbah Nikah (Ustadz / Khatib / Waktu)</label>
+                      <input
+                        v-model="form.khutbah_nikah"
+                        class="form-input"
+                        placeholder="Contoh: Ustadz Adi Hidayat / Pukul 09.00 WIB"
+                      />
+                    </div>
                   </div>
                 </div>
 
