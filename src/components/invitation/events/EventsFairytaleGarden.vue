@@ -602,9 +602,9 @@
       </div>
     </div>
 
-    <!-- Step 3: Live Streaming Section (Info above the bridge) -->
+    <!-- Step 3: Live Streaming Section / Khutbah Nikah (Info above the bridge) -->
     <div
-      v-if="invitation.streaming_enabled && invitation.streaming_url"
+      v-if="(invitation.streaming_enabled && invitation.streaming_url) || invitation.khutbah_nikah"
       ref="streamingCardRef"
       class="absolute inset-0 z-[2] pointer-events-none opacity-0"
     >
@@ -632,201 +632,279 @@
           box-shadow: 0dvh 1dvh 3dvh rgba(106, 78, 66, 0.1);
         "
       >
-        <div
-          style="
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            width: 100%;
-            margin-top: 0.2dvh;
-            margin-bottom: 0.2dvh;
-          "
-        >
+        <!-- A. Streaming is enabled and has URL -->
+        <template v-if="invitation.streaming_enabled && invitation.streaming_url">
           <div
-            style="
-              display: flex;
-              align-items: center;
-              gap: 0.8dvh;
-              justify-content: center;
-              width: 100%;
-              margin-bottom: 0.4dvh;
-            "
-          >
-            <Icon
-              icon="ph:video-camera-duotone"
-              style="width: 1.8dvh; height: 1.8dvh; color: #ba7d85"
-            />
-            <span style="font-weight: 700; font-size: 1.5dvh; color: #5a1e25"
-              >Live Streaming</span
-            >
-          </div>
-
-          <p
-            style="
-              font-size: 1.2dvh;
-              color: rgba(106, 78, 66, 0.9);
-              font-weight: 500;
-              line-height: 1.4;
-              max-width: 28dvh;
-              margin-bottom: 0.6dvh;
-            "
-          >
-            Anda dapat mengikuti acara kami secara virtual melalui tautan
-            berikut:
-          </p>
-
-          <!-- Platform Placeholder (if not YouTube or YouTube URL is not embeddable) -->
-          <div
-            v-if="
-              !isYoutube || !getEmbedUrl(invitation.streaming_url, 'youtube')
-            "
             style="
               display: flex;
               flex-direction: column;
               align-items: center;
-              justify-content: center;
-              gap: 0.6dvh;
-              width: 100%;
-              max-width: 18dvh;
-              height: 9dvh;
-              border-radius: 1.2dvh;
-              background: rgba(255, 255, 255, 0.8);
-              border: 0.1dvh solid rgba(186, 125, 133, 0.15);
-              box-shadow: inset 0 0.1dvh 0.4dvh rgba(0, 0, 0, 0.02);
-              margin-bottom: 0.6dvh;
-            "
-          >
-            <Icon
-              :icon="getPlatformIcon(invitation.streaming_platform)"
-              style="width: 3dvh; height: 3dvh; color: #ba7d85"
-            />
-            <span
-              style="
-                font-size: 1dvh;
-                color: #6a4e42;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-              "
-            >
-              {{ invitation.streaming_platform || "Live Streaming" }}
-            </span>
-          </div>
-
-          <!-- Embed Video Iframe (Only for YouTube URL) -->
-          <div
-            v-else
-            style="
-              position: relative;
-              width: 100%;
-              max-width: 20dvh;
-              aspect-ratio: 16/9;
-              border-radius: 1dvh;
-              overflow: hidden;
-              box-shadow: 0dvh 0.2dvh 0.8dvh rgba(0, 0, 0, 0.1);
-              border: 0.1dvh solid rgba(186, 125, 133, 0.2);
-              background: rgba(0, 0, 0, 0.05);
-              margin-bottom: 0.6dvh;
-            "
-          >
-            <iframe
-              :src="getEmbedUrl(invitation.streaming_url, 'youtube') || ''"
-              style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                border: none;
-              "
-              allow="
-                accelerometer;
-                autoplay;
-                clipboard-write;
-                encrypted-media;
-                gyroscope;
-                picture-in-picture;
-                web-share;
-              "
-              allowfullscreen
-            >
-            </iframe>
-          </div>
-
-          <!-- Khutbah Nikah Block -->
-          <div
-            v-if="invitation.khutbah_nikah"
-            style="
-              margin-top: 0.4dvh;
-              margin-bottom: 0.4dvh;
               text-align: center;
+              width: 100%;
+              margin-top: 0.2dvh;
+              margin-bottom: 0.2dvh;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 0.8dvh;
+                justify-content: center;
+                width: 100%;
+                margin-bottom: 0.4dvh;
+              "
+            >
+              <Icon
+                icon="ph:video-camera-duotone"
+                style="width: 1.8dvh; height: 1.8dvh; color: #ba7d85"
+              />
+              <span style="font-weight: 700; font-size: 1.5dvh; color: #5a1e25"
+                >Live Streaming</span
+              >
+            </div>
+
+            <p
+              style="
+                font-size: 1.2dvh;
+                color: rgba(106, 78, 66, 0.9);
+                font-weight: 500;
+                line-height: 1.4;
+                max-width: 28dvh;
+                margin-bottom: 0.6dvh;
+              "
+            >
+              Anda dapat mengikuti acara kami secara virtual melalui tautan
+              berikut:
+            </p>
+
+            <!-- Platform Placeholder (if not YouTube or YouTube URL is not embeddable) -->
+            <div
+              v-if="
+                !isYoutube || !getEmbedUrl(invitation.streaming_url, 'youtube')
+              "
+              style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 0.6dvh;
+                width: 100%;
+                max-width: 18dvh;
+                height: 9dvh;
+                border-radius: 1.2dvh;
+                background: rgba(255, 255, 255, 0.8);
+                border: 0.1dvh solid rgba(186, 125, 133, 0.15);
+                box-shadow: inset 0 0.1dvh 0.4dvh rgba(0, 0, 0, 0.02);
+                margin-bottom: 0.6dvh;
+              "
+            >
+              <Icon
+                :icon="getPlatformIcon(invitation.streaming_platform)"
+                style="width: 3dvh; height: 3dvh; color: #ba7d85"
+              />
+              <span
+                style="
+                  font-size: 1dvh;
+                  color: #6a4e42;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.05em;
+                "
+              >
+                {{ invitation.streaming_platform || "Live Streaming" }}
+              </span>
+            </div>
+
+            <!-- Embed Video Iframe (Only for YouTube URL) -->
+            <div
+              v-else
+              style="
+                position: relative;
+                width: 100%;
+                max-width: 20dvh;
+                aspect-ratio: 16/9;
+                border-radius: 1dvh;
+                overflow: hidden;
+                box-shadow: 0dvh 0.2dvh 0.8dvh rgba(0, 0, 0, 0.1);
+                border: 0.1dvh solid rgba(186, 125, 133, 0.2);
+                background: rgba(0, 0, 0, 0.05);
+                margin-bottom: 0.6dvh;
+              "
+            >
+              <iframe
+                :src="getEmbedUrl(invitation.streaming_url, 'youtube') || ''"
+                style="
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  border: none;
+                "
+                allow="
+                  accelerometer;
+                  autoplay;
+                  clipboard-write;
+                  encrypted-media;
+                  gyroscope;
+                  picture-in-picture;
+                  web-share;
+                "
+                allowfullscreen
+              >
+              </iframe>
+            </div>
+
+            <!-- Khutbah Nikah Block -->
+            <div
+              v-if="invitation.khutbah_nikah"
+              style="
+                margin-top: 0.4dvh;
+                margin-bottom: 0.4dvh;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.1dvh;
+              "
+            >
+              <span
+                style="
+                  font-size: 0.95dvh;
+                  letter-spacing: 0.08em;
+                  color: #ba7d85;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                "
+              >
+                Khutbah Nikah
+              </span>
+              <span
+                style="
+                  font-size: 1.1dvh;
+                  color: #6a4e42;
+                  font-weight: 600;
+                  line-height: 1.2;
+                  max-width: 26dvh;
+                "
+              >
+                {{ invitation.khutbah_nikah }}
+              </span>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              width: 100%;
+              margin-top: 0.2dvh;
+              margin-bottom: 0.2dvh;
+            "
+          >
+            <a
+              :href="invitation.streaming_url"
+              target="_blank"
+              class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
+              style="
+                display: inline-flex;
+                align-items: center;
+                gap: 0.6dvh;
+                padding: 0.8dvh 2dvh;
+                border-radius: 10dvh;
+                background: linear-gradient(135deg, #d49ba2 0%, #ba7d85 100%);
+                color: #ffffff !important;
+                font-weight: 700;
+                font-size: 1.2dvh;
+                text-decoration: none;
+                box-shadow: 0dvh 0.3dvh 1dvh rgba(0, 0, 0, 0.15);
+                border: 0.1dvh solid rgba(255, 255, 255, 0.25);
+              "
+            >
+              <Icon
+                icon="ph:play-circle-duotone"
+                style="width: 1.4dvh; height: 1.4dvh"
+              />
+              Gabung Live
+            </a>
+          </div>
+        </template>
+
+        <!-- B. Streaming is NOT enabled/has URL, but has Khutbah Nikah -->
+        <template v-else-if="invitation.khutbah_nikah">
+          <div
+            style="
               display: flex;
               flex-direction: column;
               align-items: center;
-              gap: 0.1dvh;
+              text-align: center;
+              width: 100%;
+              margin-top: 1dvh;
+              margin-bottom: 1dvh;
+              gap: 1.5dvh;
             "
           >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 0.8dvh;
+                justify-content: center;
+                width: 100%;
+                margin-bottom: 0.2dvh;
+              "
+            >
+              <Icon
+                icon="ph:microphone-stage-duotone"
+                style="width: 3.5dvh; height: 3.5dvh; color: #ba7d85"
+              />
+            </div>
+            
             <span
               style="
-                font-size: 0.95dvh;
-                letter-spacing: 0.08em;
-                color: #ba7d85;
                 font-weight: 700;
+                font-size: 2.2dvh;
+                color: #5a1e25;
+                font-family: 'Cormorant Garamond', serif;
                 text-transform: uppercase;
+                letter-spacing: 0.1em;
               "
             >
               Khutbah Nikah
             </span>
+
+            <p
+              style="
+                font-size: 1.3dvh;
+                color: rgba(106, 78, 66, 0.9);
+                font-weight: 500;
+                line-height: 1.5;
+                max-width: 28dvh;
+                margin-bottom: 0.2dvh;
+              "
+            >
+              Prosesi akad nikah insya Allah akan dibekali khutbah nikah oleh:
+            </p>
+
             <span
               style="
-                font-size: 1.1dvh;
+                font-size: 1.8dvh;
                 color: #6a4e42;
-                font-weight: 600;
-                line-height: 1.2;
-                max-width: 26dvh;
+                font-weight: 700;
+                line-height: 1.3;
+                max-width: 28dvh;
+                background: rgba(186, 125, 133, 0.08);
+                padding: 1.2dvh 2dvh;
+                border-radius: 1.5dvh;
+                border: 0.1dvh solid rgba(186, 125, 133, 0.15);
+                box-shadow: 0 0.2dvh 0.8dvh rgba(106, 78, 66, 0.05);
               "
             >
               {{ invitation.khutbah_nikah }}
             </span>
           </div>
-        </div>
-
-        <div
-          style="
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-top: 0.2dvh;
-            margin-bottom: 0.2dvh;
-          "
-        >
-          <a
-            :href="invitation.streaming_url"
-            target="_blank"
-            class="hover:scale-[1.03] active:scale-[0.98] transition-all duration-300"
-            style="
-              display: inline-flex;
-              align-items: center;
-              gap: 0.6dvh;
-              padding: 0.8dvh 2dvh;
-              border-radius: 10dvh;
-              background: linear-gradient(135deg, #d49ba2 0%, #ba7d85 100%);
-              color: #ffffff !important;
-              font-weight: 700;
-              font-size: 1.2dvh;
-              text-decoration: none;
-              box-shadow: 0dvh 0.3dvh 1dvh rgba(0, 0, 0, 0.15);
-              border: 0.1dvh solid rgba(255, 255, 255, 0.25);
-            "
-          >
-            <Icon
-              icon="ph:play-circle-duotone"
-              style="width: 1.4dvh; height: 1.4dvh"
-            />
-            Gabung Live
-          </a>
-        </div>
+        </template>
       </div>
     </div>
   </section>
@@ -883,8 +961,9 @@ onMounted(() => {
   ctx = gsap.context(() => {
     if (!eventSectionRef.value || !boatRef.value) return;
 
-    const hasStreaming = !!(
-      props.invitation.streaming_enabled && props.invitation.streaming_url
+    const hasStep3 = !!(
+      (props.invitation.streaming_enabled && props.invitation.streaming_url) ||
+      props.invitation.khutbah_nikah
     );
 
     // Create scroll timeline with ScrollTrigger pinning
@@ -892,10 +971,11 @@ onMounted(() => {
       scrollTrigger: {
         trigger: eventSectionRef.value,
         start: "top top",
-        end: hasStreaming ? "+=400%" : "+=300%",
+        end: hasStep3 ? "+=400%" : "+=300%",
         pin: true,
         scrub: 1, // smooth scroll link
         anticipatePin: 1,
+        invalidateOnRefresh: true,
       },
     });
 
@@ -1060,7 +1140,7 @@ onMounted(() => {
     tl.to({}, { duration: 0.4 });
 
     // --- Phase 3 (Conditional: Live Streaming, or Departure) ---
-    if (hasStreaming) {
+    if (hasStep3) {
       // 1. Resepsi info & Title fade out (boat remains at 50%)
       if (resepsiCardRef.value) {
         tl.to(resepsiCardRef.value, {
