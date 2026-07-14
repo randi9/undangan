@@ -377,6 +377,14 @@ onMounted(() => {
       }
     });
 
+    // Refresh ScrollTrigger to ensure pinning calculations are accurate
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 200);
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 1000);
+
     // Set initial states
     gsap.set(boatRef.value, {
       top: '-25%',
