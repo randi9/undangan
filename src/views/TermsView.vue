@@ -144,7 +144,7 @@
               <div class="legal-plan-badge">Rekomendasi</div>
               <div class="legal-plan-header">
                 <h4>Paket Premium</h4>
-                <span class="legal-plan-price">Rp 50.000 <small>sekali bayar</small></span>
+                <span class="legal-plan-price">Rp 75.000 <small>sekali bayar</small></span>
               </div>
               <ul>
                 <li>Masa aktif undangan: <strong>1 (satu) tahun</strong> sejak aktivasi</li>

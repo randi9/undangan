@@ -486,7 +486,7 @@
               <div class="lp-pricing-shimmer" aria-hidden="true"></div>
               <div class="lp-pricing-header">
                 <h3>Premium</h3>
-                <div class="lp-pricing-price">Rp 50.000</div>
+                <div class="lp-pricing-price">Rp 75.000</div>
                 <p>Fitur penuh untuk hari bahagia Anda tanpa batas.</p>
               </div>
               <ul class="lp-pricing-features">
@@ -782,7 +782,7 @@ const faqList = [
   },
   {
     q: "Berapa harga paket premium MengundangAnda?",
-    a: "Paket Premium hanya Rp 50.000 (sekali bayar) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform. Anda bisa pesan via WhatsApp atau login dan buat sendiri.",
+    a: "Paket Premium hanya Rp 75.000 (sekali bayar) dengan fitur: unlimited akses link, masa aktif 1 tahun, semua tema premium, fitur amplop digital, upload musik sendiri, dan tanpa branding platform. Anda bisa pesan via WhatsApp atau login dan buat sendiri.",
   },
   {
     q: "Fitur apa saja yang tersedia di MengundangAnda?",

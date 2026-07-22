@@ -178,7 +178,7 @@ async function checkPayment() {
       const data = await authStore.checkPaymentStatus(invitationId.value);
       if (data?.payment_status === "paid") {
         paymentConfirmed.value = true;
-        trackEvent('Purchase', { value: 50000, currency: 'IDR' });
+        trackEvent('Purchase', { value: 75000, currency: 'IDR' });
         // Get slug for preview link
         try {
           const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api';
@@ -201,7 +201,7 @@ async function checkPayment() {
     const inv = await findLatestInvitation();
     if (inv?.payment_status === "paid") {
       paymentConfirmed.value = true;
-      trackEvent('Purchase', { value: 50000, currency: 'IDR' });
+      trackEvent('Purchase', { value: 75000, currency: 'IDR' });
     } else if (retryCount < MAX_RETRIES) {
       // Webhook might not have arrived yet
       retryCount++;

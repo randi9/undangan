@@ -154,7 +154,7 @@
             <div class="payment-price-section">
               <div class="price-tag">
                 <span class="price-currency">Rp</span>
-                <span class="price-amount">50.000</span>
+                <span class="price-amount">75.000</span>
                 <span class="price-period">/ sekali bayar</span>
               </div>
               <button
@@ -318,7 +318,7 @@ async function handleRedeem() {
 
 onMounted(() => {
   loadPaymentStatus();
-  trackEvent('InitiateCheckout', { value: 50000, currency: 'IDR' });
+  trackEvent('InitiateCheckout', { value: 75000, currency: 'IDR' });
 });
 </script>
 

@@ -12,7 +12,7 @@
  *
  *   // Track conversion events
  *   trackEvent('Lead');
- *   trackEvent('Purchase', { value: 50000, currency: 'IDR' });
+ *   trackEvent('Purchase', { value: 75000, currency: 'IDR' });
  */
 
 const PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID as string | undefined;

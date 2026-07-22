@@ -1,1 +1,1 @@
-export const PAYMENT_AMOUNT = 50000;
+export const PAYMENT_AMOUNT = 75000;

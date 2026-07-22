@@ -18,7 +18,7 @@ MengundangAnda adalah platform pembuatan undangan pernikahan digital premium yan
    Cocok untuk mencoba platform.
    Fitur: Masa aktif 1 bulan, maksimal 25x akses undangan, bebas edit tanpa batas, live preview editor, semua tema aktif tersedia, RSVP dan buku tamu, musik latar otomatis, countdown timer, galeri foto, peta lokasi Google Maps, kirim via WhatsApp. Terdapat branding "Powered by MengundangAnda".
 
-2. Paket PREMIUM (Rp 50.000, sekali bayar)
+2. Paket PREMIUM (Rp 75.000, sekali bayar)
    Paket self-service terlengkap.
    Fitur: Semua fitur Free ditambah masa aktif 1 tahun penuh, akses undangan unlimited (tanpa batas), bebas pilih semua tema aktif premium, fitur amplop digital / QRIS untuk terima angpao online, upload musik latar sendiri, tanpa branding platform. Pembayaran via QRIS atau transfer bank melalui payment gateway Mayar.
 

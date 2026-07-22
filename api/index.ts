@@ -1135,7 +1135,7 @@ app.delete("/api/upload/file", requireAuth, (req: express.Request, res: express.
 
 const MAYAR_API_BASE = process.env.MAYAR_API_BASE || "https://api.mayar.id/hl/v1";
 const MAYAR_API_KEY = process.env.MAYAR_API_KEY || "";
-const PAYMENT_AMOUNT = 50000; // Rp 50.000
+const PAYMENT_AMOUNT = 75000; // Rp 75.000
 
 // Mayar product payment link — set via env or use default from dashboard
 const MAYAR_PAYMENT_LINK = process.env.MAYAR_PAYMENT_LINK || "https://mengundanganda.myr.id/pl/mengundang-anda-premium-akses";
