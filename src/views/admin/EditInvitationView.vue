@@ -1354,6 +1354,21 @@
                   </div>
                 </div>
 
+                <!-- Doa Pengantin Toggle -->
+                <div style="margin-top: 20px; padding: 16px; background: #fef7f0; border-radius: 12px; border: 1px solid #f5e6d3;">
+                  <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; font-weight: 500; color: #5a3e2b;">
+                    <input
+                      type="checkbox"
+                      v-model="form.show_doa_pengantin"
+                      style="width: 18px; height: 18px;"
+                    />
+                    Tampilkan Section Doa Pengantin
+                  </label>
+                  <p style="margin: 8px 0 0 28px; font-size: 12px; color: #8a6e54; line-height: 1.4;">
+                    Menampilkan doa pengantin (HR. Abu Dawud no. 2130) sebelum section RSVP
+                  </p>
+                </div>
+
                 <!-- Wizard Nav Step 3 -->
                 <div class="wizard-nav">
                   <div class="wizard-nav-left">

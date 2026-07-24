@@ -96,7 +96,7 @@ function buildInvitationUpdateData(body: any) {
     "resepsi_date", "resepsi_time", "resepsi_venue", "resepsi_address", "resepsi_map_url",
     "quote", "bank_name", "bank_account", "bank_holder", "music_url", "wa_message",
     "gallery_type", "streaming_enabled", "streaming_platform", "streaming_url", "khutbah_nikah",
-    "gift_address", "gift_recipient", "gift_phone",
+    "gift_address", "gift_recipient", "gift_phone", "show_doa_pengantin",
   ];
 
   for (const f of fields) {
@@ -111,6 +111,9 @@ function buildInvitationUpdateData(body: any) {
   // Convert boolean to integer for SQLite
   if (updateData.streaming_enabled !== undefined) {
     updateData.streaming_enabled = updateData.streaming_enabled ? 1 : 0;
+  }
+  if (updateData.show_doa_pengantin !== undefined) {
+    updateData.show_doa_pengantin = updateData.show_doa_pengantin ? 1 : 0;
   }
 
   return updateData;
@@ -572,7 +575,7 @@ async function handleInvitationCreate(
     love_story, quote, bank_name, bank_account, bank_holder, music_url,
     wa_message, banks, gallery_type,
     streaming_enabled, streaming_platform, streaming_url, khutbah_nikah,
-    gift_address, gift_recipient, gift_phone,
+    gift_address, gift_recipient, gift_phone, show_doa_pengantin,
     payment_status, trial_expires_at, view_count, max_views, paid_at,
     created_at, updated_at
   ) VALUES (
@@ -585,7 +588,7 @@ async function handleInvitationCreate(
     ?, ?, ?, ?, ?, ?,
     ?, ?, ?,
     ?, ?, ?, ?,
-    ?, ?, ?,
+    ?, ?, ?, ?,
     ?, ?, ?, ?, ?,
     ?, ?
   )`).bind(
@@ -610,6 +613,7 @@ async function handleInvitationCreate(
     body.streaming_enabled ? 1 : 0, body.streaming_platform || "youtube",
     body.streaming_url || "", body.khutbah_nikah || "",
     body.gift_address || "", body.gift_recipient || "", body.gift_phone || "",
+    body.show_doa_pengantin ? 1 : 0,
     paymentStatus, trialExpiresAt, 0, 25, paidAtValue,
     now, now,
   ).run();

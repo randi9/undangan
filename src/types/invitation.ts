@@ -101,6 +101,7 @@ export interface Invitation {
   gift_address?: string;
   gift_recipient?: string;
   gift_phone?: string;
+  show_doa_pengantin?: boolean;
 }
 
 export interface CreateInvitationPayload {
@@ -144,4 +145,5 @@ export interface CreateInvitationPayload {
   gift_address?: string;
   gift_recipient?: string;
   gift_phone?: string;
+  show_doa_pengantin?: boolean;
 }

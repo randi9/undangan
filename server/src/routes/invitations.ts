@@ -238,6 +238,7 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       gift_address,
       gift_recipient,
       gift_phone,
+      show_doa_pengantin,
     } = req.body;
 
     // Check slug
@@ -292,6 +293,7 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       gift_address: gift_address || "",
       gift_recipient: gift_recipient || "",
       gift_phone: gift_phone || "",
+      show_doa_pengantin: show_doa_pengantin ?? false,
     };
 
     const { data: created, error: createError } = await supabase
@@ -403,6 +405,7 @@ router.put("/:id", requireAuth, async (req: Request, res: Response) => {
       "gift_address",
       "gift_recipient",
       "gift_phone",
+      "show_doa_pengantin",
     ];
 
     for (const field of updatableFields) {

@@ -136,7 +136,89 @@
       </div>
     </div>
 
-    <!-- Slide 3: RSVP Section Content -->
+    <!-- Slide Doa Pengantin -->
+    <div
+      v-show="invitation.show_doa_pengantin"
+      ref="doaPengantinWrapper"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-center px-6"
+      style="box-sizing: border-box"
+    >
+      <div
+        style="
+          width: 100%;
+          max-width: 380px;
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border-radius: 24px;
+          border: 1px solid rgba(235, 207, 209, 0.5);
+          box-shadow: 0 12px 40px rgba(106, 78, 66, 0.1);
+          padding: 36px 28px;
+          text-align: center;
+          box-sizing: border-box;
+        "
+      >
+        <!-- Judul -->
+        <h2
+          :style="{ fontFamily: themeConfig.fontHeading }"
+          style="
+            font-size: 32px;
+            font-weight: 700;
+            color: #6a4e42;
+            margin: 0 0 20px 0;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+          "
+        >
+          Doa Pengantin
+        </h2>
+
+        <!-- Teks Arab -->
+        <p
+          style="
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            font-size: 22px;
+            direction: rtl;
+            color: #5a1e25;
+            line-height: 1.8;
+            margin: 0 0 20px 0;
+          "
+        >
+          بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ
+        </p>
+
+        <!-- Terjemahan -->
+        <p
+          style="
+            font-size: 14px;
+            color: rgba(106, 78, 66, 0.9);
+            line-height: 1.6;
+            margin: 0 0 16px 0;
+            font-weight: 500;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+          "
+        >
+          &ldquo;Semoga Allah memberkahimu dan memberkahi apa yang menjadi
+          tanggung jawabmu, serta menyatukan kalian berdua dalam
+          kebaikan.&rdquo;
+        </p>
+
+        <!-- Sumber Hadits -->
+        <p
+          style="
+            font-size: 13px;
+            color: #ba7d85;
+            font-weight: 700;
+            margin: 0;
+          "
+        >
+          (HR. Abu Dawud no. 2130)
+        </p>
+      </div>
+    </div>
+
+    <!-- Slide RSVP: RSVP Section Content -->
     <div
       ref="rsvpWrapper"
       class="absolute inset-0 z-10 flex flex-col items-center justify-start overflow-y-auto py-24 hide-scrollbar"
@@ -918,6 +1000,7 @@ const whiteOverlayRef = ref<HTMLElement | null>(null);
 const lovestoryWrapper = ref<HTMLElement | null>(null);
 const lovestoryInner = ref<HTMLElement | null>(null);
 const galleryWrapper = ref<HTMLElement | null>(null);
+const doaPengantinWrapper = ref<HTMLElement | null>(null);
 const rsvpWrapper = ref<HTMLElement | null>(null);
 const giftWrapper = ref<HTMLElement | null>(null);
 const footerWrapper = ref<HTMLElement | null>(null);
@@ -1046,10 +1129,13 @@ const hasGift = computed(() => {
   );
 });
 
+const hasDoaPengantin = computed(() => !!props.invitation.show_doa_pengantin);
+
 onMounted(() => {
   const hasLoveStory = props.stories && props.stories.length > 0;
   const hasGallery = props.photos && props.photos.length > 0;
   const hasGiftVal = hasGift.value;
+  const hasDoaVal = hasDoaPengantin.value;
 
   if (footerSection.value) {
     // Initial states: Slide 1 starts at y: "0%", others start below the screen at y: "100%"
@@ -1066,7 +1152,13 @@ onMounted(() => {
         opacity: 0,
       });
     }
-    const rsvpStartBelow = hasLoveStory || hasGallery;
+    if (hasDoaVal) {
+      gsap.set(doaPengantinWrapper.value, {
+        y: "100%",
+        opacity: 0,
+      });
+    }
+    const rsvpStartBelow = hasLoveStory || hasGallery || hasDoaVal;
     gsap.set(rsvpWrapper.value, {
       y: rsvpStartBelow ? "100%" : "0%",
       opacity: 0,
@@ -1097,6 +1189,7 @@ onMounted(() => {
     let scrollEndMultiplier = 250;
     if (hasLoveStory) scrollEndMultiplier += 160;
     if (hasGallery) scrollEndMultiplier += 110;
+    if (hasDoaVal) scrollEndMultiplier += 110;
     if (hasGiftVal) scrollEndMultiplier += 110;
 
     pinTimeline = gsap.timeline({
@@ -1182,7 +1275,29 @@ onMounted(() => {
       activeWrapper = galleryWrapper.value;
     }
 
-    // Slide 3: RSVP
+    // Slide: Doa Pengantin (between Gallery and RSVP)
+    if (hasDoaVal) {
+      if (activeWrapper) {
+        pinTimeline.to(activeWrapper, {
+          y: "-100%",
+          duration: 1.0,
+          ease: "power2.inOut",
+        });
+        pinTimeline.to(
+          doaPengantinWrapper.value,
+          {
+            y: "0%",
+            opacity: 1,
+            duration: 1.0,
+            ease: "power2.inOut",
+          },
+          "<",
+        );
+      }
+      activeWrapper = doaPengantinWrapper.value;
+    }
+
+    // Slide: RSVP
     if (activeWrapper) {
       pinTimeline.to(activeWrapper, {
         y: "-100%",

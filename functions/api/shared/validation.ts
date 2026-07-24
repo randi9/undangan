@@ -88,6 +88,7 @@ export const invitationCreateSchema = z.object({
   gift_address: z.string().max(500).optional().default(""),
   gift_recipient: z.string().max(150).optional().default(""),
   gift_phone: z.string().max(30).optional().default(""),
+  show_doa_pengantin: z.boolean().optional().default(false),
 });
 
 // For updates, all fields are optional

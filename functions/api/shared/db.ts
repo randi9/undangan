@@ -47,6 +47,7 @@ export function hydrateInvitation(row: any): any {
     love_story: parseJsonColumn(row.love_story, []),
     banks: parseJsonColumn(row.banks, []),
     streaming_enabled: !!row.streaming_enabled,
+    show_doa_pengantin: !!row.show_doa_pengantin,
   };
 }
 

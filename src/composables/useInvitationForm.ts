@@ -40,6 +40,7 @@ export interface InvitationFormData {
   gift_address: string
   gift_recipient: string
   gift_phone: string
+  show_doa_pengantin: boolean
 }
 
 function createEmptyForm(theme?: string): InvitationFormData {
@@ -81,6 +82,7 @@ function createEmptyForm(theme?: string): InvitationFormData {
     gift_address: '',
     gift_recipient: '',
     gift_phone: '',
+    show_doa_pengantin: false,
   }
 }
 
@@ -157,6 +159,7 @@ export function useInvitationForm(initialTheme?: string) {
     form.gift_address = data.gift_address || ''
     form.gift_recipient = data.gift_recipient || ''
     form.gift_phone = data.gift_phone || ''
+    form.show_doa_pengantin = data.show_doa_pengantin || false
   }
 
   /** Get cleaned payload ready for API submission */
