@@ -61,6 +61,7 @@
                <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
                <span v-if="invitation.groom_mother" class="font-medium text-[#304851]">Ibu {{ invitation.groom_mother }}</span>
              </p>
+             <p v-if="invitation.groom_origin" class="text-xs md:text-base text-[#304851]/70 mt-1 italic">{{ invitation.groom_origin }}</p>
           </div>
         </div>
       </div>
@@ -89,6 +90,7 @@
               <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
               <span v-if="invitation.bride_mother" class="font-medium text-[#304851]">Ibu {{ invitation.bride_mother }}</span>
             </p>
+            <p v-if="invitation.bride_origin" class="text-xs md:text-base text-[#304851]/70 mt-1 italic">{{ invitation.bride_origin }}</p>
           </div>
         </div>
       </div>

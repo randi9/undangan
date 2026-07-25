@@ -97,6 +97,7 @@ function buildInvitationUpdateData(body: any) {
     "quote", "bank_name", "bank_account", "bank_holder", "music_url", "wa_message",
     "gallery_type", "streaming_enabled", "streaming_platform", "streaming_url", "khutbah_nikah",
     "gift_address", "gift_recipient", "gift_phone", "show_doa_pengantin",
+    "groom_origin", "bride_origin",
   ];
 
   for (const f of fields) {
@@ -576,6 +577,7 @@ async function handleInvitationCreate(
     wa_message, banks, gallery_type,
     streaming_enabled, streaming_platform, streaming_url, khutbah_nikah,
     gift_address, gift_recipient, gift_phone, show_doa_pengantin,
+    groom_origin, bride_origin,
     payment_status, trial_expires_at, view_count, max_views, paid_at,
     created_at, updated_at
   ) VALUES (
@@ -589,6 +591,7 @@ async function handleInvitationCreate(
     ?, ?, ?,
     ?, ?, ?, ?,
     ?, ?, ?, ?,
+    ?, ?,
     ?, ?, ?, ?, ?,
     ?, ?
   )`).bind(
@@ -614,6 +617,7 @@ async function handleInvitationCreate(
     body.streaming_url || "", body.khutbah_nikah || "",
     body.gift_address || "", body.gift_recipient || "", body.gift_phone || "",
     body.show_doa_pengantin ? 1 : 0,
+    body.groom_origin || "", body.bride_origin || "",
     paymentStatus, trialExpiresAt, 0, 25, paidAtValue,
     now, now,
   ).run();

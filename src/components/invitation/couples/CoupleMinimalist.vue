@@ -32,6 +32,7 @@
             <span v-if="invitation.groom_father && invitation.groom_mother" class="mx-1">&amp;</span>
             <span v-if="invitation.groom_mother" class="font-medium text-gray-600">{{ invitation.groom_mother }}</span>
           </p>
+          <p v-if="invitation.groom_origin" class="text-xs md:text-sm text-gray-400 italic mt-1 tracking-wide">{{ invitation.groom_origin }}</p>
         </div>
       </div>
       
@@ -58,6 +59,7 @@
             <span v-if="invitation.bride_father && invitation.bride_mother" class="mx-1">&amp;</span>
             <span v-if="invitation.bride_mother" class="font-medium text-gray-600">{{ invitation.bride_mother }}</span>
           </p>
+          <p v-if="invitation.bride_origin" class="text-xs md:text-sm text-gray-400 italic mt-1 tracking-wide">{{ invitation.bride_origin }}</p>
         </div>
       </div>
     </div>

@@ -47,9 +47,8 @@
           <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
           <span v-if="invitation.groom_mother">Ibu {{ invitation.groom_mother }}</span>
         </p>
+        <p v-if="invitation.groom_origin" class="text-sm md:text-base mt-1 italic" :style="{ color: 'var(--theme-text-light)' }">{{ invitation.groom_origin }}</p>
       </div>
-      
-      <!-- Divider -->
       <div ref="dividerRef" class="opacity-0 scale-50">
         <svg viewBox="0 0 60 80" class="w-12 md:w-16" style="opacity: 0.5;">
           <defs>
@@ -95,6 +94,7 @@
           <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
           <span v-if="invitation.bride_mother">Ibu {{ invitation.bride_mother }}</span>
         </p>
+        <p v-if="invitation.bride_origin" class="text-sm md:text-base mt-1 italic" :style="{ color: 'var(--theme-text-light)' }">{{ invitation.bride_origin }}</p>
       </div>
     </div>
   </section>

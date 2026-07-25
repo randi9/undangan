@@ -52,6 +52,8 @@ export interface Invitation {
   groom_mother: string;
   bride_father: string;
   bride_mother: string;
+  groom_origin?: string;
+  bride_origin?: string;
   groom_photo: string;
   bride_photo: string;
   cover_photo: string;
@@ -146,4 +148,6 @@ export interface CreateInvitationPayload {
   gift_recipient?: string;
   gift_phone?: string;
   show_doa_pengantin?: boolean;
+  groom_origin?: string;
+  bride_origin?: string;
 }

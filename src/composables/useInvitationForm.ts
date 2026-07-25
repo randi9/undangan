@@ -41,6 +41,8 @@ export interface InvitationFormData {
   gift_recipient: string
   gift_phone: string
   show_doa_pengantin: boolean
+  groom_origin: string
+  bride_origin: string
 }
 
 function createEmptyForm(theme?: string): InvitationFormData {
@@ -83,6 +85,8 @@ function createEmptyForm(theme?: string): InvitationFormData {
     gift_recipient: '',
     gift_phone: '',
     show_doa_pengantin: false,
+    groom_origin: '',
+    bride_origin: '',
   }
 }
 
@@ -160,6 +164,8 @@ export function useInvitationForm(initialTheme?: string) {
     form.gift_recipient = data.gift_recipient || ''
     form.gift_phone = data.gift_phone || ''
     form.show_doa_pengantin = data.show_doa_pengantin || false
+    form.groom_origin = data.groom_origin || ''
+    form.bride_origin = data.bride_origin || ''
   }
 
   /** Get cleaned payload ready for API submission */
