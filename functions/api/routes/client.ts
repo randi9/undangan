@@ -259,7 +259,7 @@ async function handleClientAddGuests(db: D1Database, request: Request, env: any)
   return json(data, 201);
 }
 
-// === Client: Update Guest Status ===
+// === Client: Update Guest ===
 async function handleClientUpdateGuest(
   db: D1Database,
   request: Request,
@@ -274,9 +274,22 @@ async function handleClientUpdateGuest(
   ).trim();
 
   const body = await request.json();
+  const existing = await db
+    .prepare("SELECT * FROM guests WHERE id = ? AND invitation_id = ?")
+    .bind(guestId, authResult.invitation.id)
+    .first();
+
+  if (!existing) return json({ error: "Tamu tidak ditemukan." }, 404);
+
+  const name = body.name !== undefined ? String(body.name).trim() : (existing as any).name;
+  if (!name) return json({ error: "Nama tamu tidak boleh kosong." }, 400);
+
+  const phoneNumber = body.phone_number !== undefined ? String(body.phone_number).trim() : (existing as any).phone_number;
+  const isSent = body.is_sent !== undefined ? (body.is_sent ? 1 : 0) : (existing as any).is_sent;
+
   await db.prepare(
-    "UPDATE guests SET is_sent = ? WHERE id = ? AND invitation_id = ?"
-  ).bind(body.is_sent ? 1 : 0, guestId, authResult.invitation.id).run();
+    "UPDATE guests SET name = ?, phone_number = ?, is_sent = ? WHERE id = ? AND invitation_id = ?"
+  ).bind(name, phoneNumber, isSent, guestId, authResult.invitation.id).run();
 
   const data = await db
     .prepare("SELECT * FROM guests WHERE id = ? AND invitation_id = ?")

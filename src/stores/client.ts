@@ -142,17 +142,21 @@ export const useClientStore = defineStore('client', () => {
     return data
   }
 
-  async function updateGuestStatus(guestId: string, is_sent: boolean) {
+  async function updateGuest(guestId: string, payload: { name?: string; phone_number?: string; is_sent?: boolean }) {
     const res = await fetch(`${API_BASE}/client/guests/${guestId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', ...clientHeaders() },
-      body: JSON.stringify({ is_sent }),
+      body: JSON.stringify(payload),
     })
-    if (!res.ok) throw new Error('Gagal update status tamu.')
+    if (!res.ok) throw new Error('Gagal memperbarui tamu.')
     const data = await safeJson(res)
     const idx = guests.value.findIndex(g => g.id === guestId)
     if (idx >= 0) guests.value[idx] = data
     return data
+  }
+
+  async function updateGuestStatus(guestId: string, is_sent: boolean) {
+    return updateGuest(guestId, { is_sent })
   }
 
   async function deleteGuest(guestId: string) {
@@ -246,6 +250,7 @@ export const useClientStore = defineStore('client', () => {
     fetchInvitation,
     fetchGuests,
     bulkAddGuests,
+    updateGuest,
     updateGuestStatus,
     deleteGuest,
     fetchRsvps,
