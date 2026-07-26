@@ -19,8 +19,8 @@
     <!-- White Overlay Layer (initially hidden/clear for clean section entry) -->
     <div
       ref="whiteOverlayRef"
-      class="absolute inset-0 z-[1] pointer-events-none"
-      style="background: rgba(255, 255, 255, 0.45); opacity: 0"
+      class="absolute inset-0 z-[1] pointer-events-none transition-colors duration-300"
+      style="background: rgba(255, 255, 255, 0.25); opacity: 0"
     ></div>
 
     <!-- Slide 1: Love Story Section Content -->
@@ -136,88 +136,6 @@
       </div>
     </div>
 
-    <!-- Slide Doa Pengantin -->
-    <div
-      v-show="invitation.show_doa_pengantin"
-      ref="doaPengantinWrapper"
-      class="absolute inset-0 z-10 flex flex-col items-center justify-center px-6"
-      style="box-sizing: border-box"
-    >
-      <div
-        style="
-          width: 100%;
-          max-width: 380px;
-          background: rgba(255, 255, 255, 0.92);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border-radius: 24px;
-          border: 1px solid rgba(235, 207, 209, 0.5);
-          box-shadow: 0 12px 40px rgba(106, 78, 66, 0.1);
-          padding: 36px 28px;
-          text-align: center;
-          box-sizing: border-box;
-        "
-      >
-        <!-- Judul -->
-        <h2
-          :style="{ fontFamily: themeConfig.fontHeading }"
-          style="
-            font-size: 32px;
-            font-weight: 700;
-            color: #6a4e42;
-            margin: 0 0 20px 0;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
-          "
-        >
-          Doa Pengantin
-        </h2>
-
-        <!-- Teks Arab -->
-        <p
-          style="
-            font-family: 'Amiri', 'Traditional Arabic', serif;
-            font-size: 22px;
-            direction: rtl;
-            color: #5a1e25;
-            line-height: 1.8;
-            margin: 0 0 20px 0;
-          "
-        >
-          بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ
-        </p>
-
-        <!-- Terjemahan -->
-        <p
-          style="
-            font-size: 14px;
-            color: rgba(106, 78, 66, 0.9);
-            line-height: 1.6;
-            margin: 0 0 16px 0;
-            font-weight: 500;
-            max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
-          "
-        >
-          &ldquo;Semoga Allah memberkahimu dan memberkahi apa yang menjadi
-          tanggung jawabmu, serta menyatukan kalian berdua dalam
-          kebaikan.&rdquo;
-        </p>
-
-        <!-- Sumber Hadits -->
-        <p
-          style="
-            font-size: 13px;
-            color: #ba7d85;
-            font-weight: 700;
-            margin: 0;
-          "
-        >
-          (HR. Abu Dawud no. 2130)
-        </p>
-      </div>
-    </div>
-
     <!-- Slide RSVP: RSVP Section Content -->
     <div
       ref="rsvpWrapper"
@@ -252,7 +170,7 @@
               padding-top: 12px;
             "
           >
-            Reservasi & Ucapan
+            Reservasi &amp; Ucapan
           </h2>
           <div
             class="flex items-center justify-center gap-4 mb-2 text-[#EBCFD1] opacity-80"
@@ -275,7 +193,6 @@
           </p>
         </div>
 
-        <!-- RSVP Form & Messages inside single card -->
         <!-- RSVP Form & Messages inside single card -->
         <div
           style="
@@ -741,6 +658,19 @@
       </div>
     </div>
 
+    <!-- Slide Doa Pengantin -->
+    <div
+      v-show="invitation.show_doa_pengantin"
+      ref="doaPengantinWrapper"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-center px-6"
+      style="box-sizing: border-box"
+    >
+      <DoaFairytaleGarden
+        :theme-config="themeConfig"
+        :is-inline="true"
+      />
+    </div>
+
     <!-- Slide 4: Gift Section Content -->
     <div
       v-show="hasGift"
@@ -966,6 +896,7 @@ import GalleryMasonryLayout from "../gallery/GalleryMasonryLayout.vue";
 import GalleryFairytaleGardenCarousel from "../gallery/GalleryFairytaleGardenCarousel.vue";
 import GiftFairytaleGarden from "../gift/GiftFairytaleGarden.vue";
 import LoveStoryFairytaleGarden from "../lovestory/LoveStoryFairytaleGarden.vue";
+import DoaFairytaleGarden from "../doa/DoaFairytaleGarden.vue";
 import { resolveAssetUrl } from "@/utils/url";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -1152,17 +1083,17 @@ onMounted(() => {
         opacity: 0,
       });
     }
+    const rsvpStartBelow = hasLoveStory || hasGallery;
+    gsap.set(rsvpWrapper.value, {
+      y: rsvpStartBelow ? "100%" : "0%",
+      opacity: 0,
+    });
     if (hasDoaVal) {
       gsap.set(doaPengantinWrapper.value, {
         y: "100%",
         opacity: 0,
       });
     }
-    const rsvpStartBelow = hasLoveStory || hasGallery || hasDoaVal;
-    gsap.set(rsvpWrapper.value, {
-      y: rsvpStartBelow ? "100%" : "0%",
-      opacity: 0,
-    });
     if (hasGiftVal) {
       gsap.set(giftWrapper.value, {
         y: "100%",
@@ -1275,7 +1206,40 @@ onMounted(() => {
       activeWrapper = galleryWrapper.value;
     }
 
-    // Slide: Doa Pengantin (between Gallery and RSVP)
+    // Slide 3: RSVP
+    if (activeWrapper) {
+      pinTimeline.to(activeWrapper, {
+        y: "-100%",
+        duration: 1.0,
+        ease: "power2.inOut",
+      });
+      pinTimeline.to(
+        rsvpWrapper.value,
+        {
+          y: "0%",
+          opacity: 1,
+          duration: 1.0,
+          ease: "power2.inOut",
+        },
+        "<",
+      );
+      if (whiteOverlayRef.value) {
+        pinTimeline.to(
+          whiteOverlayRef.value,
+          {
+            backgroundColor: "rgba(255, 255, 255, 0.25)",
+            backdropFilter: "blur(8px)",
+            webkitBackdropFilter: "blur(8px)",
+            duration: 1.0,
+            ease: "power2.inOut",
+          },
+          "<",
+        );
+      }
+    }
+    activeWrapper = rsvpWrapper.value;
+
+    // Slide 4: Doa Pengantin (now after RSVP)
     if (hasDoaVal) {
       if (activeWrapper) {
         pinTimeline.to(activeWrapper, {
@@ -1293,31 +1257,43 @@ onMounted(() => {
           },
           "<",
         );
+        if (whiteOverlayRef.value) {
+          pinTimeline.to(
+            whiteOverlayRef.value,
+            {
+              backgroundColor: "rgba(255, 255, 255, 0.90)",
+              backdropFilter: "blur(16px)",
+              webkitBackdropFilter: "blur(16px)",
+              duration: 1.0,
+              ease: "power2.inOut",
+            },
+            "<",
+          );
+        }
       }
+
+      // Animate Doa elements stagger entry
+      const doaItems = doaPengantinWrapper.value?.querySelectorAll(".doa-anim-item");
+      if (doaItems && doaItems.length > 0) {
+        doaItems.forEach((item: any, idx: number) => {
+          gsap.set(item, { y: 25, opacity: 0 });
+          pinTimeline!.to(
+            item,
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.7,
+              ease: "power2.out",
+            },
+            idx === 0 ? "-=0.6" : "-=0.55"
+          );
+        });
+      }
+
       activeWrapper = doaPengantinWrapper.value;
     }
 
-    // Slide: RSVP
-    if (activeWrapper) {
-      pinTimeline.to(activeWrapper, {
-        y: "-100%",
-        duration: 1.0,
-        ease: "power2.inOut",
-      });
-      pinTimeline.to(
-        rsvpWrapper.value,
-        {
-          y: "0%",
-          opacity: 1,
-          duration: 1.0,
-          ease: "power2.inOut",
-        },
-        "<",
-      );
-    }
-    activeWrapper = rsvpWrapper.value;
-
-    // Slide 4: Gift
+    // Slide 5: Gift
     if (hasGiftVal) {
       pinTimeline.to(activeWrapper, {
         y: "-100%",
@@ -1334,6 +1310,19 @@ onMounted(() => {
         },
         "<",
       );
+      if (whiteOverlayRef.value) {
+        pinTimeline.to(
+          whiteOverlayRef.value,
+          {
+            backgroundColor: "rgba(255, 255, 255, 0.25)",
+            backdropFilter: "blur(8px)",
+            webkitBackdropFilter: "blur(8px)",
+            duration: 1.0,
+            ease: "power2.inOut",
+          },
+          "<",
+        );
+      }
 
       // Animate the cards as the slide enters
       const giftCards = giftWrapper.value?.querySelectorAll(".gift-card-anim");

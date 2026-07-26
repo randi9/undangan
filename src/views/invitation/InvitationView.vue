@@ -467,6 +467,13 @@ async function preloadAllAssets() {
     urls.add("https://media.mengundanganda.com/fairygarden/quotes%20section/dewirandi_16ea4f80-300c-41c5-91b1-4ba941ed161a.webp");
     urls.add("https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_b42881e0-cb77-4565-8f1f-d4603ff53253.webp");
     urls.add("https://media.mengundanganda.com/fairygarden/couple%20section/dewirandi_f558ffe0-5a6f-400f-a20c-22300414bcd6.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/doa%20section/dewirandi_1343c9af-32d3-43eb-a58c-818547757131.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/doa%20section/dewirandi_24da44b6-7c06-4a02-804d-8f3b7405757d.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/doa%20section/dewirandi_71303b0e-9d65-4b90-beb2-56d03eb8646e.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/doa%20section/dewirandi_88f47fca-57f4-482c-96af-9960019456d7.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/doa%20section/dewirandi_a0d79529-b4ec-4782-a57f-66c26dc108ba.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/doa%20section/dewirandi_a85b9cb6-04b8-48db-9012-3bf32572dfb6.webp");
+    urls.add("https://media.mengundanganda.com/fairygarden/doa%20section/dewirandi_de68c436-3af6-4abb-a57a-6fb4187d69a6.webp");
   }
 
   // Collect all <img> src attributes

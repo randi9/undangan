@@ -297,9 +297,10 @@
             The Groom
           </span>
 
-          <!-- Groom Name -->
+          <!-- Groom Name Line 1 -->
           <h2
-            class="text-4xl md:text-6xl text-[#5A1E25] font-bold leading-none mb-2 md:mb-3"
+            class="text-4xl md:text-6xl text-[#5A1E25] font-bold leading-none"
+            :class="formattedGroomName.isSingleLine ? 'mb-4 md:mb-6' : 'mb-1 md:mb-2'"
             style="
               font-family: 'Great Vibes', cursive;
               text-shadow:
@@ -308,24 +309,23 @@
                 0 0 30px rgba(255, 255, 255, 0.6);
             "
           >
-            {{ invitation?.groom_name }}
+            {{ formattedGroomName.line1 }}
           </h2>
 
-          <!-- Groom Full Name -->
-          <p
-            class="text-sm md:text-lg tracking-[0.2em] text-[#5A1E25] uppercase font-bold mb-4 md:mb-6 max-w-[260px] md:max-w-[420px] mx-auto break-words whitespace-normal leading-relaxed"
+          <!-- Groom Name Line 2 (Remaining words) -->
+          <h3
+            v-if="!formattedGroomName.isSingleLine && formattedGroomName.line2"
+            class="text-2xl md:text-4xl text-[#5A1E25] font-bold leading-tight mb-4 md:mb-6"
             style="
-              font-family: 'Cormorant Garamond', serif;
+              font-family: 'Great Vibes', cursive;
               text-shadow:
-                0 0 8px rgba(255, 255, 255, 0.95),
-                0 0 16px rgba(255, 255, 255, 0.8),
-                0 0 24px rgba(255, 255, 255, 0.6);
+                0 0 10px rgba(255, 255, 255, 0.95),
+                0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 30px rgba(255, 255, 255, 0.6);
             "
           >
-            {{
-              getSubName(invitation?.groom_full_name, invitation?.groom_name)
-            }}
-          </p>
+            {{ formattedGroomName.line2 }}
+          </h3>
 
           <!-- Parent Info -->
           <p
@@ -374,9 +374,10 @@
             The Bride
           </span>
 
-          <!-- Bride Name -->
+          <!-- Bride Name Line 1 -->
           <h2
-            class="text-4xl md:text-6xl text-[#5A1E25] font-bold leading-none mb-2 md:mb-3"
+            class="text-4xl md:text-6xl text-[#5A1E25] font-bold leading-none"
+            :class="formattedBrideName.isSingleLine ? 'mb-4 md:mb-6' : 'mb-1 md:mb-2'"
             style="
               font-family: 'Great Vibes', cursive;
               text-shadow:
@@ -385,24 +386,23 @@
                 0 0 30px rgba(255, 255, 255, 0.6);
             "
           >
-            {{ invitation?.bride_name }}
+            {{ formattedBrideName.line1 }}
           </h2>
 
-          <!-- Bride Full Name -->
-          <p
-            class="text-sm md:text-lg tracking-[0.2em] text-[#5A1E25] uppercase font-bold mb-4 md:mb-6 max-w-[260px] md:max-w-[420px] mx-auto break-words whitespace-normal leading-relaxed"
+          <!-- Bride Name Line 2 (Remaining words) -->
+          <h3
+            v-if="!formattedBrideName.isSingleLine && formattedBrideName.line2"
+            class="text-2xl md:text-4xl text-[#5A1E25] font-bold leading-tight mb-4 md:mb-6"
             style="
-              font-family: 'Cormorant Garamond', serif;
+              font-family: 'Great Vibes', cursive;
               text-shadow:
-                0 0 8px rgba(255, 255, 255, 0.95),
-                0 0 16px rgba(255, 255, 255, 0.8),
-                0 0 24px rgba(255, 255, 255, 0.6);
+                0 0 10px rgba(255, 255, 255, 0.95),
+                0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 30px rgba(255, 255, 255, 0.6);
             "
           >
-            {{
-              getSubName(invitation?.bride_full_name, invitation?.bride_name)
-            }}
-          </p>
+            {{ formattedBrideName.line2 }}
+          </h3>
 
           <!-- Parent Info -->
           <p
@@ -730,7 +730,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, nextTick } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
 import type { CSSProperties } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -765,6 +765,62 @@ function getSubName(
   }
   return cleanFull;
 }
+
+function getFullDisplayName(fullName?: string, shortName?: string): string {
+  const full = (fullName || "").trim();
+  const short = (shortName || "").trim();
+
+  if (!full) return short;
+  if (!short) return full;
+
+  if (full.toLowerCase().startsWith(short.toLowerCase())) {
+    return full;
+  }
+
+  return `${short} ${full}`;
+}
+
+function formatCoupleName(fullName?: string, shortName?: string) {
+  const targetName = getFullDisplayName(fullName, shortName);
+
+  if (!targetName) return { isSingleLine: true, line1: "", line2: "" };
+
+  const words = targetName.split(/\s+/).filter(Boolean);
+
+  if (words.length <= 2) {
+    return {
+      isSingleLine: true,
+      line1: targetName,
+      line2: "",
+    };
+  } else {
+    let line1 = words.slice(0, 2).join(" ");
+    let line2 = words.slice(2).join(" ");
+
+    // Clean up trailing comma at end of line 1 if line 2 exists
+    line1 = line1.replace(/,\s*$/, "");
+
+    return {
+      isSingleLine: false,
+      line1: line1,
+      line2: line2,
+    };
+  }
+}
+
+const formattedGroomName = computed(() => {
+  return formatCoupleName(
+    props.invitation?.groom_full_name,
+    props.invitation?.groom_name,
+  );
+});
+
+const formattedBrideName = computed(() => {
+  return formatCoupleName(
+    props.invitation?.bride_full_name,
+    props.invitation?.bride_name,
+  );
+});
 
 const heroSection = ref<HTMLElement | null>(null);
 const heroContentContainer = ref<HTMLElement | null>(null);
