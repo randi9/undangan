@@ -89,6 +89,8 @@ export const invitationCreateSchema = z.object({
   gift_recipient: z.string().max(150).optional().default(""),
   gift_phone: z.string().max(30).optional().default(""),
   show_doa_pengantin: z.boolean().optional().default(false),
+  groom_origin: z.string().max(100, "Daerah asal pria maksimal 100 karakter").optional().default(""),
+  bride_origin: z.string().max(100, "Daerah asal wanita maksimal 100 karakter").optional().default(""),
 });
 
 // For updates, all fields are optional

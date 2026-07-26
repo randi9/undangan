@@ -82,6 +82,24 @@ function validateInvitationPayload(
     }
   }
 
+  if (body.groom_origin !== undefined) {
+    if (typeof body.groom_origin !== "string") {
+      return { ok: false, error: "groom_origin must be a string" };
+    }
+    if (body.groom_origin.length > 100) {
+      return { ok: false, error: "groom_origin must be under 100 characters" };
+    }
+  }
+
+  if (body.bride_origin !== undefined) {
+    if (typeof body.bride_origin !== "string") {
+      return { ok: false, error: "bride_origin must be a string" };
+    }
+    if (body.bride_origin.length > 100) {
+      return { ok: false, error: "bride_origin must be under 100 characters" };
+    }
+  }
+
   return { ok: true };
 }
 
@@ -239,6 +257,8 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       gift_recipient,
       gift_phone,
       show_doa_pengantin,
+      groom_origin,
+      bride_origin,
     } = req.body;
 
     // Check slug
@@ -294,6 +314,8 @@ router.post("/", requireAuth, async (req: Request, res: Response) => {
       gift_recipient: gift_recipient || "",
       gift_phone: gift_phone || "",
       show_doa_pengantin: show_doa_pengantin ?? false,
+      groom_origin: groom_origin || "",
+      bride_origin: bride_origin || "",
     };
 
     const { data: created, error: createError } = await supabase
@@ -406,6 +428,8 @@ router.put("/:id", requireAuth, async (req: Request, res: Response) => {
       "gift_recipient",
       "gift_phone",
       "show_doa_pengantin",
+      "groom_origin",
+      "bride_origin",
     ];
 
     for (const field of updatableFields) {

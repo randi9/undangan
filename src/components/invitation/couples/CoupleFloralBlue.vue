@@ -87,6 +87,9 @@
           <p style="font-family: 'Caveat', cursive; font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.2; text-align: center; margin: 0;">
             Putra dari Bpk. {{ invitation.groom_father }} &amp;<br>Ibu {{ invitation.groom_mother }}
           </p>
+          <p v-if="invitation.groom_origin" style="font-family: 'Caveat', cursive; font-size: 0.9rem; font-weight: 600; color: #6a7c8a; font-style: italic; text-align: center; margin-top: 0.25rem;">
+            {{ invitation.groom_origin }}
+          </p>
         </div>
 
         <!-- Bride Info (Back of Polaroid) -->
@@ -96,6 +99,9 @@
           </h2>
           <p style="font-family: 'Caveat', cursive; font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.2; text-align: center; margin: 0;">
             Putri dari Bpk. {{ invitation.bride_father }} &amp;<br>Ibu {{ invitation.bride_mother }}
+          </p>
+          <p v-if="invitation.bride_origin" style="font-family: 'Caveat', cursive; font-size: 0.9rem; font-weight: 600; color: #6a7c8a; font-style: italic; text-align: center; margin-top: 0.25rem;">
+            {{ invitation.bride_origin }}
           </p>
         </div>
       </div>

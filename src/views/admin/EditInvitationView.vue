@@ -711,6 +711,25 @@
                             maxlength="60"
                           />
                         </div>
+                        <div class="form-group">
+                          <label class="form-label">Daerah Asal</label>
+                          <input
+                            v-model="form.groom_origin"
+                            class="form-input"
+                            maxlength="100"
+                            placeholder="Contoh: Sumedang, Jawa Barat"
+                          />
+                          <span
+                            style="
+                              font-size: 11px;
+                              color: var(--admin-text-secondary);
+                              display: block;
+                              text-align: right;
+                              margin-top: 4px;
+                            "
+                            >{{ form.groom_origin.length }}/100</span
+                          >
+                        </div>
                       </div>
                     </div>
 
@@ -814,6 +833,25 @@
                             class="form-input"
                             maxlength="60"
                           />
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Daerah Asal</label>
+                          <input
+                            v-model="form.bride_origin"
+                            class="form-input"
+                            maxlength="100"
+                            placeholder="Contoh: Bandung, Jawa Barat"
+                          />
+                          <span
+                            style="
+                              font-size: 11px;
+                              color: var(--admin-text-secondary);
+                              display: block;
+                              text-align: right;
+                              margin-top: 4px;
+                            "
+                            >{{ form.bride_origin.length }}/100</span
+                          >
                         </div>
                       </div>
                     </div>

@@ -128,9 +128,8 @@
           <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
           <span v-if="invitation.groom_mother" class="text-md font-semibold">Ibu {{ invitation.groom_mother }}</span>
         </p>
+        <p v-if="invitation.groom_origin" class="text-sm md:text-base text-[var(--theme-text-light)] groom-text mt-1 italic">{{ invitation.groom_origin }}</p>
       </div>
-      
-      <!-- Bride -->
       <div class="flex-1 flex flex-col items-center bride-section mt-12 md:mt-0">
         <!-- Bride Title + Ornaments -->
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 10; margin-bottom: -10px;">
@@ -194,6 +193,7 @@
           <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
           <span v-if="invitation.bride_mother" class="text-md font-semibold">Ibu {{ invitation.bride_mother }}</span>
         </p>
+        <p v-if="invitation.bride_origin" class="text-sm md:text-base text-[var(--theme-text-light)] bride-text mt-1 italic">{{ invitation.bride_origin }}</p>
       </div>
     </div>
   </section>

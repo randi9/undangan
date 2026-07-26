@@ -30,6 +30,8 @@ function createSampleInvitation(
     groom_mother: 'Ibu Hj. Siti Nurhaliza',
     bride_father: 'Bpk. Ir. Bambang Susilo',
     bride_mother: 'Ibu Dr. Ratna Sari',
+    groom_origin: 'Sumedang, Jawa Barat',
+    bride_origin: 'Bandung, Jawa Barat',
     groom_photo: 'https://media.mengundanganda.com/contohfloralblue/d9b068084b65b42a1c08304387193b65.webp',
     bride_photo: 'https://media.mengundanganda.com/contohfloralblue/2b62609f4184a08dac690b4b5aefb1a0.webp',
     cover_photo: 'https://media.mengundanganda.com/contohfloralblue/ChatGPT%20Image%2027%20Apr%202026%2C%2015.19.40.webp', // fallback to themeConfig.coverImage
