@@ -51,13 +51,23 @@ router.post("/:invitationId/bulk", requireAuth, async (req: Request, res: Respon
   }
 });
 
-// Update guest status (e.g., mark as sent)
+// Update guest details or status
 router.put("/:invitationId/:guestId", requireAuth, async (req: Request, res: Response) => {
   try {
-    const { is_sent } = req.body;
+    const { name, phone_number, is_sent } = req.body;
+    const updateData: Record<string, any> = {};
+
+    if (name !== undefined) updateData.name = String(name).trim();
+    if (phone_number !== undefined) updateData.phone_number = String(phone_number).trim();
+    if (is_sent !== undefined) updateData.is_sent = Boolean(is_sent);
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ error: "No fields to update" });
+    }
+
     const { data, error } = await supabase
       .from("guests")
-      .update({ is_sent })
+      .update(updateData)
       .eq("id", req.params.guestId)
       .eq("invitation_id", req.params.invitationId)
       .select()

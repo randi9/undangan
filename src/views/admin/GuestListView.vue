@@ -128,6 +128,9 @@
                   </td>
                   <td style="padding: 16px; text-align: right;">
                     <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                      <button class="btn btn-outline btn-sm action-icon-btn" @click="openEditModal(guest)" title="Edit Tamu">
+                        <span class="material-symbols-rounded">edit</span>
+                      </button>
                       <button class="btn btn-outline btn-sm action-icon-btn" @click="copyLink(guest)" title="Copy Link">
                         <span class="material-symbols-rounded">content_copy</span>
                       </button>
@@ -166,6 +169,9 @@
                   <span class="material-symbols-rounded" style="font-size: 16px;">send</span> Kirim WA
                 </button>
                 <div style="display: flex; gap: 8px;">
+                  <button class="btn btn-outline btn-sm" style="padding: 6px 12px;" @click="openEditModal(guest)" title="Edit Tamu">
+                    <span class="material-symbols-rounded" style="font-size: 18px;">edit</span>
+                  </button>
                   <button class="btn btn-outline btn-sm" style="padding: 6px 12px;" @click="copyLink(guest)" title="Copy Link">
                     <span class="material-symbols-rounded" style="font-size: 18px;">content_copy</span>
                   </button>
@@ -195,6 +201,27 @@
           </div>
           <div style="display: flex; gap: 12px; justify-content: flex-end;">
             <button type="button" class="btn btn-outline" @click="showSingleModal = false">Batal</button>
+            <button type="submit" class="btn btn-primary" :disabled="saving">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Edit Tamu -->
+    <div v-if="showEditModal" class="modal-overlay" @click.self="showEditModal = false">
+      <div class="modal-content" style="max-width: 400px; padding: 24px; border-radius: 12px; background: white;">
+        <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 18px; color: var(--admin-primary)">Edit Tamu</h3>
+        <form @submit.prevent="submitEditGuest">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label style="display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--admin-text-secondary)">Nama Tamu (Wajib)</label>
+            <input type="text" v-model="editForm.name" required class="form-input" style="width: 100%; border: 1px solid var(--admin-border); padding: 10px; border-radius: 6px;" placeholder="Misal: Budi & Keluarga" />
+          </div>
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label style="display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--admin-text-secondary)">No WhatsApp (Opsional)</label>
+            <input type="text" v-model="editForm.phone" class="form-input" style="width: 100%; border: 1px solid var(--admin-border); padding: 10px; border-radius: 6px;" placeholder="Misal: 08123456789" />
+          </div>
+          <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button type="button" class="btn btn-outline" @click="showEditModal = false">Batal</button>
             <button type="submit" class="btn btn-primary" :disabled="saving">Simpan</button>
           </div>
         </form>
@@ -276,9 +303,11 @@ const guests = computed(() => store.guests);
 
 const showSingleModal = ref(false);
 const showBulkModal = ref(false);
+const showEditModal = ref(false);
 const showMessageModal = ref(false);
 
 const singleForm = ref({ name: '', phone: '' });
+const editForm = ref({ id: '', name: '', phone: '' });
 const bulkText = ref('');
 const waMessageInput = ref('');
 const savingMessage = ref(false);
@@ -409,6 +438,32 @@ async function submitSingleGuest() {
     singleForm.value = { name: '', phone: '' };
   } catch (err) {
     showToast('error', 'Gagal menambah tamu');
+  } finally {
+    saving.value = false;
+  }
+}
+
+function openEditModal(guest: Guest) {
+  editForm.value = {
+    id: guest.id || '',
+    name: guest.name || '',
+    phone: guest.phone_number || ''
+  };
+  showEditModal.value = true;
+}
+
+async function submitEditGuest() {
+  if (!editForm.value.name.trim() || !editForm.value.id) return;
+  saving.value = true;
+  try {
+    await store.updateGuest(invitationId, editForm.value.id, {
+      name: editForm.value.name,
+      phone_number: editForm.value.phone
+    });
+    showToast('success', 'Tamu berhasil diperbarui');
+    showEditModal.value = false;
+  } catch (err) {
+    showToast('error', 'Gagal memperbarui tamu');
   } finally {
     saving.value = false;
   }

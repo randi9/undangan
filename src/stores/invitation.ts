@@ -270,14 +270,14 @@ export const useInvitationStore = defineStore('invitation', () => {
     }
   }
 
-  async function updateGuestStatus(invitationId: string, guestId: string, is_sent: boolean) {
+  async function updateGuest(invitationId: string, guestId: string, payload: { name?: string; phone_number?: string; is_sent?: boolean }) {
     try {
       const res = await fetch(`${API_BASE}/guests/${invitationId}/${guestId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-        body: JSON.stringify({ is_sent })
+        body: JSON.stringify(payload)
       })
-      if (!res.ok) throw new Error('Failed to update guest status')
+      if (!res.ok) throw new Error('Failed to update guest')
       const data = await safeJson(res)
       const idx = guests.value.findIndex(g => g.id === guestId)
       if (idx >= 0) guests.value[idx] = data
@@ -285,6 +285,10 @@ export const useInvitationStore = defineStore('invitation', () => {
     } catch (e: any) {
       throw e
     }
+  }
+
+  async function updateGuestStatus(invitationId: string, guestId: string, is_sent: boolean) {
+    return updateGuest(invitationId, guestId, { is_sent })
   }
 
   async function deleteGuest(invitationId: string, guestId: string) {
@@ -359,6 +363,7 @@ export const useInvitationStore = defineStore('invitation', () => {
     guests,
     fetchGuests,
     bulkAddGuests,
+    updateGuest,
     updateGuestStatus,
     deleteGuest,
     updateRsvp,

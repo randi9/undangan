@@ -37,6 +37,7 @@
           <button class="btn btn-primary btn-sm" style="flex:1;background:#25D366;border-color:#25D366;justify-content:center" @click="sendWhatsApp(guest)">
             <span class="material-symbols-rounded" style="font-size:16px">send</span> WA
           </button>
+          <button class="btn btn-outline btn-sm" style="padding:6px 10px" @click="openEditModal(guest)" title="Edit"><span class="material-symbols-rounded" style="font-size:16px">edit</span></button>
           <button class="btn btn-outline btn-sm" style="padding:6px 10px" @click="copyLink(guest)" title="Copy"><span class="material-symbols-rounded" style="font-size:16px">content_copy</span></button>
           <button class="btn btn-danger btn-sm" style="padding:6px 10px" @click="handleDelete(guest.id!)" title="Hapus"><span class="material-symbols-rounded" style="font-size:16px">delete</span></button>
         </div>
@@ -51,6 +52,18 @@
           <div class="form-group"><label>Nama Tamu (Wajib)</label><input v-model="singleForm.name" type="text" required class="form-input" placeholder="Misal: Budi & Keluarga" /></div>
           <div class="form-group"><label>No WhatsApp (Opsional)</label><input v-model="singleForm.phone" type="text" class="form-input" placeholder="08123456789" /></div>
           <div class="modal-actions"><button type="button" class="btn btn-outline" @click="showSingleModal = false">Batal</button><button type="submit" class="btn btn-primary" :disabled="saving">Simpan</button></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Edit Tamu -->
+    <div v-if="showEditModal" class="modal-overlay" @click.self="showEditModal = false">
+      <div class="modal-box">
+        <h3 class="modal-title-text">Edit Tamu</h3>
+        <form @submit.prevent="submitEdit">
+          <div class="form-group"><label>Nama Tamu (Wajib)</label><input v-model="editForm.name" type="text" required class="form-input" placeholder="Misal: Budi & Keluarga" /></div>
+          <div class="form-group"><label>No WhatsApp (Opsional)</label><input v-model="editForm.phone" type="text" class="form-input" placeholder="08123456789" /></div>
+          <div class="modal-actions"><button type="button" class="btn btn-outline" @click="showEditModal = false">Batal</button><button type="submit" class="btn btn-primary" :disabled="saving">Simpan</button></div>
         </form>
       </div>
     </div>
@@ -104,8 +117,10 @@ const saving = ref(false)
 const savingWA = ref(false)
 const showSingleModal = ref(false)
 const showBulkModal = ref(false)
+const showEditModal = ref(false)
 const showMessageModal = ref(false)
 const singleForm = ref({ name: '', phone: '' })
+const editForm = ref({ id: '', name: '', phone: '' })
 const bulkText = ref('')
 const waInput = ref('')
 
@@ -171,6 +186,22 @@ async function submitSingle() {
     showSingleModal.value = false
     singleForm.value = { name: '', phone: '' }
   } catch { showToast('error', 'Gagal menambah tamu') }
+  finally { saving.value = false }
+}
+
+function openEditModal(guest: Guest) {
+  editForm.value = { id: guest.id || '', name: guest.name || '', phone: guest.phone_number || '' }
+  showEditModal.value = true
+}
+
+async function submitEdit() {
+  if (!editForm.value.name.trim() || !editForm.value.id) return
+  saving.value = true
+  try {
+    await store.updateGuest(editForm.value.id, { name: editForm.value.name, phone_number: editForm.value.phone })
+    showToast('success', 'Tamu diperbarui')
+    showEditModal.value = false
+  } catch { showToast('error', 'Gagal memperbarui tamu') }
   finally { saving.value = false }
 }
 
