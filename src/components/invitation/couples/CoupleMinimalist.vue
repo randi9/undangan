@@ -26,13 +26,13 @@
         </div>
         <div class="bg-white/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-gray-100/50 shadow-sm w-full max-w-[280px]">
           <h3 class="text-xl md:text-2xl font-medium mb-2 text-gray-800 tracking-wide" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
+          <p v-if="invitation.groom_origin" class="text-xs md:text-sm text-gray-500 font-bold uppercase tracking-[0.1em] mb-2" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_origin }}</p>
           <p v-if="invitation.groom_father || invitation.groom_mother" class="text-xs md:text-sm text-gray-500 uppercase tracking-widest leading-loose">
             Putra dari<br/>
             <span v-if="invitation.groom_father" class="font-medium text-gray-600">{{ invitation.groom_father }}</span>
             <span v-if="invitation.groom_father && invitation.groom_mother" class="mx-1">&amp;</span>
             <span v-if="invitation.groom_mother" class="font-medium text-gray-600">{{ invitation.groom_mother }}</span>
           </p>
-          <p v-if="invitation.groom_origin" class="text-xs md:text-sm text-gray-400 italic mt-1 tracking-wide">{{ invitation.groom_origin }}</p>
         </div>
       </div>
       
@@ -53,13 +53,13 @@
         </div>
         <div class="bg-white/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-gray-100/50 shadow-sm w-full max-w-[280px]">
           <h3 class="text-xl md:text-2xl font-medium mb-2 text-gray-800 tracking-wide" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
+          <p v-if="invitation.bride_origin" class="text-xs md:text-sm text-gray-500 font-bold uppercase tracking-[0.1em] mb-2" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_origin }}</p>
           <p v-if="invitation.bride_father || invitation.bride_mother" class="text-xs md:text-sm text-gray-500 uppercase tracking-widest leading-loose">
             Putri dari<br/>
             <span v-if="invitation.bride_father" class="font-medium text-gray-600">{{ invitation.bride_father }}</span>
             <span v-if="invitation.bride_father && invitation.bride_mother" class="mx-1">&amp;</span>
             <span v-if="invitation.bride_mother" class="font-medium text-gray-600">{{ invitation.bride_mother }}</span>
           </p>
-          <p v-if="invitation.bride_origin" class="text-xs md:text-sm text-gray-400 italic mt-1 tracking-wide">{{ invitation.bride_origin }}</p>
         </div>
       </div>
     </div>

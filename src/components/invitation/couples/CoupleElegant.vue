@@ -40,14 +40,14 @@
             <div v-else class="w-full h-full flex items-center justify-center text-4xl" :style="{ backgroundColor: 'var(--theme-surface)', color: 'var(--theme-text-light)' }">👤</div>
           </div>
         </div>
-        <h3 class="text-2xl md:text-3xl font-bold mb-3" :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)' }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
+        <h3 class="text-2xl md:text-3xl font-bold mb-2" :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)' }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
+        <p v-if="invitation.groom_origin" class="text-xs md:text-sm font-bold uppercase tracking-[0.1em] mb-2" :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)' }">{{ invitation.groom_origin }}</p>
         <p v-if="invitation.groom_father || invitation.groom_mother" class="text-sm md:text-base leading-relaxed" :style="{ color: 'var(--theme-text-light)' }">
           Putra dari<br/>
           <span v-if="invitation.groom_father">Bapak {{ invitation.groom_father }}</span>
           <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
           <span v-if="invitation.groom_mother">Ibu {{ invitation.groom_mother }}</span>
         </p>
-        <p v-if="invitation.groom_origin" class="text-sm md:text-base mt-1 italic" :style="{ color: 'var(--theme-text-light)' }">{{ invitation.groom_origin }}</p>
       </div>
       <div ref="dividerRef" class="opacity-0 scale-50">
         <svg viewBox="0 0 60 80" class="w-12 md:w-16" style="opacity: 0.5;">
@@ -87,14 +87,14 @@
             <div v-else class="w-full h-full flex items-center justify-center text-4xl" :style="{ backgroundColor: 'var(--theme-surface)', color: 'var(--theme-text-light)' }">👤</div>
           </div>
         </div>
-        <h3 class="text-2xl md:text-3xl font-bold mb-3" :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)' }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
+        <h3 class="text-2xl md:text-3xl font-bold mb-2" :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)' }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
+        <p v-if="invitation.bride_origin" class="text-xs md:text-sm font-bold uppercase tracking-[0.1em] mb-2" :style="{ fontFamily: themeConfig.fontHeading, color: 'var(--theme-primary)' }">{{ invitation.bride_origin }}</p>
         <p v-if="invitation.bride_father || invitation.bride_mother" class="text-sm md:text-base leading-relaxed" :style="{ color: 'var(--theme-text-light)' }">
           Putri dari<br/>
           <span v-if="invitation.bride_father">Bapak {{ invitation.bride_father }}</span>
           <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
           <span v-if="invitation.bride_mother">Ibu {{ invitation.bride_mother }}</span>
         </p>
-        <p v-if="invitation.bride_origin" class="text-sm md:text-base mt-1 italic" :style="{ color: 'var(--theme-text-light)' }">{{ invitation.bride_origin }}</p>
       </div>
     </div>
   </section>

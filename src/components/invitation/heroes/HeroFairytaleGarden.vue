@@ -327,6 +327,18 @@
             {{ formattedGroomName.line2 }}
           </h3>
 
+          <!-- Groom Origin -->
+          <p
+            v-if="invitation?.groom_origin"
+            class="text-xs md:text-sm text-[#7A3E45] font-bold uppercase tracking-[0.1em] mb-2 md:mb-3"
+            style="
+              font-family: 'Cormorant Garamond', serif;
+              text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+            "
+          >
+            {{ invitation?.groom_origin }}
+          </p>
+
           <!-- Parent Info -->
           <p
             v-if="invitation?.groom_father || invitation?.groom_mother"
@@ -349,16 +361,6 @@
               ><span v-if="invitation?.groom_father">&amp; </span>Ibu
               {{ invitation?.groom_mother }}</span
             >
-          </p>
-          <p
-            v-if="invitation?.groom_origin"
-            class="text-xs md:text-sm leading-relaxed text-[#7A3E45] font-semibold italic mt-1"
-            style="
-              font-family: 'Cormorant Garamond', serif;
-              text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
-            "
-          >
-            {{ invitation?.groom_origin }}
           </p>
         </div>
 
@@ -414,6 +416,18 @@
             {{ formattedBrideName.line2 }}
           </h3>
 
+          <!-- Bride Origin -->
+          <p
+            v-if="invitation?.bride_origin"
+            class="text-xs md:text-sm text-[#7A3E45] font-bold uppercase tracking-[0.1em] mb-2 md:mb-3"
+            style="
+              font-family: 'Cormorant Garamond', serif;
+              text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+            "
+          >
+            {{ invitation?.bride_origin }}
+          </p>
+
           <!-- Parent Info -->
           <p
             v-if="invitation?.bride_father || invitation?.bride_mother"
@@ -436,16 +450,6 @@
               ><span v-if="invitation?.bride_father">&amp; </span>Ibu
               {{ invitation?.bride_mother }}</span
             >
-          </p>
-          <p
-            v-if="invitation?.bride_origin"
-            class="text-xs md:text-sm leading-relaxed text-[#7A3E45] font-semibold italic mt-1"
-            style="
-              font-family: 'Cormorant Garamond', serif;
-              text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
-            "
-          >
-            {{ invitation?.bride_origin }}
           </p>
         </div>
       </div>
@@ -583,6 +587,16 @@
               {{ invitation?.groom_full_name || invitation?.groom_name }}
             </h3>
             <p
+              v-if="invitation?.groom_origin"
+              class="text-xs sm:text-sm text-[#7A3E45] font-bold uppercase tracking-[0.1em] mb-1 md:mb-2"
+              style="
+                font-family: 'Cormorant Garamond', serif;
+                text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+              "
+            >
+              {{ invitation?.groom_origin }}
+            </p>
+            <p
               v-if="invitation?.groom_father || invitation?.groom_mother"
               class="text-xs sm:text-sm md:text-base leading-relaxed text-[#9A7B6B]"
             >
@@ -600,12 +614,6 @@
                 class="text-[#6A4E42] font-semibold"
                 >Ibu {{ invitation?.groom_mother }}</span
               >
-            </p>
-            <p
-              v-if="invitation?.groom_origin"
-              class="text-xs sm:text-sm md:text-base leading-relaxed text-[#9A7B6B] italic mt-1"
-            >
-              {{ invitation?.groom_origin }}
             </p>
           </div>
 
@@ -730,6 +738,16 @@
               {{ invitation?.bride_full_name || invitation?.bride_name }}
             </h3>
             <p
+              v-if="invitation?.bride_origin"
+              class="text-xs sm:text-sm text-[#7A3E45] font-bold uppercase tracking-[0.1em] mb-1 md:mb-2"
+              style="
+                font-family: 'Cormorant Garamond', serif;
+                text-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+              "
+            >
+              {{ invitation?.bride_origin }}
+            </p>
+            <p
               v-if="invitation?.bride_father || invitation?.bride_mother"
               class="text-xs sm:text-sm md:text-base leading-relaxed text-[#9A7B6B]"
             >
@@ -747,12 +765,6 @@
                 class="text-[#6A4E42] font-semibold"
                 >Ibu {{ invitation?.bride_mother }}</span
               >
-            </p>
-            <p
-              v-if="invitation?.bride_origin"
-              class="text-xs sm:text-sm md:text-base leading-relaxed text-[#9A7B6B] italic mt-1"
-            >
-              {{ invitation?.bride_origin }}
             </p>
           </div>
         </div>

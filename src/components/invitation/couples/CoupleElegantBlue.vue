@@ -55,13 +55,13 @@
         <div class="w-[55%] flex justify-start text-left pl-4 md:pl-8 relative z-20">
           <div ref="groomTextRef" class="opacity-0 translate-y-4">
              <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#304851]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_full_name || invitation.groom_name }}</h3>
+             <p v-if="invitation.groom_origin" class="text-xs md:text-sm font-bold uppercase tracking-[0.1em] text-[#304851] mb-2" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.groom_origin }}</p>
              <p v-if="invitation.groom_father || invitation.groom_mother" class="text-xs md:text-base text-[#304851]/80 font-light tracking-wide">
                Putra dari<br/>
                <span v-if="invitation.groom_father" class="font-medium text-[#304851]">Bapak {{ invitation.groom_father }}</span>
                <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
                <span v-if="invitation.groom_mother" class="font-medium text-[#304851]">Ibu {{ invitation.groom_mother }}</span>
              </p>
-             <p v-if="invitation.groom_origin" class="text-xs md:text-base text-[#304851]/70 mt-1 italic">{{ invitation.groom_origin }}</p>
           </div>
         </div>
       </div>
@@ -84,13 +84,13 @@
         <div class="w-[55%] flex justify-end text-right pr-4 md:pr-8 relative z-20">
           <div ref="brideTextRef" class="opacity-0 translate-y-4">
             <h3 class="text-xl md:text-3xl font-bold mb-2 text-[#304851]" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_full_name || invitation.bride_name }}</h3>
+            <p v-if="invitation.bride_origin" class="text-xs md:text-sm font-bold uppercase tracking-[0.1em] text-[#304851] mb-2" :style="{ fontFamily: themeConfig.fontHeading }">{{ invitation.bride_origin }}</p>
             <p v-if="invitation.bride_father || invitation.bride_mother" class="text-xs md:text-base text-[#304851]/80 font-light tracking-wide">
               Putri dari<br/>
               <span v-if="invitation.bride_father" class="font-medium text-[#304851]">Bapak {{ invitation.bride_father }}</span>
               <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
               <span v-if="invitation.bride_mother" class="font-medium text-[#304851]">Ibu {{ invitation.bride_mother }}</span>
             </p>
-            <p v-if="invitation.bride_origin" class="text-xs md:text-base text-[#304851]/70 mt-1 italic">{{ invitation.bride_origin }}</p>
           </div>
         </div>
       </div>

@@ -94,6 +94,10 @@
           {{ invitation.bride_full_name || invitation.bride_name }}
         </h3>
 
+        <p v-if="invitation.bride_origin" :style="{ fontFamily: themeConfig.fontHeading || 'Playfair Display, serif', fontSize: 'clamp(0.75rem, 2.5vw, 0.9rem)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', color: '#8C6A5C', margin: '0 0 6px 0' }">
+          {{ invitation.bride_origin }}
+        </p>
+
         <div ref="leftParents" v-if="invitation.bride_father || invitation.bride_mother" style="opacity: 0;">
           <!-- Elegant Separator -->
           <div style="width: 40px; height: 1.5px; background-color: #8C6A5C; margin: 6px auto 10px auto; opacity: 0.5;"></div>
@@ -102,9 +106,6 @@
             <span style="font-weight: 600; color: #5C3D2E; display: inline-block; margin-top: 3px;" v-if="invitation.bride_father">Bapak {{ invitation.bride_father }}</span>
             <span v-if="invitation.bride_father && invitation.bride_mother"> &amp; </span>
             <span style="font-weight: 600; color: #5C3D2E; display: inline-block; margin-top: 3px;" v-if="invitation.bride_mother">Ibu {{ invitation.bride_mother }}</span>
-          </p>
-          <p v-if="invitation.bride_origin" style="font-size: clamp(0.8rem, 2.8vw, 0.95rem); color: #8C6A5C; font-style: italic; margin-top: 4px; font-family: 'Inter', sans-serif;">
-            {{ invitation.bride_origin }}
           </p>
         </div>
       </div>
@@ -177,6 +178,10 @@
           {{ invitation.groom_full_name || invitation.groom_name }}
         </h3>
 
+        <p v-if="invitation.groom_origin" :style="{ fontFamily: themeConfig.fontHeading || 'Playfair Display, serif', fontSize: 'clamp(0.75rem, 2.5vw, 0.9rem)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px', color: '#8C6A5C', margin: '0 0 6px 0' }">
+          {{ invitation.groom_origin }}
+        </p>
+
         <div ref="rightParents" v-if="invitation.groom_father || invitation.groom_mother" style="opacity: 0;">
           <!-- Elegant Separator -->
           <div style="width: 40px; height: 1.5px; background-color: #8C6A5C; margin: 6px auto 10px auto; opacity: 0.5;"></div>
@@ -185,9 +190,6 @@
             <span style="font-weight: 600; color: #5C3D2E; display: inline-block; margin-top: 3px;" v-if="invitation.groom_father">Bapak {{ invitation.groom_father }}</span>
             <span v-if="invitation.groom_father && invitation.groom_mother"> &amp; </span>
             <span style="font-weight: 600; color: #5C3D2E; display: inline-block; margin-top: 3px;" v-if="invitation.groom_mother">Ibu {{ invitation.groom_mother }}</span>
-          </p>
-          <p v-if="invitation.groom_origin" style="font-size: clamp(0.8rem, 2.8vw, 0.95rem); color: #8C6A5C; font-style: italic; margin-top: 4px; font-family: 'Inter', sans-serif;">
-            {{ invitation.groom_origin }}
           </p>
         </div>
       </div>

@@ -81,27 +81,27 @@
 
         <!-- Groom Info (Back of Polaroid) -->
         <div ref="groomInfoRef" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; opacity: 0; z-index: 10;">
-          <h2 style="font-family: 'Caveat', cursive; font-size: 2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; text-align: center; line-height: 1.1;">
+          <h2 style="font-family: 'Caveat', cursive; font-size: 2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.25rem; text-align: center; line-height: 1.1;">
             {{ invitation.groom_full_name }}
           </h2>
+          <p v-if="invitation.groom_origin" style="font-family: 'Caveat', cursive; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6a7c8a; text-align: center; margin-bottom: 0.5rem;">
+            {{ invitation.groom_origin }}
+          </p>
           <p style="font-family: 'Caveat', cursive; font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.2; text-align: center; margin: 0;">
             Putra dari Bpk. {{ invitation.groom_father }} &amp;<br>Ibu {{ invitation.groom_mother }}
-          </p>
-          <p v-if="invitation.groom_origin" style="font-family: 'Caveat', cursive; font-size: 0.9rem; font-weight: 600; color: #6a7c8a; font-style: italic; text-align: center; margin-top: 0.25rem;">
-            {{ invitation.groom_origin }}
           </p>
         </div>
 
         <!-- Bride Info (Back of Polaroid) -->
         <div ref="brideInfoRef" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; opacity: 0; z-index: 10;">
-          <h2 style="font-family: 'Caveat', cursive; font-size: 2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem; text-align: center; line-height: 1.1;">
+          <h2 style="font-family: 'Caveat', cursive; font-size: 2rem; font-weight: 700; color: #2c3e50; margin-bottom: 0.25rem; text-align: center; line-height: 1.1;">
             {{ invitation.bride_full_name }}
           </h2>
+          <p v-if="invitation.bride_origin" style="font-family: 'Caveat', cursive; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6a7c8a; text-align: center; margin-bottom: 0.5rem;">
+            {{ invitation.bride_origin }}
+          </p>
           <p style="font-family: 'Caveat', cursive; font-size: 1rem; font-weight: 600; color: #4a5c6a; letter-spacing: 0.05em; line-height: 1.2; text-align: center; margin: 0;">
             Putri dari Bpk. {{ invitation.bride_father }} &amp;<br>Ibu {{ invitation.bride_mother }}
-          </p>
-          <p v-if="invitation.bride_origin" style="font-family: 'Caveat', cursive; font-size: 0.9rem; font-weight: 600; color: #6a7c8a; font-style: italic; text-align: center; margin-top: 0.25rem;">
-            {{ invitation.bride_origin }}
           </p>
         </div>
       </div>
