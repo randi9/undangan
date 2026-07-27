@@ -108,16 +108,20 @@
     </div>
 
     <!-- Dynamic Foreground/Entrance Decorative Assets (trees, shrubs, flowers) -->
-    <img
+    <div
       v-for="(asset, index) in DECORATIVE_ASSETS.filter(
         (a) => a.className !== 'anim-static',
       )"
       :key="'dynamic-' + index"
-      :src="asset.src"
-      :alt="asset.name"
-      :class="['decor-asset', asset.className]"
       :style="asset.style"
-    />
+      class="pointer-events-none"
+    >
+      <img
+        :src="asset.src"
+        :alt="asset.name"
+        :class="['decor-asset', asset.className, 'w-full h-full object-contain']"
+      />
+    </div>
 
     <!-- Content slot -->
     <div
@@ -1027,16 +1031,14 @@ onMounted(async () => {
   const flowers1 = heroSection.value.querySelectorAll(".pair-1");
   const flowers2 = heroSection.value.querySelectorAll(".pair-2");
   const flowers3 = heroSection.value.querySelectorAll(".pair-3");
-  const mirrorFlowers = heroSection.value.querySelectorAll(".mirror-flower");
+  const flowers4 = heroSection.value.querySelectorAll(".pair-4");
+  const flowers5 = heroSection.value.querySelectorAll(".pair-5");
 
   // Set initial states in GSAP to match the CSS starting values exactly
   gsap.set([semakKanan, semakKiri], { y: 100, opacity: 0 });
   gsap.set(pohonKanan, { x: 350, rotation: -15, scale: 1, opacity: 0 });
   gsap.set(pohonKiri, { x: -350, rotation: 12, scale: 1, opacity: 0 });
-  gsap.set(flowers1, { y: 200, rotation: 0, opacity: 0 });
-  gsap.set(flowers2, { y: 200, rotation: 0, opacity: 0 });
-  gsap.set(flowers3, { y: 200, rotation: 0, opacity: 0 });
-  gsap.set(mirrorFlowers, { scaleX: -1 });
+  gsap.set([flowers1, flowers2, flowers3, flowers4, flowers5], { y: 200, opacity: 0 });
 
   // Semak Kanan & Kiri entry (delay 3.2s, duration 1.8s)
   gsap.to([semakKanan, semakKiri], {
@@ -1089,14 +1091,13 @@ onMounted(async () => {
   // Flowers pair 1 (delay 3.8s, duration 2.2s)
   gsap.to(flowers1, {
     y: 0,
-    rotation: 0,
     opacity: 1,
     duration: 2.2,
     ease: "power2.out",
     delay: 3.8,
     onComplete: () => {
       gsap.to(flowers1, {
-        rotation: -4.5,
+        rotation: "+=4.5",
         duration: 3.5,
         ease: "sine.inOut",
         yoyo: true,
@@ -1105,17 +1106,16 @@ onMounted(async () => {
     },
   });
 
-  // Flowers pair 2 (delay 4.4s, duration 2.2s)
+  // Flowers pair 2 (delay 4.1s, duration 2.2s)
   gsap.to(flowers2, {
     y: 0,
-    rotation: 0,
     opacity: 1,
     duration: 2.2,
     ease: "power2.out",
-    delay: 4.4,
+    delay: 4.1,
     onComplete: () => {
       gsap.to(flowers2, {
-        rotation: 4,
+        rotation: "-=4",
         duration: 4,
         ease: "sine.inOut",
         yoyo: true,
@@ -1124,17 +1124,52 @@ onMounted(async () => {
     },
   });
 
-  // Flowers pair 3 (delay 5.0s, duration 2.2s)
+  // Flowers pair 3 (delay 4.4s, duration 2.2s)
   gsap.to(flowers3, {
     y: 0,
-    rotation: 0,
+    opacity: 1,
+    duration: 2.2,
+    ease: "power2.out",
+    delay: 4.4,
+    onComplete: () => {
+      gsap.to(flowers3, {
+        rotation: "+=3.5",
+        duration: 4.2,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+    },
+  });
+
+  // Flowers pair 4 (delay 4.7s, duration 2.2s)
+  gsap.to(flowers4, {
+    y: 0,
+    opacity: 1,
+    duration: 2.2,
+    ease: "power2.out",
+    delay: 4.7,
+    onComplete: () => {
+      gsap.to(flowers4, {
+        rotation: "-=4.5",
+        duration: 3.8,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+    },
+  });
+
+  // Flowers pair 5 (delay 5.0s, duration 2.2s)
+  gsap.to(flowers5, {
+    y: 0,
     opacity: 1,
     duration: 2.2,
     ease: "power2.out",
     delay: 5.0,
     onComplete: () => {
-      gsap.to(flowers3, {
-        rotation: -3.5,
+      gsap.to(flowers5, {
+        rotation: "+=4",
         duration: 4.5,
         ease: "sine.inOut",
         yoyo: true,
@@ -1662,7 +1697,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   },
   {
     name: "pohon kanan",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_be4f17c6-2a97-495d-8730-a982135c6b00.webp",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/pohon%20baru/dewirandi_33eb7851-0274-4713-aca1-301c426940b4.webp",
     className: "anim-pohon-kanan",
     style: {
       position: "absolute",
@@ -1677,7 +1712,7 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
   },
   {
     name: "pohon kiri",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a48adc2f-4ac8-4b8e-b35c-fb5f49257bc4.webp",
+    src: "https://media.mengundanganda.com/fairygarden/hero%20section/pohon%20baru/dewirandi_eb5d1e79-706d-4238-9607-4e17ab87388d.webp",
     className: "anim-pohon-kiri",
     style: {
       position: "absolute",
@@ -1690,87 +1725,166 @@ const DECORATIVE_ASSETS: DecorativeAsset[] = [
       pointerEvents: "none",
     } as CSSProperties,
   },
+  // --- KIRI BAWAH ---
   {
-    name: "bunga kiri 1",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a96dc0a6-f5df-4a46-9206-1d275932e127.webp",
-    className: "anim-flower pair-1 mirror-flower",
-    style: {
-      position: "absolute",
-      bottom: "20px",
-      left: "-7%",
-      width: "100px",
-      zIndex: 6,
-      opacity: 1,
-      pointerEvents: "none",
-    },
-  },
-  {
-    name: "bunga kiri 2",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_59ed644a-3232-49e0-b867-f92923ebcff9.webp",
-    className: "anim-flower pair-2 mirror-flower",
-    style: {
-      position: "absolute",
-      bottom: "-40px",
-      left: "-4%",
-      width: "100px",
-      zIndex: 7,
-      opacity: 1,
-      pointerEvents: "none",
-    },
-  },
-  {
-    name: "bunga kanan 3",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_2280b382-1a37-49d8-9f2d-5446dbd878c0.webp",
-    className: "anim-flower pair-3 mirror-flower",
-    style: {
-      position: "absolute",
-      bottom: "-100px",
-      right: "3%",
-      width: "140px",
-      zIndex: 8,
-      opacity: 1,
-      pointerEvents: "none",
-    },
-  },
-  {
-    name: "bunga kanan 1",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_a96dc0a6-f5df-4a46-9206-1d275932e127.webp",
+    name: "Bunga 1 (Kiri)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_215a7743-22db-4cf2-938e-56c306d4d6ca.webp",
     className: "anim-flower pair-1",
     style: {
       position: "absolute",
-      bottom: "20px",
-      right: "-7%",
-      width: "100px",
+      bottom: "-200px",
+      left: "-30px",
+      width: "220px",
+      height: "auto",
       zIndex: 6,
-      opacity: 1,
+      opacity: 0.95,
+      transform: "rotate(0deg)",
       pointerEvents: "none",
     },
   },
   {
-    name: "bunga kanan 2",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_59ed644a-3232-49e0-b867-f92923ebcff9.webp",
+    name: "Bunga 2 (Kiri)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_32c7d5bb-52cd-4c26-a878-edf7c1adc73b.webp",
     className: "anim-flower pair-2",
     style: {
       position: "absolute",
-      bottom: "-40px",
-      right: "-4%",
-      width: "100px",
-      zIndex: 7,
-      opacity: 1,
+      bottom: "-250px",
+      left: "50px",
+      width: "170px",
+      height: "auto",
+      zIndex: 5,
+      opacity: 0.9,
+      transform: "rotate(-10deg)",
       pointerEvents: "none",
     },
   },
   {
-    name: "bunga kiri 3",
-    src: "https://media.mengundanganda.com/fairygarden/hero%20section/dewirandi_2280b382-1a37-49d8-9f2d-5446dbd878c0.webp",
+    name: "Bunga 5 (Kiri)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_32c7d5bb-52cd-4c26-a878-edf7c1adc73b.webp",
     className: "anim-flower pair-3",
     style: {
       position: "absolute",
-      bottom: "-100px",
-      left: "3%",
-      width: "140px",
+      bottom: "-220px",
+      left: "-30px",
+      width: "170px",
+      height: "auto",
+      zIndex: 7,
+      opacity: 0.9,
+      transform: "rotate(-10deg)",
+      pointerEvents: "none",
+    },
+  },
+  {
+    name: "Bunga 3 (Kiri)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_46b23a8e-4fae-4872-a70b-ce41bac90927.webp",
+    className: "anim-flower pair-4",
+    style: {
+      position: "absolute",
+      bottom: "-200px",
+      left: "-10px",
+      width: "160px",
+      height: "auto",
       zIndex: 8,
-      opacity: 1,
+      opacity: 0.9,
+      transform: "rotate(15deg)",
+      pointerEvents: "none",
+    },
+  },
+  {
+    name: "Bunga 4 (Kiri)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_f6085634-13ce-48c8-ac95-8875a214e66c.webp",
+    className: "anim-flower pair-5",
+    style: {
+      position: "absolute",
+      bottom: "-200px",
+      left: "90px",
+      width: "140px",
+      height: "auto",
+      zIndex: 9,
+      opacity: 0.85,
+      transform: "rotate(-5deg)",
+      pointerEvents: "none",
+    },
+  },
+
+  // --- KANAN BAWAH (MIRRORED) ---
+  {
+    name: "Bunga 1 (Kanan)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_215a7743-22db-4cf2-938e-56c306d4d6ca.webp",
+    className: "anim-flower pair-1 mirror-flower",
+    style: {
+      position: "absolute",
+      bottom: "-200px",
+      right: "-30px",
+      width: "220px",
+      height: "auto",
+      zIndex: 6,
+      opacity: 0.95,
+      transform: "scaleX(-1) rotate(0deg)",
+      pointerEvents: "none",
+    },
+  },
+  {
+    name: "Bunga 2 (Kanan)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_32c7d5bb-52cd-4c26-a878-edf7c1adc73b.webp",
+    className: "anim-flower pair-2 mirror-flower",
+    style: {
+      position: "absolute",
+      bottom: "-250px",
+      right: "50px",
+      width: "170px",
+      height: "auto",
+      zIndex: 5,
+      opacity: 0.9,
+      transform: "scaleX(-1) rotate(10deg)",
+      pointerEvents: "none",
+    },
+  },
+  {
+    name: "Bunga 5 (Kanan)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_32c7d5bb-52cd-4c26-a878-edf7c1adc73b.webp",
+    className: "anim-flower pair-3 mirror-flower",
+    style: {
+      position: "absolute",
+      bottom: "-220px",
+      right: "-30px",
+      width: "170px",
+      height: "auto",
+      zIndex: 7,
+      opacity: 0.9,
+      transform: "scaleX(-1) rotate(10deg)",
+      pointerEvents: "none",
+    },
+  },
+  {
+    name: "Bunga 3 (Kanan)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_46b23a8e-4fae-4872-a70b-ce41bac90927.webp",
+    className: "anim-flower pair-4 mirror-flower",
+    style: {
+      position: "absolute",
+      bottom: "-200px",
+      right: "-10px",
+      width: "160px",
+      height: "auto",
+      zIndex: 8,
+      opacity: 0.9,
+      transform: "scaleX(-1) rotate(-15deg)",
+      pointerEvents: "none",
+    },
+  },
+  {
+    name: "Bunga 4 (Kanan)",
+    src: "https://media.mengundanganda.com/fairygarden/doa%20section/new%20flower/dewirandi_f6085634-13ce-48c8-ac95-8875a214e66c.webp",
+    className: "anim-flower pair-5 mirror-flower",
+    style: {
+      position: "absolute",
+      bottom: "-200px",
+      right: "90px",
+      width: "140px",
+      height: "auto",
+      zIndex: 9,
+      opacity: 0.85,
+      transform: "scaleX(-1) rotate(5deg)",
       pointerEvents: "none",
     },
   },
