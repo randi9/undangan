@@ -136,6 +136,19 @@
       </div>
     </div>
 
+    <!-- Slide Doa Pengantin -->
+    <div
+      v-show="invitation.show_doa_pengantin"
+      ref="doaPengantinWrapper"
+      class="absolute inset-0 z-10 flex flex-col items-center justify-center px-6"
+      style="box-sizing: border-box"
+    >
+      <DoaFairytaleGarden
+        :theme-config="themeConfig"
+        :is-inline="true"
+      />
+    </div>
+
     <!-- Slide RSVP: RSVP Section Content -->
     <div
       ref="rsvpWrapper"
@@ -658,19 +671,6 @@
       </div>
     </div>
 
-    <!-- Slide Doa Pengantin -->
-    <div
-      v-show="invitation.show_doa_pengantin"
-      ref="doaPengantinWrapper"
-      class="absolute inset-0 z-10 flex flex-col items-center justify-center px-6"
-      style="box-sizing: border-box"
-    >
-      <DoaFairytaleGarden
-        :theme-config="themeConfig"
-        :is-inline="true"
-      />
-    </div>
-
     <!-- Slide 4: Gift Section Content -->
     <div
       v-show="hasGift"
@@ -1083,17 +1083,18 @@ onMounted(() => {
         opacity: 0,
       });
     }
-    const rsvpStartBelow = hasLoveStory || hasGallery;
+    const doaStartBelow = hasLoveStory || hasGallery;
+    if (hasDoaVal) {
+      gsap.set(doaPengantinWrapper.value, {
+        y: doaStartBelow ? "100%" : "0%",
+        opacity: 0,
+      });
+    }
+    const rsvpStartBelow = hasLoveStory || hasGallery || hasDoaVal;
     gsap.set(rsvpWrapper.value, {
       y: rsvpStartBelow ? "100%" : "0%",
       opacity: 0,
     });
-    if (hasDoaVal) {
-      gsap.set(doaPengantinWrapper.value, {
-        y: "100%",
-        opacity: 0,
-      });
-    }
     if (hasGiftVal) {
       gsap.set(giftWrapper.value, {
         y: "100%",
@@ -1142,7 +1143,9 @@ onMounted(() => {
       ? lovestoryWrapper.value
       : hasGallery
         ? galleryWrapper.value
-        : rsvpWrapper.value;
+        : hasDoaVal
+          ? doaPengantinWrapper.value
+          : rsvpWrapper.value;
 
     if (firstSlideRef) {
       pinTimeline.to(firstSlideRef, {
@@ -1206,40 +1209,7 @@ onMounted(() => {
       activeWrapper = galleryWrapper.value;
     }
 
-    // Slide 3: RSVP
-    if (activeWrapper) {
-      pinTimeline.to(activeWrapper, {
-        y: "-100%",
-        duration: 1.0,
-        ease: "power2.inOut",
-      });
-      pinTimeline.to(
-        rsvpWrapper.value,
-        {
-          y: "0%",
-          opacity: 1,
-          duration: 1.0,
-          ease: "power2.inOut",
-        },
-        "<",
-      );
-      if (whiteOverlayRef.value) {
-        pinTimeline.to(
-          whiteOverlayRef.value,
-          {
-            backgroundColor: "rgba(255, 255, 255, 0.25)",
-            backdropFilter: "blur(8px)",
-            webkitBackdropFilter: "blur(8px)",
-            duration: 1.0,
-            ease: "power2.inOut",
-          },
-          "<",
-        );
-      }
-    }
-    activeWrapper = rsvpWrapper.value;
-
-    // Slide 4: Doa Pengantin (now after RSVP)
+    // Slide 3: Doa Pengantin (before RSVP)
     if (hasDoaVal) {
       if (activeWrapper) {
         pinTimeline.to(activeWrapper, {
@@ -1292,6 +1262,39 @@ onMounted(() => {
 
       activeWrapper = doaPengantinWrapper.value;
     }
+
+    // Slide 4: RSVP (after Doa Pengantin)
+    if (activeWrapper) {
+      pinTimeline.to(activeWrapper, {
+        y: "-100%",
+        duration: 1.0,
+        ease: "power2.inOut",
+      });
+      pinTimeline.to(
+        rsvpWrapper.value,
+        {
+          y: "0%",
+          opacity: 1,
+          duration: 1.0,
+          ease: "power2.inOut",
+        },
+        "<",
+      );
+      if (whiteOverlayRef.value) {
+        pinTimeline.to(
+          whiteOverlayRef.value,
+          {
+            backgroundColor: "rgba(255, 255, 255, 0.25)",
+            backdropFilter: "blur(8px)",
+            webkitBackdropFilter: "blur(8px)",
+            duration: 1.0,
+            ease: "power2.inOut",
+          },
+          "<",
+        );
+      }
+    }
+    activeWrapper = rsvpWrapper.value;
 
     // Slide 5: Gift
     if (hasGiftVal) {
