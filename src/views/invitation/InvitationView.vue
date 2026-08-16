@@ -71,6 +71,9 @@ const coverComponents: Record<string, Component> = {
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/covers/CoverFairytaleGarden.vue"),
   ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/covers/CoverEvergreen.vue"),
+  ),
 };
 
 const heroComponents: Record<string, Component> = {
@@ -94,6 +97,9 @@ const heroComponents: Record<string, Component> = {
   ),
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/heroes/HeroFairytaleGarden.vue"),
+  ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/heroes/HeroEvergreen.vue"),
   ),
 };
 
@@ -119,6 +125,9 @@ const quoteComponents: Record<string, Component> = {
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/quotes/QuoteFairytaleGarden.vue"),
   ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/quotes/QuoteEvergreen.vue"),
+  ),
 };
 
 const coupleComponents: Record<string, Component> = {
@@ -142,6 +151,9 @@ const coupleComponents: Record<string, Component> = {
   ),
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/couples/CoupleFairytaleGarden.vue"),
+  ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/couples/CoupleEvergreen.vue"),
   ),
 };
 
@@ -167,6 +179,9 @@ const countdownComponents: Record<string, Component> = {
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/countdowns/CountdownFairytaleGarden.vue"),
   ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/countdowns/CountdownEvergreen.vue"),
+  ),
 };
 
 const eventsComponents: Record<string, Component> = {
@@ -190,6 +205,9 @@ const eventsComponents: Record<string, Component> = {
   ),
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/events/EventsFairytaleGarden.vue"),
+  ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/events/EventsEvergreen.vue"),
   ),
 };
 
@@ -215,6 +233,9 @@ const loveStoryComponents: Record<string, Component> = {
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/lovestory/LoveStoryFairytaleGarden.vue"),
   ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/lovestory/LoveStoryEvergreen.vue"),
+  ),
 };
 
 const galleryComponents: Record<string, Component> = {
@@ -238,6 +259,9 @@ const galleryComponents: Record<string, Component> = {
   ),
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/gallery/GalleryFairytaleGarden.vue"),
+  ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/gallery/GalleryEvergreen.vue"),
   ),
 };
 
@@ -263,6 +287,9 @@ const rsvpComponents: Record<string, Component> = {
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/rsvp/RsvpFairytaleGarden.vue"),
   ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/rsvp/RsvpEvergreen.vue"),
+  ),
 };
 
 const giftComponents: Record<string, Component> = {
@@ -287,6 +314,9 @@ const giftComponents: Record<string, Component> = {
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/gift/GiftFairytaleGarden.vue"),
   ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/gift/GiftEvergreen.vue"),
+  ),
 };
 
 const footerComponents: Record<string, Component> = {
@@ -310,6 +340,9 @@ const footerComponents: Record<string, Component> = {
   ),
   fairytale_garden: defineAsyncComponent(
     () => import("@/components/invitation/footer/FooterFairytaleGarden.vue"),
+  ),
+  evergreen: defineAsyncComponent(
+    () => import("@/components/invitation/footer/FooterEvergreen.vue"),
   ),
 };
 
@@ -476,6 +509,13 @@ async function preloadAllAssets() {
     urls.add("https://media.mengundanganda.com/fairygarden/doa%20section/dewirandi_de68c436-3af6-4abb-a57a-6fb4187d69a6.webp");
   }
 
+  if (themeName.value === "evergreen") {
+    urls.add("https://media.mengundanganda.com/evergreen/cover%20section/dewirandi_0009b342-21cc-4132-b79c-d7d041a71b4f.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/hero%20section/dewirandi_a6d66206-34e9-498d-9a36-bb5f89115297.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_58ea9077-7626-4fc9-9599-5b1233a9db3f.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/footer%20section/dewirandi_ad5c156d-47bf-47c8-872e-0ae7ab0ab0bd.webp");
+  }
+
   // Collect all <img> src attributes
   document.querySelectorAll("img[src]").forEach((img) => {
     const src = (img as HTMLImageElement).src;
@@ -538,6 +578,12 @@ function setHeroTextRef(el: any) {
 
 function animateHeroOval() {
   if (!heroOval.value) return;
+
+  if (themeName.value === 'evergreen') {
+    gsap.set(heroOval.value, { scale: 1, opacity: 1, y: 0 });
+    gsap.set(heroTextItems.value, { y: 0, opacity: 1 });
+    return;
+  }
 
   gsap.set(heroOval.value, { scale: 0.6, opacity: 0 });
   gsap.set(heroTextItems.value, { y: 30, opacity: 0 });
@@ -752,7 +798,7 @@ function openInvitation() {
       })
       .catch((e) => console.error("Audio blocked by browser:", e));
   }
-  const closeDelay = themeName.value === 'fairytale_garden' ? 3200 : 1400;
+  const closeDelay = themeName.value === 'fairytale_garden' ? 3200 : themeName.value === 'evergreen' ? 4000 : 1400;
   setTimeout(() => {
     isClosingOverlay.value = false;
   }, closeDelay);
@@ -1208,8 +1254,9 @@ onBeforeUnmount(() => {
           <div
             ref="heroOval"
             :class="[
-              'flex flex-col gap-4 opacity-0 p-6 md:p-10 relative z-10',
-              !['elegant_blue', 'floral_blue', 'nyunda', 'fairytale_garden'].includes(themeName)
+              'flex flex-col gap-4 p-6 md:p-10 relative z-10',
+              themeName === 'evergreen' ? 'opacity-100' : 'opacity-0',
+              !['elegant_blue', 'floral_blue', 'nyunda', 'fairytale_garden', 'evergreen'].includes(themeName)
                 ? 'items-center justify-center mx-auto text-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
                 : themeName === 'nyunda'
                   ? ''
@@ -1220,7 +1267,7 @@ onBeforeUnmount(() => {
                       : 'items-center justify-center mx-auto text-center w-full max-w-[600px]',
             ]"
             :style="
-              ['nyunda', 'fairytale_garden'].includes(themeName)
+              ['nyunda', 'fairytale_garden', 'evergreen'].includes(themeName)
                 ? {
                     display: 'flex',
                     flexDirection: 'column',
@@ -1243,14 +1290,16 @@ onBeforeUnmount(() => {
 
             <p
               :ref="setHeroTextRef"
-              class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium opacity-0"
+              class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium"
+              :class="themeName === 'evergreen' ? 'opacity-100' : 'opacity-0'"
               :style="themeName === 'nyunda' ? { textAlign: 'center' } : {}"
             >
               The Wedding of
             </p>
             <h1
               :ref="setHeroTextRef"
-              class="text-5xl md:text-7xl lg:text-8xl mb-1 opacity-0 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]"
+              class="text-5xl md:text-7xl lg:text-8xl mb-1 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]"
+              :class="themeName === 'evergreen' ? 'opacity-100' : 'opacity-0'"
               :style="
                 themeName === 'nyunda'
                   ? { fontFamily: activeTheme.fontHeading, textAlign: 'center' }
@@ -1267,7 +1316,8 @@ onBeforeUnmount(() => {
             <p
               v-if="formattedDate"
               :ref="setHeroTextRef"
-              class="text-[#3d4a40] mt-4 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold opacity-0 drop-shadow-sm"
+              class="text-[#3d4a40] mt-4 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold drop-shadow-sm"
+              :class="themeName === 'evergreen' ? 'opacity-100' : 'opacity-0'"
             >
               {{ formattedDate }}
             </p>

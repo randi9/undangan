@@ -42,7 +42,7 @@ function validateInvitationPayload(
 
   if (
     body.theme !== undefined &&
-    !["elegant", "minimalist", "floral", "elegant_blue", "floral_blue", "nyunda", "fairytale_garden"].includes(body.theme)
+    !["elegant", "minimalist", "floral", "elegant_blue", "floral_blue", "nyunda", "fairytale_garden", "evergreen"].includes(body.theme)
   ) {
     return { ok: false, error: "theme is invalid" };
   }

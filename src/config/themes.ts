@@ -10,7 +10,7 @@
 import type { ThemeConfig } from "@/types/theme";
 
 export interface ThemeRegistryEntry {
-  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden";
+  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen";
   name: string;
   thumbnail: string;
   description: string;
@@ -294,6 +294,43 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
         "linear-gradient(180deg, rgba(106,78,66,0.4) 0%, rgba(106,78,66,0.85) 100%)",
       coverImage:
         "https://media.mengundanganda.com/fairygarden/cover%20section/dewirandi_e782ab8b-eee1-44b8-85af-ce428272bb40.webp",
+    },
+  },
+  evergreen: {
+    id: "evergreen",
+    name: "Evergreen",
+    thumbnail:
+      "https://media.mengundanganda.com/evergreen/cover%20section/dewirandi_0009b342-21cc-4132-b79c-d7d041a71b4f.webp",
+    description: "Sage romantis & adem dengan nuansa pepohonan hijau padang rumput",
+    icon: "solar:tree-bold-duotone",
+    color: "#4A6B5B",
+    bgGradient: "linear-gradient(135deg, #4A6B5B 0%, #8B9E8B 100%)",
+    sampleUrl: "/sample/evergreen",
+    defaultGalleryType: "carousel",
+    previewStyle: {
+      bg: "#F2F5F3",
+      color: "#2D3E35",
+      headerText: "The Wedding Of",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 3px; color: #5C7367; text-transform: uppercase;",
+      nameText: "John & Sarah",
+      nameStyle:
+        "font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; margin-top: 4px; color: #2D3E35;",
+    },
+    themeConfig: {
+      name: "evergreen",
+      bg: "#F2F5F3",
+      surface: "#E3ECE5",
+      primary: "#4A6B5B",
+      secondary: "#7A9A8B",
+      text: "#2D3E35",
+      textLight: "#5C7367",
+      fontHeading: "'Cormorant Garamond', Georgia, serif",
+      fontBody: "'Plus Jakarta Sans', 'Inter', sans-serif",
+      overlayGradient:
+        "linear-gradient(180deg, rgba(45,62,53,0.4) 0%, rgba(45,62,53,0.85) 100%)",
+      coverImage:
+        "https://media.mengundanganda.com/evergreen/cover%20section/dewirandi_0009b342-21cc-4132-b79c-d7d041a71b4f.webp",
     },
   },
 };

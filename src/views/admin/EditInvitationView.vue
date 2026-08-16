@@ -3431,7 +3431,7 @@ function handleMapLocationSelect(payload: {
 }
 
 function selectTheme(
-  themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden",
+  themeId: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen",
 ) {
   const oldTheme = form.theme;
   const hasLoveStoryPhotos = form.love_story && form.love_story.some(story => story.photo);
