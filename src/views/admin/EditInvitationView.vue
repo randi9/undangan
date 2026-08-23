@@ -1381,14 +1381,29 @@
                         placeholder="https://..."
                       />
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                      <label class="form-label">Khutbah Nikah (Ustadz / Khatib / Waktu)</label>
-                      <input
-                        v-model="form.khutbah_nikah"
-                        class="form-input"
-                        placeholder="Contoh: Ustadz Adi Hidayat / Pukul 09.00 WIB"
-                      />
-                    </div>
+                  </div>
+                </div>
+
+                <!-- Khutbah Nikah -->
+                <div class="form-section">
+                  <h3 class="form-section-title">
+                    <Icon
+                      icon="lucide:book-open"
+                      style="color: var(--admin-primary)"
+                    />
+                    Khutbah Nikah
+                  </h3>
+                  <p class="form-section-subtitle">
+                    Informasi penceramah / khatib khutbah nikah (opsional)
+                  </p>
+
+                  <div class="form-group" style="margin-top: 16px;">
+                    <label class="form-label">Khutbah Nikah (Ustadz / Khatib / Waktu)</label>
+                    <input
+                      v-model="form.khutbah_nikah"
+                      class="form-input"
+                      placeholder="Contoh: Ustadz Adi Hidayat / Pukul 09.00 WIB"
+                    />
                   </div>
                 </div>
 
