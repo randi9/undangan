@@ -1359,7 +1359,7 @@ const parsedQuote = computed(() => {
       const bodyLines = lines.slice(0, -1);
       return {
         body: bodyLines.join('\n').replace(/^[“"']+|[”"']+$/g, '').trim(),
-        source: lastLine.replace(/^[-—–\s]+/, '').trim()
+        source: (lastLine ?? '').replace(/^[-—–\s]+/, '').trim()
       };
     }
   }
