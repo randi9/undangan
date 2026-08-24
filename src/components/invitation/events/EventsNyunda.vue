@@ -44,6 +44,9 @@
           <p v-if="invitation.akad_address" class="event-address">
             {{ invitation.akad_address }}
           </p>
+          <p v-if="invitation.khutbah_nikah" class="event-address" style="margin-top: 8px; font-style: italic;">
+            Khutbah Nikah: {{ invitation.khutbah_nikah }}
+          </p>
         </div>
 
         <div class="event-actions pointer-events-auto">

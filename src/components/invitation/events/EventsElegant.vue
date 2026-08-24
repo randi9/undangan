@@ -90,6 +90,17 @@
           </iframe>
         </div>
       </div>
+      <!-- Khutbah Nikah -->
+      <div v-if="invitation.khutbah_nikah" class="md:col-span-2 p-8 md:p-10 rounded-2xl bg-[var(--theme-surface)] border border-black/5 shadow-sm text-center relative overflow-hidden group hover:shadow-md transition-shadow">
+        <Icon icon="ph:book-open-duotone" class="w-12 h-12 mx-auto mb-4 text-[var(--theme-secondary)]" />
+        <h3 class="text-2xl font-bold text-[var(--theme-primary)] mb-3" :style="{ fontFamily: themeConfig.fontHeading }">Khutbah Nikah</h3>
+        <p class="text-sm md:text-base text-[var(--theme-text-light)] max-w-2xl mx-auto">
+          Prosesi akad nikah insya Allah akan dibekali khutbah nikah oleh:
+        </p>
+        <p class="text-lg md:text-xl font-medium text-[var(--theme-primary)] mt-3">
+          {{ invitation.khutbah_nikah }}
+        </p>
+      </div>
     </div>
   </section>
 </template>
