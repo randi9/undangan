@@ -300,7 +300,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
     id: "evergreen",
     name: "Evergreen",
     thumbnail:
-      "https://media.mengundanganda.com/evergreen/cover%20section/dewirandi_0009b342-21cc-4132-b79c-d7d041a71b4f.webp",
+      "https://media.mengundanganda.com/evergreen/hero%20section/dewirandi_003c89a6-d363-423d-83c4-2f34746fb0fb.webp",
     description: "Sage romantis & adem dengan nuansa pepohonan hijau padang rumput",
     icon: "solar:tree-bold-duotone",
     color: "#4A6B5B",
@@ -330,7 +330,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       overlayGradient:
         "linear-gradient(180deg, rgba(45,62,53,0.4) 0%, rgba(45,62,53,0.85) 100%)",
       coverImage:
-        "https://media.mengundanganda.com/evergreen/cover%20section/dewirandi_0009b342-21cc-4132-b79c-d7d041a71b4f.webp",
+        "https://media.mengundanganda.com/evergreen/hero%20section/dewirandi_003c89a6-d363-423d-83c4-2f34746fb0fb.webp",
     },
   },
 };

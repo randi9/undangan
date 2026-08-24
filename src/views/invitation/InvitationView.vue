@@ -510,9 +510,12 @@ async function preloadAllAssets() {
   }
 
   if (themeName.value === "evergreen") {
-    urls.add("https://media.mengundanganda.com/evergreen/cover%20section/dewirandi_0009b342-21cc-4132-b79c-d7d041a71b4f.webp");
-    urls.add("https://media.mengundanganda.com/evergreen/hero%20section/dewirandi_a6d66206-34e9-498d-9a36-bb5f89115297.webp");
-    urls.add("https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_58ea9077-7626-4fc9-9599-5b1233a9db3f.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/hero%20section/dewirandi_003c89a6-d363-423d-83c4-2f34746fb0fb.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/cover%20section/dewirandi_5c873aaf-ce25-4a6c-af4d-1ef512a28810.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/quotes%20section/dewirandi_af16b8e4-ad73-48ec-8073-bf36703f3b8e.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/countdown%20section/dewirandi_9dbeed92-b311-4f90-8c41-3a4f21b005c4.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/countdown%20section/dewirandi_3413e0a7-5e28-44d0-a2ef-5bb6d9e052da.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_3df150cb-e69e-4f29-899d-2ea0abe58183.webp");
     urls.add("https://media.mengundanganda.com/evergreen/footer%20section/dewirandi_ad5c156d-47bf-47c8-872e-0ae7ab0ab0bd.webp");
   }
 
@@ -580,8 +583,29 @@ function animateHeroOval() {
   if (!heroOval.value) return;
 
   if (themeName.value === 'evergreen') {
-    gsap.set(heroOval.value, { scale: 1, opacity: 1, y: 0 });
-    gsap.set(heroTextItems.value, { y: 0, opacity: 1 });
+    gsap.set(heroOval.value, { opacity: 0, scale: 0.98 });
+    gsap.set(heroTextItems.value, { y: 20, opacity: 0 });
+
+    const tl = gsap.timeline({
+      delay: 0.2, // Sinkron langsung saat kartu cover larut tanpa jeda
+    });
+
+    tl.to(heroOval.value, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.5,
+      ease: "power2.out",
+    }).to(
+      heroTextItems.value,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.85,
+        ease: "power2.out",
+        stagger: 0.12, // Muncul mulus bertahap tanpa delay
+      },
+      "-=0.3"
+    );
     return;
   }
 
@@ -798,7 +822,7 @@ function openInvitation() {
       })
       .catch((e) => console.error("Audio blocked by browser:", e));
   }
-  const closeDelay = themeName.value === 'fairytale_garden' ? 3200 : themeName.value === 'evergreen' ? 4000 : 1400;
+  const closeDelay = themeName.value === 'fairytale_garden' ? 3200 : themeName.value === 'evergreen' ? 850 : 1400;
   setTimeout(() => {
     isClosingOverlay.value = false;
   }, closeDelay);
@@ -1239,7 +1263,7 @@ onBeforeUnmount(() => {
     />
 
     <!-- MAIN INVITATION CONTENT -->
-    <div v-if="isOpened" ref="invitationContainer" class="animate-fade-in" style="overflow-anchor: none">
+    <div v-if="isOpened" ref="invitationContainer" :class="themeName === 'evergreen' ? '' : 'animate-fade-in'" style="overflow-anchor: none">
       <!-- HERO WRAPPER (prevents layout shift flash of quotes) -->
       <div style="min-height: 100dvh; width: 100%">
         <!-- HERO (Dynamic per theme) -->
@@ -1254,8 +1278,7 @@ onBeforeUnmount(() => {
           <div
             ref="heroOval"
             :class="[
-              'flex flex-col gap-4 p-6 md:p-10 relative z-10',
-              themeName === 'evergreen' ? 'opacity-100' : 'opacity-0',
+              'flex flex-col gap-4 p-6 md:p-10 relative z-10 opacity-0',
               !['elegant_blue', 'floral_blue', 'nyunda', 'fairytale_garden', 'evergreen'].includes(themeName)
                 ? 'items-center justify-center mx-auto text-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
                 : themeName === 'nyunda'
@@ -1288,18 +1311,27 @@ onBeforeUnmount(() => {
               style="max-width: none"
             />
 
+            <!-- Botanical Crest for Evergreen -->
+            <div
+              v-if="themeName === 'evergreen'"
+              :ref="setHeroTextRef"
+              class="mb-2 text-white/90 drop-shadow-md opacity-0"
+            >
+              <svg class="w-8 h-8 md:w-9 md:h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v18m0-18C8 3 4 7 4 12s4 9 8 9m0-18c4 0 8 4 8 9s-4 9-8 9"/>
+              </svg>
+            </div>
+
             <p
               :ref="setHeroTextRef"
-              class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-4 mt-2 text-[#3d4a40] drop-shadow-sm font-medium"
-              :class="themeName === 'evergreen' ? 'opacity-100' : 'opacity-0'"
+              class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-2 mt-1 text-[#3d4a40] drop-shadow-sm font-medium opacity-0"
               :style="themeName === 'nyunda' ? { textAlign: 'center' } : {}"
             >
               The Wedding of
             </p>
             <h1
               :ref="setHeroTextRef"
-              class="text-5xl md:text-7xl lg:text-8xl mb-1 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]"
-              :class="themeName === 'evergreen' ? 'opacity-100' : 'opacity-0'"
+              class="text-5xl md:text-7xl lg:text-8xl mb-1 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)] opacity-0"
               :style="
                 themeName === 'nyunda'
                   ? { fontFamily: activeTheme.fontHeading, textAlign: 'center' }
@@ -1316,11 +1348,20 @@ onBeforeUnmount(() => {
             <p
               v-if="formattedDate"
               :ref="setHeroTextRef"
-              class="text-[#3d4a40] mt-4 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold drop-shadow-sm"
-              :class="themeName === 'evergreen' ? 'opacity-100' : 'opacity-0'"
+              class="text-[#3d4a40] mt-3 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold drop-shadow-sm opacity-0"
             >
               {{ formattedDate }}
             </p>
+
+            <!-- Bottom Divider & Undangan Pernikahan for Evergreen -->
+            <div
+              v-if="themeName === 'evergreen'"
+              :ref="setHeroTextRef"
+              class="mt-5 flex flex-col items-center gap-2 opacity-0"
+            >
+              <div class="w-[1px] h-7 bg-white/60 drop-shadow-sm"></div>
+              <span class="text-[10px] uppercase tracking-[0.3em] text-white/90 font-medium drop-shadow-md">Undangan Pernikahan</span>
+            </div>
           </div>
         </component>
       </div>
@@ -1328,7 +1369,7 @@ onBeforeUnmount(() => {
       <!-- QUOTE (Dynamic per theme) -->
       <component
         :is="activeQuote"
-        v-if="invitation.quote"
+        v-if="invitation.quote && themeName !== 'evergreen'"
         :quote="invitation.quote"
         :theme-config="activeTheme"
       />
@@ -1344,6 +1385,7 @@ onBeforeUnmount(() => {
       <!-- COUNTDOWN (Dynamic per theme) -->
       <component
         :is="activeCountdown"
+        v-if="themeName !== 'evergreen'"
         :countdown="countdown"
         :theme-config="activeTheme"
         :has-date="hasEventDate"
@@ -1355,6 +1397,8 @@ onBeforeUnmount(() => {
         :is="activeEvents"
         :invitation="invitation"
         :theme-config="activeTheme"
+        :countdown="countdown"
+        :has-date="hasEventDate"
       />
 
       <!-- LOVE STORY (Dynamic per theme) -->

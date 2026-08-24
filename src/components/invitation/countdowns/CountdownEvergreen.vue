@@ -1,62 +1,115 @@
 <template>
-  <section ref="countdownSection" class="py-20 px-4 md:px-8 bg-[#EBF2EE] relative overflow-hidden text-center">
-    <div class="max-w-3xl mx-auto relative z-10">
+  <section
+    ref="countdownSection"
+    class="relative min-h-[100dvh] w-full flex flex-col items-center justify-center px-4 md:px-8 py-12 overflow-hidden text-center box-border"
+  >
+    <!-- ======================================================== -->
+    <!-- BACKGROUND IMAGE SECTION COUNTDOWN                       -->
+    <!-- PANDUAN NGE-EDIT BACKGROUND:                             -->
+    <!-- - Zoom (Skala) : Ubah 'scale(2.2)' (misal 2.0, 2.3, 2.5) -->
+    <!-- - Geser Bawah/Atas (Y): Ubah nilai Y pada 'translate(0%, 0%)' (misal: 4% makin ke bawah, -4% makin ke atas) -->
+    <!-- - Geser Kiri/Kanan (X): Ubah nilai X pada 'translate(0%, 0%)' (misal: -3% kiri, 3% kanan) -->
+    <!-- ======================================================== -->
+    <div
+      style="
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image: url('https://media.mengundanganda.com/evergreen/countdown%20section/dewirandi_9dbeed92-b311-4f90-8c41-3a4f21b005c4.webp');
+        background-size: cover;
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        transform: scale(2.2) translate(0%, 0%);
+        transform-origin: center bottom;
+      "
+    ></div>
+
+    <div class="w-full max-w-3xl mx-auto relative z-10 my-auto flex flex-col items-center justify-center">
       <!-- Section Header -->
-      <div ref="headerRef" class="opacity-0 translate-y-6 mb-12">
-        <span class="text-xs uppercase tracking-[0.3em] text-[#5C7367] font-semibold block mb-2">Menghitung Hari</span>
-        <h2 class="text-3xl md:text-5xl font-serif text-[#2D3E35] font-medium" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+      <div ref="headerRef" class="opacity-0 translate-y-6 mb-8 sm:mb-12">
+        <span class="text-xs uppercase tracking-[0.3em] text-[#3D5447] font-bold block mb-2 drop-shadow-xs">
+          Menghitung Hari
+        </span>
+        <h2
+          class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1B3024] font-medium leading-tight"
+          style="font-family: 'Cormorant Garamond', Georgia, serif; text-shadow: 0 1px 3px rgba(255, 255, 255, 0.6);"
+        >
           Menuju Hari Bahagia
         </h2>
-        <div class="w-12 h-[1.5px] bg-[#7A9A8B] mx-auto mt-4"></div>
+        <div class="w-12 h-[1.5px] bg-[#5C7E6C] mx-auto mt-4"></div>
       </div>
 
       <!-- Countdown Grid -->
-      <div v-if="hasDate" ref="gridRef" class="grid grid-cols-4 gap-3 sm:gap-6 max-w-xl mx-auto mb-12 opacity-0 translate-y-8">
+      <div
+        v-if="hasDate"
+        ref="gridRef"
+        class="w-full grid grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 max-w-xl mx-auto mb-8 sm:mb-12 opacity-0 translate-y-8"
+      >
         <!-- Days -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl md:rounded-3xl p-4 md:p-6 border border-[#8B9E8B]/30 shadow-[0_8px_24px_rgba(45,62,53,0.05)] flex flex-col items-center">
-          <span class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-[#2D3E35] leading-none mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+        <div class="bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
+          <span class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#1B3024] leading-none mb-1.5 sm:mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
             {{ pad(countdown.days) }}
           </span>
-          <span class="text-[10px] sm:text-xs uppercase tracking-widest text-[#5C7367] font-medium">Hari</span>
+          <span class="text-[9px] sm:text-xs uppercase tracking-widest text-[#3D5447] font-semibold">Hari</span>
         </div>
 
         <!-- Hours -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl md:rounded-3xl p-4 md:p-6 border border-[#8B9E8B]/30 shadow-[0_8px_24px_rgba(45,62,53,0.05)] flex flex-col items-center">
-          <span class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-[#2D3E35] leading-none mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+        <div class="bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
+          <span class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#1B3024] leading-none mb-1.5 sm:mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
             {{ pad(countdown.hours) }}
           </span>
-          <span class="text-[10px] sm:text-xs uppercase tracking-widest text-[#5C7367] font-medium">Jam</span>
+          <span class="text-[9px] sm:text-xs uppercase tracking-widest text-[#3D5447] font-semibold">Jam</span>
         </div>
 
         <!-- Minutes -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl md:rounded-3xl p-4 md:p-6 border border-[#8B9E8B]/30 shadow-[0_8px_24px_rgba(45,62,53,0.05)] flex flex-col items-center">
-          <span class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-[#2D3E35] leading-none mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+        <div class="bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
+          <span class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#1B3024] leading-none mb-1.5 sm:mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
             {{ pad(countdown.minutes) }}
           </span>
-          <span class="text-[10px] sm:text-xs uppercase tracking-widest text-[#5C7367] font-medium">Menit</span>
+          <span class="text-[9px] sm:text-xs uppercase tracking-widest text-[#3D5447] font-semibold">Menit</span>
         </div>
 
         <!-- Seconds -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl md:rounded-3xl p-4 md:p-6 border border-[#8B9E8B]/30 shadow-[0_8px_24px_rgba(45,62,53,0.05)] flex flex-col items-center">
-          <span class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-[#4A6B5B] leading-none mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+        <div class="bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
+          <span class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#2D5A42] leading-none mb-1.5 sm:mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
             {{ pad(countdown.seconds) }}
           </span>
-          <span class="text-[10px] sm:text-xs uppercase tracking-widest text-[#5C7367] font-medium">Detik</span>
+          <span class="text-[9px] sm:text-xs uppercase tracking-widest text-[#3D5447] font-semibold">Detik</span>
         </div>
       </div>
 
       <!-- Save Date Action Button -->
-      <div v-if="calendarUrl" ref="actionRef" class="opacity-0 translate-y-4">
+      <div v-if="calendarUrl" ref="actionRef" class="opacity-0 translate-y-4" style="margin-top: 16px; margin-bottom: 8px;">
         <a
           :href="calendarUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2.5 px-7 py-3 rounded-full bg-[#4A6B5B] text-white hover:bg-[#3D5A4C] transition-all duration-300 shadow-[0_6px_20px_rgba(74,107,91,0.25)] hover:shadow-[0_8px_24px_rgba(74,107,91,0.35)] hover:-translate-y-0.5 text-xs font-semibold uppercase tracking-widest"
+          style="
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 32px;
+            border-radius: 9999px;
+            background-color: rgba(47, 74, 59, 0.4);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+          "
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg style="width: 16px; height: 16px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
-          Simpan Ke Kalender
+          <span style="letter-spacing: 0.15em; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);">Simpan Ke Kalender</span>
         </a>
       </div>
     </div>

@@ -1,60 +1,1309 @@
 <template>
-  <section ref="coupleSection" class="py-20 md:py-28 px-4 md:px-8 bg-[#F2F5F3] relative overflow-hidden">
-    <!-- Ambient Blur -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[700px] bg-[#D8E5DC]/50 rounded-full blur-[100px] pointer-events-none"></div>
+  <section
+    ref="sectionRef"
+    class="relative min-h-[100dvh] w-full flex flex-col items-center justify-center box-border overflow-hidden bg-[#2D3E35]"
+  >
+    <!-- ======================================================== -->
+    <!-- 1. SHARED BACKGROUND IMAGE (PANORAMA FULL IMAGE)         -->
+    <!-- PANDUAN NGE-PASS-IN:                                     -->
+    <!-- - Zoom (Skala): Ubah scale(1.85) misal: 1.8, 1.9, 2.0    -->
+    <!-- - Geser X: Ubah translate(-19%, ...) misal: -21% (makin kiri), -16% (makin kanan) -->
+    <!-- - Geser Y: Ubah translate(..., -4%) misal: -6% (naik), -2% (turun) -->
+    <!-- ======================================================== -->
+    <div
+      style="
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      "
+    >
+      <div
+        ref="bgWrapperRef"
+        style="
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 200%;
+          height: 100%;
+        "
+      >
+        <div
+          ref="bgInnerRef"
+          style="
+            position: absolute;
+            inset: 0;
+            background-image: url('https://media.mengundanganda.com/evergreen/quotes%20section/dewirandi_dc65be01-175c-434a-8fb5-924219e56045.webp');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            transform: scale(1.2) translate(-5.5%, 3.5%);
+            filter: blur(0px);
+            will-change: filter, transform;
+          "
+        ></div>
+      </div>
+    </div>
 
-    <div class="max-w-4xl mx-auto relative z-10 text-center">
-      <!-- Section Header -->
-      <div ref="sectionHeader" class="opacity-0 translate-y-6 mb-16">
-        <span class="text-xs uppercase tracking-[0.3em] text-[#5C7367] font-semibold block mb-2">Mempelai Pernikahan</span>
-        <h2 class="text-3xl md:text-5xl font-serif text-[#2D3E35] font-medium" style="font-family: 'Cormorant Garamond', Georgia, serif;">
-          Pasangan Mempelai
-        </h2>
-        <div class="w-12 h-[1.5px] bg-[#7A9A8B] mx-auto mt-4"></div>
+    <!-- ======================================================== -->
+    <!-- 2. LAYER PUTIH (OVERLAY YANG FADE OUT SAAT SCROLL)       -->
+    <!-- ======================================================== -->
+    <div
+      ref="whiteOverlayRef"
+      style="
+        position: absolute;
+        inset: 0;
+        z-index: 28;
+        pointer-events: none;
+        background: #ffffff;
+        opacity: 0.5;
+      "
+    ></div>
+
+    <!-- ======================================================== -->
+    <!-- 3. ASSET DEKORASI AIR MANCUR (WRAPPED FOR SHIFTING)      -->
+    <!-- ======================================================== -->
+    <div
+      ref="fountainWrapperRef"
+      style="
+        position: absolute;
+        inset: 0;
+        z-index: 29;
+        pointer-events: none;
+        filter: blur(0px);
+        will-change: filter, transform;
+      "
+    >
+      <div
+        style="
+          position: absolute;
+          top: 80%;
+          left: 20%;
+          transform: translate(-50%, -50%) scale(1);
+          width: 185%;
+          user-select: none;
+          opacity: 1;
+        "
+      >
+        <div style="position: relative; width: 100%; height: 100%;">
+        <!-- GAMBAR ASSET FOUNTAIN -->
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_1304920c-0f50-491a-999d-f5048d4c3a96.webp"
+          alt="Dekorasi Quotes Evergreen"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+
+        <!-- ANIMASI AIR MANCUR (CSS + SVG OVERLAY) -->
+        <div
+          class="fountain-water-wrapper"
+          style="
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: visible;
+          "
+        >
+          <!-- 1. SEMBURAN AIR PUCUK ATAS (FOUNTAIN SPOUT JETS) -->
+          <div
+            class="fountain-spout-container"
+            style="
+              position: absolute;
+              top: 12%;
+              left: 50%;
+              transform: translate(-50%, -46px);
+              width: 140px;
+              height: 165px;
+              pointer-events: none;
+              overflow: visible;
+            "
+          >
+            <svg
+              viewBox="0 0 140 165"
+              style="width: 100%; height: 100%; overflow: visible;"
+            >
+              <defs>
+                <linearGradient id="c_fountainWaterGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stop-color="rgba(255, 255, 255, 0.95)" />
+                  <stop offset="60%" stop-color="rgba(215, 245, 245, 0.85)" />
+                  <stop offset="100%" stop-color="rgba(255, 255, 255, 0.4)" />
+                </linearGradient>
+                <linearGradient id="c_fountainWaterGradCascade" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="rgba(255, 255, 255, 0.95)" />
+                  <stop offset="30%" stop-color="rgba(220, 250, 255, 0.8)" />
+                  <stop offset="70%" stop-color="rgba(210, 245, 252, 0.55)" />
+                  <stop offset="100%" stop-color="rgba(195, 240, 250, 0.2)" />
+                </linearGradient>
+                <filter id="c_waterGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="0.8" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- Pancaran Tengah Tinggi -->
+              <path
+                class="water-stream stream-center"
+                d="M 70 46 Q 70 18, 70 6 Q 70 18, 69 46"
+                fill="none"
+                stroke="url(#c_fountainWaterGrad)"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                filter="url(#c_waterGlow)"
+              />
+              <path
+                class="water-stream stream-center-fine"
+                d="M 70 46 Q 70 12, 70 2 Q 70 12, 71 46"
+                fill="none"
+                stroke="rgba(255, 255, 255, 0.9)"
+                stroke-width="1.2"
+                stroke-linecap="round"
+              />
+
+              <!-- Pancaran Lengkung Dalam -->
+              <path
+                class="water-stream stream-left-inner"
+                d="M 70 46 Q 66 18, 58 12 Q 46 18, 42 50"
+                fill="none"
+                stroke="url(#c_fountainWaterGrad)"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                filter="url(#c_waterGlow)"
+              />
+              <path
+                class="water-stream stream-right-inner"
+                d="M 70 46 Q 74 18, 82 12 Q 94 18, 98 50"
+                fill="none"
+                stroke="url(#c_fountainWaterGrad)"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                filter="url(#c_waterGlow)"
+              />
+
+              <!-- Pancaran Lengkung Luar -->
+              <path
+                class="water-stream stream-left-cascade"
+                d="M 70 46 Q 58 15, 40 14 Q 18 28, 12 75 Q 8 115, 18 146"
+                fill="none"
+                stroke="url(#c_fountainWaterGradCascade)"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                filter="url(#c_waterGlow)"
+              />
+              <path
+                class="water-stream stream-right-cascade"
+                d="M 70 46 Q 82 15, 100 14 Q 122 28, 128 75 Q 132 115, 122 146"
+                fill="none"
+                stroke="url(#c_fountainWaterGradCascade)"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                filter="url(#c_waterGlow)"
+              />
+
+              <!-- Untaian Halus Tambahan -->
+              <path
+                class="water-stream stream-left-fine-cascade"
+                d="M 70 46 Q 62 16, 48 14 Q 30 26, 26 85 Q 24 120, 32 148"
+                fill="none"
+                stroke="rgba(255, 255, 255, 0.85)"
+                stroke-width="1.0"
+                stroke-linecap="round"
+              />
+              <path
+                class="water-stream stream-right-fine-cascade"
+                d="M 70 46 Q 78 16, 92 14 Q 110 26, 114 85 Q 116 120, 108 148"
+                fill="none"
+                stroke="rgba(255, 255, 255, 0.85)"
+                stroke-width="1.0"
+                stroke-linecap="round"
+              />
+
+              <!-- Aliran Tengah Depan -->
+              <path
+                class="water-stream stream-center-mid-cascade"
+                d="M 70 46 Q 67 20, 60 16 Q 54 32, 58 85 Q 62 120, 60 150"
+                fill="none"
+                stroke="rgba(255, 255, 255, 0.8)"
+                stroke-width="1.0"
+                stroke-linecap="round"
+              />
+              <path
+                class="water-stream stream-center-mid-cascade2"
+                d="M 70 46 Q 73 20, 80 16 Q 86 32, 82 85 Q 78 120, 80 150"
+                fill="none"
+                stroke="rgba(255, 255, 255, 0.8)"
+                stroke-width="1.0"
+                stroke-linecap="round"
+              />
+
+              <!-- Percikan Air di Mangkok Pertama -->
+              <g class="basin-top-splashes">
+                <circle class="top-splash tsp-1" cx="18" cy="146" r="0.9" fill="#ffffff" />
+                <circle class="top-splash tsp-2" cx="16" cy="144" r="0.6" fill="rgba(230,250,255,0.85)" />
+                <circle class="top-splash tsp-3" cx="32" cy="148" r="1.1" fill="#ffffff" />
+                <circle class="top-splash tsp-4" cx="35" cy="146" r="0.7" fill="rgba(230,250,255,0.85)" />
+                <circle class="top-splash tsp-5" cx="60" cy="150" r="0.9" fill="#ffffff" />
+                <circle class="top-splash tsp-6" cx="70" cy="151" r="1.2" fill="#ffffff" />
+                <circle class="top-splash tsp-7" cx="80" cy="150" r="0.9" fill="#ffffff" />
+                <circle class="top-splash tsp-8" cx="108" cy="148" r="1.1" fill="#ffffff" />
+                <circle class="top-splash tsp-9" cx="105" cy="146" r="0.7" fill="rgba(230,250,255,0.85)" />
+                <circle class="top-splash tsp-10" cx="122" cy="146" r="0.9" fill="#ffffff" />
+                <circle class="top-splash tsp-11" cx="124" cy="144" r="0.6" fill="rgba(230,250,255,0.85)" />
+              </g>
+            </svg>
+
+            <div class="water-droplet drop-1"></div>
+            <div class="water-droplet drop-2"></div>
+            <div class="water-droplet drop-3"></div>
+            <div class="water-droplet drop-4"></div>
+            <div class="water-droplet drop-5"></div>
+
+            <div class="basin-cascade-drop b-drop-left-1"></div>
+            <div class="basin-cascade-drop b-drop-left-2"></div>
+            <div class="basin-cascade-drop b-drop-right-1"></div>
+            <div class="basin-cascade-drop b-drop-right-2"></div>
+            <div class="basin-cascade-drop b-drop-center-1"></div>
+            <div class="basin-cascade-drop b-drop-center-2"></div>
+          </div>
+
+          <!-- 2. TUMPAHAN AIR DARI MANGKUK ATAS KE KOLAM -->
+          <div
+            class="basin-drips-container"
+            style="
+              position: absolute;
+              top: 28%;
+              left: 50.5%;
+              transform: translateX(-50%);
+              width: 226px;
+              height: 250px;
+              opacity: 0.9;
+              pointer-events: none;
+              overflow: visible;
+            "
+          >
+            <svg
+              viewBox="0 0 226 250"
+              style="width: 100%; height: 100%; overflow: visible;"
+            >
+              <defs>
+                <linearGradient id="c_rimLipGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                  <stop offset="50%" stop-color="#e8faff" stop-opacity="0.85" />
+                  <stop offset="100%" stop-color="#d0f4fc" stop-opacity="0.7" />
+                </linearGradient>
+                <linearGradient id="c_streamGradNaturalSide" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                  <stop offset="30%" stop-color="#f0fcff" stop-opacity="0.9" />
+                  <stop offset="70%" stop-color="#d8f8ff" stop-opacity="0.8" />
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.85" />
+                </linearGradient>
+                <linearGradient id="c_streamGradNaturalCenter" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98" />
+                  <stop offset="25%" stop-color="#f4feff" stop-opacity="0.92" />
+                  <stop offset="70%" stop-color="#ddf9ff" stop-opacity="0.85" />
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.9" />
+                </linearGradient>
+                <filter id="c_naturalWaterGlow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+                  <feDropShadow dx="0" dy="0" stdDeviation="0.6" flood-color="#ffffff" flood-opacity="0.75" />
+                </filter>
+              </defs>
+
+              <!-- Bibir Mangkuk Melimpah -->
+              <path
+                class="rim-water-sheen"
+                d="M 18 8 Q 60 15, 100 16 Q 155 15, 215 8 Q 155 12, 100 13 Q 60 12, 18 8 Z"
+                fill="#ffffff"
+                fill-opacity="0.7"
+                filter="url(#c_naturalWaterGlow)"
+              />
+
+              <!-- 5 Kolom Aliran Air -->
+              <!-- Kolom 1 (Ujung Kiri) -->
+              <g class="water-column col-1">
+                <path class="stream-strand strand-main-1" d="M 24 18 Q 21.5 110, 24 222" stroke="url(#c_streamGradNaturalSide)" stroke-width="2.2" stroke-linecap="round" fill="none" filter="url(#c_naturalWaterGlow)" />
+                <path class="stream-strand strand-fine-1" d="M 24.3 20 Q 21.8 110, 24.3 222" stroke="#ffffff" stroke-opacity="0.9" stroke-width="1.1" stroke-linecap="round" fill="none" />
+                <path class="stream-root seg-root-1" d="M 20.5 9 Q 21.5 16, 22.8 20 Q 24 22.5, 25.2 20 Q 26.5 16, 27.5 9 C 25 10.5, 23 10.5, 20.5 9 Z" fill="url(#c_rimLipGrad)" filter="url(#c_naturalWaterGlow)" />
+              </g>
+
+              <!-- Kolom 2 (Tengah Kiri) -->
+              <g class="water-column col-2">
+                <path class="stream-strand strand-main-2" d="M 68 27 Q 66.5 125, 68 238" stroke="url(#c_streamGradNaturalCenter)" stroke-width="2.6" stroke-linecap="round" fill="none" filter="url(#c_naturalWaterGlow)" />
+                <path class="stream-strand strand-fine-2" d="M 68.4 29 Q 66.9 125, 68.4 238" stroke="#ffffff" stroke-opacity="0.95" stroke-width="1.3" stroke-linecap="round" fill="none" />
+                <path class="stream-root seg-root-2" d="M 63.5 13 Q 65 22, 66.5 27.5 Q 68 30.5, 69.5 27.5 Q 71 22, 72.5 13 C 69.5 14.5, 66.5 14.5, 63.5 13 Z" fill="url(#c_rimLipGrad)" filter="url(#c_naturalWaterGlow)" />
+              </g>
+
+              <!-- Kolom 3 (Tengah Kanan) -->
+              <g class="water-column col-3">
+                <path class="stream-strand strand-main-3" d="M 126 27 Q 127.5 125, 126 238" stroke="url(#c_streamGradNaturalCenter)" stroke-width="2.6" stroke-linecap="round" fill="none" filter="url(#c_naturalWaterGlow)" />
+                <path class="stream-strand strand-fine-3" d="M 125.6 29 Q 127.1 125, 125.6 238" stroke="#ffffff" stroke-opacity="0.95" stroke-width="1.3" stroke-linecap="round" fill="none" />
+                <path class="stream-root seg-root-3" d="M 121.5 13 Q 123 22, 124.5 27.5 Q 126 30.5, 127.5 27.5 Q 129 22, 130.5 13 C 127.5 14.5, 124.5 14.5, 121.5 13 Z" fill="url(#c_rimLipGrad)" filter="url(#c_naturalWaterGlow)" />
+              </g>
+
+              <!-- Kolom 4 (Kanan) -->
+              <g class="water-column col-4">
+                <path class="stream-strand strand-main-4" d="M 166 20 Q 168.5 110, 166 226" stroke="url(#c_streamGradNaturalSide)" stroke-width="2.2" stroke-linecap="round" fill="none" filter="url(#c_naturalWaterGlow)" />
+                <path class="stream-strand strand-fine-4" d="M 165.7 22 Q 168.2 110, 165.7 226" stroke="#ffffff" stroke-opacity="0.9" stroke-width="1.1" stroke-linecap="round" fill="none" />
+                <path class="stream-root seg-root-4" d="M 162.5 11 Q 163.5 18, 164.8 22 Q 166 24.5, 167.2 22 Q 168.5 18, 169.5 11 C 167 12.5, 165 12.5, 162.5 11 Z" fill="url(#c_rimLipGrad)" filter="url(#c_naturalWaterGlow)" />
+              </g>
+
+              <!-- Kolom 5 (Ujung Kanan) -->
+              <g class="water-column col-5">
+                <path class="stream-strand strand-main-5" d="M 207 12.5 Q 209.5 110, 207 218" stroke="url(#c_streamGradNaturalSide)" stroke-width="2.0" stroke-linecap="round" fill="none" filter="url(#c_naturalWaterGlow)" />
+                <path class="stream-strand strand-fine-5" d="M 206.7 14 Q 209.2 110, 206.7 218" stroke="#ffffff" stroke-opacity="0.9" stroke-width="1.0" stroke-linecap="round" fill="none" />
+                <path class="stream-root seg-root-5" d="M 203.5 5 Q 204.5 10.5, 205.8 14 Q 207 16.5, 208.2 14 Q 209.5 10.5, 210.5 5 C 208 6.5, 206 6.5, 203.5 5 Z" fill="url(#c_rimLipGrad)" filter="url(#c_naturalWaterGlow)" />
+              </g>
+
+              <!-- Percikan & Riak Air Kolam Bawah -->
+              <g class="micro-splashes-group">
+                <ellipse class="pond-hit-ripple phr-1" cx="24" cy="222" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="0.8" />
+                <ellipse class="pond-hit-ripple phr-2" cx="68" cy="238" rx="7" ry="2.4" fill="none" stroke="#ffffff" stroke-opacity="0.9" stroke-width="0.9" />
+                <ellipse class="pond-hit-ripple phr-3" cx="126" cy="238" rx="7" ry="2.4" fill="none" stroke="#ffffff" stroke-opacity="0.9" stroke-width="0.9" />
+                <ellipse class="pond-hit-ripple phr-4" cx="166" cy="226" rx="5.5" ry="2" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="0.8" />
+                <ellipse class="pond-hit-ripple phr-5" cx="207" cy="218" rx="5" ry="1.8" fill="none" stroke="#ffffff" stroke-opacity="0.75" stroke-width="0.8" />
+
+                <circle class="micro-splash ms-1a" cx="22.5" cy="221" r="1.6" fill="#ffffff" filter="url(#c_naturalWaterGlow)" />
+                <circle class="micro-splash ms-1b" cx="25.5" cy="220" r="1.2" fill="#ffffff" />
+                <circle class="micro-splash ms-1c" cx="21" cy="219" r="0.9" fill="#ffffff" />
+
+                <circle class="micro-splash ms-2a" cx="66" cy="237" r="2.0" fill="#ffffff" filter="url(#c_naturalWaterGlow)" />
+                <circle class="micro-splash ms-2b" cx="70" cy="236" r="1.5" fill="#ffffff" />
+                <circle class="micro-splash ms-2c" cx="64" cy="235" r="1.1" fill="#ffffff" />
+                <circle class="micro-splash ms-2d" cx="71.5" cy="234.5" r="0.8" fill="#ffffff" />
+
+                <circle class="micro-splash ms-3a" cx="124" cy="237" r="2.0" fill="#ffffff" filter="url(#c_naturalWaterGlow)" />
+                <circle class="micro-splash ms-3b" cx="128" cy="236" r="1.5" fill="#ffffff" />
+                <circle class="micro-splash ms-3c" cx="130" cy="235" r="1.1" fill="#ffffff" />
+                <circle class="micro-splash ms-3d" cx="122.5" cy="234.5" r="0.8" fill="#ffffff" />
+
+                <circle class="micro-splash ms-4a" cx="164.5" cy="225" r="1.6" fill="#ffffff" filter="url(#c_naturalWaterGlow)" />
+                <circle class="micro-splash ms-4b" cx="167.5" cy="224" r="1.2" fill="#ffffff" />
+                <circle class="micro-splash ms-4c" cx="169" cy="223" r="0.9" fill="#ffffff" />
+
+                <circle class="micro-splash ms-5a" cx="205.5" cy="217" r="1.5" fill="#ffffff" filter="url(#c_naturalWaterGlow)" />
+                <circle class="micro-splash ms-5b" cx="208.5" cy="216" r="1.1" fill="#ffffff" />
+                <circle class="micro-splash ms-5c" cx="210" cy="215" r="0.8" fill="#ffffff" />
+              </g>
+            </svg>
+          </div>
+
+          <!-- 3. RIAK GELOMBANG KOLAM BAWAH -->
+          <div
+            class="pond-ripples-container"
+            style="
+              position: absolute;
+              top: 63%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              width: 320px;
+              height: 80px;
+              opacity: 0.5;
+            "
+          >
+            <div class="water-ripple ripple-1"></div>
+            <div class="water-ripple ripple-2"></div>
+            <div class="water-ripple ripple-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- ======================================================== -->
+    <!-- 4. TEKS QUOTES (AWAL TAMPIL, LALU FADE OUT SAAT SCROLL)   -->
+    <!-- ======================================================== -->
+    <div
+      v-if="invitation.quote"
+      ref="quoteContainerRef"
+      class="quote-text-container"
+      style="
+        position: absolute;
+        top: 16%;
+        right: 6%;
+        max-width: 300px;
+        z-index: 35;
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        pointer-events: auto;
+      "
+    >
+      <!-- Icon / Decorative Quote Mark -->
+      <div
+        style="
+          color: #2F4A3B;
+          opacity: 0.85;
+          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        "
+      >
+        <span style="width: 24px; height: 1px; background: linear-gradient(to left, #3F6350, transparent);"></span>
+        <svg
+          style="width: 18px; height: 18px;"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+        </svg>
       </div>
 
-      <!-- Couple Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
-        <!-- Groom Card -->
-        <div ref="groomCard" class="opacity-0 translate-y-8 flex flex-col items-center">
-          <div class="relative w-48 h-64 md:w-56 md:h-72 mb-6 rounded-[100px] overflow-hidden p-2 bg-white/70 border border-[#8B9E8B]/40 shadow-[0_12px_32px_rgba(45,62,53,0.08)]">
+      <!-- Isi Teks Quotes -->
+      <blockquote
+        v-if="parsedQuote.body"
+        class="quote-content"
+        style="
+          font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+          font-style: italic;
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 1.65;
+          letter-spacing: 0.02em;
+          color: #1B3024;
+          text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+          margin: 0;
+          white-space: pre-line;
+        "
+      >
+        “{{ parsedQuote.body }}”
+      </blockquote>
+
+      <!-- Sumber / Ayat Quotes (Q.S. / QS. / Penulis) -->
+      <div
+        v-if="parsedQuote.source"
+        class="quote-source"
+        style="
+          font-family: 'Montserrat', 'Outfit', sans-serif;
+          font-size: 12px;
+          font-weight: 500;
+          letter-spacing: 0.08em;
+          color: #2F4A3B;
+          margin-top: 10px;
+          text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+          opacity: 0.95;
+        "
+      >
+        {{ parsedQuote.source }}
+      </div>
+
+      <!-- Garis Aksen Dekoratif -->
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 10px; opacity: 0.75;">
+        <span style="width: 40px; height: 1px; background: linear-gradient(to left, #3F6350, transparent);"></span>
+        <div style="width: 4px; height: 4px; border-radius: 50%; background-color: #2F4A3B;"></div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PANDUAN PENGATURAN POSISI CONTAINER GERBANG INFO COUPLE: -->
+    <!-- - Posisi Vertikal   : Ubah 'top: 60%' (misal: 48%, 52%, 60%) -->
+    <!-- - Posisi Horizontal : Ubah 'left: 50%' (misal: 50%, 52%) -->
+    <!-- - Lebar Container   : Ubah 'width: 88%' / max-w-[330px]  -->
+    <!-- - Tinggi Container  : Ubah 'min-h-[400px]'               -->
+    <!-- - Kelengkungan Arch : Ubah 'border-radius: 170px 170px 28px 28px' -->
+    <!-- ======================================================== -->
+
+    <!-- ======================================================== -->
+    <!-- 4. ASSET DEKORASI SISI COUPLE (IKUT GESER DENGAN PANORAMA) -->
+    <!-- ======================================================== -->
+    <div
+      ref="coupleDecorWrapperRef"
+      style="
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 200%;
+        height: 100%;
+        z-index: 25;
+        pointer-events: none;
+        overflow: hidden;
+      "
+    >
+      <!-- ======================================================== -->
+      <!-- PANDUAN NGE-EDIT ASSET DEKORASI COUPLE:                  -->
+      <!-- 1. Posisi Vertikal   : Ubah 'top: 60%' (misal: '55%', '60%', '50%') -->
+      <!-- 2. Posisi Horizontal : Ubah 'left: 75%' (75% = tengah layar section couple) -->
+      <!-- 3. Ukuran Lebar      : Ubah 'width: 540px' (misal: '450px', '540px', '600px') -->
+      <!-- 4. Geser / Skala     : Ubah 'transform: translate(-50%, -50%) scale(1)' -->
+      <!-- 5. Opasitas          : Ubah 'opacity: 1' (0.0 - 1.0)     -->
+      <!-- 6. Layer (z-index)   : 'z-index: 15' di wrapper (di belakang card) ATAU '25' (di depan card) -->
+      <!-- ======================================================== -->
+      <div
+        style="
+          position: absolute;
+          top: 55%;
+          left: 75%;
+          transform: translate(-50%, -50%);
+          width: 540px;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_53a39fa3-c602-46e2-83a5-15b4b14ffae0.webp"
+          alt="Dekorasi Couple Evergreen"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 4b. ASSET DEKORASI COUPLE BUNGA LAYER (DI BAWAH OVERLAY PUTIH) -->
+    <!-- ======================================================== -->
+    <div
+      ref="coupleTopDecorWrapperRef"
+      style="
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 200%;
+        height: 100%;
+        z-index: 27;
+        pointer-events: none;
+        overflow: hidden;
+      "
+    >
+      <!-- ======================================================== -->
+      <!-- PANDUAN NGE-EDIT BUNGA PINK (1 s/d 5):                  -->
+      <!-- 1. Posisi Vertikal   : Ubah 'top: 30%' (misal: '25%', '40%', '65%') -->
+      <!-- 2. Posisi Horizontal : Ubah 'left: 75%' (75% = tengah layar section couple) -->
+      <!-- 3. Ukuran Lebar      : Ubah 'width: 70px' (misal: '50px', '90px', '120px') -->
+      <!-- 4. Rotasi & Skala    : Ubah 'transform: translate(-50%, -50%) rotate(0deg) scale(1)' -->
+      <!--                        - Miring ke kanan : rotate(25deg)  -->
+      <!--                        - Miring ke kiri  : rotate(-25deg) -->
+      <!-- 5. Opasitas          : Ubah 'opacity: 1' (0.0 - 1.0)     -->
+      <!-- ======================================================== -->
+
+      <!-- 1. BUNGA PINK 1 -->
+      <div
+        style="
+          position: absolute;
+          top: 30%;
+          left: 75%;
+          transform: translate(-50%, -50%) rotate(12deg) scale(1);
+          width: 96px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 1"
+          class="flower-sway flower-sway-1"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 2. BUNGA PINK 2 -->
+      <div
+        style="
+          position: absolute;
+          top: 35%;
+          left: 92%;
+          transform: translate(-50%, -50%) rotate(38deg) scale(1);
+          width: 52px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 2"
+          class="flower-sway flower-sway-2"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 3. BUNGA PINK 3 -->
+      <div
+        style="
+          position: absolute;
+          top: 35%;
+          left: 60%;
+          transform: translate(-50%, -50%) rotate(-48deg) scale(1);
+          width: 104px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 3"
+          class="flower-sway flower-sway-3"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 4. BUNGA PINK 4 -->
+      <div
+        style="
+          position: absolute;
+          top: 50%;
+          left: 98%;
+          transform: translate(-50%, -50%) rotate(52deg) scale(1);
+          width: 44px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 4"
+          class="flower-sway flower-sway-4"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 5. BUNGA PINK 5 -->
+      <div
+        style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-28deg) scale(1);
+          width: 82px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 5"
+          class="flower-sway flower-sway-5"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 6. BUNGA PINK 6 -->
+      <div
+        style="
+          position: absolute;
+          top: 31%;
+          left: 67%;
+          transform: translate(-50%, -50%) rotate(-20deg) scale(1);
+          width: 60px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 6"
+          class="flower-sway flower-sway-6"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 7. BUNGA PINK 7 -->
+      <div
+        style="
+          position: absolute;
+          top: 31%;
+          left: 83%;
+          transform: translate(-50%, -50%) rotate(22deg) scale(1);
+          width: 90px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 7"
+          class="flower-sway flower-sway-7"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 8. BUNGA PINK 8 -->
+      <div
+        style="
+          position: absolute;
+          top: 42%;
+          left: 97%;
+          transform: translate(-50%, -50%) rotate(32deg) scale(1);
+          width: 74px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 8"
+          class="flower-sway flower-sway-8"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 9. BUNGA PINK 9 -->
+      <div
+        style="
+          position: absolute;
+          top: 42%;
+          left: 52%;
+          transform: translate(-50%, -50%) rotate(-42deg) scale(1);
+          width: 48px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 9"
+          class="flower-sway flower-sway-9"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 10. BUNGA PINK 10 -->
+      <div
+        style="
+          position: absolute;
+          top: 60%;
+          left: 98%;
+          transform: translate(-50%, -50%) rotate(18deg) scale(1);
+          width: 88px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_fe3fa073-1230-48ec-bc0c-920f7ac410a2.webp"
+          alt="Bunga Pink 10"
+          class="flower-sway flower-sway-10"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- PANDUAN NGE-EDIT BUNGA PUTIH (1 s/d 10):                -->
+      <!-- 1. Posisi Vertikal   : Ubah 'top: 30%' (misal: '25%', '45%', '65%') -->
+      <!-- 2. Posisi Horizontal : Ubah 'left: 75%' (75% = tengah layar section couple) -->
+      <!-- 3. Ukuran Lebar      : Ubah 'width: 70px' (misal: '50px', '85px', '110px') -->
+      <!-- 4. Rotasi & Skala    : Ubah 'transform: translate(-50%, -50%) rotate(0deg) scale(1)' -->
+      <!--                        - Miring ke kanan : rotate(25deg)  -->
+      <!--                        - Miring ke kiri  : rotate(-25deg) -->
+      <!-- 5. Opasitas          : Ubah 'opacity: 1' (0.0 - 1.0)     -->
+      <!-- ======================================================== -->
+
+      <!-- 1. BUNGA PUTIH 1 -->
+      <div
+        style="
+          position: absolute;
+          top: 29%;
+          left: 80%;
+          transform: translate(-50%, -50%) rotate(16deg) scale(1);
+          width: 46px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 1"
+          class="flower-sway flower-sway-1"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 2. BUNGA PUTIH 2 -->
+      <div
+        style="
+          position: absolute;
+          top: 29%;
+          left: 70%;
+          transform: translate(-50%, -50%) rotate(-14deg) scale(1);
+          width: 102px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 2"
+          class="flower-sway flower-sway-2"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 3. BUNGA PUTIH 3 -->
+      <div
+        style="
+          position: absolute;
+          top: 33%;
+          left: 88%;
+          transform: translate(-50%, -50%) rotate(44deg) scale(1);
+          width: 78px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 3"
+          class="flower-sway flower-sway-3"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 4. BUNGA PUTIH 4 -->
+      <div
+        style="
+          position: absolute;
+          top: 33%;
+          left: 62%;
+          transform: translate(-50%, -50%) rotate(-34deg) scale(1);
+          width: 50px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 4"
+          class="flower-sway flower-sway-4"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 5. BUNGA PUTIH 5 -->
+      <div
+        style="
+          position: absolute;
+          top: 38%;
+          left: 54%;
+          transform: translate(-50%, -50%) rotate(-52deg) scale(1);
+          width: 98px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 5"
+          class="flower-sway flower-sway-5"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 6. BUNGA PUTIH 6 -->
+      <div
+        style="
+          position: absolute;
+          top: 45%;
+          left: 53%;
+          transform: translate(-50%, -50%) rotate(-18deg) scale(1);
+          width: 70px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 6"
+          class="flower-sway flower-sway-6"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 7. BUNGA PUTIH 7 -->
+      <div
+        style="
+          position: absolute;
+          top: 55%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-36deg) scale(1);
+          width: 86px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 7"
+          class="flower-sway flower-sway-7"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 8. BUNGA PUTIH 8 -->
+      <div
+        style="
+          position: absolute;
+          top: 38%;
+          left: 94%;
+          transform: translate(-50%, -50%) rotate(28deg) scale(1);
+          width: 94px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 8"
+          class="flower-sway flower-sway-8"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 9. BUNGA PUTIH 9 -->
+      <div
+        style="
+          position: absolute;
+          top: 45%;
+          left: 97%;
+          transform: translate(-50%, -50%) rotate(48deg) scale(1);
+          width: 54px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 9"
+          class="flower-sway flower-sway-9"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+
+      <!-- 10. BUNGA PUTIH 10 -->
+      <div
+        style="
+          position: absolute;
+          top: 55%;
+          left: 97%;
+          transform: translate(-50%, -50%) rotate(24deg) scale(1);
+          width: 76px;
+          max-width: 90%;
+          opacity: 1;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_f96cf1ea-0ebc-4b01-908b-5edc4e1ea5f8.webp"
+          alt="Bunga Putih 10"
+          class="flower-sway flower-sway-10"
+          style="
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+          "
+        />
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 5. SINGLE CARD GERBANG SETENGAH OVAL (TETAP DI POSISI)   -->
+    <!-- ======================================================== -->
+    <div
+      ref="cardContainerRef"
+      style="
+        position: absolute;
+        top: calc(60% - 20px);
+        left: calc(50% + 15px);
+        transform: translate(-50%, -50%);
+        width: 88%;
+        max-width: 330px;
+        z-index: 20;
+        pointer-events: none;
+        opacity: 0;
+      "
+    >
+
+      <!-- Container Gerbang Lengkung (+1/3 lebih tinggi, opacity 0.6) -->
+      <div
+        class="relative w-full min-h-[385px] overflow-hidden bg-white/60 backdrop-blur-md border border-white/65 shadow-[0_20px_50px_rgba(27,48,36,0.28)] pointer-events-auto flex items-center justify-center"
+        style="
+          border-radius: 170px 170px 28px 28px;
+          padding: 26px 16px 18px 16px;
+        "
+      >
+        <!-- Garis Aksen Dekoratif Lengkung Bagian Dalam (Inner Arch Border) -->
+        <div
+          style="
+            position: absolute;
+            inset: 6px;
+            border: 1px solid rgba(47, 74, 59, 0.2);
+            border-radius: 164px 164px 20px 20px;
+            pointer-events: none;
+          "
+        ></div>
+
+        <!-- ===================================================== -->
+        <!-- KONTEN INFO GROOM (FADE IN/OUT DI DALAM CARD)         -->
+        <!-- ===================================================== -->
+        <div
+          ref="groomContentRef"
+          class="w-full flex flex-col items-center text-center justify-center py-1"
+          style="position: relative; z-index: 10;"
+        >
+          <!-- Badge The Groom -->
+          <span
+            class="text-[9.5px] uppercase tracking-[0.28em] text-[#1F3A2C] font-bold bg-[#E4ECE7]/95 px-3.5 py-1 rounded-full mb-2 shadow-xs border border-[#C2D6C9]"
+          >
+            The Groom
+          </span>
+
+          <!-- Foto Groom (Hanya tampil jika ada foto yang di-upload) -->
+          <div
+            v-if="invitation.groom_photo && resolveUrl(invitation.groom_photo)"
+            class="relative w-24 h-32 mb-2 overflow-hidden bg-white/95 border-2 border-white shadow-[0_8px_20px_rgba(45,62,53,0.18)]"
+            style="border-radius: 55px 55px 14px 14px;"
+          >
             <img
               :src="resolveUrl(invitation.groom_photo)"
               :alt="invitation.groom_name"
-              class="w-full h-full object-cover rounded-[90px] transition-transform duration-700 hover:scale-105"
+              class="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
             />
           </div>
-          <h3 class="text-2xl md:text-3xl font-serif font-semibold text-[#2D3E35] mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+
+          <!-- Nama Lengkap Groom -->
+          <h3
+            class="text-2xl sm:text-[25px] font-serif font-semibold text-[#162B20] leading-tight mb-1"
+            style="font-family: 'Cormorant Garamond', Georgia, serif;"
+          >
             {{ invitation.groom_full_name || invitation.groom_name }}
           </h3>
-          <p v-if="invitation.groom_father || invitation.groom_mother" class="text-xs md:text-sm text-[#5C7367] leading-relaxed max-w-xs mb-1">
-            Putra dari <br />
-            <strong class="font-medium text-[#2D3E35]">{{ invitation.groom_father }}</strong>
-            <template v-if="invitation.groom_mother"> &amp; <strong class="font-medium text-[#2D3E35]">{{ invitation.groom_mother }}</strong></template>
+
+          <!-- Nama Panggilan / Highlight -->
+          <span
+            v-if="invitation.groom_full_name && invitation.groom_name"
+            class="text-xs font-serif italic text-[#4D695A] mb-1.5"
+          >
+            ({{ invitation.groom_name }})
+          </span>
+
+          <!-- Divider Garis Halus -->
+          <div class="w-14 h-[1px] bg-gradient-to-r from-transparent via-[#3F6350]/40 to-transparent my-0.5"></div>
+
+          <!-- Orang Tua Groom -->
+          <p
+            v-if="invitation.groom_father || invitation.groom_mother"
+            class="text-xs text-[#3D5447] leading-relaxed max-w-[240px] mt-1"
+          >
+            <span class="italic text-[11px] text-[#5C7367]">Putra dari</span><br />
+            <strong class="font-semibold text-[#1B3024]">{{ invitation.groom_father }}</strong>
+            <template v-if="invitation.groom_mother">
+              <br /><span class="text-[11px]">&amp;</span> <strong class="font-semibold text-[#1B3024]">{{ invitation.groom_mother }}</strong>
+            </template>
           </p>
-          <p v-if="invitation.groom_origin" class="text-xs text-[#7A9A8B] mt-1 font-medium tracking-wide">
+
+          <!-- Asal Groom -->
+          <p
+            v-if="invitation.groom_origin"
+            class="text-[11px] text-[#5C7367] mt-1 font-medium tracking-wide flex items-center gap-1 justify-center"
+          >
+            <svg class="w-3 h-3 text-[#3F6350]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
             {{ invitation.groom_origin }}
           </p>
         </div>
 
-        <!-- Bride Card -->
-        <div ref="brideCard" class="opacity-0 translate-y-8 flex flex-col items-center">
-          <div class="relative w-48 h-64 md:w-56 md:h-72 mb-6 rounded-[100px] overflow-hidden p-2 bg-white/70 border border-[#8B9E8B]/40 shadow-[0_12px_32px_rgba(45,62,53,0.08)]">
+        <!-- ===================================================== -->
+        <!-- KONTEN INFO BRIDE (FADE IN/OUT DI DALAM CARD)         -->
+        <!-- ===================================================== -->
+        <div
+          ref="brideContentRef"
+          class="w-full flex flex-col items-center text-center justify-center py-1"
+          style="
+            position: absolute;
+            inset: 0;
+            padding: 26px 16px 18px 16px;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+          "
+        >
+          <!-- Badge The Bride -->
+          <span
+            class="text-[9.5px] uppercase tracking-[0.28em] text-[#1F3A2C] font-bold bg-[#E4ECE7]/95 px-3.5 py-1 rounded-full mb-2 shadow-xs border border-[#C2D6C9]"
+          >
+            The Bride
+          </span>
+
+          <!-- Foto Bride (Hanya tampil jika ada foto yang di-upload) -->
+          <div
+            v-if="invitation.bride_photo && resolveUrl(invitation.bride_photo)"
+            class="relative w-24 h-32 mb-2 overflow-hidden bg-white/95 border-2 border-white shadow-[0_8px_20px_rgba(45,62,53,0.18)]"
+            style="border-radius: 55px 55px 14px 14px;"
+          >
             <img
               :src="resolveUrl(invitation.bride_photo)"
               :alt="invitation.bride_name"
-              class="w-full h-full object-cover rounded-[90px] transition-transform duration-700 hover:scale-105"
+              class="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
             />
           </div>
-          <h3 class="text-2xl md:text-3xl font-serif font-semibold text-[#2D3E35] mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+
+          <!-- Nama Lengkap Bride -->
+          <h3
+            class="text-2xl sm:text-[25px] font-serif font-semibold text-[#162B20] leading-tight mb-1"
+            style="font-family: 'Cormorant Garamond', Georgia, serif;"
+          >
             {{ invitation.bride_full_name || invitation.bride_name }}
           </h3>
-          <p v-if="invitation.bride_father || invitation.bride_mother" class="text-xs md:text-sm text-[#5C7367] leading-relaxed max-w-xs mb-1">
-            Putri dari <br />
-            <strong class="font-medium text-[#2D3E35]">{{ invitation.bride_father }}</strong>
-            <template v-if="invitation.bride_mother"> &amp; <strong class="font-medium text-[#2D3E35]">{{ invitation.bride_mother }}</strong></template>
+
+          <!-- Nama Panggilan / Highlight -->
+          <span
+            v-if="invitation.bride_full_name && invitation.bride_name"
+            class="text-xs font-serif italic text-[#4D695A] mb-1.5"
+          >
+            ({{ invitation.bride_name }})
+          </span>
+
+          <!-- Divider Garis Halus -->
+          <div class="w-14 h-[1px] bg-gradient-to-r from-transparent via-[#3F6350]/40 to-transparent my-0.5"></div>
+
+          <!-- Orang Tua Bride -->
+          <p
+            v-if="invitation.bride_father || invitation.bride_mother"
+            class="text-xs text-[#3D5447] leading-relaxed max-w-[240px] mt-1"
+          >
+            <span class="italic text-[11px] text-[#5C7367]">Putri dari</span><br />
+            <strong class="font-semibold text-[#1B3024]">{{ invitation.bride_father }}</strong>
+            <template v-if="invitation.bride_mother">
+              <br /><span class="text-[11px]">&amp;</span> <strong class="font-semibold text-[#1B3024]">{{ invitation.bride_mother }}</strong>
+            </template>
           </p>
-          <p v-if="invitation.bride_origin" class="text-xs text-[#7A9A8B] mt-1 font-medium tracking-wide">
+
+          <!-- Asal Bride -->
+          <p
+            v-if="invitation.bride_origin"
+            class="text-[11px] text-[#5C7367] mt-1 font-medium tracking-wide flex items-center gap-1 justify-center"
+          >
+            <svg class="w-3 h-3 text-[#3F6350]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
             {{ invitation.bride_origin }}
           </p>
         </div>
@@ -64,7 +1313,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Invitation } from '@/types/invitation';
@@ -79,43 +1328,998 @@ const props = defineProps<{
   apiBase: string;
 }>();
 
-const coupleSection = ref<HTMLElement | null>(null);
-const sectionHeader = ref<HTMLElement | null>(null);
-const groomCard = ref<HTMLElement | null>(null);
-const brideCard = ref<HTMLElement | null>(null);
+const sectionRef = ref<HTMLElement | null>(null);
+const bgWrapperRef = ref<HTMLElement | null>(null);
+const bgInnerRef = ref<HTMLElement | null>(null);
+const whiteOverlayRef = ref<HTMLElement | null>(null);
+const fountainWrapperRef = ref<HTMLElement | null>(null);
+const coupleDecorWrapperRef = ref<HTMLElement | null>(null);
+const coupleTopDecorWrapperRef = ref<HTMLElement | null>(null);
+const quoteContainerRef = ref<HTMLElement | null>(null);
+const cardContainerRef = ref<HTMLElement | null>(null);
+const groomContentRef = ref<HTMLElement | null>(null);
+const brideContentRef = ref<HTMLElement | null>(null);
+
+let ctx: gsap.Context | null = null;
 
 const resolveUrl = (url: string | undefined) => {
-  if (!url) return 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80';
+  if (!url || !url.trim()) return '';
   return resolveAssetUrl(url, props.apiBase);
 };
 
-onMounted(() => {
-  if (!coupleSection.value) return;
+const parsedQuote = computed(() => {
+  if (!props.invitation.quote) return { body: '', source: '' };
 
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: coupleSection.value,
-      start: 'top 75%',
-      toggleActions: 'play none none none',
+  const raw = props.invitation.quote.trim();
+
+  if (raw.includes('\n')) {
+    const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (lines.length > 1) {
+      const lastLine = lines[lines.length - 1];
+      const bodyLines = lines.slice(0, -1);
+      return {
+        body: bodyLines.join('\n').replace(/^[“"']+|[”"']+$/g, '').trim(),
+        source: lastLine.replace(/^[-—–\s]+/, '').trim()
+      };
     }
-  });
+  }
 
-  tl.to(sectionHeader.value, {
-    opacity: 1,
-    y: 0,
-    duration: 1.0,
-    ease: 'power3.out'
-  })
-  .to([groomCard.value, brideCard.value], {
-    opacity: 1,
-    y: 0,
-    duration: 1.2,
-    stagger: 0.25,
-    ease: 'power3.out'
-  }, "-=0.6");
+  const qsMatch = raw.match(/^(.*?)(?:[\s—–-]+|\s+)([(]?(?:Q\.S\.|QS\.|Surah|H\.R\.|HR\.|Q\.S|QS)[^)]*[)]?)$/i);
+  if (qsMatch && qsMatch[1] && qsMatch[2]) {
+    return {
+      body: qsMatch[1].replace(/^[“"']+|[”"']+$/g, '').trim(),
+      source: qsMatch[2].replace(/^[-—–\s]+/, '').trim()
+    };
+  }
+
+  return {
+    body: raw.replace(/^[“"']+|[”"']+$/g, '').trim(),
+    source: ''
+  };
+});
+
+onMounted(() => {
+  if (!sectionRef.value) return;
+
+  ctx = gsap.context(() => {
+    // PINNING TIMELINE: QUOTE -> SLIDE PANORAMA -> CARD & GROOM IN -> HOLD GROOM -> GROOM OUT -> JEDA -> BRIDE IN -> HOLD BRIDE
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.value,
+        start: 'top top',
+        end: '+=400%',
+        pin: true,
+        scrub: 0.8,
+        anticipatePin: 1,
+      }
+    });
+
+    // 1. Tahan quote & posisi awal persis seperti semula saat baru masuk
+    tl.to({}, { duration: 0.35 });
+
+    // 2. Teks quote fade out & geser ke atas sedikit
+    if (quoteContainerRef.value) {
+      tl.to(quoteContainerRef.value, {
+        opacity: 0,
+        y: -30,
+        duration: 0.8,
+        ease: 'power2.inOut',
+      });
+    }
+
+    // 3. Layer putih fade out (memperlihatkan background hijau & air mancur alami)
+    if (whiteOverlayRef.value) {
+      tl.to(whiteOverlayRef.value, {
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.inOut',
+      }, "-=0.3");
+    }
+
+    // 4. Jeda sedikit sebelum mulai slide
+    tl.to({}, { duration: 0.3 });
+
+    // 5. Geser background panorama ke lorong gerbang bunga, Dekorasi Couple masuk, & Air mancur geser ke kiri
+    if (bgWrapperRef.value && fountainWrapperRef.value) {
+      tl.to(bgWrapperRef.value, {
+        xPercent: -50, // Geser 50% dari lebarnya (100vw) ke kiri
+        duration: 1.5,
+        ease: 'power1.inOut',
+      }, "slideGarden");
+
+      tl.to(fountainWrapperRef.value, {
+        xPercent: -100, // Geser 100% dari lebarnya (100vw) ke kiri
+        duration: 1.5,
+        ease: 'power1.inOut',
+      }, "slideGarden");
+
+      if (coupleDecorWrapperRef.value) {
+        tl.to(coupleDecorWrapperRef.value, {
+          xPercent: -50, // Geser bersama panorama ke tengah viewport couple
+          duration: 1.5,
+          ease: 'power1.inOut',
+        }, "slideGarden");
+      }
+
+      if (coupleTopDecorWrapperRef.value) {
+        tl.to(coupleTopDecorWrapperRef.value, {
+          xPercent: -50, // Geser bersama panorama ke tengah viewport couple
+          duration: 1.5,
+          ease: 'power1.inOut',
+        }, "slideGarden");
+      }
+
+      if (bgInnerRef.value) {
+        tl.to(bgInnerRef.value, {
+          scale: 1.2,
+          duration: 1.5,
+          ease: 'power1.inOut',
+        }, "slideGarden");
+      }
+    }
+
+    // 6. SETELAH SLIDE SEPENUHNYA SELESAI: Beri jeda sejenak, baru Card Container & Info GROOM mulai Fade In
+    tl.to({}, { duration: 0.25 });
+
+    if (cardContainerRef.value) {
+      tl.fromTo(
+        cardContainerRef.value,
+        { opacity: 0, scale: 0.93, y: 15 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.85, ease: 'power2.out' },
+        "cardAppear"
+      );
+    }
+
+    // Background panorama dan Asset Quotes (air mancur / mawar) ikut dibuat blur saat card mulai muncul
+    if (bgInnerRef.value) {
+      tl.to(
+        bgInnerRef.value,
+        {
+          filter: 'blur(8px)',
+          duration: 0.85,
+          ease: 'power2.out',
+        },
+        "cardAppear+=0.1"
+      );
+    }
+
+    if (fountainWrapperRef.value) {
+      tl.to(
+        fountainWrapperRef.value,
+        {
+          filter: 'blur(8px)',
+          duration: 0.85,
+          ease: 'power2.out',
+        },
+        "cardAppear+=0.1"
+      );
+    }
+
+    if (groomContentRef.value) {
+      tl.fromTo(
+        groomContentRef.value,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.85, ease: 'power2.out' },
+        "cardAppear+=0.15"
+      );
+    }
+
+    // 7. Hold info Groom agar bisa dibaca dengan nyaman & jelas
+    tl.to({}, { duration: 1.0 });
+
+    // 8. PERPINDAHAN DARI GROOM KE BRIDE DENGAN JEDA (TIDAK BERTUMPUKAN/NEMPEL)
+    // a. Info Groom Fade Out tuntas terlebih dahulu
+    if (groomContentRef.value) {
+      tl.to(groomContentRef.value, {
+        opacity: 0,
+        y: -20,
+        duration: 0.6,
+        ease: 'power2.in',
+      }, "groomOut");
+    }
+
+    // b. Beri jeda kosong (gap) saat card sedang bersih
+    tl.to({}, { duration: 0.45 });
+
+    // c. Info Bride baru Fade In masuk setelah jeda selesai
+    if (brideContentRef.value) {
+      tl.fromTo(
+        brideContentRef.value,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power2.out',
+          onStart: () => {
+            if (brideContentRef.value) brideContentRef.value.style.pointerEvents = 'auto';
+            if (groomContentRef.value) groomContentRef.value.style.pointerEvents = 'none';
+          },
+          onReverseComplete: () => {
+            if (brideContentRef.value) brideContentRef.value.style.pointerEvents = 'none';
+            if (groomContentRef.value) groomContentRef.value.style.pointerEvents = 'auto';
+          }
+        },
+        "brideIn"
+      );
+    }
+
+    // 9. Hold info Bride agar terbaca dengan nyaman
+    tl.to({}, { duration: 1.0 });
+
+    // 10. Card & Info Bride Fade Out, dan hilangkan blur background panorama sebelum pindah ke section countdown
+    if (cardContainerRef.value) {
+      tl.to(cardContainerRef.value, {
+        opacity: 0,
+        y: -15,
+        scale: 0.95,
+        duration: 0.8,
+        ease: 'power2.inOut',
+      }, "clearBlurAndExit");
+    }
+
+    if (bgInnerRef.value) {
+      tl.to(
+        bgInnerRef.value,
+        {
+          filter: 'blur(0px)',
+          duration: 0.8,
+          ease: 'power2.inOut',
+        },
+        "clearBlurAndExit"
+      );
+    }
+
+    if (fountainWrapperRef.value) {
+      tl.to(
+        fountainWrapperRef.value,
+        {
+          filter: 'blur(0px)',
+          duration: 0.8,
+          ease: 'power2.inOut',
+        },
+        "clearBlurAndExit"
+      );
+    }
+
+    // 11. Tahan sejenak tampilan background jernih tanpa blur sebelum lanjut scroll ke section countdown
+    tl.to({}, { duration: 0.8 });
+  }, sectionRef.value);
 });
 
 onBeforeUnmount(() => {
-  ScrollTrigger.getAll().forEach(st => st.kill());
+  if (ctx) {
+    ctx.revert();
+  }
 });
 </script>
+
+<style scoped>
+/* ======================================================== */
+/* 1. ANIMASI ALIRAN AIR PUCUK ATAS (WATER STREAMS)        */
+/* ======================================================== */
+.water-stream {
+  stroke-dasharray: 40 20;
+  animation: waterFlow 1.1s linear infinite;
+  opacity: 0.9;
+}
+
+.stream-center {
+  animation-duration: 0.85s;
+}
+.stream-center-fine {
+  stroke-dasharray: 20 15;
+  animation: waterFlow 0.65s linear infinite reverse;
+  opacity: 0.95;
+}
+.stream-left-inner {
+  animation-duration: 1.05s;
+  animation-delay: -0.2s;
+}
+.stream-right-inner {
+  animation-duration: 1.05s;
+  animation-delay: -0.4s;
+}
+
+.stream-left-cascade {
+  stroke-dasharray: 28 22 14 18 35 24;
+  animation: waterCascadeFlow 1.45s linear infinite;
+  animation-delay: -0.2s;
+  opacity: 0.85;
+}
+.stream-right-cascade {
+  stroke-dasharray: 28 22 14 18 35 24;
+  animation: waterCascadeFlow 1.45s linear infinite;
+  animation-delay: -0.7s;
+  opacity: 0.85;
+}
+.stream-left-fine-cascade {
+  stroke-dasharray: 12 28 16 32 8 24;
+  animation: waterCascadeFlow 1.1s linear infinite;
+  animation-delay: -0.4s;
+  opacity: 0.8;
+}
+.stream-right-fine-cascade {
+  stroke-dasharray: 12 28 16 32 8 24;
+  animation: waterCascadeFlow 1.1s linear infinite;
+  animation-delay: -0.9s;
+  opacity: 0.8;
+}
+.stream-center-mid-cascade {
+  stroke-dasharray: 14 26 12 28 10 24;
+  animation: waterCascadeFlow 1.25s linear infinite;
+  animation-delay: -0.3s;
+  opacity: 0.8;
+}
+.stream-center-mid-cascade2 {
+  stroke-dasharray: 14 26 12 28 10 24;
+  animation: waterCascadeFlow 1.25s linear infinite;
+  animation-delay: -0.8s;
+  opacity: 0.8;
+}
+
+@keyframes waterFlow {
+  0% {
+    stroke-dashoffset: 60;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes waterCascadeFlow {
+  0% {
+    stroke-dashoffset: 75;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* PERCIKAN / MIST PARTICLES DI PUCUK ATAS */
+.water-droplet {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 30%, rgba(220, 245, 255, 0.8) 70%, transparent 100%);
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.9));
+  pointer-events: none;
+  opacity: 0;
+}
+
+.drop-1 {
+  width: 4.5px;
+  height: 4.5px;
+  top: 10px;
+  left: 48%;
+  animation: sprayPop 1.1s ease-out infinite;
+  animation-delay: 0s;
+}
+.drop-2 {
+  width: 3.5px;
+  height: 3.5px;
+  top: 12px;
+  left: 52%;
+  animation: sprayPop 0.9s ease-out infinite;
+  animation-delay: 0.25s;
+}
+.drop-3 {
+  width: 4px;
+  height: 4px;
+  top: 8px;
+  left: 50%;
+  animation: sprayPop 1.3s ease-out infinite;
+  animation-delay: 0.5s;
+}
+.drop-4 {
+  width: 3px;
+  height: 3px;
+  top: 14px;
+  left: 46%;
+  animation: sprayPop 0.85s ease-out infinite;
+  animation-delay: 0.7s;
+}
+.drop-5 {
+  width: 3.5px;
+  height: 3.5px;
+  top: 14px;
+  left: 54%;
+  animation: sprayPop 1.0s ease-out infinite;
+  animation-delay: 0.35s;
+}
+
+@keyframes sprayPop {
+  0% {
+    transform: translate(0, 0) scale(0.3);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.95;
+    transform: translate(calc((var(--rand-x, 0.5) - 0.5) * 14px), -8px) scale(1.1);
+  }
+  100% {
+    transform: translate(calc((var(--rand-x, 0.5) - 0.5) * 26px), 12px) scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* TETESAN AIR JATUH KE MANGKOK */
+.basin-cascade-drop {
+  position: absolute;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 3px rgba(220, 250, 255, 0.9);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.b-drop-left-1 {
+  width: 3.2px;
+  height: 4.5px;
+  top: 30px;
+  left: 28px;
+  animation: dropSlideLeft 1.45s cubic-bezier(0.4, 0, 0.9, 1) infinite;
+  animation-delay: 0.1s;
+}
+.b-drop-left-2 {
+  width: 2.5px;
+  height: 3.5px;
+  top: 32px;
+  left: 42px;
+  animation: dropSlideLeft 1.2s cubic-bezier(0.4, 0, 0.9, 1) infinite;
+  animation-delay: 0.65s;
+}
+.b-drop-right-1 {
+  width: 3.2px;
+  height: 4.5px;
+  top: 30px;
+  left: 110px;
+  animation: dropSlideRight 1.45s cubic-bezier(0.4, 0, 0.9, 1) infinite;
+  animation-delay: 0.4s;
+}
+.b-drop-right-2 {
+  width: 2.5px;
+  height: 3.5px;
+  top: 32px;
+  left: 96px;
+  animation: dropSlideRight 1.2s cubic-bezier(0.4, 0, 0.9, 1) infinite;
+  animation-delay: 0.95s;
+}
+.b-drop-center-1 {
+  width: 2.8px;
+  height: 4px;
+  top: 35px;
+  left: 62px;
+  animation: dropSlideCenter 1.3s ease-in infinite;
+  animation-delay: 0.3s;
+}
+.b-drop-center-2 {
+  width: 2.8px;
+  height: 4px;
+  top: 35px;
+  left: 78px;
+  animation: dropSlideCenter 1.3s ease-in infinite;
+  animation-delay: 0.8s;
+}
+
+@keyframes dropSlideLeft {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-18px, 116px) scale(1.1);
+  }
+}
+
+@keyframes dropSlideRight {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(18px, 116px) scale(1.1);
+  }
+}
+
+@keyframes dropSlideCenter {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  25% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 115px) scale(1.0);
+  }
+}
+
+.top-splash {
+  animation: topSplashPop 1.1s ease-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.tsp-1 { animation-delay: 0.1s;  animation-duration: 1.1s; }
+.tsp-2 { animation-delay: 0.25s; animation-duration: 1.1s; }
+.tsp-3 { animation-delay: 0.35s; animation-duration: 1.0s; }
+.tsp-4 { animation-delay: 0.55s; animation-duration: 1.0s; }
+.tsp-5 { animation-delay: 0.15s; animation-duration: 1.25s; }
+.tsp-6 { animation-delay: 0.3s;  animation-duration: 0.9s; }
+.tsp-7 { animation-delay: 0.5s;  animation-duration: 1.05s; }
+.tsp-8 { animation-delay: 0.2s;  animation-duration: 1.2s; }
+.tsp-9 { animation-delay: 0.4s;  animation-duration: 1.2s; }
+.tsp-10{ animation-delay: 0.18s; animation-duration: 1.15s; }
+.tsp-11{ animation-delay: 0.32s; animation-duration: 1.15s; }
+
+@keyframes topSplashPop {
+  0% {
+    transform: translate(0, 0) scale(0.2);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.9;
+    transform: translate(0, -3.5px) scale(1.1);
+  }
+  65% {
+    opacity: 0.4;
+    transform: translate(0, -1px) scale(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 2px) scale(0.2);
+  }
+}
+
+/* ======================================================== */
+/* 2. ANIMASI TUMPAHAN MANGKUK (MULTI-SEGMENT STREAMS)     */
+/* ======================================================== */
+.basin-drips-container {
+  pointer-events: none;
+}
+
+.rim-water-sheen {
+  animation: rimSheenPulse 2.6s ease-in-out infinite alternate;
+}
+
+@keyframes rimSheenPulse {
+  0% {
+    opacity: 0.6;
+    transform: scaleY(0.95);
+  }
+  100% {
+    opacity: 0.85;
+    transform: scaleY(1.08);
+  }
+}
+
+.water-column {
+  animation: colSway 2.4s ease-in-out infinite alternate;
+  transform-origin: top center;
+  transform-box: fill-box;
+}
+.col-1 { animation-delay: 0s;     animation-duration: 2.5s; }
+.col-2 { animation-delay: -0.7s;  animation-duration: 2.1s; }
+.col-3 { animation-delay: -1.3s;  animation-duration: 2.3s; }
+.col-4 { animation-delay: -0.4s;  animation-duration: 2.6s; }
+.col-5 { animation-delay: -0.9s;  animation-duration: 2.4s; }
+
+@keyframes colSway {
+  0% {
+    transform: rotate(-0.6deg) translateX(-0.5px);
+  }
+  100% {
+    transform: rotate(0.6deg) translateX(0.5px);
+  }
+}
+
+.stream-root {
+  transform-origin: top center;
+  transform-box: fill-box;
+  animation-name: organicRootSwell;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.seg-root-1 { animation-delay: 0s;     animation-duration: 2.2s; }
+.seg-root-2 { animation-delay: -0.5s;  animation-duration: 2.0s; }
+.seg-root-3 { animation-delay: -1.1s;  animation-duration: 2.1s; }
+.seg-root-4 { animation-delay: -0.3s;  animation-duration: 2.4s; }
+.seg-root-5 { animation-delay: -0.8s;  animation-duration: 2.2s; }
+
+@keyframes organicRootSwell {
+  0%, 100% {
+    transform: scaleY(0.92) scaleX(0.95);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scaleY(1.08) scaleX(1.04);
+    opacity: 0.85;
+  }
+}
+
+.stream-strand {
+  opacity: 0.92;
+}
+
+.strand-main-1 {
+  stroke-dasharray: 30 20 18 18 10 22 28 20;
+  animation: naturalStreamFlowSide 2.5s linear infinite;
+}
+.strand-fine-1 {
+  stroke-dasharray: 8 28 14 32 6 26 12 30;
+  animation: naturalStreamFlowFineSide 1.9s linear infinite;
+  animation-delay: -0.4s;
+}
+
+.strand-main-2 {
+  stroke-dasharray: 35 20 22 18 12 22 8 22 28 20;
+  animation: naturalStreamFlowCenter 2.3s linear infinite;
+  animation-delay: -0.6s;
+}
+.strand-fine-2 {
+  stroke-dasharray: 10 30 16 34 6 28 14 32;
+  animation: naturalStreamFlowFineCenter 1.8s linear infinite;
+  animation-delay: -0.9s;
+}
+
+.strand-main-3 {
+  stroke-dasharray: 35 20 22 18 12 22 8 22 28 20;
+  animation: naturalStreamFlowCenter 2.35s linear infinite;
+  animation-delay: -1.2s;
+}
+.strand-fine-3 {
+  stroke-dasharray: 10 30 16 34 6 28 14 32;
+  animation: naturalStreamFlowFineCenter 1.85s linear infinite;
+  animation-delay: -0.2s;
+}
+
+.strand-main-4 {
+  stroke-dasharray: 30 20 18 18 10 22 28 20;
+  animation: naturalStreamFlowSide 2.55s linear infinite;
+  animation-delay: -0.8s;
+}
+.strand-fine-4 {
+  stroke-dasharray: 8 28 14 32 6 26 12 30;
+  animation: naturalStreamFlowFineSide 1.95s linear infinite;
+  animation-delay: -1.1s;
+}
+
+.strand-main-5 {
+  stroke-dasharray: 28 18 16 18 10 20 26 18;
+  animation: naturalStreamFlowSide 2.45s linear infinite;
+  animation-delay: -0.3s;
+}
+.strand-fine-5 {
+  stroke-dasharray: 7 26 12 30 5 24 10 28;
+  animation: naturalStreamFlowFineSide 1.88s linear infinite;
+  animation-delay: -0.7s;
+}
+
+@keyframes naturalStreamFlowSide {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -166;
+  }
+}
+
+@keyframes naturalStreamFlowFineSide {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -156;
+  }
+}
+
+@keyframes naturalStreamFlowCenter {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -205;
+  }
+}
+
+@keyframes naturalStreamFlowFineCenter {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -166;
+  }
+}
+
+/* PERCIKAN AIR DI KOLAM BAWAH */
+.micro-splash {
+  animation: microSplashPop 1.3s ease-out infinite;
+  opacity: 0;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.ms-1a { animation-delay: 0.1s;  animation-duration: 1.25s; }
+.ms-1b { animation-delay: 0.35s; animation-duration: 1.35s; }
+.ms-1c { animation-delay: 0.6s;  animation-duration: 1.2s; }
+
+.ms-2a { animation-delay: 0.15s; animation-duration: 1.15s; }
+.ms-2b { animation-delay: 0.4s;  animation-duration: 1.3s; }
+.ms-2c { animation-delay: 0.65s; animation-duration: 1.2s; }
+.ms-2d { animation-delay: 0.9s;  animation-duration: 1.4s; }
+
+.ms-3a { animation-delay: 0.25s; animation-duration: 1.18s; }
+.ms-3b { animation-delay: 0.5s;  animation-duration: 1.32s; }
+.ms-3c { animation-delay: 0.75s; animation-duration: 1.22s; }
+.ms-3d { animation-delay: 1.0s;  animation-duration: 1.38s; }
+
+.ms-4a { animation-delay: 0.2s;  animation-duration: 1.28s; }
+.ms-4b { animation-delay: 0.45s; animation-duration: 1.38s; }
+.ms-4c { animation-delay: 0.7s;  animation-duration: 1.24s; }
+
+.ms-5a { animation-delay: 0.18s; animation-duration: 1.22s; }
+.ms-5b { animation-delay: 0.42s; animation-duration: 1.32s; }
+.ms-5c { animation-delay: 0.68s; animation-duration: 1.26s; }
+
+@keyframes microSplashPop {
+  0% {
+    transform: translate(0, 0) scale(0.2);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+    transform: translate(0, -9px) scale(1.3);
+  }
+  60% {
+    opacity: 0.65;
+    transform: translate(0, -4px) scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 3px) scale(0.3);
+  }
+}
+
+.pond-hit-ripple {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: pondHitPulse 2.0s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+  opacity: 0;
+}
+
+.phr-1 { animation-delay: 0.1s;  animation-duration: 2.1s; }
+.phr-2 { animation-delay: 0.35s; animation-duration: 1.9s; }
+.phr-3 { animation-delay: 0.65s; animation-duration: 2.0s; }
+.phr-4 { animation-delay: 0.25s; animation-duration: 2.2s; }
+.phr-5 { animation-delay: 0.45s; animation-duration: 2.05s; }
+
+@keyframes pondHitPulse {
+  0% {
+    transform: scale(0.2);
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* ======================================================== */
+/* 3. ANIMASI RIAK GELOMBANG KOLAM BAWAH (POND RIPPLES)    */
+/* ======================================================== */
+.pond-ripples-container {
+  pointer-events: none;
+}
+
+.water-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.8px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 8px rgba(180, 240, 250, 0.4), inset 0 0 8px rgba(180, 240, 250, 0.4);
+  opacity: 0;
+  transform: scale(0.2);
+  animation: ripplePulse 2.8s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+
+.ripple-1 {
+  animation-delay: 0s;
+}
+.ripple-2 {
+  animation-delay: 0.9s;
+}
+.ripple-3 {
+  animation-delay: 1.8s;
+}
+
+@keyframes ripplePulse {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  60% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* ======================================================== */
+/* 4. ANIMASI BUNGA PINK TERTIUP ANGIN (RANDOM & FADED BASE)*/
+/* ======================================================== */
+.flower-sway {
+  transform-origin: bottom center;
+  /* Area pudar dibuat lebih luas & halus dari atas ke bawah */
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 25%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0) 85%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 25%, rgba(0, 0, 0, 0.5) 55%, rgba(0, 0, 0, 0) 85%);
+  will-change: transform;
+}
+
+/* Bunga 1: Ritme lembut ayun kiri-kanan */
+.flower-sway-1 {
+  animation: flowerWindSway1 3.7s ease-in-out infinite;
+  animation-delay: -0.4s;
+}
+
+/* Bunga 2: Ritme lambat melengkung lebih lebar */
+.flower-sway-2 {
+  animation: flowerWindSway2 4.6s ease-in-out infinite;
+  animation-delay: -1.8s;
+}
+
+/* Bunga 3: Ritme cepat dengan getaran angin kecil */
+.flower-sway-3 {
+  animation: flowerWindSway3 3.3s ease-in-out infinite;
+  animation-delay: -2.7s;
+}
+
+/* Bunga 4: Ritme tenang dengan variasi jeda angin */
+.flower-sway-4 {
+  animation: flowerWindSway4 4.9s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  animation-delay: -3.5s;
+}
+
+/* Bunga 5: Ritme asimetris dinamis */
+.flower-sway-5 {
+  animation: flowerWindSway5 4.1s ease-in-out infinite;
+  animation-delay: -1.1s;
+}
+
+/* Bunga 6: Ritme halus hembusan tipis */
+.flower-sway-6 {
+  animation: flowerWindSway6 3.6s ease-in-out infinite;
+  animation-delay: -0.7s;
+}
+
+/* Bunga 7: Ritme perlahan meliuk */
+.flower-sway-7 {
+  animation: flowerWindSway7 4.4s ease-in-out infinite;
+  animation-delay: -2.2s;
+}
+
+/* Bunga 8: Ritme dinamis ayun tegas */
+.flower-sway-8 {
+  animation: flowerWindSway8 3.8s ease-in-out infinite;
+  animation-delay: -1.5s;
+}
+
+/* Bunga 9: Ritme santai bergelombang */
+.flower-sway-9 {
+  animation: flowerWindSway9 4.7s cubic-bezier(0.4, 0.1, 0.6, 0.9) infinite;
+  animation-delay: -3.1s;
+}
+
+/* Bunga 10: Ritme cepat sepoi-sepoi */
+.flower-sway-10 {
+  animation: flowerWindSway10 3.4s ease-in-out infinite;
+  animation-delay: -2.0s;
+}
+
+@keyframes flowerWindSway1 {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-3.5deg); }
+  60% { transform: rotate(4deg); }
+  85% { transform: rotate(-1.5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flowerWindSway2 {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(4.2deg); }
+  55% { transform: rotate(-1deg); }
+  75% { transform: rotate(-3.8deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flowerWindSway3 {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-4.5deg); }
+  45% { transform: rotate(2deg); }
+  70% { transform: rotate(5deg); }
+  90% { transform: rotate(-1.2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flowerWindSway4 {
+  0% { transform: rotate(0deg); }
+  35% { transform: rotate(3.2deg); }
+  65% { transform: rotate(-4.2deg); }
+  85% { transform: rotate(1deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flowerWindSway5 {
+  0% { transform: rotate(0deg); }
+  22% { transform: rotate(-2.8deg); }
+  48% { transform: rotate(3.8deg); }
+  78% { transform: rotate(-4deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flowerWindSway6 {
+  0% { transform: rotate(0deg); }
+  28% { transform: rotate(3.6deg); }
+  52% { transform: rotate(-2.2deg); }
+  80% { transform: rotate(1.8deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flowerWindSway7 {
+  0% { transform: rotate(0deg); }
+  24% { transform: rotate(-3.8deg); }
+  58% { transform: rotate(4.2deg); }
+  82% { transform: rotate(-1.8deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flowerWindSway8 {
+  0% { transform: rotate(0deg); }
+  32% { transform: rotate(-4.0deg); }
+  62% { transform: rotate(3.4deg); }
+  84% { transform: rotate(-1.0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flowerWindSway9 {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(2.5deg); }
+  50% { transform: rotate(-3.6deg); }
+  75% { transform: rotate(4.0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes flowerWindSway10 {
+  0% { transform: rotate(0deg); }
+  26% { transform: rotate(-4.2deg); }
+  54% { transform: rotate(3.0deg); }
+  78% { transform: rotate(-2.0deg); }
+  100% { transform: rotate(0deg); }
+}
+</style>

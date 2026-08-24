@@ -2,71 +2,203 @@
   <section
     v-if="stories && stories.length > 0"
     ref="storySection"
-    class="min-h-[100dvh] flex flex-col justify-center py-20 md:py-28 px-4 md:px-8 relative overflow-hidden bg-[#EBF2EE]"
+    style="
+      position: relative;
+      min-height: 100dvh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 36px;
+      padding-bottom: 60px;
+      padding-left: 16px;
+      padding-right: 16px;
+      box-sizing: border-box;
+      overflow: hidden;
+      background-color: #EBF2EE;
+    "
   >
     <!-- Background Image Spanning Entire Section (Full Cover) -->
     <div
       ref="bgImg"
-      class="absolute inset-0 z-0 pointer-events-none transform-gpu"
+      style="
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+        width: 100%;
+        height: 100%;
+        will-change: transform;
+      "
       :style="{
-        backgroundImage: `url('${backgroundImage || 'https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_58ea9077-7626-4fc9-9599-5b1233a9db3f.webp'}')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'calc(50% + 7px) center',
-        backgroundRepeat: 'no-repeat',
-        width: '100%',
-        height: '100%',
+        backgroundImage: `url('${backgroundImage || 'https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_3df150cb-e69e-4f29-899d-2ea0abe58183.webp'}')`,
       }"
     ></div>
 
-    <div class="max-w-3xl mx-auto w-full relative z-10">
-      <!-- Section Header -->
-      <div ref="headerRef" class="opacity-0 translate-y-6 text-center mb-16">
-        <span class="text-xs uppercase tracking-[0.3em] text-[#5C7367] font-semibold block mb-2">Kisah Cinta</span>
-        <h2 class="text-3xl md:text-5xl font-serif text-[#2D3E35] font-medium" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+    <div
+      style="
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 380px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      "
+    >
+      <!-- Section Header at Top Stone Arch Area -->
+      <div
+        ref="headerRef"
+        style="
+          text-align: center;
+          margin-bottom: 20px;
+          width: 100%;
+          opacity: 0;
+          transform: translateY(20px);
+        "
+      >
+        <span
+          style="
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: #243E30;
+            margin-bottom: 4px;
+            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.95);
+          "
+        >
+          Kisah Cinta
+        </span>
+        <h2
+          style="
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: #152B1E;
+            line-height: 1.2;
+            margin: 0;
+            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.95);
+          "
+        >
           Cerita Perjalanan Kami
         </h2>
-        <div class="w-12 h-[1.5px] bg-[#7A9A8B] mx-auto mt-4"></div>
+        <div
+          style="
+            width: 40px;
+            height: 1.5px;
+            background-color: #385E48;
+            margin: 8px auto 0 auto;
+            border-radius: 2px;
+          "
+        ></div>
       </div>
 
-      <!-- Timeline Container -->
-      <div class="relative pl-6 md:pl-0">
-        <!-- Vertical Line -->
-        <div class="absolute left-6 md:left-1/2 top-4 bottom-4 w-[2px] bg-[#8B9E8B]/40 -translate-x-1/2"></div>
-
-        <!-- Story Items -->
-        <div 
-          v-for="(item, idx) in stories" 
+      <!-- Story Items Container with clean gap -->
+      <div
+        style="
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        "
+      >
+        <div
+          v-for="(item, idx) in stories"
           :key="idx"
           ref="storyNodes"
-          class="relative mb-12 last:mb-0 opacity-0 translate-y-8 flex flex-col md:flex-row items-center group"
-          :class="idx % 2 === 0 ? 'md:flex-row-reverse' : ''"
+          style="
+            position: relative;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.38);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            border-radius: 20px;
+            padding: 14px 18px;
+            box-shadow: 0 8px 24px rgba(20, 40, 28, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(24px);
+          "
         >
-          <!-- Timeline Node Marker -->
-          <div class="absolute left-0 md:left-1/2 top-0 -translate-x-1/2 w-6 h-6 rounded-full bg-white border-2 border-[#4A6B5B] flex items-center justify-center shadow-sm z-10 group-hover:scale-125 transition-transform duration-300">
-            <div class="w-2 h-2 rounded-full bg-[#4A6B5B]"></div>
+          <!-- Date / Year Badge -->
+          <div style="display: flex; align-items: center; margin-bottom: 6px;">
+            <span
+              style="
+                display: inline-flex;
+                align-items: center;
+                padding: 2.5px 10px;
+                border-radius: 9999px;
+                background-color: rgba(36, 62, 48, 0.9);
+                color: #FFFFFF;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+              "
+            >
+              {{ item.date }}
+            </span>
           </div>
 
-          <!-- Content Card -->
-          <div class="w-full md:w-[45%] ml-6 md:ml-0">
-            <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-[#8B9E8B]/30 shadow-[0_8px_25px_rgba(45,62,53,0.05)]">
-              <span class="inline-block px-3.5 py-1 rounded-full bg-[#E3ECE5] text-[#4A6B5B] text-xs font-semibold uppercase tracking-wider mb-3">
-                {{ item.date }}
-              </span>
-              <h3 class="text-xl md:text-2xl font-serif font-semibold text-[#2D3E35] mb-3" style="font-family: 'Cormorant Garamond', Georgia, serif;">
-                {{ item.title }}
-              </h3>
-              <p class="text-xs md:text-sm text-[#5C7367] leading-relaxed whitespace-pre-line">
-                {{ item.description }}
-              </p>
-              
-              <div v-if="item.photo" class="mt-4 rounded-2xl overflow-hidden aspect-[4/3]">
-                <img 
-                  :src="resolveUrl(item.photo)" 
-                  :alt="item.title"
-                  class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </div>
-            </div>
+          <!-- Title -->
+          <h3
+            style="
+              font-family: 'Cormorant Garamond', Georgia, serif;
+              font-size: 18px;
+              font-weight: 700;
+              color: #12261A;
+              margin: 0 0 5px 0;
+              line-height: 1.25;
+            "
+          >
+            {{ item.title }}
+          </h3>
+
+          <!-- Description -->
+          <p
+            style="
+              font-size: 12px;
+              color: #274031;
+              line-height: 1.5;
+              white-space: pre-line;
+              margin: 0;
+              font-weight: 400;
+            "
+          >
+            {{ item.description }}
+          </p>
+
+          <!-- Optional Photo -->
+          <div
+            v-if="item.photo"
+            style="
+              margin-top: 10px;
+              border-radius: 12px;
+              overflow: hidden;
+              width: 100%;
+              aspect-ratio: 16/9;
+              border: 1px solid rgba(255, 255, 255, 0.6);
+            "
+          >
+            <img
+              :src="resolveUrl(item.photo)"
+              :alt="item.title"
+              style="
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+              "
+            />
           </div>
         </div>
       </div>
@@ -93,7 +225,7 @@ const props = withDefaults(
   }>(),
   {
     backgroundImage:
-      'https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_58ea9077-7626-4fc9-9599-5b1233a9db3f.webp',
+      'https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_3df150cb-e69e-4f29-899d-2ea0abe58183.webp',
   }
 );
 
