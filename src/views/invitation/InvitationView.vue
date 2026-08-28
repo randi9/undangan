@@ -1291,16 +1291,6 @@ onBeforeUnmount(() => {
               style="max-width: none"
             />
 
-            <!-- Botanical Crest for Evergreen -->
-            <div
-              v-if="themeName === 'evergreen'"
-              :ref="setHeroTextRef"
-              class="mb-2 text-white/90 drop-shadow-md opacity-0"
-            >
-              <svg class="w-8 h-8 md:w-9 md:h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v18m0-18C8 3 4 7 4 12s4 9 8 9m0-18c4 0 8 4 8 9s-4 9-8 9"/>
-              </svg>
-            </div>
 
             <p
               :ref="setHeroTextRef"

@@ -481,7 +481,6 @@ withDefaults(
 
 const heroSection = ref<HTMLElement | null>(null);
 const heroContent = ref<HTMLElement | null>(null);
-const iconEmblem = ref<SVGElement | null>(null);
 const bgImg = ref<HTMLElement | null>(null);
 </script>
 
