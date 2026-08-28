@@ -48,16 +48,16 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- 2. LAYER PUTIH (OVERLAY YANG FADE OUT SAAT SCROLL)       -->
+    <!-- 2. LAYER PUTIH (OVERLAY MENUTUP SELURUH SECTION) -->
     <!-- ======================================================== -->
     <div
       ref="whiteOverlayRef"
       style="
         position: absolute;
         inset: 0;
-        z-index: 28;
+        z-index: 30;
         pointer-events: none;
-        background: #ffffff;
+        background-color: #ffffff;
         opacity: 0.5;
       "
     ></div>
@@ -70,7 +70,7 @@
       style="
         position: absolute;
         inset: 0;
-        z-index: 29;
+        z-index: 31;
         pointer-events: none;
         filter: blur(0px);
         will-change: filter, transform;
@@ -505,6 +505,110 @@
     </div>
 
     <!-- ======================================================== -->
+    <!-- TEKS DOA PENGANTIN (AWAL HIDDEN, FADE IN SETELAH QUOTE FADE OUT) -->
+    <!-- ======================================================== -->
+    <div
+      v-if="invitation.show_doa_pengantin"
+      ref="doaContainerRef"
+      class="doa-text-container"
+      style="
+        position: absolute;
+        top: 16%;
+        right: 6%;
+        max-width: 320px;
+        z-index: 35;
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        pointer-events: auto;
+        opacity: 0;
+        visibility: hidden;
+      "
+    >
+      <!-- Icon / Decorative Mark -->
+      <div
+        style="
+          color: #2F4A3B;
+          opacity: 0.85;
+          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        "
+      >
+        <span style="width: 24px; height: 1px; background: linear-gradient(to left, #3F6350, transparent);"></span>
+        <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+        </svg>
+      </div>
+
+      <!-- Judul -->
+      <h3
+        style="
+          font-family: 'Cormorant Garamond', Georgia, serif;
+          font-size: 24px;
+          color: #1B3024;
+          margin-bottom: 12px;
+          font-weight: 600;
+        "
+      >
+        Doa Pengantin
+      </h3>
+
+      <!-- Teks Arab -->
+      <p
+        style="
+          font-family: 'Amiri', 'Traditional Arabic', serif;
+          font-size: 24px;
+          line-height: 1.6;
+          color: #1B3024;
+          direction: rtl;
+          margin-bottom: 12px;
+          text-align: right;
+          word-spacing: 2px;
+        "
+      >
+        بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ
+      </p>
+
+      <!-- Terjemahan -->
+      <p
+        style="
+          font-family: 'Montserrat', sans-serif;
+          font-size: 11.5px;
+          line-height: 1.6;
+          color: #2F4A3B;
+          margin: 0;
+          font-style: italic;
+          opacity: 0.9;
+        "
+      >
+        "Semoga Allah memberkahimu dan memberkahi apa yang menjadi tanggung jawabmu, serta menyatukan kalian berdua dalam kebaikan."
+      </p>
+
+      <!-- Sumber -->
+      <p
+        style="
+          font-family: 'Montserrat', sans-serif;
+          font-size: 10px;
+          font-weight: 700;
+          color: #3F6350;
+          margin-top: 8px;
+          letter-spacing: 0.05em;
+        "
+      >
+        (HR. Abu Dawud no. 2130)
+      </p>
+
+      <!-- Garis Aksen Dekoratif -->
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 12px; opacity: 0.75;">
+        <span style="width: 40px; height: 1px; background: linear-gradient(to left, #3F6350, transparent);"></span>
+        <div style="width: 4px; height: 4px; border-radius: 50%; background-color: #2F4A3B;"></div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
     <!-- PANDUAN PENGATURAN POSISI CONTAINER GERBANG INFO COUPLE: -->
     <!-- - Posisi Vertikal   : Ubah 'top: 60%' (misal: 48%, 52%, 60%) -->
     <!-- - Posisi Horizontal : Ubah 'left: 50%' (misal: 50%, 52%) -->
@@ -525,7 +629,7 @@
         left: 0;
         width: 200%;
         height: 100%;
-        z-index: 25;
+        z-index: 10;
         pointer-events: none;
         overflow: hidden;
       "
@@ -574,7 +678,7 @@
         left: 0;
         width: 200%;
         height: 100%;
-        z-index: 27;
+        z-index: 10;
         pointer-events: none;
         overflow: hidden;
       "
@@ -1134,7 +1238,7 @@
         transform: translate(-50%, -50%);
         width: 88%;
         max-width: 330px;
-        z-index: 20;
+        z-index: 0;
         pointer-events: none;
         opacity: 0;
       "
@@ -1169,7 +1273,7 @@
         >
           <!-- Badge The Groom -->
           <span
-            class="text-[9.5px] uppercase tracking-[0.28em] text-[#1F3A2C] font-bold bg-[#E4ECE7]/95 px-3.5 py-1 rounded-full mb-2 shadow-xs border border-[#C2D6C9]"
+            class="text-[9.5px] uppercase tracking-[0.28em] text-[#1F3A2C] font-bold bg-[#E4ECE7]/95 px-5 py-1.5 rounded-full mb-2 shadow-xs border border-[#C2D6C9]"
           >
             The Groom
           </span>
@@ -1187,20 +1291,22 @@
             />
           </div>
 
-          <!-- Nama Lengkap Groom -->
+          <!-- Nama Panggilan / Nama Depan -->
           <h3
-            class="text-2xl sm:text-[25px] font-serif font-semibold text-[#162B20] leading-tight mb-1"
+            v-if="invitation.groom_name"
+            class="text-2xl sm:text-[28px] font-serif font-semibold text-[#162B20] leading-tight mb-1 underline underline-offset-6 decoration-1 decoration-[#162B20]/30"
             style="font-family: 'Cormorant Garamond', Georgia, serif;"
           >
-            {{ invitation.groom_full_name || invitation.groom_name }}
+            {{ invitation.groom_name }}
           </h3>
 
-          <!-- Nama Panggilan / Highlight -->
+          <!-- Nama Lengkap / Panjang -->
           <span
-            v-if="invitation.groom_full_name && invitation.groom_name"
-            class="text-xs font-serif italic text-[#4D695A] mb-1.5"
+            v-if="invitation.groom_full_name && invitation.groom_full_name !== invitation.groom_name"
+            class="text-sm sm:text-base font-serif text-[#162B20] mb-2 font-medium"
+            style="font-family: 'Cormorant Garamond', Georgia, serif;"
           >
-            ({{ invitation.groom_name }})
+            {{ invitation.groom_full_name }}
           </span>
 
           <!-- Divider Garis Halus -->
@@ -1247,7 +1353,7 @@
         >
           <!-- Badge The Bride -->
           <span
-            class="text-[9.5px] uppercase tracking-[0.28em] text-[#1F3A2C] font-bold bg-[#E4ECE7]/95 px-3.5 py-1 rounded-full mb-2 shadow-xs border border-[#C2D6C9]"
+            class="text-[9.5px] uppercase tracking-[0.28em] text-[#1F3A2C] font-bold bg-[#E4ECE7]/95 px-5 py-1.5 rounded-full mb-2 shadow-xs border border-[#C2D6C9]"
           >
             The Bride
           </span>
@@ -1265,20 +1371,22 @@
             />
           </div>
 
-          <!-- Nama Lengkap Bride -->
+          <!-- Nama Panggilan / Nama Depan -->
           <h3
-            class="text-2xl sm:text-[25px] font-serif font-semibold text-[#162B20] leading-tight mb-1"
+            v-if="invitation.bride_name"
+            class="text-2xl sm:text-[28px] font-serif font-semibold text-[#162B20] leading-tight mb-1 underline underline-offset-6 decoration-1 decoration-[#162B20]/30"
             style="font-family: 'Cormorant Garamond', Georgia, serif;"
           >
-            {{ invitation.bride_full_name || invitation.bride_name }}
+            {{ invitation.bride_name }}
           </h3>
 
-          <!-- Nama Panggilan / Highlight -->
+          <!-- Nama Lengkap / Panjang -->
           <span
-            v-if="invitation.bride_full_name && invitation.bride_name"
-            class="text-xs font-serif italic text-[#4D695A] mb-1.5"
+            v-if="invitation.bride_full_name && invitation.bride_full_name !== invitation.bride_name"
+            class="text-sm sm:text-base font-serif text-[#162B20] mb-2 font-medium"
+            style="font-family: 'Cormorant Garamond', Georgia, serif;"
           >
-            ({{ invitation.bride_name }})
+            {{ invitation.bride_full_name }}
           </span>
 
           <!-- Divider Garis Halus -->
@@ -1331,14 +1439,15 @@ const props = defineProps<{
 const sectionRef = ref<HTMLElement | null>(null);
 const bgWrapperRef = ref<HTMLElement | null>(null);
 const bgInnerRef = ref<HTMLElement | null>(null);
-const whiteOverlayRef = ref<HTMLElement | null>(null);
 const fountainWrapperRef = ref<HTMLElement | null>(null);
 const coupleDecorWrapperRef = ref<HTMLElement | null>(null);
 const coupleTopDecorWrapperRef = ref<HTMLElement | null>(null);
 const quoteContainerRef = ref<HTMLElement | null>(null);
+const doaContainerRef = ref<HTMLElement | null>(null);
 const cardContainerRef = ref<HTMLElement | null>(null);
 const groomContentRef = ref<HTMLElement | null>(null);
 const brideContentRef = ref<HTMLElement | null>(null);
+const whiteOverlayRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
 
@@ -1348,7 +1457,7 @@ const resolveUrl = (url: string | undefined) => {
 };
 
 const parsedQuote = computed(() => {
-  if (!props.invitation.quote) return { body: '', source: '' };
+  if (!props.invitation?.quote) return { body: '', source: '' };
 
   const raw = props.invitation.quote.trim();
 
@@ -1382,12 +1491,12 @@ onMounted(() => {
   if (!sectionRef.value) return;
 
   ctx = gsap.context(() => {
-    // PINNING TIMELINE: QUOTE -> SLIDE PANORAMA -> CARD & GROOM IN -> HOLD GROOM -> GROOM OUT -> JEDA -> BRIDE IN -> HOLD BRIDE
+    // PINNING TIMELINE: QUOTE -> (DOA PENGANTIN if enabled) -> SLIDE PANORAMA -> CARD & GROOM IN -> HOLD GROOM -> GROOM OUT -> JEDA -> BRIDE IN -> HOLD BRIDE
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=400%',
+        end: props.invitation?.show_doa_pengantin ? '+=500%' : '+=400%',
         pin: true,
         scrub: 0.8,
         anticipatePin: 1,
@@ -1397,26 +1506,76 @@ onMounted(() => {
     // 1. Tahan quote & posisi awal persis seperti semula saat baru masuk
     tl.to({}, { duration: 0.35 });
 
-    // 2. Teks quote fade out & geser ke atas sedikit
-    if (quoteContainerRef.value) {
-      tl.to(quoteContainerRef.value, {
-        opacity: 0,
-        y: -30,
-        duration: 0.8,
-        ease: 'power2.inOut',
-      });
+    if (props.invitation?.show_doa_pengantin) {
+      // 2. Teks quote fade out & geser ke atas sedikit
+      if (quoteContainerRef.value) {
+        tl.to(quoteContainerRef.value, {
+          opacity: 0,
+          y: -30,
+          duration: 0.8,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'hidden';
+          },
+          onReverseComplete: () => {
+            if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'visible';
+          }
+        });
+      }
+
+      // 3. Teks Doa Pengantin fade in
+      if (doaContainerRef.value) {
+        tl.to(doaContainerRef.value, {
+          onStart: () => {
+            if (doaContainerRef.value) doaContainerRef.value.style.visibility = 'visible';
+          },
+          onReverseComplete: () => {
+            if (doaContainerRef.value) doaContainerRef.value.style.visibility = 'hidden';
+          },
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power2.inOut',
+        });
+      }
+
+      // 4. Tahan teks Doa Pengantin sejenak
+      tl.to({}, { duration: 0.6 });
+
+      // 5. Teks Doa Pengantin fade out
+      if (doaContainerRef.value) {
+        tl.to(doaContainerRef.value, {
+          opacity: 0,
+          y: -30,
+          duration: 0.8,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            if (doaContainerRef.value) doaContainerRef.value.style.visibility = 'hidden';
+          },
+          onReverseComplete: () => {
+            if (doaContainerRef.value) doaContainerRef.value.style.visibility = 'visible';
+          }
+        }, "fadeOutDoa");
+      }
+    } else {
+      // JIKA TIDAK ADA DOA: Langsung fade out quote
+      if (quoteContainerRef.value) {
+        tl.to(quoteContainerRef.value, {
+          opacity: 0,
+          y: -30,
+          duration: 0.8,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'hidden';
+          },
+          onReverseComplete: () => {
+            if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'visible';
+          }
+        }, "fadeOutQuoteOnly");
+      }
     }
 
-    // 3. Layer putih fade out (memperlihatkan background hijau & air mancur alami)
-    if (whiteOverlayRef.value) {
-      tl.to(whiteOverlayRef.value, {
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power2.inOut',
-      }, "-=0.3");
-    }
-
-    // 4. Jeda sedikit sebelum mulai slide
+    // Jeda sedikit sebelum mulai slide
     tl.to({}, { duration: 0.3 });
 
     // 5. Geser background panorama ke lorong gerbang bunga, Dekorasi Couple masuk, & Air mancur geser ke kiri
@@ -1452,6 +1611,14 @@ onMounted(() => {
       if (bgInnerRef.value) {
         tl.to(bgInnerRef.value, {
           scale: 1.2,
+          duration: 1.5,
+          ease: 'power1.inOut',
+        }, "slideGarden");
+      }
+
+      if (whiteOverlayRef.value) {
+        tl.to(whiteOverlayRef.value, {
+          opacity: 0,
           duration: 1.5,
           ease: 'power1.inOut',
         }, "slideGarden");

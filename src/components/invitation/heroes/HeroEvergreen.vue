@@ -520,9 +520,21 @@ const bgImg = ref<HTMLElement | null>(null);
   will-change: transform;
 }
 
+/* Freeze Hero animations while the cover transition is still on top
+   (class added/removed by CoverEvergreen) so the hidden Hero sits at
+   the exact same asset positions as the cover's end state */
+html.evergreen-hero-frozen .evergreen-cloud-drift,
+html.evergreen-hero-frozen .evergreen-branch-sway-1,
+html.evergreen-hero-frozen .evergreen-branch-sway-2,
+html.evergreen-hero-frozen .evergreen-branch-sway-3,
+html.evergreen-hero-frozen .evergreen-leaf-wrap,
+html.evergreen-hero-frozen .evergreen-leaf-img {
+  animation-play-state: paused !important;
+}
+
 @keyframes evergreenCloudMove {
   0% {
-    transform: translate3d(-30%, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
     transform: translate3d(calc(100vw - 50%), 0, 0);

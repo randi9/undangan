@@ -457,7 +457,6 @@ const isClosingOverlay = ref(false);
 const isPlaying = ref(false);
 
 const invitationContainer = ref<HTMLElement | null>(null);
-let resizeObserver: ResizeObserver | null = null;
 
 // Preload all images/backgrounds used in the invitation
 // Preload all images/backgrounds used in the invitation
@@ -517,6 +516,7 @@ async function preloadAllAssets() {
     urls.add("https://media.mengundanganda.com/evergreen/countdown%20section/dewirandi_3413e0a7-5e28-44d0-a2ef-5bb6d9e052da.webp");
     urls.add("https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_3df150cb-e69e-4f29-899d-2ea0abe58183.webp");
     urls.add("https://media.mengundanganda.com/evergreen/footer%20section/dewirandi_ad5c156d-47bf-47c8-872e-0ae7ab0ab0bd.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/rsvp/dewirandi_9fe27500-64c2-44a6-981e-91f7e7403647.webp");
   }
 
   // Collect all <img> src attributes
@@ -587,7 +587,7 @@ function animateHeroOval() {
     gsap.set(heroTextItems.value, { y: 20, opacity: 0 });
 
     const tl = gsap.timeline({
-      delay: 0.2, // Sinkron langsung saat kartu cover larut tanpa jeda
+      delay: 2.0, // Sinkron dengan akhir animasi cover evergreen (~2.25s total)
     });
 
     tl.to(heroOval.value, {
@@ -696,23 +696,7 @@ watch(lightboxOpen, (open) => {
   }
 });
 
-watch(invitationContainer, (el) => {
-  if (resizeObserver) {
-    resizeObserver.disconnect();
-    resizeObserver = null;
-  }
 
-  if (el) {
-    let refreshTimeout: any = null;
-    resizeObserver = new ResizeObserver(() => {
-      if (refreshTimeout) clearTimeout(refreshTimeout);
-      refreshTimeout = setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 100);
-    });
-    resizeObserver.observe(el);
-  }
-});
 const musicPlayer = ref<HTMLAudioElement>();
 
 // Reactive Theme Selector
@@ -822,7 +806,7 @@ function openInvitation() {
       })
       .catch((e) => console.error("Audio blocked by browser:", e));
   }
-  const closeDelay = themeName.value === 'fairytale_garden' ? 3200 : themeName.value === 'evergreen' ? 850 : 1400;
+  const closeDelay = themeName.value === 'fairytale_garden' ? 3200 : themeName.value === 'evergreen' ? 2750 : 1400;
   setTimeout(() => {
     isClosingOverlay.value = false;
   }, closeDelay);
@@ -1085,10 +1069,6 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  if (resizeObserver) {
-    resizeObserver.disconnect();
-    resizeObserver = null;
-  }
   document.removeEventListener("visibilitychange", handleVisibilityChange);
   if (countdownTimer) clearInterval(countdownTimer);
   destroySmoothScroll();
@@ -1420,12 +1400,12 @@ onBeforeUnmount(() => {
         @open-lightbox="openLightbox"
       />
 
-      <!-- RSVP & GIFT WRAPPER (For shared background) -->
+      <!-- RSVP, GIFT, & FOOTER WRAPPER (Unified 250dvh section) -->
       <div
         class="rsvp-gift-wrapper"
         style="position: relative; width: 100%; z-index: 10"
       >
-        <!-- Shared Background for RSVP & Gift -->
+        <!-- Shared Background for RSVP & Gift in Blue themes -->
         <div
           v-if="['floral_blue', 'elegant_blue'].includes(themeName)"
           style="
@@ -1451,6 +1431,78 @@ onBeforeUnmount(() => {
           ></div>
         </div>
 
+        <!-- Shared Unified 250dvh Background for Evergreen (Sky Blue to Grass Green Blend) -->
+        <div
+          v-if="themeName === 'evergreen'"
+          class="absolute inset-0 w-full pointer-events-none -z-10 overflow-hidden"
+          style="
+            background: linear-gradient(
+              to bottom,
+              rgba(163, 199, 216, 0.7) 0%,
+              rgba(163, 199, 216, 0.7) 64%,
+              rgba(143, 183, 173, 0.7) 74%,
+              rgba(124, 168, 130, 0.7) 82%,
+              rgba(124, 168, 130, 0.7) 100%
+            );
+          "
+        ></div>
+
+        <!-- Background Asset Antara RSVP dan Gift untuk Tema Evergreen -->
+        <div
+          v-if="themeName === 'evergreen'"
+          style="
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); /* Menjaga asset tetap di tengah saat lebar disesuaikan */
+            z-index: -5;           /* Di bawah form/card RSVP dan Gift, di atas background dasar */
+            pointer-events: none;   /* Mencegah mengganggu interaksi form */
+            
+            /* ============================================================== */
+            /* SILAKAN ATUR POSISI NAIK/TURUN (GESER-GESER) DI SINI           */
+            /* Ubah persentase atau gunakan pixel, contoh: '25%', '30%', '950px' */
+            /* ============================================================== */
+            top: 42%;
+
+            /* ============================================================== */
+            /* SILAKAN ATUR UKURAN LEBAR DI SINI                             */
+            /* Contoh: '100%' (layar penuh), '120%' (lebih besar/lebar), '80%' */
+            /* ============================================================== */
+            width: 150%;
+
+            /* ============================================================== */
+            /* SILAKAN ATUR OPASITAS (TRANSPARANSI) DI SINI                  */
+            /* Nilai dari 0.0 (transparan penuh) sampai 1.0 (padat/jelas)     */
+            /* ============================================================== */
+            opacity: 1;
+          "
+        >
+          <img
+            src="https://media.mengundanganda.com/evergreen/rsvp/dewirandi_d08d670f-ed92-4c32-b59f-f796ef232a4e.webp"
+            alt="Evergreen RSVP Divider Bg"
+            style="
+              width: 100%;
+              height: auto;
+              display: block;
+              -webkit-mask-image: linear-gradient(
+                to bottom,
+                #000 0%,
+                #000 30%,
+                rgba(0, 0, 0, 0.7) 40%,
+                rgba(0, 0, 0, 0.3) 50%,
+                transparent 60%
+              );
+              mask-image: linear-gradient(
+                to bottom,
+                #000 0%,
+                #000 30%,
+                rgba(0, 0, 0, 0.7) 40%,
+                rgba(0, 0, 0, 0.3) 50%,
+                transparent 60%
+              );
+            "
+          />
+        </div>
+
         <!-- RSVP (Dynamic per theme) -->
         <component
           :is="activeRsvp"
@@ -1466,22 +1518,61 @@ onBeforeUnmount(() => {
           :invitation="invitation"
           :theme-config="activeTheme"
         />
-      </div>
 
-      <!-- FOOTER (Dynamic per theme) -->
-      <component
-        :is="activeFooter"
-        :invitation="invitation"
-        :theme-config="activeTheme"
-        :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"
-        :submitting="rsvpSubmitting"
-        :stories="loveStory"
-        :photos="invitation.photos || []"
-        :gallery-type="invitation.gallery_type || 'carousel'"
-        :api-base="apiBase"
-        @submit-rsvp="handleSubmitRsvp"
-        @open-lightbox="openLightbox"
-      />
+        <!-- Background Asset Antara Gift dan Footer untuk Tema Evergreen -->
+        <div
+          v-if="themeName === 'evergreen'"
+          style="
+            position: relative;
+            display: flex;
+            justify-content: center;
+            z-index: 5;
+            pointer-events: none;
+
+            /* ============================================================== */
+            /* SILAKAN ATUR POSISI NAIK/TURUN DI SINI                        */
+            /* Ubah margin-top/margin-bottom, contoh: '-40px', '20px'        */
+            /* ============================================================== */
+            margin-top: 60px;
+          "
+        >
+          <img
+            src="https://media.mengundanganda.com/evergreen/rsvp/dewirandi_9fe27500-64c2-44a6-981e-91f7e7403647.webp"
+            alt="Evergreen Gift Footer Divider Bg"
+            style="
+              display: block;
+
+              /* ============================================================== */
+              /* SILAKAN ATUR UKURAN DI SINI                                   */
+              /* Contoh: width: '100%', '80%', '300px'                          */
+              /* ============================================================== */
+              width: 100%;
+              height: auto;
+
+              /* ============================================================== */
+              /* SILAKAN ATUR OPASITAS (TRANSPARANSI) DI SINI                  */
+              /* Nilai dari 0.0 (transparan penuh) sampai 1.0 (padat/jelas)     */
+              /* ============================================================== */
+              opacity: 0.8;
+            "
+          />
+        </div>
+
+        <!-- FOOTER (Dynamic per theme) -->
+        <component
+          :is="activeFooter"
+          :invitation="invitation"
+          :theme-config="activeTheme"
+          :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"
+          :submitting="rsvpSubmitting"
+          :stories="loveStory"
+          :photos="invitation.photos || []"
+          :gallery-type="invitation.gallery_type || 'carousel'"
+          :api-base="apiBase"
+          @submit-rsvp="handleSubmitRsvp"
+          @open-lightbox="openLightbox"
+        />
+      </div>
 
       <!-- Powered by branding (trial only, sticky bottom) -->
       <div v-if="invitation.is_trial" class="powered-by-sticky">

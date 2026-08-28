@@ -322,192 +322,507 @@
     <!-- ======================================================== -->
     <div
       ref="eventsContainerRef"
-      class="w-full max-w-lg mx-auto px-4 relative z-20 flex flex-col items-center justify-center text-center opacity-0"
-      style="position: absolute; inset: 0; margin: auto; height: fit-content; pointer-events: none;"
+      class="w-full mx-auto px-0 relative z-20 flex flex-col items-center justify-center text-center opacity-0"
+      style="position: absolute; inset: 0; margin: auto; height: 100%; max-width: 580px; pointer-events: none;"
     >
       <!-- Events Header -->
-      <div ref="eventsHeaderRef" class="mb-4 sm:mb-5">
+      <div ref="eventsHeaderRef" style="position: absolute; top: 8%; margin-bottom: 0; pointer-events: auto;">
         <span
-          class="text-[10.5px] uppercase tracking-[0.3em] text-[#1F3A2C] font-bold block mb-1"
-          style="text-shadow: 0 1px 3px rgba(255, 255, 255, 0.85);"
+          class="text-[12px] uppercase tracking-[0.3em] font-bold block mb-1.5"
+          style="color: #ffffff; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);"
         >
           Rangkaian Acara
         </span>
         <h2
-          class="text-2xl sm:text-3xl md:text-4xl font-serif text-[#162B20] font-semibold leading-tight"
-          style="font-family: 'Cormorant Garamond', Georgia, serif; text-shadow: 0 2px 6px rgba(255, 255, 255, 0.9);"
+          class="font-serif font-semibold leading-tight"
+          style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 38px; color: #ffffff; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);"
         >
           Waktu & Lokasi
         </h2>
-        <div class="w-10 h-[1.5px] bg-[#3F6350] mx-auto mt-2"></div>
+        <div class="w-12 h-[1.5px] mx-auto mt-3" style="background-color: #ffffff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);"></div>
       </div>
 
-      <!-- Single Elegant Glass Card Container (Menampung Akad & Resepsi bergantian) -->
+      <!-- ===================================================== -->
+      <!-- CONTAINER CARD EVENT DENGAN 3D FLIP UNTUK KHUTBAH NIKAH -->
+      <!-- ===================================================== -->
       <div
         ref="eventCardWrapperRef"
-        class="relative w-full max-w-[340px] sm:max-w-[370px] min-h-[330px] sm:min-h-[350px] bg-white/85 backdrop-blur-md rounded-[28px] sm:rounded-[32px] border border-white/80 shadow-[0_20px_50px_rgba(27,48,36,0.25)] p-5 sm:p-6 flex items-center justify-center overflow-hidden pointer-events-auto"
+        class="relative w-full pointer-events-auto flex items-center justify-center"
+        style="
+          width: 540px;
+          max-width: 100%;
+          min-height: 450px;
+          opacity: 1;
+          perspective: 1200px;
+        "
       >
-        <!-- Garis Aksen Dekoratif Lengkung Bagian Dalam (Inner Border) -->
         <div
+          ref="cardInnerRef"
           style="
-            position: absolute;
-            inset: 6px;
-            border: 1px solid rgba(47, 74, 59, 0.2);
-            border-radius: 24px;
-            pointer-events: none;
+            position: relative;
+            width: 100%;
+            min-height: 450px;
+            transform-style: preserve-3d;
+            will-change: transform;
           "
-        ></div>
-
-        <!-- ===================================================== -->
-        <!-- KONTEN INFO AKAD NIKAH                                -->
-        <!-- ===================================================== -->
-        <div
-          v-if="invitation.akad_date"
-          ref="akadContentRef"
-          class="w-full flex flex-col items-center justify-between text-center relative z-10 py-1"
         >
-          <!-- Badge Akad Nikah -->
-          <div class="flex items-center justify-center gap-1.5 mb-2.5">
-            <span class="px-3.5 py-1 rounded-full bg-[#E4ECE7]/95 text-[#1F3A2C] text-[10px] font-bold uppercase tracking-widest border border-[#C2D6C9] shadow-xs">
-              Akad Nikah
-            </span>
-          </div>
-
-          <!-- Tanggal Akad -->
-          <h3
-            class="text-xl sm:text-2xl font-serif font-bold text-[#162B20] mb-2.5"
-            style="font-family: 'Cormorant Garamond', Georgia, serif;"
+          <!-- ===================================================== -->
+          <!-- MUKA DEPAN: AKAD NIKAH & RESEPSI                      -->
+          <!-- ===================================================== -->
+          <div
+            ref="cardFrontRef"
+            style="
+              position: relative;
+              width: 100%;
+              min-height: 450px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+              backface-visibility: hidden;
+              -webkit-backface-visibility: hidden;
+              transform: rotateY(0deg);
+            "
           >
-            {{ formatDate(invitation.akad_date) }}
-          </h3>
+            <!-- Background Image dengan Opasitas 0.8 (Akad & Resepsi) -->
+            <!-- Menggunakan background-size 128% 100% untuk memotong margin transparan pada gambar asli sehingga kertas parchment terlihat jauh lebih lebar -->
+            <div
+              style="
+                position: absolute;
+                inset: 0;
+                background-image: url('https://media.mengundanganda.com/evergreen/event%20section/dewirandi_8708174e-3b5b-43cb-b600-7f147e60e54f.webp');
+                background-size: 128% 100%;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: 0.8;
+                pointer-events: none;
+                z-index: 0;
+              "
+            ></div>
 
-          <!-- Detail Waktu & Lokasi -->
-          <div class="space-y-2 text-xs text-[#3D5447] mb-4 w-full max-w-[280px]">
-            <!-- Waktu -->
-            <div class="flex items-center justify-center gap-2">
-              <svg class="w-3.5 h-3.5 text-[#3F6350] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              <span class="font-medium">{{ invitation.akad_time || '08:00 WIB - Selesai' }}</span>
-            </div>
-
-            <!-- Tempat & Alamat -->
-            <div class="flex flex-col items-center text-center gap-0.5">
-              <div class="flex items-center gap-1 text-[#1B3024] font-semibold">
-                <svg class="w-3.5 h-3.5 text-[#3F6350] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                <span>{{ invitation.akad_venue }}</span>
+            <!-- ===================================================== -->
+            <!-- KONTEN INFO AKAD NIKAH                                -->
+            <!-- ===================================================== -->
+            <div
+              v-if="invitation.akad_date"
+              ref="akadContentRef"
+              class="w-full flex flex-col items-center justify-center text-center relative z-10"
+              style="max-width: 320px; margin: 0 auto; padding-top: 55px; padding-bottom: 55px;"
+            >
+              <!-- Badge Akad Nikah -->
+              <div style="margin-bottom: 8px;">
+                <span style="
+                  display: inline-block;
+                  padding: 4px 12px;
+                  border-radius: 9999px;
+                  background-color: rgba(228, 236, 231, 0.95);
+                  color: #1f3a2c;
+                  font-size: 9.5px;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.15em;
+                  border: 1px solid #c2d6c9;
+                ">
+                  Akad Nikah
+                </span>
               </div>
-              <p v-if="invitation.akad_address" class="text-[11px] text-[#5C7367] leading-relaxed line-clamp-2">
-                {{ invitation.akad_address }}
-              </p>
+
+              <!-- Tanggal Akad -->
+              <h3
+                style="
+                  font-family: 'Cormorant Garamond', Georgia, serif;
+                  font-size: 19px;
+                  font-weight: 700;
+                  color: #162b20;
+                  margin-bottom: 10px;
+                  line-height: 1.2;
+                "
+              >
+                {{ formatDate(invitation.akad_date) }}
+              </h3>
+
+              <!-- Detail Waktu & Lokasi -->
+              <div style="
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                font-size: 11px;
+                color: #3d5447;
+                margin-bottom: 14px;
+                width: 100%;
+              ">
+                <!-- Waktu -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                  <svg style="width: 14px; height: 14px; color: #3f6350; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span style="font-weight: 600;">{{ invitation.akad_time || '08:00 WIB - Selesai' }}</span>
+                </div>
+
+                <!-- Tempat & Alamat -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                  <div style="display: flex; align-items: center; gap: 4px; color: #1b3024; font-weight: 700;">
+                    <svg style="width: 14px; height: 14px; color: #3f6350; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>{{ invitation.akad_venue }}</span>
+                  </div>
+                  <p v-if="invitation.akad_address" style="font-size: 10.5px; color: #5c7367; line-height: 1.4; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ invitation.akad_address }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Tombol Peta Lokasi & Streaming -->
+              <div style="display: flex; flex-direction: column; gap: 6px; width: 100%; align-items: center;">
+                <a
+                  v-if="invitation.akad_map_url"
+                  :href="invitation.akad_map_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    padding: 8px 24px;
+                    border-radius: 9999px;
+                    background-color: #2f4a3b;
+                    color: #ffffff;
+                    text-decoration: none;
+                    font-size: 10px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+                  "
+                >
+                  <span>Buka Peta Lokasi</span>
+                  <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </a>
+
+                <!-- Streaming Button if no resepsi and no khutbah -->
+                <a
+                  v-if="!invitation.resepsi_date && !invitation.khutbah_nikah && invitation.streaming_enabled && invitation.streaming_url"
+                  :href="invitation.streaming_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    padding: 7px 20px;
+                    border-radius: 9999px;
+                    background-color: #e4ece7;
+                    color: #1f3a2c;
+                    text-decoration: none;
+                    font-size: 9.5px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                  "
+                >
+                  <span>Live Streaming</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- KONTEN INFO RESEPSI PERNIKAHAN                        -->
+            <!-- ===================================================== -->
+            <div
+              v-if="invitation.resepsi_date"
+              ref="resepsiContentRef"
+              class="w-full flex flex-col items-center justify-center text-center"
+              :style="invitation.akad_date ? 'position: absolute; left: 0; right: 0; margin: auto; max-width: 320px; padding-top: 55px; padding-bottom: 55px; z-index: 10; opacity: 0; pointer-events: none;' : 'position: relative; z-index: 10; max-width: 320px; margin: 0 auto; padding-top: 55px; padding-bottom: 55px;'"
+            >
+              <!-- Badge Resepsi -->
+              <div style="margin-bottom: 8px;">
+                <span style="
+                  display: inline-block;
+                  padding: 4px 12px;
+                  border-radius: 9999px;
+                  background-color: rgba(228, 236, 231, 0.95);
+                  color: #1f3a2c;
+                  font-size: 9.5px;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.15em;
+                  border: 1px solid #c2d6c9;
+                ">
+                  Resepsi Pernikahan
+                </span>
+              </div>
+
+              <!-- Tanggal Resepsi -->
+              <h3
+                style="
+                  font-family: 'Cormorant Garamond', Georgia, serif;
+                  font-size: 18px;
+                  font-weight: 700;
+                  color: #162b20;
+                  margin-bottom: 10px;
+                  line-height: 1.2;
+                "
+              >
+                {{ formatDate(invitation.resepsi_date) }}
+              </h3>
+
+              <!-- Detail Waktu & Lokasi -->
+              <div style="
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                font-size: 11px;
+                color: #3d5447;
+                margin-bottom: 14px;
+                width: 100%;
+              ">
+                <!-- Waktu -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+                  <svg style="width: 14px; height: 14px; color: #3f6350; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span style="font-weight: 600;">{{ invitation.resepsi_time || '11:00 WIB - Selesai' }}</span>
+                </div>
+
+                <!-- Tempat & Alamat -->
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+                  <div style="display: flex; align-items: center; gap: 4px; color: #1b3024; font-weight: 700;">
+                    <svg style="width: 14px; height: 14px; color: #3f6350; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>{{ invitation.resepsi_venue }}</span>
+                  </div>
+                  <p v-if="invitation.resepsi_address" style="font-size: 10.5px; color: #5c7367; line-height: 1.4; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ invitation.resepsi_address }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Tombol Peta Lokasi & Streaming -->
+              <div style="display: flex; flex-direction: column; gap: 6px; width: 100%; align-items: center;">
+                <a
+                  v-if="invitation.resepsi_map_url"
+                  :href="invitation.resepsi_map_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    padding: 8px 24px;
+                    border-radius: 9999px;
+                    background-color: #2f4a3b;
+                    color: #ffffff;
+                    text-decoration: none;
+                    font-size: 10px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+                  "
+                >
+                  <span>Buka Peta Lokasi</span>
+                  <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </a>
+
+                <!-- Live Streaming Button (jika tidak ada khutbah) -->
+                <a
+                  v-if="!invitation.khutbah_nikah && invitation.streaming_enabled && invitation.streaming_url"
+                  :href="invitation.streaming_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    padding: 7px 20px;
+                    border-radius: 9999px;
+                    background-color: #e4ece7;
+                    color: #1f3a2c;
+                    text-decoration: none;
+                    font-size: 9.5px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                  "
+                >
+                  <span>Live Streaming</span>
+                </a>
+              </div>
             </div>
           </div>
 
-          <!-- Tombol Peta Lokasi & Streaming -->
-          <div class="w-full flex flex-col gap-2">
-            <a
-              v-if="invitation.akad_map_url"
-              :href="invitation.akad_map_url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 rounded-full bg-[#2F4A3B] hover:bg-[#23382C] text-white transition-all duration-300 text-[10.5px] font-semibold uppercase tracking-wider shadow-sm"
-            >
-              <span>Buka Peta Lokasi</span>
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-              </svg>
-            </a>
-
-            <!-- Streaming Button if no resepsi -->
-            <a
-              v-if="!invitation.resepsi_date && invitation.streaming_enabled && invitation.streaming_url"
-              :href="invitation.streaming_url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-full bg-[#E4ECE7] hover:bg-[#D4E2D8] text-[#1F3A2C] text-[10px] font-semibold uppercase tracking-wider"
-            >
-              <span>Siaran Langsung (Live Streaming)</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- ===================================================== -->
-        <!-- KONTEN INFO RESEPSI PERNIKAHAN                        -->
-        <!-- ===================================================== -->
-        <div
-          v-if="invitation.resepsi_date"
-          ref="resepsiContentRef"
-          class="w-full flex flex-col items-center justify-between text-center py-1"
-          :style="invitation.akad_date ? 'position: absolute; inset: 0; padding: 20px 24px; z-index: 10; opacity: 0; pointer-events: none;' : 'position: relative; z-index: 10;'"
-        >
-          <!-- Badge Resepsi -->
-          <div class="flex items-center justify-center gap-1.5 mb-2.5">
-            <span class="px-3.5 py-1 rounded-full bg-[#E4ECE7]/95 text-[#1F3A2C] text-[10px] font-bold uppercase tracking-widest border border-[#C2D6C9] shadow-xs">
-              Resepsi Pernikahan
-            </span>
-          </div>
-
-          <!-- Tanggal Resepsi -->
-          <h3
-            class="text-xl sm:text-2xl font-serif font-bold text-[#162B20] mb-2.5"
-            style="font-family: 'Cormorant Garamond', Georgia, serif;"
+          <!-- ===================================================== -->
+          <!-- MUKA BELAKANG: KHUTBAH NIKAH (3D FLIP EFFECT)         -->
+          <!-- ===================================================== -->
+          <div
+            v-if="invitation.khutbah_nikah"
+            ref="cardBackRef"
+            style="
+              position: absolute;
+              inset: 0;
+              width: 100%;
+              min-height: 450px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+              backface-visibility: hidden;
+              -webkit-backface-visibility: hidden;
+              transform: rotateY(180deg);
+              pointer-events: none;
+            "
           >
-            {{ formatDate(invitation.resepsi_date) }}
-          </h3>
+            <!-- Background Image dengan Opasitas 0.8 (Gambar Khutbah Nikah Khusus) -->
+            <div
+              style="
+                position: absolute;
+                inset: 0;
+                background-image: url('https://media.mengundanganda.com/evergreen/event%20section/dewirandi_6b2fbf61-2abe-4871-9fe3-6e0e3c90637a.webp');
+                background-size: 128% 100%;
+                background-position: center center;
+                background-repeat: no-repeat;
+                opacity: 0.8;
+                pointer-events: none;
+                z-index: 0;
+              "
+            ></div>
 
-          <!-- Detail Waktu & Lokasi -->
-          <div class="space-y-2 text-xs text-[#3D5447] mb-4 w-full max-w-[280px]">
-            <!-- Waktu -->
-            <div class="flex items-center justify-center gap-2">
-              <svg class="w-3.5 h-3.5 text-[#3F6350] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              <span class="font-medium">{{ invitation.resepsi_time || '11:00 WIB - Selesai' }}</span>
-            </div>
-
-            <!-- Tempat & Alamat -->
-            <div class="flex flex-col items-center text-center gap-0.5">
-              <div class="flex items-center gap-1 text-[#1B3024] font-semibold">
-                <svg class="w-3.5 h-3.5 text-[#3F6350] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                <span>{{ invitation.resepsi_venue }}</span>
+            <!-- KONTEN INFO KHUTBAH NIKAH -->
+            <div
+              class="w-full flex flex-col items-center justify-center text-center relative z-10"
+              style="max-width: 320px; margin: 0 auto; padding-top: 55px; padding-bottom: 55px;"
+            >
+              <!-- Badge Khutbah Nikah -->
+              <div style="margin-bottom: 8px;">
+                <span
+                  style="
+                    display: inline-block;
+                    padding: 4px 12px;
+                    border-radius: 9999px;
+                    background-color: rgba(228, 236, 231, 0.95);
+                    color: #1f3a2c;
+                    font-size: 9.5px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.15em;
+                    border: 1px solid #c2d6c9;
+                  "
+                >
+                  Khutbah Nikah
+                </span>
               </div>
-              <p v-if="invitation.resepsi_address" class="text-[11px] text-[#5C7367] leading-relaxed line-clamp-2">
-                {{ invitation.resepsi_address }}
+
+              <!-- Deskripsi Pengantar -->
+              <p
+                style="
+                  font-size: 11.5px;
+                  color: #ffffff;
+                  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+                  line-height: 1.45;
+                  margin: 0 0 14px 0;
+                  max-width: 270px;
+                "
+              >
+                Akad nikah akan dibekali khutbah nikah oleh:
               </p>
+
+              <!-- Kotak Nama Khatib / Penceramah -->
+              <div
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  background: rgba(255, 255, 255, 0.65);
+                  border: 1px solid rgba(47, 74, 59, 0.2);
+                  border-radius: 12px;
+                  padding: 8px 16px;
+                  margin-bottom: 8px;
+                  max-width: 280px;
+                  box-sizing: border-box;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+                "
+              >
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <svg style="width: 15px; height: 15px; color: #2f4a3b; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                  </svg>
+                  <span
+                    style="
+                      font-family: 'Cormorant Garamond', Georgia, serif;
+                      font-size: 16px;
+                      font-weight: 700;
+                      color: #142a1d;
+                      line-height: 1.25;
+                    "
+                  >
+                    {{ khutbahParts.speaker }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Waktu Khutbah -->
+              <div
+                v-if="khutbahParts.time"
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 5px;
+                  font-size: 11px;
+                  font-weight: 600;
+                  color: #ffffff;
+                  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+                  margin-bottom: 14px;
+                "
+              >
+                <svg style="width: 13px; height: 13px; color: #ffffff; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>Pukul: {{ khutbahParts.time }}</span>
+              </div>
+
+              <!-- Live Streaming Button (jika streaming diaktifkan) -->
+              <div v-if="invitation.streaming_enabled && invitation.streaming_url" style="display: flex; flex-direction: column; gap: 6px; width: 100%; align-items: center;">
+                <a
+                  :href="invitation.streaming_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    padding: 7px 20px;
+                    border-radius: 9999px;
+                    background-color: #2f4a3b;
+                    color: #ffffff;
+                    text-decoration: none;
+                    font-size: 9.5px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.08em;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+                  "
+                >
+                  <svg style="width: 12px; height: 12px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                  </svg>
+                  <span>Saksikan Khutbah Live</span>
+                </a>
+              </div>
             </div>
-          </div>
-
-          <!-- Tombol Peta Lokasi & Streaming -->
-          <div class="w-full flex flex-col gap-2">
-            <a
-              v-if="invitation.resepsi_map_url"
-              :href="invitation.resepsi_map_url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 rounded-full bg-[#2F4A3B] hover:bg-[#23382C] text-white transition-all duration-300 text-[10.5px] font-semibold uppercase tracking-wider shadow-sm"
-            >
-              <span>Buka Peta Lokasi</span>
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-              </svg>
-            </a>
-
-            <!-- Live Streaming Button -->
-            <a
-              v-if="invitation.streaming_enabled && invitation.streaming_url"
-              :href="invitation.streaming_url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-full bg-[#E4ECE7] hover:bg-[#D4E2D8] text-[#1F3A2C] text-[10px] font-semibold uppercase tracking-wider"
-            >
-              <span>Siaran Langsung (Live Streaming)</span>
-            </a>
           </div>
         </div>
       </div>
@@ -540,6 +855,9 @@ const countdownContainerRef = ref<HTMLElement | null>(null);
 const eventsContainerRef = ref<HTMLElement | null>(null);
 const eventsHeaderRef = ref<HTMLElement | null>(null);
 const eventCardWrapperRef = ref<HTMLElement | null>(null);
+const cardInnerRef = ref<HTMLElement | null>(null);
+const cardFrontRef = ref<HTMLElement | null>(null);
+const cardBackRef = ref<HTMLElement | null>(null);
 const akadContentRef = ref<HTMLElement | null>(null);
 const resepsiContentRef = ref<HTMLElement | null>(null);
 
@@ -585,6 +903,19 @@ const calendarUrl = computed(() => {
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${formattedDate}/${formattedDate}`;
 });
 
+const khutbahParts = computed(() => {
+  const raw = props.invitation?.khutbah_nikah;
+  if (!raw) return { speaker: '', time: '' };
+  if (raw.includes('/')) {
+    const parts = raw.split('/');
+    return {
+      speaker: parts[0]?.trim() ?? '',
+      time: parts[1]?.trim() ?? ''
+    };
+  }
+  return { speaker: raw.trim(), time: '' };
+});
+
 onMounted(() => {
   if (!sectionRef.value) return;
 
@@ -598,12 +929,22 @@ onMounted(() => {
       gsap.set(bgImageRef.value, { scale: 1.25, transformOrigin: 'center center' });
     }
 
-    // PINNING TIMELINE: COUNTDOWN -> FULL SLIDE TO GAZEBO (TOP OF IMAGE) -> EVENTS IN -> AKAD -> RESEPSI -> EXIT
+    // HITUNG PIN END DINAMIS
+    const hasResepsi = !!props.invitation?.resepsi_date;
+    const hasKhutbah = !!props.invitation?.khutbah_nikah;
+    let pinEnd = '+=400%';
+    if (hasResepsi && hasKhutbah) {
+      pinEnd = '+=550%';
+    } else if (hasResepsi || hasKhutbah) {
+      pinEnd = '+=460%';
+    }
+
+    // PINNING TIMELINE: COUNTDOWN -> FULL SLIDE TO GAZEBO -> EVENTS IN -> AKAD -> RESEPSI -> FLIP KHUTBAH -> EXIT
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: '+=400%',
+        end: pinEnd,
         pin: true,
         scrub: 0.6,
         anticipatePin: 1,
@@ -756,7 +1097,33 @@ onMounted(() => {
       tl.to({}, { duration: 1.1 });
     }
 
-    // 8. Keluar ke section berikutnya (Love Story)
+    // 8. Jika ada Khutbah Nikah, lakukan efek 3D Flip Card ke samping
+    if (props.invitation?.khutbah_nikah && cardInnerRef.value) {
+      tl.to({}, { duration: 0.35 });
+
+      tl.to(
+        cardInnerRef.value,
+        {
+          rotateY: 180,
+          duration: 1.1,
+          ease: 'power2.inOut',
+          onStart: () => {
+            if (cardBackRef.value) cardBackRef.value.style.pointerEvents = 'auto';
+            if (cardFrontRef.value) cardFrontRef.value.style.pointerEvents = 'none';
+          },
+          onReverseComplete: () => {
+            if (cardBackRef.value) cardBackRef.value.style.pointerEvents = 'none';
+            if (cardFrontRef.value) cardFrontRef.value.style.pointerEvents = 'auto';
+          },
+        },
+        'flipToKhutbah'
+      );
+
+      // Hold info Khutbah Nikah
+      tl.to({}, { duration: 1.2 });
+    }
+
+    // 9. Keluar ke section berikutnya (Love Story)
     if (eventsContainerRef.value) {
       tl.to(eventsContainerRef.value, {
         opacity: 0,

@@ -33,13 +33,14 @@
     <!-- 2. Opasitas        : Ubah 'opacity: 1' (misal: 0.8, 0.95, 1) -->
     <!-- ======================================================== -->
     <div
+      ref="whiteOverlayRef"
       style="
         position: absolute;
         inset: 0;
         z-index: 1;
         pointer-events: none;
-        background: #ffffff;
-        opacity: 0.5;                            /* ATUR KEPEKATAN PUTIH: 0.2 (tipis), 0.35 (sedang), 0.5 (tebal) */
+        background-color: #ffffff;
+        opacity: 0.5;                            /* ATUR KEPEKATAN PUTIH: 0.3 (tipis), 0.35 (sedang), 0.5 (tebal) */
       "
     ></div>
 
@@ -531,8 +532,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const props = defineProps<{
   quote?: string;
@@ -541,6 +546,9 @@ const props = defineProps<{
 }>();
 
 const quoteSection = ref<HTMLElement | null>(null);
+const whiteOverlayRef = ref<HTMLElement | null>(null);
+
+let ctx: gsap.Context | null = null;
 
 const parsedQuote = computed(() => {
   if (!props.quote) return { body: '', source: '' };
@@ -573,6 +581,30 @@ const parsedQuote = computed(() => {
     body: raw.replace(/^[“"']+|[”"']+$/g, '').trim(),
     source: ''
   };
+});
+
+onMounted(() => {
+  if (!quoteSection.value) return;
+
+  ctx = gsap.context(() => {
+    // Animasi memudarkan layer putih (opacity 0.3 -> 0) saat mau masuk ke section couple
+    if (whiteOverlayRef.value) {
+      gsap.to(whiteOverlayRef.value, {
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: quoteSection.value,
+          start: 'bottom 90%', // Mulai menghilang saat bagian bawah section quotes di 90% viewport
+          end: 'bottom 35%',   // Benar-benar hilang saat bagian bawah section quotes di 35% viewport
+          scrub: true,
+        },
+      });
+    }
+  }, quoteSection.value);
+});
+
+onBeforeUnmount(() => {
+  ctx?.revert();
 });
 </script>
 

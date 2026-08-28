@@ -1,43 +1,206 @@
 <template>
-  <section ref="rsvpSection" class="py-20 md:py-28 px-4 md:px-8 bg-[#EBF2EE] relative overflow-hidden">
-    <div class="max-w-3xl mx-auto relative z-10">
+  <section
+    ref="rsvpSection"
+    style="
+      position: relative;
+      min-height: 100dvh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 16px;
+      box-sizing: border-box;
+      background: transparent;
+      overflow: hidden;
+    "
+  >
+    <!-- Dekorasi RSVP (Top Tengah) -->
+    <div
+      style="
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%); /* Menjaga asset tetap di tengah saat lebar disesuaikan */
+        z-index: 1;
+        pointer-events: none;   /* Mencegah mengganggu interaksi form */
+        user-select: none;
+        
+        /* ============================================================== */
+        /* SILAKAN ATUR POSISI NAIK/TURUN (GESER-GESER) DI SINI           */
+        /* Ubah persentase atau gunakan pixel, contoh: '-100px', '20px', '5%' */
+        /* ============================================================== */
+        top: -500px;
+
+        /* ============================================================== */
+        /* SILAKAN ATUR UKURAN LEBAR DI SINI                             */
+        /* Contoh: '300px', '500px', '100%' (lebar penuh)                 */
+        /* ============================================================== */
+        width: 600px;
+
+        /* ============================================================== */
+        /* SILAKAN ATUR OPASITAS (TRANSPARANSI) DI SINI                  */
+        /* Nilai dari 0.0 (transparan penuh) sampai 1.0 (padat/jelas)     */
+        /* ============================================================== */
+        opacity: 0.6;
+      "
+    >
+      <img
+        src="https://media.mengundanganda.com/evergreen/rsvp/dewirandi_6cc42f07-39fe-4cb4-aab6-fe56a08e534e.webp"
+        alt="RSVP Decoration Bg"
+        style="
+          width: 100%;
+          height: auto;
+          display: block;
+        "
+      />
+    </div>
+
+    <div style="width: 100%; max-width: 580px; margin: 0 auto; position: relative; z-index: 10; box-sizing: border-box;">
       <!-- Section Header -->
-      <div ref="headerRef" class="opacity-0 translate-y-6 text-center mb-14">
-        <span class="text-xs uppercase tracking-[0.3em] text-[#5C7367] font-semibold block mb-2">Konfirmasi & Ucapan</span>
-        <h2 class="text-3xl md:text-5xl font-serif text-[#2D3E35] font-medium" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+      <div 
+        ref="headerRef" 
+        style="
+          opacity: 0;
+          transform: translateY(24px);
+          text-align: center;
+          margin-bottom: 28px;
+          box-sizing: border-box;
+        "
+      >
+        <span 
+          style="
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: #5C7367;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+          "
+        >
+          Konfirmasi & Ucapan
+        </span>
+        <h2 
+          style="
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(32px, 5vw, 44px);
+            font-weight: 500;
+            color: #2D3E35;
+            line-height: 1.2;
+            margin: 0;
+            box-sizing: border-box;
+          "
+        >
           RSVP & Buku Tamu
         </h2>
-        <div class="w-12 h-[1.5px] bg-[#7A9A8B] mx-auto mt-4"></div>
+        <div style="width: 48px; height: 1.5px; background-color: #7A9A8B; margin: 16px auto 0 auto; box-sizing: border-box;"></div>
       </div>
 
+      <!-- ========== ASSET ATAS FORM (GW) ========== -->
+      <!-- ^^ NGOTAK-NGATIK: posisi & ukuran cuma di div di bawah ini (yang ada ref="assetRef") ^^ -->
+      <div
+        ref="assetRef"
+        style="
+          opacity: 0;               /* JANGAN DIHAPUS: biar munculnya bareng animasi form */
+          transform: translateY(32px); /* JANGAN DIHAPUS: posisi awal buat slide-up */
+
+          position: relative;
+          z-index: 2;               /* naikkan kalau mau asset di DEPAN form, turunkan ke 0 kalau mau di belakang */
+          width: 390px;             /* >>> UBAT UKURAN DI SINI (contoh: '280px', '500px') */
+          max-width: none;
+          left: -15px;
+          margin-bottom: -100px;     /* >>> UBAT JARAK / NAIK-TURUN KE FORM DI SINI: negatif = tumpang tindih ke atas form */
+          pointer-events: none;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/rsvp/dewirandi_cace218a-32ed-40b6-af79-9e24061c1988.webp"
+          alt="RSVP Asset Top"
+          style="
+            width: 100%;
+            height: auto;
+            display: block;
+            opacity: 1;             /* UBAT TRANSPARANSI DI SINI (0.0 - 1.0) */
+          "
+        />
+      </div>
+      <!-- ========== /ASSET ATAS FORM ========== -->
+
       <!-- Form Container -->
-      <div ref="formRef" class="opacity-0 translate-y-8 bg-white/80 backdrop-blur-md rounded-3xl p-6 md:p-10 border border-[#8B9E8B]/30 shadow-[0_10px_35px_rgba(45,62,53,0.06)] mb-14">
-        <form @submit.prevent="submitForm" class="space-y-6">
+      <div 
+        ref="formRef" 
+        style="
+          opacity: 0;
+          transform: translateY(32px);
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          /* Setengah oval bagian atas */
+          border-radius: 50% 50% 24px 24px / 160px 160px 24px 24px;
+          padding: 110px 22px 42px 22px;
+          border: 1px solid rgba(139, 158, 139, 0.25);
+          box-shadow: 0 12px 40px rgba(45, 62, 53, 0.08);
+          margin-bottom: 48px;
+          box-sizing: border-box;
+        "
+      >
+        <form @submit.prevent="submitForm" style="display: flex; flex-direction: column; gap: 14px; box-sizing: border-box;">
           <!-- Guest Name Input -->
-          <div>
-            <label class="block text-xs uppercase tracking-wider text-[#5C7367] font-medium mb-2">Nama Lengkap</label>
+          <div style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; align-items: stretch;">
+            <label style="display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #5C7367; font-weight: 600; box-sizing: border-box; text-align: left;">Nama Lengkap</label>
             <input
-              v-[#form.guest_name]
               v-model="form.guest_name"
               type="text"
               required
               placeholder="Masukkan nama Anda"
-              class="w-full px-4 py-3 rounded-2xl bg-[#F2F5F3] border border-[#8B9E8B]/30 text-[#2D3E35] placeholder-[#7A9A8B]/60 focus:outline-none focus:border-[#4A6B5B] focus:bg-white transition-all text-sm"
+              style="
+                width: 100%;
+                padding: 10px 14px;
+                border-radius: 12px;
+                background-color: #F2F5F3;
+                border: 1px solid rgba(139, 158, 139, 0.3);
+                color: #2D3E35;
+                font-size: 13px;
+                font-family: inherit;
+                box-sizing: border-box;
+                outline: none;
+                transition: all 0.3s;
+              "
             />
           </div>
 
           <!-- Attendance Status -->
-          <div>
-            <label class="block text-xs uppercase tracking-wider text-[#5C7367] font-medium mb-2">Konfirmasi Kehadiran</label>
-            <div class="grid grid-cols-2 gap-4">
+          <div style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; align-items: stretch;">
+            <label style="display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #5C7367; font-weight: 600; box-sizing: border-box; text-align: left;">Konfirmasi Kehadiran</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; box-sizing: border-box;">
               <button
                 type="button"
                 @click="form.attendance = 'hadir'"
-                class="py-3 px-4 rounded-2xl text-xs font-semibold uppercase tracking-wider border transition-all duration-300 flex items-center justify-center gap-2"
-                :class="form.attendance === 'hadir' ? 'bg-[#4A6B5B] text-white border-[#4A6B5B] shadow-md' : 'bg-[#F2F5F3] text-[#5C7367] border-[#8B9E8B]/30 hover:border-[#4A6B5B]'"
+                :style="{
+                  padding: '10px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  border: '1px solid',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  boxSizing: 'border-box',
+                  backgroundColor: form.attendance === 'hadir' ? '#4A6B5B' : '#F2F5F3',
+                  color: form.attendance === 'hadir' ? '#ffffff' : '#5C7367',
+                  borderColor: form.attendance === 'hadir' ? '#4A6B5B' : 'rgba(139, 158, 139, 0.3)',
+                  boxShadow: form.attendance === 'hadir' ? '0 4px 12px rgba(74, 107, 91, 0.15)' : 'none'
+                }"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                 </svg>
                 Hadir
               </button>
@@ -45,11 +208,29 @@
               <button
                 type="button"
                 @click="form.attendance = 'tidak_hadir'"
-                class="py-3 px-4 rounded-2xl text-xs font-semibold uppercase tracking-wider border transition-all duration-300 flex items-center justify-center gap-2"
-                :class="form.attendance === 'tidak_hadir' ? 'bg-[#7A9A8B] text-white border-[#7A9A8B] shadow-md' : 'bg-[#F2F5F3] text-[#5C7367] border-[#8B9E8B]/30 hover:border-[#7A9A8B]'"
+                :style="{
+                  padding: '10px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  border: '1px solid',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s',
+                  boxSizing: 'border-box',
+                  backgroundColor: form.attendance === 'tidak_hadir' ? '#7A9A8B' : '#F2F5F3',
+                  color: form.attendance === 'tidak_hadir' ? '#ffffff' : '#5C7367',
+                  borderColor: form.attendance === 'tidak_hadir' ? '#7A9A8B' : 'rgba(139, 158, 139, 0.3)',
+                  boxShadow: form.attendance === 'tidak_hadir' ? '0 4px 12px rgba(122, 154, 139, 0.15)' : 'none'
+                }"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
                 Tidak Hadir
               </button>
@@ -57,27 +238,60 @@
           </div>
 
           <!-- Guest Count -->
-          <div v-if="form.attendance === 'hadir'">
-            <label class="block text-xs uppercase tracking-wider text-[#5C7367] font-medium mb-2">Jumlah Tamu</label>
-            <select
-              v-model.number="form.guest_count"
-              class="w-full px-4 py-3 rounded-2xl bg-[#F2F5F3] border border-[#8B9E8B]/30 text-[#2D3E35] focus:outline-none focus:border-[#4A6B5B] focus:bg-white transition-all text-sm"
-            >
-              <option :value="1">1 Orang</option>
-              <option :value="2">2 Orang</option>
-              <option :value="3">3 Orang</option>
-              <option :value="4">4+ Orang</option>
-            </select>
+          <div v-if="form.attendance === 'hadir'" style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; align-items: stretch;">
+            <label style="display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #5C7367; font-weight: 600; box-sizing: border-box; text-align: left;">Jumlah Tamu</label>
+            <div style="position: relative; width: 100%; box-sizing: border-box;">
+              <select
+                v-model.number="form.guest_count"
+                style="
+                  width: 100%;
+                  padding: 14px 18px;
+                  border-radius: 16px;
+                  background-color: #F2F5F3;
+                  border: 1px solid rgba(139, 158, 139, 0.3);
+                  color: #2D3E35;
+                  font-size: 14px;
+                  font-family: inherit;
+                  box-sizing: border-box;
+                  outline: none;
+                  appearance: none;
+                  -webkit-appearance: none;
+                  -moz-appearance: none;
+                  cursor: pointer;
+                  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%235C7367%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+                  background-repeat: no-repeat;
+                  background-position: right 14px center;
+                  background-size: 12px auto;
+                "
+              >
+                <option :value="1">1 Orang</option>
+                <option :value="2">2 Orang</option>
+                <option :value="3">3 Orang</option>
+                <option :value="4">4+ Orang</option>
+              </select>
+            </div>
           </div>
 
           <!-- Wish Message -->
-          <div>
-            <label class="block text-xs uppercase tracking-wider text-[#5C7367] font-medium mb-2">Ucapan &amp; Doa</label>
+          <div style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; align-items: stretch;">
+            <label style="display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #5C7367; font-weight: 600; box-sizing: border-box; text-align: left;">Ucapan &amp; Doa</label>
             <textarea
               v-model="form.message"
-              rows="4"
+              rows="3"
               placeholder="Tuliskan pesan ucapan & doa untuk mempelai..."
-              class="w-full px-4 py-3 rounded-2xl bg-[#F2F5F3] border border-[#8B9E8B]/30 text-[#2D3E35] placeholder-[#7A9A8B]/60 focus:outline-none focus:border-[#4A6B5B] focus:bg-white transition-all text-sm resize-none"
+              style="
+                width: 100%;
+                padding: 10px 14px;
+                border-radius: 12px;
+                background-color: #F2F5F3;
+                border: 1px solid rgba(139, 158, 139, 0.3);
+                color: #2D3E35;
+                font-size: 13px;
+                font-family: inherit;
+                box-sizing: border-box;
+                outline: none;
+                resize: none;
+              "
             ></textarea>
           </div>
 
@@ -85,45 +299,146 @@
           <button
             type="submit"
             :disabled="submitting"
-            class="w-full py-3.5 rounded-full bg-[#4A6B5B] hover:bg-[#3D5A4C] text-white text-xs font-semibold uppercase tracking-widest transition-all duration-300 shadow-[0_6px_20px_rgba(74,107,91,0.25)] active:scale-[0.99] disabled:opacity-50"
+            style="
+              width: 100%;
+              padding: 12px;
+              border-radius: 9999px;
+              background-color: #4A6B5B;
+              border: none;
+              color: #ffffff;
+              font-size: 12px;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.15em;
+              cursor: pointer;
+              transition: all 0.3s;
+              box-shadow: 0 6px 20px rgba(74, 107, 91, 0.25);
+              box-sizing: border-box;
+              margin-top: 8px;
+            "
           >
             {{ submitting ? 'Mengirim...' : 'Kirim Konfirmasi & Ucapan' }}
           </button>
         </form>
       </div>
 
-      <!-- Messages List -->
-      <div v-if="rsvpMessages && rsvpMessages.length > 0" ref="messagesRef" class="opacity-0 translate-y-6">
-        <h3 class="text-xl font-serif font-semibold text-[#2D3E35] mb-6 text-center" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+      <!-- Messages List (Ucapan & Doa) : container setengah oval bagian bawah -->
+      <div
+        v-if="rsvpMessages && rsvpMessages.length > 0"
+        ref="messagesRef"
+        style="
+          opacity: 0;
+          transform: translateY(24px);
+          box-sizing: border-box;
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(139, 158, 139, 0.25);
+          box-shadow: 0 12px 40px rgba(45, 62, 53, 0.08);
+          /* Setengah oval bagian bawah */
+          border-radius: 24px 24px 50% 50% / 24px 24px 160px 160px;
+          padding: 42px 22px 110px 22px;
+        "
+      >
+        <h3 
+          style="
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2D3E35;
+            margin-bottom: 18px;
+            text-align: center;
+          "
+        >
           Ucapan &amp; Doa Restu ({{ rsvpMessages.length }})
         </h3>
         
-        <div class="space-y-4 max-h-[450px] overflow-y-auto pr-1 custom-scrollbar">
+        <div
+          class="wish-scroll"
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 6px;
+            box-sizing: border-box;
+          "
+        >
           <div
             v-for="(rsvp, idx) in rsvpMessages"
             :key="idx"
-            class="bg-white/70 backdrop-blur-md rounded-2xl p-5 border border-[#8B9E8B]/25 text-left"
+            style="
+              background: rgba(255, 255, 255, 0.75);
+              backdrop-filter: blur(8px);
+              -webkit-backdrop-filter: blur(8px);
+              border-radius: 14px;
+              padding: 14px;
+              border: 1px solid rgba(139, 158, 139, 0.2);
+              text-align: left;
+              box-sizing: border-box;
+            "
           >
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-sm text-[#2D3E35]">{{ rsvp.guest_name }}</span>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; box-sizing: border-box;">
+              <div style="display: flex; align-items: center; gap: 8px; box-sizing: border-box;">
+                <span style="font-weight: 600; font-size: 14px; color: #2D3E35;">{{ rsvp.guest_name }}</span>
                 <span
-                  class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase"
-                  :class="rsvp.attendance === 'hadir' ? 'bg-[#E3ECE5] text-[#4A6B5B]' : 'bg-gray-100 text-gray-500'"
+                  :style="{
+                    padding: '2px 10px',
+                    borderRadius: '9999px',
+                    fontSize: '10px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    backgroundColor: rsvp.attendance === 'hadir' ? '#E3ECE5' : '#F1F3F2',
+                    color: rsvp.attendance === 'hadir' ? '#4A6B5B' : '#7A8C82'
+                  }"
                 >
                   {{ rsvp.attendance === 'hadir' ? 'Hadir' : 'Tidak Hadir' }}
                 </span>
               </div>
-              <span v-if="rsvp.created_at" class="text-[10px] text-[#7A9A8B]">
+              <span v-if="rsvp.created_at" style="font-size: 10px; color: #7A9A8B;">
                 {{ formatDate(rsvp.created_at) }}
               </span>
             </div>
-            <p class="text-xs text-[#5C7367] leading-relaxed whitespace-pre-line">
+            <p style="font-size: 12.5px; color: #5C7367; line-height: 1.6; margin: 0; white-space: pre-line;">
               {{ rsvp.message }}
             </p>
           </div>
         </div>
       </div>
+
+      <!-- ========== ASSET BAWAH SECTION UCAPAN & DOA (GW) ========== -->
+      <!-- ^^ NGOTAK-NGATIK: posisi & ukuran cuma di div di bawah ini (yang ada ref="assetBottomRef") ^^ -->
+      <div
+        ref="assetBottomRef"
+        style="
+          opacity: 0;                  /* JANGAN DIHAPUS: biar munculnya bareng animasi daftar ucapan */
+          transform: translateY(32px); /* JANGAN DIHAPUS: posisi awal buat slide-up */
+
+          position: relative;
+          z-index: 2;               /* naikkan kalau mau asset di DEPAN, turunkan ke 0 kalau mau di belakang */
+          width: 390px;             /* >>> UBAT UKURAN DI SINI (contoh: '280px', '500px') */
+          max-width: none;
+          right: 15px;               /* >>> UBAT GESER KIRI/KANAN DI SINI: mirroring dari asset atas (-15px) */
+          margin-top: -100px;       /* >>> UBAT JARAK / NAIK-TURUN KE SECTION UCAPAN DI SINI: negatif = tumpang tindih ke atas */
+          pointer-events: none;
+          user-select: none;
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/evergreen/rsvp/dewirandi_cace218a-32ed-40b6-af79-9e24061c1988.webp"
+          alt="RSVP Asset Bottom"
+          style="
+            width: 100%;
+            height: auto;
+            display: block;
+            transform: scaleY(-1);    /* FLIP terhadap sumbu X (atas-bawah jadi terbalik) */
+            opacity: 1;               /* UBAT TRANSPARANSI DI SINI (0.0 - 1.0) */
+          "
+        />
+      </div>
+      <!-- ========== /ASSET BAWAH SECTION UCAPAN & DOA ========== -->
     </div>
   </section>
 </template>
@@ -149,8 +464,10 @@ const emit = defineEmits<{
 
 const rsvpSection = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
+const assetRef = ref<HTMLElement | null>(null);
 const formRef = ref<HTMLElement | null>(null);
 const messagesRef = ref<HTMLElement | null>(null);
+const assetBottomRef = ref<HTMLElement | null>(null);
 
 const form = reactive({
   guest_name: '',
@@ -184,7 +501,7 @@ onMounted(() => {
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: rsvpSection.value,
-      start: 'top 75%',
+      start: 'top 80%', // Mulai animasi saat bagian atas section memasuki layar (80% viewport height)
       toggleActions: 'play none none none',
     }
   });
@@ -192,24 +509,59 @@ onMounted(() => {
   tl.to(headerRef.value, {
     opacity: 1,
     y: 0,
-    duration: 1.0,
-    ease: 'power3.out'
+    duration: 1.2,
+    ease: 'power2.out'
   })
-  .to(formRef.value, {
+  .to([assetRef.value, formRef.value], {
+    // Asset atas form & container oval: muncul bareng, sama-sama slide-up
     opacity: 1,
     y: 0,
     duration: 1.2,
-    ease: 'power3.out'
-  }, "-=0.6")
-  .to(messagesRef.value, {
+    ease: 'power2.out'
+  }, "-=0.8") // Tumpang tindih agar langsung berurutan tanpa jeda kosong
+  .to([messagesRef.value, assetBottomRef.value], {
+    // Daftar ucapan & asset bawah form: muncul bareng, sama-sama slide-up
     opacity: 1,
     y: 0,
-    duration: 1.0,
-    ease: 'power3.out'
-  }, "-=0.6");
+    duration: 1.2,
+    ease: 'power2.out'
+  }, "-=0.8");
 });
 
 onBeforeUnmount(() => {
   ScrollTrigger.getAll().forEach(st => st.kill());
 });
 </script>
+
+<style scoped>
+/* Scrollbar minimalis utk list ucapan & doa:
+   tersembunyi secara default (tetap bisa di-scroll/swipe),
+   hanya muncul garis tipis saat area di-hover. */
+.wish-scroll {
+  scrollbar-width: none;            /* Firefox */
+  -ms-overflow-style: none;         /* IE/legacy Edge */
+  overscroll-behavior: contain;
+}
+.wish-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+.wish-scroll:hover {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(122, 154, 139, 0.45) transparent;
+}
+.wish-scroll:hover::-webkit-scrollbar {
+  width: 3px;
+}
+.wish-scroll:hover::-webkit-scrollbar-track {
+  background: transparent;
+}
+.wish-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(122, 154, 139, 0.35);
+  border-radius: 9999px;
+}
+.wish-scroll:hover::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(74, 107, 91, 0.55);
+}
+</style>

@@ -10,7 +10,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: 36px;
+      padding-top: 56px;
       padding-bottom: 60px;
       padding-left: 16px;
       padding-right: 16px;
@@ -39,6 +39,68 @@
       }"
     ></div>
 
+    <!-- Asset Dekorasi Kanan Atas (Silakan atur posisi dan ukurannya di inline style di bawah ini) -->
+    <img
+      ref="decorRight1"
+      src="https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_68ff4aac-d08f-40ae-ae82-37fba3e68f8d.webp"
+      alt="Love Story Decor Top Right"
+      style="
+        position: absolute;
+        top: -10px;            /* <--- ATUR POSISI ATAS DI SINI (misal: 0px, 20px, atau -10px) */
+        right: -30px;          /* <--- ATUR POSISI KANAN DI SINI (misal: 0px, 20px, atau -10px) */
+        width: 100px;        /* <--- ATUR UKURAN LEBAR ASSET DI SINI */
+        height: auto;        /* <--- TINGGI OTOMATIS MENGIKUTI LEBAR */
+        z-index: 1;          /* <--- POSISI LAYER (1 di atas background, di bawah teks/card. Naikkan jika ingin di depan card) */
+        pointer-events: none; /* <--- Mencegah asset menghalangi klik/touch pada tombol/card */
+      "
+    />
+
+    <img
+      ref="decorRight2"
+      src="https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_68ff4aac-d08f-40ae-ae82-37fba3e68f8d.webp"
+      alt="Love Story Decor Top Right 2"
+      style="
+        position: absolute;
+        top: -40px;            /* <--- ATUR POSISI ATAS DI SINI (misal: 0px, 20px, atau -10px) */
+        right: 30px;          /* <--- ATUR POSISI KANAN DI SINI (misal: 0px, 20px, atau -10px) */
+        width: 90px;        /* <--- ATUR UKURAN LEBAR ASSET DI SINI */
+        height: auto;        /* <--- TINGGI OTOMATIS MENGIKUTI LEBAR */
+        z-index: 1;          /* <--- POSISI LAYER (1 di atas background, di bawah teks/card. Naikkan jika ingin di depan card) */
+        pointer-events: none; /* <--- Mencegah asset menghalangi klik/touch pada tombol/card */
+      "
+    />
+
+    <!-- Asset Dekorasi Kiri Atas (Silakan atur posisi dan ukurannya di inline style di bawah ini) -->
+    <img
+      ref="decorLeft1"
+      src="https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_68ff4aac-d08f-40ae-ae82-37fba3e68f8d.webp"
+      alt="Love Story Decor Top Left"
+      style="
+        position: absolute;
+        top: -10px;            /* <--- ATUR POSISI ATAS DI SINI (misal: 0px, 20px, atau -10px) */
+        left: -30px;          /* <--- ATUR POSISI KANAN DI SINI (misal: 0px, 20px, atau -10px) */
+        width: 100px;        /* <--- ATUR UKURAN LEBAR ASSET DI SINI */
+        height: auto;        /* <--- TINGGI OTOMATIS MENGIKUTI LEBAR */
+        z-index: 1;          /* <--- POSISI LAYER (1 di atas background, di bawah teks/card. Naikkan jika ingin di depan card) */
+        pointer-events: none; /* <--- Mencegah asset menghalangi klik/touch pada tombol/card */
+      "
+    />
+
+    <img
+      ref="decorLeft2"
+      src="https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_68ff4aac-d08f-40ae-ae82-37fba3e68f8d.webp"
+      alt="Love Story Decor Top Left 2"
+      style="
+        position: absolute;
+        top: -40px;            /* <--- ATUR POSISI ATAS DI SINI (misal: 0px, 20px, atau -10px) */
+        left: 30px;          /* <--- ATUR POSISI KANAN DI SINI (misal: 0px, 20px, atau -10px) */
+        width: 90px;        /* <--- ATUR UKURAN LEBAR ASSET DI SINI */
+        height: auto;        /* <--- TINGGI OTOMATIS MENGIKUTI LEBAR */
+        z-index: 1;          /* <--- POSISI LAYER (1 di atas background, di bawah teks/card. Naikkan jika ingin di depan card) */
+        pointer-events: none; /* <--- Mencegah asset menghalangi klik/touch pada tombol/card */
+      "
+    />
+
     <div
       style="
         position: relative;
@@ -51,12 +113,13 @@
         align-items: center;
       "
     >
-      <!-- Section Header at Top Stone Arch Area -->
+      <!-- Section Header with Margin Top & Prominent White Text Shadow -->
       <div
         ref="headerRef"
         style="
           text-align: center;
-          margin-bottom: 20px;
+          margin-top: 20px;
+          margin-bottom: 22px;
           width: 100%;
           opacity: 0;
           transform: translateY(20px);
@@ -65,13 +128,13 @@
         <span
           style="
             display: block;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.3em;
-            color: #243E30;
-            margin-bottom: 4px;
-            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.95);
+            letter-spacing: 0.28em;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7), 0 1px 3px rgba(0, 0, 0, 0.9);
           "
         >
           Kisah Cinta
@@ -79,12 +142,12 @@
         <h2
           style="
             font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 28px;
-            font-weight: 600;
-            color: #152B1E;
+            font-size: 30px;
+            font-weight: 700;
+            color: #FFFFFF;
             line-height: 1.2;
             margin: 0;
-            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75), 0 1px 4px rgba(0, 0, 0, 0.9);
           "
         >
           Cerita Perjalanan Kami
@@ -92,9 +155,10 @@
         <div
           style="
             width: 40px;
-            height: 1.5px;
-            background-color: #385E48;
-            margin: 8px auto 0 auto;
+            height: 2px;
+            background-color: #FFFFFF;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+            margin: 9px auto 0 auto;
             border-radius: 2px;
           "
         ></div>
@@ -106,7 +170,7 @@
           width: 100%;
           display: flex;
           flex-direction: column;
-          gap: 14px;
+          gap: 15px;
         "
       >
         <div
@@ -116,16 +180,16 @@
           style="
             position: relative;
             width: 100%;
-            background: rgba(255, 255, 255, 0.38);
+            background: rgba(255, 255, 255, 0.42);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.75);
             border-radius: 20px;
-            padding: 14px 18px;
+            padding: 15px 18px;
             box-shadow: 0 8px 24px rgba(20, 40, 28, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
             box-sizing: border-box;
             opacity: 0;
-            transform: translateY(24px);
+            will-change: transform, opacity;
           "
         >
           <!-- Date / Year Badge -->
@@ -134,11 +198,11 @@
               style="
                 display: inline-flex;
                 align-items: center;
-                padding: 2.5px 10px;
+                padding: 2px 10px;
                 border-radius: 9999px;
                 background-color: rgba(36, 62, 48, 0.9);
                 color: #FFFFFF;
-                font-size: 10px;
+                font-size: 9.5px;
                 font-weight: 700;
                 letter-spacing: 0.08em;
                 text-transform: uppercase;
@@ -153,10 +217,10 @@
           <h3
             style="
               font-family: 'Cormorant Garamond', Georgia, serif;
-              font-size: 18px;
+              font-size: 17.5px;
               font-weight: 700;
               color: #12261A;
-              margin: 0 0 5px 0;
+              margin: 0 0 4px 0;
               line-height: 1.25;
             "
           >
@@ -234,6 +298,13 @@ const bgImg = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
 const storyNodes = ref<HTMLElement[]>([]);
 
+const decorRight1 = ref<HTMLElement | null>(null);
+const decorRight2 = ref<HTMLElement | null>(null);
+const decorLeft1 = ref<HTMLElement | null>(null);
+const decorLeft2 = ref<HTMLElement | null>(null);
+
+let ctx: gsap.Context | null = null;
+
 const resolveUrl = (url: string | undefined) => {
   if (!url) return '';
   return resolveAssetUrl(url, props.apiBase || '');
@@ -250,35 +321,100 @@ onMounted(() => {
     });
   }
 
+  // Animasi sway (ketiup angin) pelan & random untuk dekorasi kanan dan kiri
+  if (decorRight1.value) {
+    gsap.to(decorRight1.value, {
+      rotation: 6,
+      duration: 4.5,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      transformOrigin: 'top right',
+    });
+  }
+  if (decorRight2.value) {
+    gsap.to(decorRight2.value, {
+      rotation: -5,
+      duration: 5.2,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      transformOrigin: 'top right',
+      delay: 0.8,
+    });
+  }
+  if (decorLeft1.value) {
+    gsap.to(decorLeft1.value, {
+      rotation: -7,
+      duration: 4.8,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      transformOrigin: 'top left',
+      delay: 0.4,
+    });
+  }
+  if (decorLeft2.value) {
+    gsap.to(decorLeft2.value, {
+      rotation: 8,
+      duration: 5.5,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+      transformOrigin: 'top left',
+      delay: 1.2,
+    });
+  }
+
   if (!storySection.value) return;
 
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: storySection.value,
-      start: 'top 75%',
-      toggleActions: 'play none none none',
+  ctx = gsap.context(() => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: storySection.value,
+        start: 'top 85%', // Terpicu saat bagian atas section mencapai 85% tinggi viewport
+        toggleActions: 'play none none none',
+      },
+    });
+
+    // 1. Judul/Header fade in & slide up dari bawah
+    if (headerRef.value) {
+      tl.to(headerRef.value, {
+        opacity: 1,
+        y: 0,
+        duration: 1.0,
+        ease: 'power2.out',
+      });
     }
-  });
 
-  tl.to(headerRef.value, {
-    opacity: 1,
-    y: 0,
-    duration: 1.0,
-    ease: 'power3.out'
-  });
+    // 2. Card-card love story muncul selang-seling kiri - kanan dengan efek slide pelan
+    storyNodes.value.forEach((node, idx) => {
+      if (!node) return;
+      // Index genap dari kiri (-100px), index ganjil dari kanan (+100px)
+      const isLeft = idx % 2 === 0;
+      const xOffset = isLeft ? -100 : 100;
 
-  if (storyNodes.value.length > 0) {
-    tl.to(storyNodes.value, {
-      opacity: 1,
-      y: 0,
-      duration: 1.0,
-      stagger: 0.25,
-      ease: 'power3.out'
-    }, "-=0.6");
-  }
+      tl.fromTo(
+        node,
+        {
+          opacity: 0,
+          x: xOffset,
+          y: 0,
+        },
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          duration: 1.4, // Slide pelan
+          ease: 'power2.out',
+        },
+        idx === 0 ? '-=0.6' : '-=1.1' // Efek stagger mengalir cantik
+      );
+    });
+  }, storySection.value);
 });
 
 onBeforeUnmount(() => {
-  ScrollTrigger.getAll().forEach(st => st.kill());
+  ctx?.revert();
 });
 </script>
