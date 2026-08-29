@@ -44,10 +44,10 @@
       <div
         v-if="hasDate"
         ref="gridRef"
-        class="w-full grid grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 max-w-xl mx-auto mb-8 sm:mb-12 opacity-0 translate-y-8"
+        class="w-full grid grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 max-w-xl mx-auto mb-8 sm:mb-12"
       >
         <!-- Days -->
-        <div class="bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
+        <div ref="stoneDays" class="opacity-0 translate-y-8 bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
           <span class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#1B3024] leading-none mb-1.5 sm:mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
             {{ pad(countdown.days) }}
           </span>
@@ -55,7 +55,7 @@
         </div>
 
         <!-- Hours -->
-        <div class="bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
+        <div ref="stoneHours" class="opacity-0 translate-y-8 bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
           <span class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#1B3024] leading-none mb-1.5 sm:mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
             {{ pad(countdown.hours) }}
           </span>
@@ -63,7 +63,7 @@
         </div>
 
         <!-- Minutes -->
-        <div class="bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
+        <div ref="stoneMinutes" class="opacity-0 translate-y-8 bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
           <span class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#1B3024] leading-none mb-1.5 sm:mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
             {{ pad(countdown.minutes) }}
           </span>
@@ -71,7 +71,7 @@
         </div>
 
         <!-- Seconds -->
-        <div class="bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
+        <div ref="stoneSeconds" class="opacity-0 translate-y-8 bg-white/75 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 sm:p-4 md:p-6 border border-white/60 shadow-[0_12px_32px_rgba(27,48,36,0.12)] flex flex-col items-center">
           <span class="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#2D5A42] leading-none mb-1.5 sm:mb-2" style="font-family: 'Cormorant Garamond', Georgia, serif;">
             {{ pad(countdown.seconds) }}
           </span>
@@ -137,6 +137,24 @@ const headerRef = ref<HTMLElement | null>(null);
 const gridRef = ref<HTMLElement | null>(null);
 const actionRef = ref<HTMLElement | null>(null);
 
+/* ============================================================
+   BATU COUNTDOWN — satu per satu fade in
+   Otak-atik di sini:
+   - STONE_ORDER  : urut mana yang muncul duluan (yang paling
+                    "bawah" ditaruh paling depan di array)
+   - STONE_GAP    : jeda antar batu (detik)
+   - STONE_DURASI : lama fade in tiap batu (detik)
+   ============================================================ */
+const stoneDays = ref<HTMLElement | null>(null);
+const stoneHours = ref<HTMLElement | null>(null);
+const stoneMinutes = ref<HTMLElement | null>(null);
+const stoneSeconds = ref<HTMLElement | null>(null);
+
+// Urutan: batu paling bawah dulu -> Detik, Menit, Jam, Hari
+const STONE_ORDER = [stoneSeconds, stoneMinutes, stoneHours, stoneDays];
+const STONE_GAP = 0.25;    // jeda antar batu
+const STONE_DURASI = 0.7;  // durasi fade tiap batu
+
 const pad = (num: number) => String(Math.max(0, num)).padStart(2, '0');
 
 const calendarUrl = computed(() => {
@@ -158,7 +176,9 @@ onMounted(() => {
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: countdownSection.value,
-      start: 'top 80%',
+      // Batu & header baru muncul setelah section ter-scroll ~setengah layar.
+      // Mau lebih "berat" lagi? Kecilkan angkanya (mis. 'top 35%').
+      start: 'top 50%',
       toggleActions: 'play none none none',
     }
   });
@@ -168,19 +188,27 @@ onMounted(() => {
     y: 0,
     duration: 1.0,
     ease: 'power3.out'
-  })
-  .to(gridRef.value, {
-    opacity: 1,
-    y: 0,
-    duration: 1.2,
-    ease: 'power3.out'
-  }, "-=0.6")
-  .to(actionRef.value, {
+  });
+
+  // Batu muncul fade in satu per satu (tulisan ikut karena nempel di dalam kartu),
+  // urutan mengikuti STONE_ORDER -> mulai dari batu paling bawah
+  const stones = STONE_ORDER.map(s => s?.value).filter(Boolean) as HTMLElement[];
+  if (stones.length) {
+    tl.to(stones, {
+      opacity: 1,
+      y: 0,
+      duration: STONE_DURASI,
+      stagger: STONE_GAP,
+      ease: 'power3.out'
+    }, '-=0.5');
+  }
+
+  tl.to(actionRef.value, {
     opacity: 1,
     y: 0,
     duration: 0.8,
     ease: 'power3.out'
-  }, "-=0.6");
+  }, '-=0.4');
 });
 
 onBeforeUnmount(() => {

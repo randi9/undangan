@@ -67,13 +67,14 @@
           <!-- PANDUAN: top: 23.8%, left: 52%, width: 155px         -->
           <!-- ---------------------------------------------------- -->
           <div
+            ref="stoneDetik"
             style="
               position: absolute;
               top: 23.8%;
               left: 52%;
               transform: translate(-50%, -50%);
               width: 155px;
-              opacity: 1;
+              opacity: 0;
             "
           >
             <div style="position: relative; width: 100%; height: 100%;">
@@ -115,13 +116,14 @@
           <!-- PANDUAN: top: 38.5%, left: 46%, width: 210px         -->
           <!-- ---------------------------------------------------- -->
           <div
+            ref="stoneMenit"
             style="
               position: absolute;
               top: 38.5%;
               left: 46%;
               transform: translate(-50%, -50%);
               width: 210px;
-              opacity: 1;
+              opacity: 0;
             "
           >
             <div style="position: relative; width: 100%; height: 100%;">
@@ -163,13 +165,14 @@
           <!-- PANDUAN: top: 58%, left: 53.5%, width: 265px         -->
           <!-- ---------------------------------------------------- -->
           <div
+            ref="stoneJam"
             style="
               position: absolute;
               top: 58%;
               left: 53.5%;
               transform: translate(-50%, -50%);
               width: 265px;
-              opacity: 1;
+              opacity: 0;
             "
           >
             <div style="position: relative; width: 100%; height: 100%;">
@@ -211,13 +214,14 @@
           <!-- PANDUAN: top: 85%, left: 47%, width: 320px           -->
           <!-- ---------------------------------------------------- -->
           <div
+            ref="stoneHari"
             style="
               position: absolute;
               top: 85%;
               left: 47%;
               transform: translate(-50%, -50%);
               width: 320px;
-              opacity: 1;
+              opacity: 0;
             "
           >
             <div style="position: relative; width: 100%; height: 100%;">
@@ -888,6 +892,12 @@ const akadContentRef = ref<HTMLElement | null>(null);
 const resepsiContentRef = ref<HTMLElement | null>(null);
 const petalsLayerRef = ref<HTMLElement | null>(null);
 
+// Ref 4 batu pijakan (Hari = paling bawah, Detik = paling atas)
+const stoneHari = ref<HTMLElement | null>(null);
+const stoneJam = ref<HTMLElement | null>(null);
+const stoneMenit = ref<HTMLElement | null>(null);
+const stoneDetik = ref<HTMLElement | null>(null);
+
 let ctx: gsap.Context | null = null;
 
 // ============================================================
@@ -906,14 +916,14 @@ interface PetalCfg {
   sway: number;   // jarak ayunan kiri-kanan (px), makin besar makin santai
   size: number;   // lebar kelopak (px)
   fall: number;   // durasi jatuh (detik), makin besar makin pelan
-  delay: number;  // kapan mulai jatuh setelah section kebuka 25% (detik)
+  delay: number;  // kapan mulai jatuh setelah section muncul 10% di layar (detik)
   img: number;    // index gambar dari PETAL_IMAGES
   o: number;      // opacity akhir (0.5 - 1), buat efek kedalaman
 }
 
 // ============================================================
-// POHON POSISI KELOPAK — otomatis menyebar 30 kelopak se-layar
-// GRID_COLS x GRID_ROWS = total kelopak (5 x 6 = 30)
+// POHON POSISI KELOPAK — otomatis menyebar 50 kelopak se-layar
+// GRID_COLS x GRID_ROWS = total kelopak (5 x 10 = 50)
 // Efek kedalaman (parallax):
 //   - berhenti di ATAS  = ground yang jauh -> kecil, samar, jatuh lebih pelan
 //   - berhenti di BAWAH = ground yang dekat -> besar, jelas, jatuh lebih cepat
@@ -922,7 +932,7 @@ interface PetalCfg {
 const rnd = (min: number, max: number) => min + Math.random() * (max - min);
 
 const GRID_COLS = 5;
-const GRID_ROWS = 6;
+const GRID_ROWS = 10; // 5 x 10 = 50 kelopak
 
 const PETALS: PetalCfg[] = [];
 for (let r = 0; r < GRID_ROWS; r++) {
@@ -945,12 +955,13 @@ for (let r = 0; r < GRID_ROWS; r++) {
 }
 
 // Acak urutan jatuh: kelopak yang jatuh duluan tidak berurutan per baris,
-// tapi tetap satu-satu (jeda 0.45 - 1 detik antar kelopak)
+// tapi tetap satu-satu. Jeda dipadatkan (0.22 - 0.5 dtk) supaya 50 kelopak
+// tetap habis dalam satu gelombang yang pas (bukan mepet ke menit-menit akhir).
 {
   const order = PETALS.map((_, i) => i).sort(() => Math.random() - 0.5);
   order.forEach((petalIdx, pos) => {
     const p = PETALS[petalIdx];
-    if (p) p.delay = Math.round(pos * rnd(0.45, 1.0) * 10) / 10;
+    if (p) p.delay = Math.round(pos * rnd(0.22, 0.5) * 10) / 10;
   });
 }
 
@@ -1066,11 +1077,18 @@ onMounted(() => {
         );
       });
 
+      // Kelopak mulai gugur SEDAAK SEKALI section COUPLE dibuka (top couple
+      // baru masuk layar), bukan nunggu section countdown ini muncul.
+      // Jadi pas user scroll ke countdown, kelopak sudah pada jatuh.
+      // Fallback ke section sendiri kalau section couple ga ketemu.
+      const coupleEl = document.querySelector(
+        '[data-couple-section]',
+      ) as HTMLElement | null;
       ScrollTrigger.create({
-        trigger: sectionRef.value,
-        start: 'top 75%', // section kebuka 25%
+        trigger: coupleEl ?? sectionRef.value,
+        start: coupleEl ? 'top bottom' : 'top 90%', // couple baru keliatan sedikit -> mulai
         // onEnter: main dari awal | onLeaveBack: reset ke posisi awal
-        // -> setiap kali section dibuka lagi dari couple, animasi mulai ulang
+        // -> setiap kali section couple dibuka lagi, kelopak reset & gugur ulang
         onEnter: () => petalTl.play(0),
         onLeaveBack: () => petalTl.pause(0),
       });
@@ -1101,6 +1119,34 @@ onMounted(() => {
     // 1. Tahan tampilan countdown di awal (melihat bagian rumput/bawah gambar)
     tl.to({}, { duration: 0.2 });
 
+    // ============================================================
+    // 0. BATU COUNTDOWN — fade in satu per satu, mulai dari
+    //    batu PALING BAWAH (Hari) -> Jam -> Menit -> Detik.
+    //    Otak-atik:
+    //    - STONE_ORDER : tuker posisi array untuk ubah urutan
+    //    - STONE_FADE  : lama fade tiap batu (1 = 100% scroll)
+    //    - STONE_JEDA  : jeda antar batu
+    //    Posisi '0.15' = di dalam fase tahan countdown (sebelum
+    //    header fade out), jadi batu baru muncul setelah user scroll
+    //    agak jauh ke dalam section — ga langsung muncul pas baru masuk.
+    // ============================================================
+    const STONE_ORDER = [stoneHari, stoneJam, stoneMenit, stoneDetik];
+    const STONE_FADE = 0.12;
+    const STONE_JEDA = 0.07;
+    const stoneEls = STONE_ORDER.map(s => s.value).filter(Boolean) as HTMLElement[];
+    if (stoneEls.length) {
+      tl.to(
+        stoneEls,
+        {
+          opacity: 1,
+          duration: STONE_FADE,
+          stagger: STONE_JEDA,
+          ease: 'power1.out',
+        },
+        0.15
+      );
+    }
+
     // 2. Header Countdown fade out & geser naik sedikit (Batu tetap utuh menempel di tanah dan ikut meluncur ke bawah bersama background)
     if (countdownContainerRef.value) {
       tl.to(countdownContainerRef.value, {
@@ -1121,17 +1167,20 @@ onMounted(() => {
       });
     }
 
-    // 2b. Semua kelopak bunga ikut FADE OUT saat hendak pindah ke section events
-    //     (dan muncul lagi secara natural kalau user scroll balik ke countdown)
+    // 2b. Kelopak bunga TIDAK fade out — mereka tetap nempel di ground countdown
+    //     dan ikut meluncur ke bawah BERSAMA background (durasi & ease identik
+    //     dengan slide bgWrapper: -50% dari tinggi 200% = 100dvh ke bawah,
+    //     layer kelopak setinggi 100dvh geser yPercent 0 -> 100 = sama persis),
+    //     jadi kelihatan nyatu di rumput. Scroll balik? kelopak naik lagi utuh.
     if (petalsLayerRef.value) {
       tl.to(
         petalsLayerRef.value,
         {
-          opacity: 0,
-          duration: 0.3,
-          ease: 'power1.inOut',
+          yPercent: 100,
+          duration: 1.2,
+          ease: 'power2.inOut',
         },
-        '<'
+        'slideToGazebo'
       );
     }
 

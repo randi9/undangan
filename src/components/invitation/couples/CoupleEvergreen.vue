@@ -1,6 +1,7 @@
 <template>
   <section
     ref="sectionRef"
+    data-couple-section
     class="relative min-h-[100dvh] w-full flex flex-col items-center justify-center box-border overflow-hidden bg-[#2D3E35]"
   >
     <!-- ======================================================== -->

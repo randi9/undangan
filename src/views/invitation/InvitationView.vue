@@ -516,6 +516,7 @@ async function preloadAllAssets() {
     urls.add("https://media.mengundanganda.com/evergreen/countdown%20section/dewirandi_3413e0a7-5e28-44d0-a2ef-5bb6d9e052da.webp");
     urls.add("https://media.mengundanganda.com/evergreen/lovestory%20section/dewirandi_3df150cb-e69e-4f29-899d-2ea0abe58183.webp");
     urls.add("https://media.mengundanganda.com/evergreen/footer%20section/dewirandi_ad5c156d-47bf-47c8-872e-0ae7ab0ab0bd.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/footer%20section/dewirandi_ab26493f-4e9e-4dae-9111-cd1df542fb75.webp");
     urls.add("https://media.mengundanganda.com/evergreen/rsvp/dewirandi_9fe27500-64c2-44a6-981e-91f7e7403647.webp");
   }
 
@@ -1421,20 +1422,11 @@ onBeforeUnmount(() => {
           ></div>
         </div>
 
-        <!-- Shared Unified 250dvh Background for Evergreen (Sky Blue to Grass Green Blend) -->
+        <!-- Shared Unified Background for Evergreen (Biru polos sampai footer, tanpa gradasi hijau) -->
         <div
           v-if="themeName === 'evergreen'"
           class="absolute inset-0 w-full pointer-events-none -z-10 overflow-hidden"
-          style="
-            background: linear-gradient(
-              to bottom,
-              rgba(163, 199, 216, 0.7) 0%,
-              rgba(163, 199, 216, 0.7) 64%,
-              rgba(143, 183, 173, 0.7) 74%,
-              rgba(124, 168, 130, 0.7) 82%,
-              rgba(124, 168, 130, 0.7) 100%
-            );
-          "
+          style="background: rgba(163, 199, 216, 0.7)"
         ></div>
 
         <!-- Background Asset Antara RSVP dan Gift untuk Tema Evergreen -->
@@ -1451,7 +1443,7 @@ onBeforeUnmount(() => {
             /* SILAKAN ATUR POSISI NAIK/TURUN (GESER-GESER) DI SINI           */
             /* Ubah persentase atau gunakan pixel, contoh: '25%', '30%', '950px' */
             /* ============================================================== */
-            top: 42%;
+            top: 41%;
 
             /* ============================================================== */
             /* SILAKAN ATUR UKURAN LEBAR DI SINI                             */
@@ -1509,7 +1501,127 @@ onBeforeUnmount(() => {
           :theme-config="activeTheme"
         />
 
-       
+        <!-- ============================================================= -->
+        <!-- DIVIDER GIFT → FOOTER (Tema Evergreen)                        -->
+        <!-- Layer luar = clipper (top:0 bottom:0 + overflow-hidden)       -->
+        <!-- supaya asset yang menjuntai ke bawah TIDAK menambah tinggi    -->
+        <!-- halaman. Lebar clipper dibuat 300vw agar bebas memperlebar    -->
+        <!-- asset tanpa terpotong.                                         -->
+        <!-- ============================================================= -->
+        <div
+          v-if="themeName === 'evergreen'"
+          style="
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300vw;
+            overflow: hidden;
+            z-index: -5;
+            pointer-events: none;
+          "
+        >
+          <img
+            src="https://media.mengundanganda.com/evergreen/footer%20section/dewirandi_ab26493f-4e9e-4dae-9111-cd1df542fb75.webp"
+            alt="Evergreen Gift-Footer Divider Bg"
+            style="
+              position: absolute;
+              left: 50%;
+              transform: translateX(-50%); /* Menjaga asset tetap di tengah */
+
+              /* ============================================================== */
+              /* ATUR POSISI NAIK/TURUN DI SINI                                 */
+              /* Contoh: '78%', '86%', '90%' — makin besar makin ke bawah       */
+              /* ============================================================== */
+              top: 70%;
+
+              /* ============================================================== */
+              /* ATUR LEBAR ASSET DI SINI (pakai vw)                            */
+              /* 100vw = seukuran layar, 150vw = 1,5x layar, bisa sampai 300vw  */
+              /* ============================================================== */
+              width: 150vw;
+              height: auto;
+              display: block;
+              opacity: 0.7; /* ATUR OPASITAS — 0.0 s/d 1.0 */
+
+              /* ============================================================== */
+              /* FADE ATAS, BAWAH, KIRI & KANAN                                 */
+              /* Layer 1 = fade vertikal: 0%→58% atas, 65%→100% bawah.          */
+              /* Layer 2 = fade horizontal: kiri pudar sampai 58%, kanan s/d 68%. */
+              /* mask-composite: intersect → kedua fade digabung (dikali).      */
+              /* ============================================================== */
+              -webkit-mask-image: linear-gradient(
+                  to bottom,
+                  transparent 0%,
+                  rgba(0, 0, 0, 0.02) 8%,
+                  rgba(0, 0, 0, 0.06) 16%,
+                  rgba(0, 0, 0, 0.12) 24%,
+                  rgba(0, 0, 0, 0.22) 32%,
+                  rgba(0, 0, 0, 0.35) 40%,
+                  rgba(0, 0, 0, 0.52) 48%,
+                  rgba(0, 0, 0, 0.75) 54%,
+                  #000 58%,
+                  #000 65%,
+                  rgba(0, 0, 0, 0.85) 70%,
+                  rgba(0, 0, 0, 0.55) 76%,
+                  rgba(0, 0, 0, 0.25) 84%,
+                  rgba(0, 0, 0, 0.05) 92%,
+                  transparent 100%
+                ),
+                linear-gradient(
+                  to right,
+                  transparent 0%,
+                  rgba(0, 0, 0, 0.08) 10%,
+                  rgba(0, 0, 0, 0.18) 20%,
+                  rgba(0, 0, 0, 0.32) 30%,
+                  rgba(0, 0, 0, 0.5) 40%,
+                  rgba(0, 0, 0, 0.72) 48%,
+                  rgba(0, 0, 0, 0.9) 54%,
+                  #000 58%,
+                  #000 68%,
+                  rgba(0, 0, 0, 0.5) 80%,
+                  rgba(0, 0, 0, 0.2) 90%,
+                  transparent 100%
+                );
+              mask-image: linear-gradient(
+                  to bottom,
+                  transparent 0%,
+                  rgba(0, 0, 0, 0.02) 8%,
+                  rgba(0, 0, 0, 0.06) 16%,
+                  rgba(0, 0, 0, 0.12) 24%,
+                  rgba(0, 0, 0, 0.22) 32%,
+                  rgba(0, 0, 0, 0.35) 40%,
+                  rgba(0, 0, 0, 0.52) 48%,
+                  rgba(0, 0, 0, 0.75) 54%,
+                  #000 58%,
+                  #000 65%,
+                  rgba(0, 0, 0, 0.85) 70%,
+                  rgba(0, 0, 0, 0.55) 76%,
+                  rgba(0, 0, 0, 0.25) 84%,
+                  rgba(0, 0, 0, 0.05) 92%,
+                  transparent 100%
+                ),
+                linear-gradient(
+                  to right,
+                  transparent 0%,
+                  rgba(0, 0, 0, 0.08) 10%,
+                  rgba(0, 0, 0, 0.18) 20%,
+                  rgba(0, 0, 0, 0.32) 30%,
+                  rgba(0, 0, 0, 0.5) 40%,
+                  rgba(0, 0, 0, 0.72) 48%,
+                  rgba(0, 0, 0, 0.9) 54%,
+                  #000 58%,
+                  #000 68%,
+                  rgba(0, 0, 0, 0.5) 80%,
+                  rgba(0, 0, 0, 0.2) 90%,
+                  transparent 100%
+                );
+              -webkit-mask-composite: source-in;
+              mask-composite: intersect;
+            "
+          />
+        </div>
 
         <!-- FOOTER (Dynamic per theme) -->
         <component

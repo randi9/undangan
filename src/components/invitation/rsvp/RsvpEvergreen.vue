@@ -109,7 +109,14 @@
           z-index: 2;               /* naikkan kalau mau asset di DEPAN form, turunkan ke 0 kalau mau di belakang */
           width: 390px;             /* >>> UBAT UKURAN DI SINI (contoh: '280px', '500px') */
           max-width: none;
-          left: -15px;
+
+          /* ====== PUSATKAN SECARA HORIZONTAL (aman di semua device) ====== */
+          /* left 50% + margin-left negatif setengah lebar = selalu di tengah layar. */
+          /* PENTING: jika 'width' diubah, sesuaikan margin-left = -(lebar/2). */
+          /* Pakai margin (bukan translateX) agar tidak bertabrakan dgn animasi GSAP (y). */
+          left: 50%;
+          margin-left: -195px;      /* = -390px / 2 (setengah dari width di atas) */
+
           margin-bottom: -100px;     /* >>> UBAT JARAK / NAIK-TURUN KE FORM DI SINI: negatif = tumpang tindih ke atas form */
           pointer-events: none;
           user-select: none;
@@ -420,7 +427,14 @@
           z-index: 2;               /* naikkan kalau mau asset di DEPAN, turunkan ke 0 kalau mau di belakang */
           width: 390px;             /* >>> UBAT UKURAN DI SINI (contoh: '280px', '500px') */
           max-width: none;
-          right: 15px;               /* >>> UBAT GESER KIRI/KANAN DI SINI: mirroring dari asset atas (-15px) */
+
+          /* ====== PUSATKAN SECARA HORIZONTAL (aman di semua device) ====== */
+          /* left 50% + margin-left negatif setengah lebar = selalu di tengah layar. */
+          /* PENTING: jika 'width' diubah, sesuaikan margin-left = -(lebar/2). */
+          /* Pakai margin (bukan translateX) agar tidak bertabrakan dgn animasi GSAP (y). */
+          left: 50%;
+          margin-left: -195px;      /* = -390px / 2 (setengah dari width di atas) */
+
           margin-top: -100px;       /* >>> UBAT JARAK / NAIK-TURUN KE SECTION UCAPAN DI SINI: negatif = tumpang tindih ke atas */
           pointer-events: none;
           user-select: none;
