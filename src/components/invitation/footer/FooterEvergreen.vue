@@ -1,7 +1,7 @@
 <template>
   <footer
     ref="footerSection"
-    class="min-h-[50dvh] flex flex-col justify-center py-16 md:py-24 px-6 sm:px-8 bg-transparent text-[#1d3d27] relative text-center"
+    class="min-h-[100dvh] flex flex-col justify-center py-16 md:py-24 px-6 sm:px-8 bg-transparent text-[#1d3d27] relative text-center"
     style="overflow: hidden; margin-top: -50px;"
   >
 
@@ -30,56 +30,6 @@
       </div>
     </div>
 
-    <!-- Lily Pad Asset 1 (Left) -->
-    <div
-      ref="lilyPad1Ref"
-      style="
-        position: absolute;
-        z-index: -5;
-        pointer-events: none;
-        bottom: -15%;
-        left: -120px;
-        width: 85%;
-        transform: rotate(0deg) scaleY(0.9);
-        opacity: 0;
-      "
-    >
-      <img
-        src="https://media.mengundanganda.com/evergreen/rsvp/dewirandi_989d1ad6-7758-4528-bff2-f5d561e21e8e.webp"
-        alt="Evergreen Lily Pad 1"
-        style="
-          width: 100%;
-          height: auto;
-          display: block;
-        "
-      />
-    </div>
-
-    <!-- Lily Pad Asset 2 (Right) -->
-    <div
-      ref="lilyPad2Ref"
-      style="
-        position: absolute;
-        z-index: -5;
-        pointer-events: none;
-        bottom: -5%;
-        right: -150px;
-        width: 70%;
-        transform: rotate(0deg) scaleY(0.9);
-        opacity: 0;
-      "
-    >
-      <img
-        src="https://media.mengundanganda.com/evergreen/rsvp/dewirandi_3b2fe303-8fb3-4ecf-bcbf-f3477320de08.webp"
-        alt="Evergreen Lily Pad 2"
-        style="
-          width: 100%;
-          height: auto;
-          display: block;
-        "
-      />
-    </div>
-
     <!-- Brand Footer -->
     <div
       class="absolute bottom-4 left-0 right-0 flex flex-col justify-center items-center pointer-events-none select-none"
@@ -103,30 +53,13 @@ import type { ThemeConfig } from '@/types/theme';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const props = withDefaults(
-  defineProps<{
-    invitation: Invitation;
-    themeConfig?: ThemeConfig;
-    footerImage?: string;
-    bgPosition?: string; // Contoh: 'center top', 'center 30%', '50% 70%', dll.
-  }>(),
-  {
-    footerImage:
-      'https://media.mengundanganda.com/evergreen/footer%20section/dewirandi_9edcca27-d0d2-4074-90dc-354e6938866b.webp',
-    // POSISI BACKGROUND IMAGE: Ubah nilai di bawah ini untuk menggeser gambar background
-    // Contoh opsi: 'center top', 'center bottom', 'center 30%', '50% 80%'
-    bgPosition: 'center center',
-  }
-);
+defineProps<{
+  invitation: Invitation;
+  themeConfig?: ThemeConfig;
+}>();
 
 const footerSection = ref<HTMLElement | null>(null);
-const iconRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);
-const lilyPad1Ref = ref<HTMLElement | null>(null);
-const lilyPad2Ref = ref<HTMLElement | null>(null);
-
-// pembersih listener gating animasi lily pad (diisi di onMounted)
-let removeLilyGate: (() => void) | null = null;
 
 onMounted(() => {
   if (!footerSection.value) return;
@@ -140,131 +73,15 @@ onMounted(() => {
     }
   });
 
-  tl.to(iconRef.value, {
-    opacity: 1,
-    scale: 1,
-    duration: 0.8,
-    ease: 'back.out(1.5)'
-  })
-  .to(contentRef.value, {
+  tl.to(contentRef.value, {
     opacity: 1,
     y: 0,
     duration: 1.2,
     ease: 'power3.out'
-  }, "-=0.4");
-
-  // === Lily Pad slide-in + wave animation ===
-  // Animasi hanya boleh mulai saat section footer tampil 100% di viewport.
-  // Tidak pakai ScrollTrigger untuk gating-nya (scroll di sini memakai Lenis,
-  // event onUpdate bisa tidak terpanggil) — gunakan listener scroll native window.
-  const lilyTweens: gsap.core.Tween[] = [];
-  let lilyStarted = false;
-
-  const isSectionFullyVisible = () => {
-    const el = footerSection.value;
-    if (!el) return false;
-    const r = el.getBoundingClientRect();
-    const vh = window.innerHeight || document.documentElement.clientHeight;
-    // Toleransi 2px untuk pembulatan sub-pixel
-    return r.top >= -2 && r.bottom <= vh + 2;
-  };
-  // Fallback: footer adalah section terakhir, jadi saat scroll sudah mentok
-  // ke bawah halaman, section pasti terlihat penuh.
-  const isAtPageBottom = () => {
-    const doc = document.scrollingElement || document.documentElement;
-    return doc.scrollTop + window.innerHeight >= doc.scrollHeight - 4;
-  };
-
-  const checkLilyStart = () => {
-    if (lilyStarted) return;
-    if (isSectionFullyVisible() || isAtPageBottom()) {
-      lilyStarted = true;
-      lilyTweens.forEach(t => t.play());
-      removeLilyGate?.();
-    }
-  };
-  window.addEventListener('scroll', checkLilyStart, { passive: true });
-  window.addEventListener('resize', checkLilyStart);
-  removeLilyGate = () => {
-    window.removeEventListener('scroll', checkLilyStart);
-    window.removeEventListener('resize', checkLilyStart);
-    ScrollTrigger.removeEventListener('refresh', checkLilyStart);
-  };
-  // Cek sekali lagi setelah layout final (mis. footer sudah terlihat penuh saat load)
-  requestAnimationFrame(checkLilyStart);
-  ScrollTrigger.addEventListener('refresh', checkLilyStart);
-
-  // Lily Pad 1 (left): starts 50px further left, slides to final left position
-  if (lilyPad1Ref.value) {
-    gsap.set(lilyPad1Ref.value, { x: -50, opacity: 0 });
-
-    lilyTweens.push(gsap.to(lilyPad1Ref.value, {
-      x: 0,
-      opacity: 0.6,
-      duration: 2.5,
-      ease: 'power2.out',
-      paused: true,
-      onComplete: () => {
-        // After slide-in, stay still in place for 1 second, then start gentle wave bobbing
-        gsap.to(lilyPad1Ref.value, {
-          y: -6,
-          duration: 2.8,
-          delay: 1.0,
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-        });
-        gsap.to(lilyPad1Ref.value, {
-          rotation: 1.2,
-          duration: 3.5,
-          delay: 1.0,
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-        });
-      }
-    }));
-  }
-
-  // Lily Pad 2 (right): starts 50px further right, slides to final right position
-  if (lilyPad2Ref.value) {
-    gsap.set(lilyPad2Ref.value, { x: 50, opacity: 0 });
-
-    lilyTweens.push(gsap.to(lilyPad2Ref.value, {
-      x: 0,
-      opacity: 0.6,
-      duration: 2.5,
-      delay: 0.4,
-      ease: 'power2.out',
-      paused: true,
-      onComplete: () => {
-        // After slide-in, stay still in place for 1 second, then start gentle wave bobbing
-        gsap.to(lilyPad2Ref.value, {
-          y: -5,
-          duration: 3.2,
-          delay: 1.0,
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-        });
-        gsap.to(lilyPad2Ref.value, {
-          rotation: -1,
-          duration: 4,
-          delay: 1.0,
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-        });
-      }
-    }));
-  }
+  });
 });
 
 onBeforeUnmount(() => {
-  removeLilyGate?.();
-  removeLilyGate = null;
   ScrollTrigger.getAll().forEach(st => st.kill());
-  gsap.killTweensOf(lilyPad1Ref.value);
-  gsap.killTweensOf(lilyPad2Ref.value);
 });
 </script>

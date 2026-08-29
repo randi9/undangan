@@ -1509,44 +1509,7 @@ onBeforeUnmount(() => {
           :theme-config="activeTheme"
         />
 
-        <!-- Background Asset Antara Gift dan Footer untuk Tema Evergreen -->
-        <div
-          v-if="themeName === 'evergreen'"
-          style="
-            position: relative;
-            display: flex;
-            justify-content: center;
-            z-index: 5;
-            pointer-events: none;
-
-            /* ============================================================== */
-            /* SILAKAN ATUR POSISI NAIK/TURUN DI SINI                        */
-            /* Ubah margin-top/margin-bottom, contoh: '-40px', '20px'        */
-            /* ============================================================== */
-            margin-top: 60px;
-          "
-        >
-          <img
-            src="https://media.mengundanganda.com/evergreen/rsvp/dewirandi_9fe27500-64c2-44a6-981e-91f7e7403647.webp"
-            alt="Evergreen Gift Footer Divider Bg"
-            style="
-              display: block;
-
-              /* ============================================================== */
-              /* SILAKAN ATUR UKURAN DI SINI                                   */
-              /* Contoh: width: '100%', '80%', '300px'                          */
-              /* ============================================================== */
-              width: 100%;
-              height: auto;
-
-              /* ============================================================== */
-              /* SILAKAN ATUR OPASITAS (TRANSPARANSI) DI SINI                  */
-              /* Nilai dari 0.0 (transparan penuh) sampai 1.0 (padat/jelas)     */
-              /* ============================================================== */
-              opacity: 0.8;
-            "
-          />
-        </div>
+       
 
         <!-- FOOTER (Dynamic per theme) -->
         <component

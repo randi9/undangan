@@ -258,6 +258,32 @@
     </div>
 
     <!-- ======================================================== -->
+    <!-- KELOPAK BUNGA JATUH SATU-SATU -> MELEKAK DI GROUND        -->
+    <!-- Cara atur: edit array PETALS di <script> (lihat komentar) -->
+    <!-- ======================================================== -->
+    <div
+      ref="petalsLayerRef"
+      style="
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        pointer-events: none;
+        overflow: hidden;
+        user-select: none;
+      "
+      aria-hidden="true"
+    >
+      <img
+        v-for="(p, i) in PETALS"
+        :key="i"
+        class="petal"
+        :src="PETAL_IMAGES[p.img % PETAL_IMAGES.length]"
+        alt=""
+        :style="{ width: p.size + 'px' }"
+      />
+    </div>
+
+    <!-- ======================================================== -->
     <!-- 2. KONTEN HEADER COUNTDOWN (DI POSISI ATAS LAYAR)        -->
     <!-- ======================================================== -->
     <div
@@ -860,8 +886,73 @@ const cardFrontRef = ref<HTMLElement | null>(null);
 const cardBackRef = ref<HTMLElement | null>(null);
 const akadContentRef = ref<HTMLElement | null>(null);
 const resepsiContentRef = ref<HTMLElement | null>(null);
+const petalsLayerRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
+
+// ============================================================
+// VARIASI GAMBAR KELOPAK BUNGA
+// ============================================================
+const PETAL_IMAGES = [
+  'https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_53b3592b-dec5-4c62-8356-db22ff02bdd5.webp',
+  'https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_c4d4b7d1-6a65-4253-af37-f9e86d9f2608.webp',
+  'https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_db608068-f241-44d8-aead-7be51282cbc4.webp',
+  'https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_490342c2-4d03-4d50-bcfd-8a6ede9627d7.webp',
+];
+
+interface PetalCfg {
+  stopX: number;  // posisi berhenti horizontal, % dari kiri (0=kiri, 100=kanan)
+  stopY: number;  // posisi berhenti vertikal, % dari atas (0=atas, 100=bawah)
+  sway: number;   // jarak ayunan kiri-kanan (px), makin besar makin santai
+  size: number;   // lebar kelopak (px)
+  fall: number;   // durasi jatuh (detik), makin besar makin pelan
+  delay: number;  // kapan mulai jatuh setelah section kebuka 25% (detik)
+  img: number;    // index gambar dari PETAL_IMAGES
+  o: number;      // opacity akhir (0.5 - 1), buat efek kedalaman
+}
+
+// ============================================================
+// POHON POSISI KELOPAK — otomatis menyebar 30 kelopak se-layar
+// GRID_COLS x GRID_ROWS = total kelopak (5 x 6 = 30)
+// Efek kedalaman (parallax):
+//   - berhenti di ATAS  = ground yang jauh -> kecil, samar, jatuh lebih pelan
+//   - berhenti di BAWAH = ground yang dekat -> besar, jelas, jatuh lebih cepat
+// Mau ubah jumlah? tinggal sesuaikan GRID_ROWS / GRID_COLS
+// ============================================================
+const rnd = (min: number, max: number) => min + Math.random() * (max - min);
+
+const GRID_COLS = 5;
+const GRID_ROWS = 6;
+
+const PETALS: PetalCfg[] = [];
+for (let r = 0; r < GRID_ROWS; r++) {
+  for (let c = 0; c < GRID_COLS; c++) {
+    // acak di dalam sel grid -> bervariasi tapi tetap merata
+    const stopX = ((c + rnd(0.12, 0.88)) / GRID_COLS) * 100;
+    const stopY = ((r + rnd(0.15, 0.9)) / GRID_ROWS) * 100;
+    const depth = stopY / 100; // 0 = atas (jauh), 1 = bawah (dekat)
+    PETALS.push({
+      stopX,
+      stopY,
+      sway: Math.round(rnd(55, 115) * (0.5 + depth * 0.8)),
+      size: Math.round(14 + depth * rnd(30, 42)),      // atas ~18px, bawah ~44-56px
+      fall: Math.round((rnd(9, 13) + (1 - depth) * rnd(3, 6)) * 10) / 10,
+      delay: 0, // diisi setelah loop, lihat acak urutan jatuh di bawah
+      img: (r * GRID_COLS + c) % PETAL_IMAGES.length,
+      o: Math.round((0.45 + depth * rnd(0.35, 0.5)) * 100) / 100,
+    });
+  }
+}
+
+// Acak urutan jatuh: kelopak yang jatuh duluan tidak berurutan per baris,
+// tapi tetap satu-satu (jeda 0.45 - 1 detik antar kelopak)
+{
+  const order = PETALS.map((_, i) => i).sort(() => Math.random() - 0.5);
+  order.forEach((petalIdx, pos) => {
+    const p = PETALS[petalIdx];
+    if (p) p.delay = Math.round(pos * rnd(0.45, 1.0) * 10) / 10;
+  });
+}
 
 const pad = (num: number) => String(Math.max(0, num)).padStart(2, '0');
 
@@ -929,6 +1020,62 @@ onMounted(() => {
       gsap.set(bgImageRef.value, { scale: 1.25, transformOrigin: 'center center' });
     }
 
+    // ===== KELOPAK BUNGA: jatuh satu-satu, sway tanpa rotate, berhenti di
+    // posisi stopX/stopY (config PETALS) lalu MENETAP di ground.
+    // Mulai ulang otomatis setiap kali section dibuka lagi dari arah couple =====
+    if (petalsLayerRef.value) {
+      const layerEl = petalsLayerRef.value;
+      const petalEls = Array.from(layerEl.querySelectorAll<HTMLElement>('.petal'));
+
+      // Helper posisi (dievaluasi ulang tiap refresh -> aman kalau layout berubah)
+      const yEndFor = (petal: HTMLElement, cfg: (typeof PETALS)[number]) =>
+        (cfg.stopY / 100) * (layerEl.clientHeight || window.innerHeight) - petal.offsetHeight / 2;
+      const xStartFor = (cfg: (typeof PETALS)[number]) =>
+        (cfg.stopX / 100) * (layerEl.clientWidth || window.innerWidth) - cfg.sway;
+
+      const petalTl = gsap.timeline();
+
+      petalEls.forEach((petal, i) => {
+        const cfg = PETALS[i];
+        if (!cfg) return;
+
+        // State awal: di luar layar atas, transparan
+        gsap.set(petal, { y: -60, x: xStartFor(cfg), opacity: 0 });
+
+        // Jatuh super santai, melambat halus menjelang berhenti (tanpa rotate)
+        petalTl.fromTo(
+          petal,
+          { y: -60, opacity: 0 },
+          { y: () => yEndFor(petal, cfg), duration: cfg.fall, ease: 'power2.out' },
+          cfg.delay
+        );
+        // Muncul halus di atas layar
+        petalTl.to(petal, { opacity: cfg.o, duration: 0.8, ease: 'none' }, cfg.delay);
+        // Ayunan kiri-kanan lembut, 4 siklus pelan selama jatuh, lalu berhenti
+        petalTl.fromTo(
+          petal,
+          { x: xStartFor(cfg) },
+          {
+            x: () => xStartFor(cfg) + cfg.sway,
+            duration: cfg.fall / 4,
+            repeat: 3,
+            yoyo: true,
+            ease: 'sine.inOut',
+          },
+          cfg.delay
+        );
+      });
+
+      ScrollTrigger.create({
+        trigger: sectionRef.value,
+        start: 'top 75%', // section kebuka 25%
+        // onEnter: main dari awal | onLeaveBack: reset ke posisi awal
+        // -> setiap kali section dibuka lagi dari couple, animasi mulai ulang
+        onEnter: () => petalTl.play(0),
+        onLeaveBack: () => petalTl.pause(0),
+      });
+    }
+
     // HITUNG PIN END DINAMIS
     const hasResepsi = !!props.invitation?.resepsi_date;
     const hasKhutbah = !!props.invitation?.khutbah_nikah;
@@ -972,6 +1119,20 @@ onMounted(() => {
           }
         },
       });
+    }
+
+    // 2b. Semua kelopak bunga ikut FADE OUT saat hendak pindah ke section events
+    //     (dan muncul lagi secara natural kalau user scroll balik ke countdown)
+    if (petalsLayerRef.value) {
+      tl.to(
+        petalsLayerRef.value,
+        {
+          opacity: 0,
+          duration: 0.3,
+          ease: 'power1.inOut',
+        },
+        '<'
+      );
     }
 
     // 3. SLIDE CEPAT & MULUS DARI DASAR BAWAH MENUJU PUNCAK ATAS (GAZEBO):
@@ -1143,5 +1304,14 @@ onBeforeUnmount(() => {
 
 <style scoped>
 /* Scoped transitions & adjustments for Evergreen Countdown & Events */
+.petal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: auto;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
 </style>
 
