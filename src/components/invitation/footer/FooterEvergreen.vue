@@ -114,7 +114,7 @@ const leaves = ref<PlacedLeaf[]>([]);
 let leafMaxOrd = 0;
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
-const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]!;
 
 // === Mahkota bunga di puncak lengkungan daun ===
 // wrap = posisi % terhadap leaf area (bottom:100% = persis di puncak lengkung),
@@ -314,7 +314,7 @@ function animateLeaves() {
     gsap.set(el, {
       opacity: 0,
       scale: 0.65,
-      rotation: -flowers[i].amp,
+      rotation: -(flowers[i]?.amp ?? 0),
       transformOrigin: '50% 100%',
     });
   });
@@ -384,8 +384,8 @@ function animateLeaves() {
     flowerEls.forEach((el, i) => {
       flowerSways.push(
         gsap.to(el, {
-          rotation: flowers[i].amp,
-          duration: flowers[i].dur,
+          rotation: flowers[i]?.amp ?? 0,
+          duration: flowers[i]?.dur ?? 2.5,
           ease: 'sine.inOut',
           repeat: -1,
           yoyo: true,
