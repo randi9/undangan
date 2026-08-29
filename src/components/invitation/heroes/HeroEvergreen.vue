@@ -171,6 +171,21 @@
     </div>
 
     <!-- ======================================================== -->
+    <!-- CONTAINER TEKS SETENGAH OVAL (PUTIH OPASITAS 0.8) -->
+    <!-- PANDUAN NGE-EDIT: -->
+    <!-- 1. Bentuk    : 'border-radius: 50% 50% 0 0 / 100% 100% 0 0' (setengah oval / kubah di bagian atas) -->
+    <!-- 2. Warna     : ubah 'rgba(255,255,255,0.8)' untuk warna/opasitas -->
+    <!-- 3. Ukuran    : disinkronkan otomatis mengikuti kotak teks hero via JS (syncTextOval) -->
+    <!-- 4. Layer     : z-index 2 -> DI ATAS gazebo (z-2, DOM lebih dulu), DI BAWAH daun berjatuhan -->
+    <!--                (z-2, DOM setelahnya), DI BAWAH dahan sway (z-3 s/d z-5), DI BAWAH teks (z-10) -->
+    <!-- ======================================================== -->
+    <div
+      ref="textOval"
+      class="evergreen-text-oval absolute z-[2] pointer-events-none select-none"
+      aria-hidden="true"
+    ></div>
+
+    <!-- ======================================================== -->
     <!-- ASSET DEKORASI 1: DAHAN POHON UTAMA (KANAN ATAS) -->
     <!-- PANDUAN NGE-EDIT: -->
     <!-- 1. Posisi  : Ubah 'top' (misal: 0px, -20px) & 'right' (misal: 0px, -15px) -->
@@ -451,8 +466,8 @@
       </div>
     </div>
 
-    <!-- Hero Content (Directly Floating, No Container Box) -->
-    <div ref="heroContent" class="relative z-[10] w-full max-w-xl mx-auto py-12 px-6 flex flex-col items-center">
+    <!-- Hero Content (Text) -->
+    <div ref="heroContent" class="relative z-[10] w-[70vw] max-w-[360px] mx-auto py-12 flex flex-col items-center">
       <!-- Hero Text Slot -->
       <div class="evergreen-hero-text relative z-20 w-full">
         <slot />
@@ -462,7 +477,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
 withDefaults(
   defineProps<{
@@ -482,33 +497,123 @@ withDefaults(
 const heroSection = ref<HTMLElement | null>(null);
 const heroContent = ref<HTMLElement | null>(null);
 const bgImg = ref<HTMLElement | null>(null);
+const textOval = ref<HTMLElement | null>(null);
+
+let ovalResizeObserver: ResizeObserver | null = null;
+
+// Sinkronkan posisi & ukuran container setengah oval agar selalu
+// membungkus persis blok teks hero dengan margin aman dari pinggir layar.
+function syncTextOval() {
+  const section = heroSection.value;
+  const content = heroContent.value;
+  const oval = textOval.value;
+  if (!section || !content || !oval) return;
+
+  const sRect = section.getBoundingClientRect();
+  const cRect = content.getBoundingClientRect();
+
+  // Padding internal untuk container kubah/oval
+  const padX = sRect.width < 640 ? 12 : 24; // Jarak dari tepi teks ke tepi kubah
+  const padTop = sRect.width < 640 ? 60 : 90; // Jarak kosong di atas teks untuk lekukan kubah
+  const padBottom = sRect.width < 640 ? 20 : 36; // Jarak kosong di bawah teks
+
+  let ovalWidth = cRect.width + padX * 2;
+  const screenMargin = sRect.width < 640 ? 16 : 24;
+  const maxOvalWidth = sRect.width - (screenMargin * 2);
+  if (ovalWidth > maxOvalWidth) {
+    ovalWidth = maxOvalWidth;
+  }
+
+  // Tinggi fit konten
+  const ovalHeight = cRect.height + padTop + padBottom;
+  const ovalTop = cRect.top - sRect.top - padTop;
+  const ovalLeft = (sRect.width - ovalWidth) / 2;
+
+  oval.style.left = `${ovalLeft}px`;
+  oval.style.top = `${ovalTop}px`;
+  oval.style.width = `${ovalWidth}px`;
+  oval.style.height = `${ovalHeight}px`;
+  oval.style.opacity = '1';
+}
+
+onMounted(async () => {
+  await nextTick();
+  syncTextOval();
+
+  // Font (Cormorant Garamond, dll) bisa mengubah lebar teks setelah ter-load
+  if (typeof document !== 'undefined' && document.fonts?.ready) {
+    document.fonts.ready.then(() => syncTextOval()).catch(() => {});
+  }
+
+  if (typeof ResizeObserver !== 'undefined') {
+    ovalResizeObserver = new ResizeObserver(() => syncTextOval());
+    if (heroContent.value) ovalResizeObserver.observe(heroContent.value);
+    if (heroSection.value) ovalResizeObserver.observe(heroSection.value);
+  }
+  window.addEventListener('resize', syncTextOval);
+});
+
+onBeforeUnmount(() => {
+  ovalResizeObserver?.disconnect();
+  ovalResizeObserver = null;
+  window.removeEventListener('resize', syncTextOval);
+});
 </script>
 
 <style>
-/* Typography styles injected from InvitationView slot */
+/* Container kubah/arch di belakang teks hero (setengah oval di atas, rata di bawah, glassmorphism) */
+.evergreen-text-oval {
+  background: rgba(255, 255, 255, 0.5); /* Opasitas 0.5 */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(45, 62, 53, 0.12); /* Border tipis dengan nuansa ijo tua */
+  border-top-left-radius: 150px; /* Setengah oval atas */
+  border-top-right-radius: 150px;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  box-shadow: 
+    0 10px 25px -5px rgba(0, 0, 0, 0.03),
+    0 2px 10px rgba(0, 0, 0, 0.01);
+  opacity: 0;
+  /* Transisi hanya untuk opasitas agar tidak terjadi jeda/wobble saat resize */
+  transition: opacity 0.6s ease;
+}
+
+/* Typography styles untuk tulisan di atas container oval (warna teks ijo tua) */
 .evergreen-hero-text p {
-  color: #FFFFFF !important;
+  color: #2D3E35 !important; /* Ijo Tua */
   letter-spacing: 0.25em !important;
   text-transform: uppercase !important;
   font-size: 0.85rem !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.6) !important;
+  text-shadow: none !important; /* Hapus shadow hitam */
 }
 
 .evergreen-hero-text h1 {
-  color: #FFFFFF !important;
+  color: #2D3E35 !important; /* Ijo Tua */
   font-family: 'Cormorant Garamond', Georgia, serif !important;
   font-weight: 500 !important;
   line-height: 1.15 !important;
   margin: 0.75rem 0 !important;
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6), 0 1px 4px rgba(0, 0, 0, 0.5) !important;
+  text-shadow: none !important; /* Hapus shadow hitam */
 }
 
 .evergreen-hero-text h1 span {
-  color: #EAF2ED !important;
+  color: #4A6B5B !important; /* Ijo sage medium untuk variasi artistik */
   font-style: italic !important;
   font-family: 'Cormorant Garamond', Georgia, serif !important;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+  text-shadow: none !important; /* Hapus shadow hitam */
+}
+
+/* Menyesuaikan divider garis dan teks "Undangan Pernikahan" agar harmonis */
+.evergreen-hero-text .bg-white\/60 {
+  background-color: rgba(45, 62, 53, 0.3) !important;
+  box-shadow: none !important;
+}
+
+.evergreen-hero-text span.text-white\/90 {
+  color: #5C7367 !important; /* Sage keabu-abuan lembut */
+  text-shadow: none !important;
 }
 </style>
 

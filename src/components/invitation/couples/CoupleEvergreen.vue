@@ -667,6 +667,127 @@
     </div>
 
     <!-- ======================================================== -->
+    <!-- 4a. KELOPAK BUNGA JATUH                                    -->
+    <!-- z-index:10 + ditaruh SETELAH dekor couple & SEBELUM layer -->
+    <!-- bunga => kelopak tampil DI BAWAH bunga, DI ATAS aset lain.-->
+    <!--                                                          -->
+    <!-- PANDUAN NGE-TWEAK ANIMASI KELOPAK:                         -->
+    <!-- - Semua setelan gerak (ukuran, kecepatan jatuh, goyang    -->
+    <!--   angin, jarak jatuh, kemiringan) ada di CSS `.petal-layer`-->
+    <!--   di bagian <style> paling bawah.                          -->
+    <!-- - Titik lepas kelopak dari bunga: ubah 'top' & 'left'      -->
+    <!--   pada .petal-spawn di bawah ini.                          -->
+    <!-- - Mau tambah kelopak? Duplikat blok .petal-spawn, lalu     -->
+    <!--   geser posisi & tambahkan animation-delay inline kalau    -->
+    <!--   ingin waktu jatuhnya tidak bersamaan.                   -->
+    <!-- ======================================================== -->
+    <div
+      ref="petalLayerRef"
+      class="petal-layer"
+      style="
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 200%;
+        height: 100%;
+        z-index: 10;
+        pointer-events: none;
+        overflow: hidden;
+      "
+    >
+      <!-- ======================================================== -->
+      <!-- 10 KELOPAK JATUH dari barisan bunga atas lengkungan.     -->
+      <!-- - Delay dibuat berdekatan (-0.1s s/d -0.8s) supaya       -->
+      <!--   semuanya jatuh HAMPIR BERSAMAAN dalam satu gelombang. -->
+      <!-- - Kelas .still = kelopak TIDAK sway (hanya jatuh lurus   -->
+      <!--   dengan kemiringan tetap).                               -->
+      <!-- - Opasitas penuh kelopak sudah dikunci 0.8 di keyframes  -->
+      <!--   petalFall, tidak perlu diatur per kelopak lagi.         -->
+      <!-- ======================================================== -->
+
+      <!-- P1 : Bunga Pink 6 -->
+      <div class="petal-spawn" style="top: 32%; left: 66.8%;">
+        <div class="petal-fall" style="--petal-fall-duration: 6.1s; --petal-fall-distance: 56vh;">
+          <img class="petal-sway" style="--petal-size: 15px; --petal-sway-duration: 2.9s; --petal-sway-distance: 9px; --petal-tilt: 7deg;"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_2242715c-0bf6-49c5-a6ab-c205a6b0a8bd.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+
+      <!-- P2 : Bunga Putih 2 -->
+      <div class="petal-spawn" style="top: 30%; left: 70.2%;">
+        <div class="petal-fall" style="--petal-fall-duration: 5.7s; --petal-fall-distance: 58vh;">
+          <img class="petal-sway still" style="--petal-size: 13px; transform: rotate(-14deg);"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_490342c2-4d03-4d50-bcfd-8a6ede9627d7.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+
+      <!-- P3 : Bunga Pink 1 -->
+      <div class="petal-spawn" style="top: 31%; left: 74.4%;">
+        <div class="petal-fall" style="--petal-fall-duration: 6.4s; --petal-fall-distance: 52vh;">
+          <img class="petal-sway" style="--petal-size: 16px; --petal-sway-duration: 3.3s; --petal-sway-distance: 12px; --petal-tilt: 9deg;"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_5475ce69-bd75-44ba-b858-0918718d1f27.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+
+      <!-- P4 : Bunga Putih 1 -->
+      <div class="petal-spawn" style="top: 30%; left: 79.8%;">
+        <div class="petal-fall" style="--petal-fall-duration: 5.9s; --petal-fall-distance: 60vh;">
+          <img class="petal-sway" style="--petal-size: 14px; --petal-sway-duration: 2.6s; --petal-sway-distance: 8px; --petal-tilt: 6deg;"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_2242715c-0bf6-49c5-a6ab-c205a6b0a8bd.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+
+      <!-- P5 : Bunga Pink 7 -->
+      <div class="petal-spawn" style="top: 32%; left: 82.9%;">
+        <div class="petal-fall" style="--petal-fall-duration: 6.3s; --petal-fall-distance: 54vh;">
+          <img class="petal-sway still" style="--petal-size: 15px; transform: rotate(11deg);"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_490342c2-4d03-4d50-bcfd-8a6ede9627d7.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+
+      <!-- P6 : Bunga Putih 3 -->
+      <div class="petal-spawn" style="top: 34%; left: 87.8%;">
+        <div class="petal-fall" style="--petal-fall-duration: 5.5s; --petal-fall-distance: 57vh;">
+          <img class="petal-sway" style="--petal-size: 13px; --petal-sway-duration: 3s; --petal-sway-distance: 11px; --petal-tilt: 8deg;"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_5475ce69-bd75-44ba-b858-0918718d1f27.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+
+      <!-- P7 : Bunga Pink 3 -->
+      <div class="petal-spawn" style="top: 36%; left: 60.8%;">
+        <div class="petal-fall" style="--petal-fall-duration: 6.2s; --petal-fall-distance: 50vh;">
+          <img class="petal-sway" style="--petal-size: 16px; --petal-sway-duration: 2.7s; --petal-sway-distance: 10px; --petal-tilt: 7deg;"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_2242715c-0bf6-49c5-a6ab-c205a6b0a8bd.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+
+      <!-- P8 : Bunga Pink 2 -->
+      <div class="petal-spawn" style="top: 36%; left: 91.6%;">
+        <div class="petal-fall" style="--petal-fall-duration: 5.8s; --petal-fall-distance: 55vh;">
+          <img class="petal-sway still" style="--petal-size: 12px; transform: rotate(-9deg);"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_5475ce69-bd75-44ba-b858-0918718d1f27.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+
+      <!-- P9 : celah antara Pink 1 & Putih 1 -->
+      <div class="petal-spawn" style="top: 31%; left: 77%;">
+        <div class="petal-fall" style="--petal-fall-duration: 6.5s; --petal-fall-distance: 62vh;">
+          <img class="petal-sway" style="--petal-size: 14px; --petal-sway-duration: 3.2s; --petal-sway-distance: 7px; --petal-tilt: 5deg;"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_490342c2-4d03-4d50-bcfd-8a6ede9627d7.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+
+      <!-- P10 : celah antara Putih 1 & Pink 7 -->
+      <div class="petal-spawn" style="top: 33%; left: 85%;">
+        <div class="petal-fall" style="--petal-fall-duration: 5.6s; --petal-fall-distance: 51vh;">
+          <img class="petal-sway still" style="--petal-size: 13px; transform: rotate(16deg);"
+            src="https://media.mengundanganda.com/evergreen/couple%20section/dewirandi_2242715c-0bf6-49c5-a6ab-c205a6b0a8bd.webp" alt="Kelopak Bunga" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
     <!-- 4b. ASSET DEKORASI COUPLE BUNGA LAYER (DI BAWAH OVERLAY PUTIH) -->
     <!-- ======================================================== -->
     <div
@@ -1246,7 +1367,7 @@
 
       <!-- Container Gerbang Lengkung (+1/3 lebih tinggi, opacity 0.6) -->
       <div
-        class="relative w-full min-h-[385px] overflow-hidden bg-white/60 backdrop-blur-md border border-white/65 shadow-[0_20px_50px_rgba(27,48,36,0.28)] pointer-events-auto flex items-center justify-center"
+        class="relative w-full min-h-[385px] overflow-hidden bg-white/70 border border-white/65 shadow-[0_20px_50px_rgba(27,48,36,0.28)] pointer-events-auto flex items-center justify-center"
         style="
           border-radius: 170px 170px 28px 28px;
           padding: 26px 16px 18px 16px;
@@ -1268,12 +1389,35 @@
         <!-- ===================================================== -->
         <div
           ref="groomContentRef"
-          class="w-full flex flex-col items-center text-center justify-center py-1"
-          style="position: relative; z-index: 10;"
+          style="
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            padding: 4px 0;
+          "
         >
           <!-- Badge The Groom -->
           <span
-            class="text-[9.5px] uppercase tracking-[0.28em] text-[#1F3A2C] font-bold bg-[#E4ECE7]/95 px-5 py-1.5 rounded-full mb-2 shadow-xs border border-[#C2D6C9]"
+            style="
+              font-family: 'Montserrat', 'Outfit', sans-serif;
+              font-size: 9px;
+              text-transform: uppercase;
+              letter-spacing: 0.25em;
+              color: #1F3A2C;
+              font-weight: 700;
+              background-color: rgba(228, 236, 231, 0.95);
+              padding: 5px 18px;
+              border-radius: 9999px;
+              margin-bottom: 8px;
+              border: 1px solid #C2D6C9;
+              display: inline-block;
+              box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            "
           >
             The Groom
           </span>
@@ -1281,21 +1425,43 @@
           <!-- Foto Groom (Hanya tampil jika ada foto yang di-upload) -->
           <div
             v-if="invitation.groom_photo && resolveUrl(invitation.groom_photo)"
-            class="relative w-24 h-32 mb-2 overflow-hidden bg-white/95 border-2 border-white shadow-[0_8px_20px_rgba(45,62,53,0.18)]"
-            style="border-radius: 55px 55px 14px 14px;"
+            style="
+              position: relative;
+              width: 80px;
+              height: 106px;
+              margin-bottom: 8px;
+              overflow: hidden;
+              background-color: rgba(255, 255, 255, 0.95);
+              border: 2px solid #ffffff;
+              box-shadow: 0 6px 16px rgba(45, 62, 53, 0.15);
+              border-radius: 40px 40px 10px 10px;
+            "
           >
             <img
               :src="resolveUrl(invitation.groom_photo)"
               :alt="invitation.groom_name"
-              class="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+              style="
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.7s ease;
+              "
+              class="hover:scale-105"
             />
           </div>
 
           <!-- Nama Panggilan / Nama Depan -->
           <h3
             v-if="invitation.groom_name"
-            class="text-2xl sm:text-[28px] font-serif font-semibold text-[#162B20] leading-tight mb-1 underline underline-offset-6 decoration-1 decoration-[#162B20]/30"
-            style="font-family: 'Cormorant Garamond', Georgia, serif;"
+            style="
+              font-family: 'Cormorant Garamond', Georgia, serif;
+              font-size: 26px;
+              font-weight: 600;
+              color: #162B20;
+              line-height: 1.15;
+              margin: 0;
+              letter-spacing: 0.01em;
+            "
           >
             {{ invitation.groom_name }}
           </h3>
@@ -1303,33 +1469,70 @@
           <!-- Nama Lengkap / Panjang -->
           <span
             v-if="invitation.groom_full_name && invitation.groom_full_name !== invitation.groom_name"
-            class="text-sm sm:text-base font-serif text-[#162B20] mb-2 font-medium"
-            style="font-family: 'Cormorant Garamond', Georgia, serif;"
+            style="
+              font-family: 'Cormorant Garamond', Georgia, serif;
+              font-size: 14px;
+              font-style: italic;
+              color: #3D5447;
+              margin-top: 4px;
+              margin-bottom: 8px;
+              font-weight: 500;
+              letter-spacing: 0.02em;
+              display: block;
+              line-height: 1.2;
+            "
           >
             {{ invitation.groom_full_name }}
           </span>
 
           <!-- Divider Garis Halus -->
-          <div class="w-14 h-[1px] bg-gradient-to-r from-transparent via-[#3F6350]/40 to-transparent my-0.5"></div>
+          <div
+            style="
+              width: 50px;
+              height: 1px;
+              background: linear-gradient(to right, transparent, rgba(63, 99, 80, 0.4), transparent);
+              margin: 6px 0;
+            "
+          ></div>
 
           <!-- Orang Tua Groom -->
           <p
             v-if="invitation.groom_father || invitation.groom_mother"
-            class="text-xs text-[#3D5447] leading-relaxed max-w-[240px] mt-1"
+            style="
+              font-family: 'Montserrat', 'Outfit', sans-serif;
+              font-size: 11px;
+              color: #4A5F52;
+              line-height: 1.5;
+              max-width: 220px;
+              margin: 4px 0 6px 0;
+            "
           >
-            <span class="italic text-[11px] text-[#5C7367]">Putra dari</span><br />
-            <strong class="font-semibold text-[#1B3024]">{{ invitation.groom_father }}</strong>
+            <span style="font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 13px; color: #5C7367; display: block; margin-bottom: 2px;">Putra dari</span>
+            <span style="font-weight: 600; color: #1B3024; font-size: 12px; letter-spacing: 0.02em; display: block;">{{ invitation.groom_father }}</span>
             <template v-if="invitation.groom_mother">
-              <br /><span class="text-[11px]">&amp;</span> <strong class="font-semibold text-[#1B3024]">{{ invitation.groom_mother }}</strong>
+              <span style="font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 12px; color: #5C7367; display: block; margin: 1px 0;">&amp;</span>
+              <span style="font-weight: 600; color: #1B3024; font-size: 12px; letter-spacing: 0.02em; display: block;">{{ invitation.groom_mother }}</span>
             </template>
           </p>
 
           <!-- Asal Groom -->
           <p
             v-if="invitation.groom_origin"
-            class="text-[11px] text-[#5C7367] mt-1 font-medium tracking-wide flex items-center gap-1 justify-center"
+            style="
+              font-family: 'Montserrat', 'Outfit', sans-serif;
+              font-size: 10.5px;
+              color: #5C7367;
+              margin-top: 4px;
+              margin-bottom: 0;
+              font-weight: 500;
+              letter-spacing: 0.04em;
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              justify-content: center;
+            "
           >
-            <svg class="w-3 h-3 text-[#3F6350]" viewBox="0 0 24 24" fill="currentColor">
+            <svg style="width: 11px; height: 11px; color: #3F6350; flex-shrink: 0;" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
             </svg>
             {{ invitation.groom_origin }}
@@ -1341,7 +1544,6 @@
         <!-- ===================================================== -->
         <div
           ref="brideContentRef"
-          class="w-full flex flex-col items-center text-center justify-center py-1"
           style="
             position: absolute;
             inset: 0;
@@ -1349,11 +1551,30 @@
             z-index: 10;
             opacity: 0;
             pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
           "
         >
           <!-- Badge The Bride -->
           <span
-            class="text-[9.5px] uppercase tracking-[0.28em] text-[#1F3A2C] font-bold bg-[#E4ECE7]/95 px-5 py-1.5 rounded-full mb-2 shadow-xs border border-[#C2D6C9]"
+            style="
+              font-family: 'Montserrat', 'Outfit', sans-serif;
+              font-size: 9px;
+              text-transform: uppercase;
+              letter-spacing: 0.25em;
+              color: #1F3A2C;
+              font-weight: 700;
+              background-color: rgba(228, 236, 231, 0.95);
+              padding: 5px 18px;
+              border-radius: 9999px;
+              margin-bottom: 8px;
+              border: 1px solid #C2D6C9;
+              display: inline-block;
+              box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            "
           >
             The Bride
           </span>
@@ -1361,21 +1582,43 @@
           <!-- Foto Bride (Hanya tampil jika ada foto yang di-upload) -->
           <div
             v-if="invitation.bride_photo && resolveUrl(invitation.bride_photo)"
-            class="relative w-24 h-32 mb-2 overflow-hidden bg-white/95 border-2 border-white shadow-[0_8px_20px_rgba(45,62,53,0.18)]"
-            style="border-radius: 55px 55px 14px 14px;"
+            style="
+              position: relative;
+              width: 80px;
+              height: 106px;
+              margin-bottom: 8px;
+              overflow: hidden;
+              background-color: rgba(255, 255, 255, 0.95);
+              border: 2px solid #ffffff;
+              box-shadow: 0 6px 16px rgba(45, 62, 53, 0.15);
+              border-radius: 40px 40px 10px 10px;
+            "
           >
             <img
               :src="resolveUrl(invitation.bride_photo)"
               :alt="invitation.bride_name"
-              class="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+              style="
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.7s ease;
+              "
+              class="hover:scale-105"
             />
           </div>
 
           <!-- Nama Panggilan / Nama Depan -->
           <h3
             v-if="invitation.bride_name"
-            class="text-2xl sm:text-[28px] font-serif font-semibold text-[#162B20] leading-tight mb-1 underline underline-offset-6 decoration-1 decoration-[#162B20]/30"
-            style="font-family: 'Cormorant Garamond', Georgia, serif;"
+            style="
+              font-family: 'Cormorant Garamond', Georgia, serif;
+              font-size: 26px;
+              font-weight: 600;
+              color: #162B20;
+              line-height: 1.15;
+              margin: 0;
+              letter-spacing: 0.01em;
+            "
           >
             {{ invitation.bride_name }}
           </h3>
@@ -1383,33 +1626,70 @@
           <!-- Nama Lengkap / Panjang -->
           <span
             v-if="invitation.bride_full_name && invitation.bride_full_name !== invitation.bride_name"
-            class="text-sm sm:text-base font-serif text-[#162B20] mb-2 font-medium"
-            style="font-family: 'Cormorant Garamond', Georgia, serif;"
+            style="
+              font-family: 'Cormorant Garamond', Georgia, serif;
+              font-size: 14px;
+              font-style: italic;
+              color: #3D5447;
+              margin-top: 4px;
+              margin-bottom: 8px;
+              font-weight: 500;
+              letter-spacing: 0.02em;
+              display: block;
+              line-height: 1.2;
+            "
           >
             {{ invitation.bride_full_name }}
           </span>
 
           <!-- Divider Garis Halus -->
-          <div class="w-14 h-[1px] bg-gradient-to-r from-transparent via-[#3F6350]/40 to-transparent my-0.5"></div>
+          <div
+            style="
+              width: 50px;
+              height: 1px;
+              background: linear-gradient(to right, transparent, rgba(63, 99, 80, 0.4), transparent);
+              margin: 6px 0;
+            "
+          ></div>
 
           <!-- Orang Tua Bride -->
           <p
             v-if="invitation.bride_father || invitation.bride_mother"
-            class="text-xs text-[#3D5447] leading-relaxed max-w-[240px] mt-1"
+            style="
+              font-family: 'Montserrat', 'Outfit', sans-serif;
+              font-size: 11px;
+              color: #4A5F52;
+              line-height: 1.5;
+              max-width: 220px;
+              margin: 4px 0 6px 0;
+            "
           >
-            <span class="italic text-[11px] text-[#5C7367]">Putri dari</span><br />
-            <strong class="font-semibold text-[#1B3024]">{{ invitation.bride_father }}</strong>
+            <span style="font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 13px; color: #5C7367; display: block; margin-bottom: 2px;">Putri dari</span>
+            <span style="font-weight: 600; color: #1B3024; font-size: 12px; letter-spacing: 0.02em; display: block;">{{ invitation.bride_father }}</span>
             <template v-if="invitation.bride_mother">
-              <br /><span class="text-[11px]">&amp;</span> <strong class="font-semibold text-[#1B3024]">{{ invitation.bride_mother }}</strong>
+              <span style="font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 12px; color: #5C7367; display: block; margin: 1px 0;">&amp;</span>
+              <span style="font-weight: 600; color: #1B3024; font-size: 12px; letter-spacing: 0.02em; display: block;">{{ invitation.bride_mother }}</span>
             </template>
           </p>
 
           <!-- Asal Bride -->
           <p
             v-if="invitation.bride_origin"
-            class="text-[11px] text-[#5C7367] mt-1 font-medium tracking-wide flex items-center gap-1 justify-center"
+            style="
+              font-family: 'Montserrat', 'Outfit', sans-serif;
+              font-size: 10.5px;
+              color: #5C7367;
+              margin-top: 4px;
+              margin-bottom: 0;
+              font-weight: 500;
+              letter-spacing: 0.04em;
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              justify-content: center;
+            "
           >
-            <svg class="w-3 h-3 text-[#3F6350]" viewBox="0 0 24 24" fill="currentColor">
+            <svg style="width: 11px; height: 11px; color: #3F6350; flex-shrink: 0;" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
             </svg>
             {{ invitation.bride_origin }}
@@ -1442,6 +1722,7 @@ const bgInnerRef = ref<HTMLElement | null>(null);
 const fountainWrapperRef = ref<HTMLElement | null>(null);
 const coupleDecorWrapperRef = ref<HTMLElement | null>(null);
 const coupleTopDecorWrapperRef = ref<HTMLElement | null>(null);
+const petalLayerRef = ref<HTMLElement | null>(null);
 const quoteContainerRef = ref<HTMLElement | null>(null);
 const doaContainerRef = ref<HTMLElement | null>(null);
 const cardContainerRef = ref<HTMLElement | null>(null);
@@ -1450,6 +1731,7 @@ const brideContentRef = ref<HTMLElement | null>(null);
 const whiteOverlayRef = ref<HTMLElement | null>(null);
 
 let ctx: gsap.Context | null = null;
+let petalAmbientTimer: number | null = null;
 
 const resolveUrl = (url: string | undefined) => {
   if (!url || !url.trim()) return '';
@@ -1491,7 +1773,71 @@ onMounted(() => {
   if (!sectionRef.value) return;
 
   ctx = gsap.context(() => {
-    // PINNING TIMELINE: QUOTE -> (DOA PENGANTIN if enabled) -> SLIDE PANORAMA -> CARD & GROOM IN -> HOLD GROOM -> GROOM OUT -> JEDA -> BRIDE IN -> HOLD BRIDE
+    // ============================================================
+    // KELOPAK: BURST (semua gugur bersamaan sesaat sebelum groom
+    // muncul) -> setelah kelopak lewat, groom fade in (via label
+    // timeline) -> AMBIENT (beberapa kelopak gugur berkala, tidak
+    // bersamaan, repeat terus). Kontrol lewat longhand animasi
+    // inline supaya aman dengan scoped keyframes.
+    // ============================================================
+    const petalFalls = petalLayerRef.value
+      ? (Array.from(petalLayerRef.value.querySelectorAll('.petal-fall')) as HTMLElement[])
+      : [];
+
+    const resetPetals = () => {
+      if (petalAmbientTimer !== null) {
+        clearTimeout(petalAmbientTimer);
+        petalAmbientTimer = null;
+      }
+      petalFalls.forEach((el) => {
+        el.style.animationName = '';
+        el.style.animationDelay = '';
+        el.style.animationDuration = '';
+        el.style.animationIterationCount = '';
+        el.style.animationFillMode = '';
+        el.style.visibility = '';
+        el.style.animationPlayState = 'paused';
+      });
+    };
+
+    const startAmbient = () => {
+      if (!petalFalls.length) return;
+      // Pilih acak 4-6 kelopak saja; sisanya dimatikan.
+      const shuffled = [...petalFalls].sort(() => Math.random() - 0.5);
+      const activeSet = new Set(shuffled.slice(0, 4 + Math.floor(Math.random() * 3)));
+      petalFalls.forEach((el) => {
+        if (activeSet.has(el)) {
+          el.style.animationName = '';
+          el.style.visibility = '';
+          el.style.animationDelay = `${(Math.random() * 7).toFixed(2)}s`;
+          el.style.animationDuration = `${(6.5 + Math.random() * 2.5).toFixed(2)}s`;
+          el.style.animationIterationCount = 'infinite';
+          el.style.animationPlayState = 'running';
+        } else {
+          // Sembunyikan total: tanpa animasi, opacity default balik ke 1
+          // dan kelopak terlihat diam di posisi spawn kalau cuma di-
+          // matikan animation-name-nya.
+          el.style.animationName = 'none';
+          el.style.visibility = 'hidden';
+        }
+      });
+    };
+
+    const startBurst = () => {
+      if (!petalFalls.length) return;
+      resetPetals();
+      petalFalls.forEach((el) => {
+        el.style.animationDelay = `${(Math.random() * 0.45).toFixed(2)}s`;
+        el.style.animationDuration = `${(5.8 + Math.random() * 0.8).toFixed(2)}s`;
+        el.style.animationIterationCount = '1';
+        el.style.animationFillMode = 'forwards'; // kunci di opacity 0 setelah lewat
+        el.style.animationPlayState = 'running';
+      });
+      // Semua kelopak sudah lewat (maks ~6.3s + 0.45s delay) -> mode ambient
+      petalAmbientTimer = window.setTimeout(startAmbient, 7300);
+    };
+
+    // PINNING TIMELINE: QUOTE -> (DOA PENGANTIN if enabled) -> SLIDE PANORAMA -> PETAL BURST -> CARD & GROOM IN -> HOLD GROOM -> GROOM OUT -> JEDA -> BRIDE IN -> HOLD BRIDE
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
@@ -1608,6 +1954,15 @@ onMounted(() => {
         }, "slideGarden");
       }
 
+      // Kelopak bunga ikut geser bersama layer bunga agar tetap jatuh dari posisi bunga
+      if (petalLayerRef.value) {
+        tl.to(petalLayerRef.value, {
+          xPercent: -50,
+          duration: 1.5,
+          ease: 'power1.inOut',
+        }, "slideGarden");
+      }
+
       if (bgInnerRef.value) {
         tl.to(bgInnerRef.value, {
           scale: 1.2,
@@ -1625,8 +1980,15 @@ onMounted(() => {
       }
     }
 
-    // 6. SETELAH SLIDE SEPENUHNYA SELESAI: Beri jeda sejenak, baru Card Container & Info GROOM mulai Fade In
-    tl.to({}, { duration: 0.25 });
+    // 6. GELOMBANG KELOPAK: SAAT INFO GROOM AKAN MUNCUL -> SEMUA 10 KELOPAK
+    // GUGUR BERSAMAAN (posisi & gerakan random tapi satu gelombang).
+    // Jeda scroll ini memberi waktu ~6.5d kelopak lewat seluruhnya,
+    // BARU setelah itu card & info groom fade in.
+    tl.to({}, {
+      duration: 1.15,
+      onStart: () => { startBurst(); },
+      onReverseComplete: () => { resetPetals(); },
+    }, "petalBurst");
 
     if (cardContainerRef.value) {
       tl.fromTo(
@@ -1642,7 +2004,7 @@ onMounted(() => {
       tl.to(
         bgInnerRef.value,
         {
-          filter: 'blur(8px)',
+          filter: 'blur(4px)',
           duration: 0.85,
           ease: 'power2.out',
         },
@@ -1654,7 +2016,7 @@ onMounted(() => {
       tl.to(
         fountainWrapperRef.value,
         {
-          filter: 'blur(8px)',
+          filter: 'blur(4px)',
           duration: 0.85,
           ease: 'power2.out',
         },
@@ -1755,6 +2117,10 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  if (petalAmbientTimer !== null) {
+    clearTimeout(petalAmbientTimer);
+    petalAmbientTimer = null;
+  }
   if (ctx) {
     ctx.revert();
   }
@@ -2488,5 +2854,60 @@ onBeforeUnmount(() => {
   54% { transform: rotate(3.0deg); }
   78% { transform: rotate(-2.0deg); }
   100% { transform: rotate(0deg); }
+}
+
+/* ======================================================== */
+/* 5. ANIMASI KELOPAK BUNGA JATUH (TERBANG SWAY KENA ANGIN) */
+/* ======================================================== */
+.petal-layer {
+  /* ========= SEMUA SETELAN KELOPAK ADA DI SINI ========= */
+  --petal-size: 16px;           /* ukuran kelopak (lebar gambar)            */
+  --petal-fall-duration: 6s;    /* lama 1x jatuh ( makin besar makin lambat)*/
+  --petal-fall-distance: 55vh;  /* jarak jatuhnya ke bawah                  */
+  --petal-sway-duration: 3.2s;  /* lama 1x goyang kiri-kanan (ayunan angin) */
+  --petal-sway-distance: 10px;  /* jarak goyang ke kiri & ke kanan (dikit)  */
+  --petal-tilt: 8deg;           /* sudut miring/rotasi kelopak saat goyang  */
+  /* ====================================================== */
+}
+
+/* Titik lepas kelopak (posisikan lewat inline style top/left di template) */
+.petal-spawn {
+  position: absolute;
+}
+
+/* Gerak JATUH ke bawah + fade in/out (lapisan luar). */
+/* PAUSED by default: dipicu via JS (burst -> ambient) */
+.petal-fall {
+  animation: petalFall var(--petal-fall-duration) linear infinite;
+  animation-play-state: paused;
+  will-change: transform, opacity;
+}
+
+/* Gerak GOYANG kiri-kanan + miring (lapisan dalam, terpisah supaya   */
+/* ritme ayunan & kecepatan jatuh bisa diatur sendiri-sendiri)        */
+.petal-sway {
+  display: block;
+  width: var(--petal-size);
+  height: auto;
+  object-fit: contain;
+  animation: petalSway var(--petal-sway-duration) ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Kelopak TANPA sway: jatuh lurus, pakai rotasi tetap dari inline style */
+.petal-sway.still {
+  animation: none;
+}
+
+@keyframes petalFall {
+  0%   { transform: translateY(0);                                 opacity: 0; }
+  6%   { opacity: 0.8; }
+  85%  { opacity: 0.8; }
+  100% { transform: translateY(var(--petal-fall-distance));        opacity: 0; }
+}
+
+@keyframes petalSway {
+  0%, 100% { transform: translateX(calc(var(--petal-sway-distance) * -1)) rotate(calc(var(--petal-tilt) * -1)); }
+  50%      { transform: translateX(var(--petal-sway-distance))            rotate(var(--petal-tilt)); }
 }
 </style>
