@@ -418,7 +418,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
+import { ref, reactive, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Rsvp } from '@/types/invitation';
@@ -469,6 +469,26 @@ const formatDate = (dateStr: string) => {
   }
 };
 
+// Daftar ucapan punya v-if (hanya ada saat sudah ada pesan),
+// jadi elemennya bisa null saat onMounted -> GSAP akan crash
+// ("Cannot read properties of null (reading '_gsap')") kalau
+// target null ikut dikirim. Selalu filter target null.
+const animateMessagesGroup = (tl?: ReturnType<typeof gsap.timeline>) => {
+  const targets = [messagesRef.value, assetBottomRef.value].filter(Boolean);
+  if (targets.length === 0) return false;
+  const vars = { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' };
+  if (tl) {
+    tl.to(targets, vars, '-=0.8');
+  } else {
+    gsap.to(targets, vars);
+  }
+  return true;
+};
+
+// Sudah dianimasikan saat mount? Kalau belum (belum ada pesan),
+// animasikan saat pesan pertama kali muncul.
+let messagesAnimated = false;
+
 onMounted(() => {
   if (!rsvpSection.value) return;
 
@@ -480,27 +500,45 @@ onMounted(() => {
     }
   });
 
-  tl.to(headerRef.value, {
-    opacity: 1,
-    y: 0,
-    duration: 1.2,
-    ease: 'power2.out'
-  })
-  .to([assetRef.value, formRef.value], {
-    // Asset atas form & container oval: muncul bareng, sama-sama slide-up
-    opacity: 1,
-    y: 0,
-    duration: 1.2,
-    ease: 'power2.out'
-  }, "-=0.8") // Tumpang tindih agar langsung berurutan tanpa jeda kosong
-  .to([messagesRef.value, assetBottomRef.value], {
-    // Daftar ucapan & asset bawah form: muncul bareng, sama-sama slide-up
-    opacity: 1,
-    y: 0,
-    duration: 1.2,
-    ease: 'power2.out'
-  }, "-=0.8");
+  const headerTargets = [headerRef.value].filter(Boolean);
+  if (headerTargets.length) {
+    tl.to(headerTargets, {
+      opacity: 1,
+      y: 0,
+      duration: 1.2,
+      ease: 'power2.out'
+    });
+  }
+
+  const formTargets = [assetRef.value, formRef.value].filter(Boolean);
+  if (formTargets.length) {
+    tl.to(formTargets, {
+      // Asset atas form & container oval: muncul bareng, sama-sama slide-up
+      opacity: 1,
+      y: 0,
+      duration: 1.2,
+      ease: 'power2.out'
+    }, '-=0.8'); // Tumpang tindih agar langsung berurutan tanpa jeda kosong
+  }
+
+  // Hanya masuk timeline kalau elemennya memang sudah ter-render
+  if (animateMessagesGroup(tl)) {
+    messagesAnimated = true;
+  }
 });
+
+// Pesan baru masuk setelah mount (misal tamu pertama yang RSVP) ->
+// nextTick agar elemen v-if ter-render dulu, baru di-animate.
+watch(
+  () => props.rsvpMessages?.length ?? 0,
+  async (len) => {
+    if (len > 0 && !messagesAnimated) {
+      messagesAnimated = true;
+      await nextTick();
+      animateMessagesGroup();
+    }
+  }
+);
 
 onBeforeUnmount(() => {
   ScrollTrigger.getAll().forEach(st => st.kill());
