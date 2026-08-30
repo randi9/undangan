@@ -506,110 +506,6 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- TEKS DOA PENGANTIN (AWAL HIDDEN, FADE IN SETELAH QUOTE FADE OUT) -->
-    <!-- ======================================================== -->
-    <div
-      v-if="invitation.show_doa_pengantin"
-      ref="doaContainerRef"
-      class="doa-text-container"
-      style="
-        position: absolute;
-        top: 16%;
-        right: 6%;
-        max-width: 320px;
-        z-index: 35;
-        text-align: right;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        pointer-events: auto;
-        opacity: 0;
-        visibility: hidden;
-      "
-    >
-      <!-- Icon / Decorative Mark -->
-      <div
-        style="
-          color: #2F4A3B;
-          opacity: 0.85;
-          margin-bottom: 8px;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        "
-      >
-        <span style="width: 24px; height: 1px; background: linear-gradient(to left, #3F6350, transparent);"></span>
-        <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-        </svg>
-      </div>
-
-      <!-- Judul -->
-      <h3
-        style="
-          font-family: 'Cormorant Garamond', Georgia, serif;
-          font-size: 24px;
-          color: #1B3024;
-          margin-bottom: 12px;
-          font-weight: 600;
-        "
-      >
-        Doa Pengantin
-      </h3>
-
-      <!-- Teks Arab -->
-      <p
-        style="
-          font-family: 'Amiri', 'Traditional Arabic', serif;
-          font-size: 24px;
-          line-height: 1.6;
-          color: #1B3024;
-          direction: rtl;
-          margin-bottom: 12px;
-          text-align: right;
-          word-spacing: 2px;
-        "
-      >
-        بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ
-      </p>
-
-      <!-- Terjemahan -->
-      <p
-        style="
-          font-family: 'Montserrat', sans-serif;
-          font-size: 11.5px;
-          line-height: 1.6;
-          color: #2F4A3B;
-          margin: 0;
-          font-style: italic;
-          opacity: 0.9;
-        "
-      >
-        "Semoga Allah memberkahimu dan memberkahi apa yang menjadi tanggung jawabmu, serta menyatukan kalian berdua dalam kebaikan."
-      </p>
-
-      <!-- Sumber -->
-      <p
-        style="
-          font-family: 'Montserrat', sans-serif;
-          font-size: 10px;
-          font-weight: 700;
-          color: #3F6350;
-          margin-top: 8px;
-          letter-spacing: 0.05em;
-        "
-      >
-        (HR. Abu Dawud no. 2130)
-      </p>
-
-      <!-- Garis Aksen Dekoratif -->
-      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 12px; opacity: 0.75;">
-        <span style="width: 40px; height: 1px; background: linear-gradient(to left, #3F6350, transparent);"></span>
-        <div style="width: 4px; height: 4px; border-radius: 50%; background-color: #2F4A3B;"></div>
-      </div>
-    </div>
-
-    <!-- ======================================================== -->
     <!-- PANDUAN PENGATURAN POSISI CONTAINER GERBANG INFO COUPLE: -->
     <!-- - Posisi Vertikal   : Ubah 'top: 60%' (misal: 48%, 52%, 60%) -->
     <!-- - Posisi Horizontal : Ubah 'left: 50%' (misal: 50%, 52%) -->
@@ -1725,7 +1621,6 @@ const coupleDecorWrapperRef = ref<HTMLElement | null>(null);
 const coupleTopDecorWrapperRef = ref<HTMLElement | null>(null);
 const petalLayerRef = ref<HTMLElement | null>(null);
 const quoteContainerRef = ref<HTMLElement | null>(null);
-const doaContainerRef = ref<HTMLElement | null>(null);
 const cardContainerRef = ref<HTMLElement | null>(null);
 const groomContentRef = ref<HTMLElement | null>(null);
 const brideContentRef = ref<HTMLElement | null>(null);
@@ -1838,12 +1733,12 @@ onMounted(() => {
       petalAmbientTimer = window.setTimeout(startAmbient, 7300);
     };
 
-    // PINNING TIMELINE: QUOTE -> (DOA PENGANTIN if enabled) -> SLIDE PANORAMA -> PETAL BURST -> CARD & GROOM IN -> HOLD GROOM -> GROOM OUT -> JEDA -> BRIDE IN -> HOLD BRIDE
+    // PINNING TIMELINE: QUOTE -> SLIDE PANORAMA -> PETAL BURST -> CARD & GROOM IN -> HOLD GROOM -> GROOM OUT -> JEDA -> BRIDE IN -> HOLD BRIDE
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.value,
         start: 'top top',
-        end: props.invitation?.show_doa_pengantin ? '+=500%' : '+=400%',
+        end: '+=400%',
         pin: true,
         scrub: 0.8,
         anticipatePin: 1,
@@ -1853,73 +1748,21 @@ onMounted(() => {
     // 1. Tahan quote & posisi awal persis seperti semula saat baru masuk
     tl.to({}, { duration: 0.35 });
 
-    if (props.invitation?.show_doa_pengantin) {
-      // 2. Teks quote fade out & geser ke atas sedikit
-      if (quoteContainerRef.value) {
-        tl.to(quoteContainerRef.value, {
-          opacity: 0,
-          y: -30,
-          duration: 0.8,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'hidden';
-          },
-          onReverseComplete: () => {
-            if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'visible';
-          }
-        });
-      }
-
-      // 3. Teks Doa Pengantin fade in
-      if (doaContainerRef.value) {
-        tl.to(doaContainerRef.value, {
-          onStart: () => {
-            if (doaContainerRef.value) doaContainerRef.value.style.visibility = 'visible';
-          },
-          onReverseComplete: () => {
-            if (doaContainerRef.value) doaContainerRef.value.style.visibility = 'hidden';
-          },
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power2.inOut',
-        });
-      }
-
-      // 4. Tahan teks Doa Pengantin sejenak
-      tl.to({}, { duration: 0.6 });
-
-      // 5. Teks Doa Pengantin fade out
-      if (doaContainerRef.value) {
-        tl.to(doaContainerRef.value, {
-          opacity: 0,
-          y: -30,
-          duration: 0.8,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            if (doaContainerRef.value) doaContainerRef.value.style.visibility = 'hidden';
-          },
-          onReverseComplete: () => {
-            if (doaContainerRef.value) doaContainerRef.value.style.visibility = 'visible';
-          }
-        }, "fadeOutDoa");
-      }
-    } else {
-      // JIKA TIDAK ADA DOA: Langsung fade out quote
-      if (quoteContainerRef.value) {
-        tl.to(quoteContainerRef.value, {
-          opacity: 0,
-          y: -30,
-          duration: 0.8,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'hidden';
-          },
-          onReverseComplete: () => {
-            if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'visible';
-          }
-        }, "fadeOutQuoteOnly");
-      }
+    // 2. Teks quote fade out & geser ke atas sedikit
+    // (Doa Pengantin sudah dipindah ke InvitationView, sebelum RSVP)
+    if (quoteContainerRef.value) {
+      tl.to(quoteContainerRef.value, {
+        opacity: 0,
+        y: -30,
+        duration: 0.8,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'hidden';
+        },
+        onReverseComplete: () => {
+          if (quoteContainerRef.value) quoteContainerRef.value.style.visibility = 'visible';
+        }
+      }, "fadeOutQuote");
     }
 
     // Jeda sedikit sebelum mulai slide

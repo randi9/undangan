@@ -15,46 +15,6 @@
       overflow: hidden;
     "
   >
-    <!-- Dekorasi RSVP (Top Tengah) -->
-    <div
-      style="
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%); /* Menjaga asset tetap di tengah saat lebar disesuaikan */
-        z-index: 1;
-        pointer-events: none;   /* Mencegah mengganggu interaksi form */
-        user-select: none;
-        
-        /* ============================================================== */
-        /* SILAKAN ATUR POSISI NAIK/TURUN (GESER-GESER) DI SINI           */
-        /* Ubah persentase atau gunakan pixel, contoh: '-100px', '20px', '5%' */
-        /* ============================================================== */
-        top: -500px;
-
-        /* ============================================================== */
-        /* SILAKAN ATUR UKURAN LEBAR DI SINI                             */
-        /* Contoh: '300px', '500px', '100%' (lebar penuh)                 */
-        /* ============================================================== */
-        width: 600px;
-
-        /* ============================================================== */
-        /* SILAKAN ATUR OPASITAS (TRANSPARANSI) DI SINI                  */
-        /* Nilai dari 0.0 (transparan penuh) sampai 1.0 (padat/jelas)     */
-        /* ============================================================== */
-        opacity: 0.6;
-      "
-    >
-      <img
-        src="https://media.mengundanganda.com/evergreen/rsvp/dewirandi_6cc42f07-39fe-4cb4-aab6-fe56a08e534e.webp"
-        alt="RSVP Decoration Bg"
-        style="
-          width: 100%;
-          height: auto;
-          display: block;
-        "
-      />
-    </div>
-
     <div style="width: 100%; max-width: 580px; margin: 0 auto; position: relative; z-index: 10; box-sizing: border-box;">
       <!-- Section Header -->
       <div 

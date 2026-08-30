@@ -518,6 +518,8 @@ async function preloadAllAssets() {
     urls.add("https://media.mengundanganda.com/evergreen/footer%20section/dewirandi_ad5c156d-47bf-47c8-872e-0ae7ab0ab0bd.webp");
     urls.add("https://media.mengundanganda.com/evergreen/footer%20section/dewirandi_ab26493f-4e9e-4dae-9111-cd1df542fb75.webp");
     urls.add("https://media.mengundanganda.com/evergreen/rsvp/dewirandi_9fe27500-64c2-44a6-981e-91f7e7403647.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/doa%20section/dewirandi_8e39084d-974b-4077-8195-b34bb666f3e0.webp");
+    urls.add("https://media.mengundanganda.com/evergreen/doa%20section/dewirandi_2128f278-e2d1-4cf0-9627-3a052bcaa028.webp");
   }
 
   // Collect all <img> src attributes
@@ -1443,7 +1445,7 @@ onBeforeUnmount(() => {
             /* SILAKAN ATUR POSISI NAIK/TURUN (GESER-GESER) DI SINI           */
             /* Ubah persentase atau gunakan pixel, contoh: '25%', '30%', '950px' */
             /* ============================================================== */
-            top: 41%;
+            top: 55%;
 
             /* ============================================================== */
             /* SILAKAN ATUR UKURAN LEBAR DI SINI                             */
@@ -1484,6 +1486,182 @@ onBeforeUnmount(() => {
             "
           />
         </div>
+
+        <!-- ============================================================= -->
+        <!-- DOA PENGANTIN (Tema Evergreen) — pindah ke area RSVP          -->
+        <!-- Tinggi 100dvh, background ikut wrapper biru RSVP/Gift.        -->
+        <!-- ============================================================= -->
+        <section
+          v-if="themeName === 'evergreen' && invitation.show_doa_pengantin"
+          class="relative w-full flex flex-col items-center justify-center px-8 text-center box-border"
+          style="height: 100dvh; z-index: 5"
+        >
+          <!-- ========== AWAN KIRI (DOA SECTION) ========== -->
+          <!-- ^^ NGOTAK-NGATIK: ubah 'top' (naik/turun), 'left' (geser kiri/kanan), -->
+          <!-- 'width' (ukuran), dan 'opacity' (transparansi) langsung di style di bawah ^^ -->
+          <img
+            class="doa-cloud-left"
+            src="https://media.mengundanganda.com/evergreen/doa%20section/dewirandi_8e39084d-974b-4077-8195-b34bb666f3e0.webp"
+            alt="Awan Kiri"
+            style="
+              position: absolute;
+              top: 12%;              /* >>> ATUR POSISI NAIK/TURUN (contoh: '5%', '20%', '-50px', '120px') */
+              left: -100vw;           /* >>> ATUR GESER KIRI/KANAN (makin negatif = makin keluar layar kiri) */
+              width: 200vw;           /* >>> ATUR UKURAN LEBAR — BEBAS! 100vw = seukuran layar, mau 150vw/200vw juga bisa */
+              max-width: none;       /* JANGAN DIHAPUS: mematikan batas max-width:100% global Tailwind */
+              height: auto;
+              transform: rotate(0deg); /* >>> ATUR PUSARAN/ROTASI DI SINI (contoh: '10deg', '-15deg', '0.5turn') */
+              z-index: -1;           /* -1 = di belakang teks doa, ubah ke 1 kalau mau di depan */
+              pointer-events: none;
+              user-select: none;
+              opacity: 0.6;            /* >>> ATUR TRANSPARANSI (0.0 - 1.0) */
+            "
+          />
+
+          <!-- ========== AWAN KANAN (DOA SECTION) ========== -->
+          <!-- ^^ NGOTAK-NGATIK: ubah 'top' (naik/turun), 'right' (geser kanan/kiri), -->
+          <!-- 'width' (ukuran), dan 'opacity' (transparansi) langsung di style di bawah ^^ -->
+          <img
+            class="doa-cloud-right"
+            src="https://media.mengundanganda.com/evergreen/doa%20section/dewirandi_2128f278-e2d1-4cf0-9627-3a052bcaa028.webp"
+            alt="Awan Kanan"
+            style="
+              position: absolute;
+              top: 73%;              /* >>> ATUR POSISI NAIK/TURUN (contoh: '60%', '75%', '-80px', '500px') */
+              right: -200vw;          /* >>> ATUR GESER KIRI/KANAN (makin negatif = makin keluar layar kanan) */
+              width: 300vw;           /* >>> ATUR UKURAN LEBAR — BEBAS! 100vw = seukuran layar, mau 150vw/200vw juga bisa */
+              max-width: none;       /* JANGAN DIHAPUS: mematikan batas max-width:100% global Tailwind */
+              height: auto;
+              transform: rotate(0deg); /* >>> ATUR PUSARAN/ROTASI DI SINI (contoh: '10deg', '-15deg', '0.5turn') */
+              z-index: -1;           /* -1 = di belakang teks doa, ubah ke 1 kalau mau di depan */
+              pointer-events: none;
+              user-select: none;
+              opacity: 0.6;            /* >>> ATUR TRANSPARANSI (0.0 - 1.0) */
+            "
+          />
+          <!-- ========== /AWAN DOA SECTION ========== -->
+
+          <!-- Ornamen kutipan -->
+          <div
+            class="flex items-center justify-center gap-3 mb-6"
+            style="color: #2f4a3b; opacity: 0.8"
+          >
+            <span
+              style="
+                width: 36px;
+                height: 1px;
+                background: linear-gradient(to right, #3f6350, transparent);
+              "
+            ></span>
+            <svg
+              style="width: 18px; height: 18px"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"
+              />
+            </svg>
+            <span
+              style="
+                width: 36px;
+                height: 1px;
+                background: linear-gradient(to left, #3f6350, transparent);
+              "
+            ></span>
+          </div>
+
+          <!-- Judul -->
+          <h3
+            style="
+              font-family: 'Cormorant Garamond', Georgia, serif;
+              font-size: 28px;
+              font-weight: 600;
+              color: #1b3024;
+              letter-spacing: 0.02em;
+              margin-bottom: 20px;
+            "
+          >
+            Doa Pengantin
+          </h3>
+
+          <!-- Teks Arab -->
+          <p
+            style="
+              font-family: 'Amiri', 'Traditional Arabic', serif;
+              font-size: clamp(18px, 5.2vw, 25px);
+              line-height: 1.8;
+              color: #1b3024;
+              direction: rtl;
+              word-spacing: 2px;
+              margin-bottom: 20px;
+              white-space: nowrap;
+              max-width: 100%;
+              text-align: center;
+            "
+          >
+            بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ
+          </p>
+
+          <!-- Terjemahan -->
+          <p
+            style="
+              font-family: 'Montserrat', sans-serif;
+              font-size: 13px;
+              line-height: 1.7;
+              color: #2f4a3b;
+              font-style: italic;
+              opacity: 0.95;
+              max-width: 340px;
+            "
+          >
+            "Semoga Allah memberkahimu dan memberkahi apa yang menjadi
+            tanggung jawabmu, serta menyatukan kalian berdua dalam kebaikan."
+          </p>
+
+          <!-- Sumber -->
+          <p
+            style="
+              font-family: 'Montserrat', sans-serif;
+              font-size: 11px;
+              font-weight: 700;
+              color: #3f6350;
+              margin-top: 14px;
+              letter-spacing: 0.05em;
+            "
+          >
+            (HR. Abu Dawud no. 2130)
+          </p>
+
+          <!-- Garis aksen dekoratif -->
+          <div
+            class="flex items-center justify-center gap-2 mt-8"
+            style="opacity: 0.75"
+          >
+            <span
+              style="
+                width: 40px;
+                height: 1px;
+                background: linear-gradient(to right, #3f6350, transparent);
+              "
+            ></span>
+            <span
+              style="
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background-color: #2f4a3b;
+              "
+            ></span>
+            <span
+              style="
+                width: 40px;
+                height: 1px;
+                background: linear-gradient(to left, #3f6350, transparent);
+              "
+            ></span>
+          </div>
+        </section>
 
         <!-- RSVP (Dynamic per theme) -->
         <component
@@ -1534,7 +1712,7 @@ onBeforeUnmount(() => {
               /* ATUR POSISI NAIK/TURUN DI SINI                                 */
               /* Contoh: '78%', '86%', '90%' — makin besar makin ke bawah       */
               /* ============================================================== */
-              top: 70%;
+              top: 75%;
 
               /* ============================================================== */
               /* ATUR LEBAR ASSET DI SINI (pakai vw)                            */
@@ -1946,6 +2124,31 @@ onBeforeUnmount(() => {
   border-radius: 160px 160px 24px 24px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05), inset 0 0 12px rgba(255, 255, 255, 0.2);
   padding: 48px 24px 24px 24px;
+}
+
+/* ==============================
+   ANIMASI AWAN SECTION DOA (EVERGREEN) — CSS murni, tanpa GSAP
+   Awan kiri melaju pelan ke kanan, awan kanan pelan ke kiri,
+   lalu balik lagi perlahan (bolak-balik terus / alternate).
+   ============================== */
+.doa-cloud-left {
+  animation: doa-drift-right 18s ease-in-out infinite alternate;
+}
+.doa-cloud-right {
+  animation: doa-drift-left 18s ease-in-out infinite alternate;
+}
+/* ANIMASI PAKAI 'translate', BUKAN 'transform' — jadi rotate di style
+   inline tiap awan tetap jalan dan tidak ditimpa oleh animasi ini. */
+
+/* >>> ATUR JAUH GERAK AWAN KIRI DI SINI (naikkan = makin jauh) */
+@keyframes doa-drift-right {
+  from { translate: 0 0; }
+  to   { translate: 80px 0; }
+}
+/* >>> ATUR JAUH GERAK AWAN KANAN DI SINI (negatif = ke kiri) */
+@keyframes doa-drift-left {
+  from { translate: 0 0; }
+  to   { translate: -80px 0; }
 }
 </style>
 
