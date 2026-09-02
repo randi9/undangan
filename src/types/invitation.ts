@@ -43,7 +43,7 @@ export interface Guest {
 export interface Invitation {
   id: string;
   slug: string;
-  theme: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen";
+  theme: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen" | "royal_fantasy";
   groom_name: string;
   bride_name: string;
   groom_full_name: string;
@@ -108,7 +108,7 @@ export interface Invitation {
 
 export interface CreateInvitationPayload {
   slug: string;
-  theme: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen";
+  theme: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen" | "royal_fantasy";
   groom_name: string;
   bride_name: string;
   groom_full_name?: string;

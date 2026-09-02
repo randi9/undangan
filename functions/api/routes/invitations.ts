@@ -854,4 +854,4 @@ export const dispatchInvitationRoute: ApiDispatcher = async ({
     );
 
   return null;
-}; // Touch to trigger wrangler functions re-bundling for fairytale_garden validation
+}; // Touch to trigger wrangler functions re-bundling for royal_fantasy validation

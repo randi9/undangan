@@ -184,8 +184,8 @@ const firstTrialInvitationId = computed(() => {
 const allThemes = THEME_LIST;
 
 // ===== Filter & Pagination =====
-type ThemeCategory = 'Semua' | 'Elegant' | 'Floral' | 'Sunda' | 'Blue';
-const categories: ThemeCategory[] = ['Semua', 'Elegant', 'Floral', 'Sunda', 'Blue'];
+type ThemeCategory = 'Semua' | 'Elegant' | 'Floral' | 'Sunda' | 'Blue' | 'Royal';
+const categories: ThemeCategory[] = ['Semua', 'Elegant', 'Floral', 'Sunda', 'Blue', 'Royal'];
 const activeCategory = ref<ThemeCategory>('Semua');
 const searchQuery = ref('');
 const pageSize = ref<10 | 25 | 50>(10);
@@ -199,6 +199,7 @@ function getThemeCategory(theme: ThemeRegistryEntry): Exclude<ThemeCategory, 'Se
   if (id.includes('floral') || name.includes('floral')) tags.push('Floral');
   if (id.includes('nyunda') || name.includes('nyunda') || id.includes('sunda')) tags.push('Sunda');
   if (id.includes('blue') || name.includes('blue')) tags.push('Blue');
+  if (id.includes('royal') || name.includes('royal') || id.includes('fantasy')) tags.push('Royal');
   return tags;
 }
 

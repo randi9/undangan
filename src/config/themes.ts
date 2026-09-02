@@ -10,7 +10,7 @@
 import type { ThemeConfig } from "@/types/theme";
 
 export interface ThemeRegistryEntry {
-  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen";
+  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen" | "royal_fantasy";
   name: string;
   thumbnail: string;
   description: string;
@@ -331,6 +331,43 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
         "linear-gradient(180deg, rgba(45,62,53,0.4) 0%, rgba(45,62,53,0.85) 100%)",
       coverImage:
         "https://media.mengundanganda.com/evergreen/hero%20section/dewirandi_003c89a6-d363-423d-83c4-2f34746fb0fb.webp",
+    },
+  },
+  royal_fantasy: {
+    id: "royal_fantasy",
+    name: "Royal Fantasy",
+    thumbnail:
+      "https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80",
+    description: "Kemegahan istana kerajaan dengan sentuhan cream, dusty rose, dan sage green",
+    icon: "solar:crown-bold-duotone",
+    color: "#ECE0D3",
+    bgGradient: "linear-gradient(135deg, #708478 0%, #D4A6AD 50%, #ECE0D3 100%)",
+    sampleUrl: "/sample/royal_fantasy",
+    defaultGalleryType: "carousel",
+    previewStyle: {
+      bg: "#1E2622",
+      color: "#ECE0D3",
+      headerText: "The Royal Wedding",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 4px; color: #D4A6AD; text-transform: uppercase;",
+      nameText: "John & Sarah",
+      nameStyle:
+        "font-family: 'Cinzel Decorative', 'Playfair Display', serif; font-size: 20px; margin-top: 4px; color: #ECE0D3;",
+    },
+    themeConfig: {
+      name: "royal_fantasy",
+      bg: "#18201B",
+      surface: "#243029",
+      primary: "#ECE0D3",
+      secondary: "#D4A6AD",
+      text: "#ECE0D3",
+      textLight: "#D4A6AD",
+      fontHeading: "'Cinzel Decorative', 'Playfair Display', serif",
+      fontBody: "'Plus Jakarta Sans', 'Inter', sans-serif",
+      overlayGradient:
+        "linear-gradient(180deg, rgba(24,32,27,0.5) 0%, rgba(24,32,27,0.92) 100%)",
+      coverImage:
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80",
     },
   },
 };

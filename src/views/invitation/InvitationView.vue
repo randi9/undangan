@@ -6,6 +6,7 @@ import {
   onBeforeUnmount,
   reactive,
   watch,
+  watchEffect,
   nextTick,
   type Component,
   defineAsyncComponent,
@@ -74,6 +75,9 @@ const coverComponents: Record<string, Component> = {
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/covers/CoverEvergreen.vue"),
   ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/covers/CoverRoyalFantasy.vue"),
+  ),
 };
 
 const heroComponents: Record<string, Component> = {
@@ -100,6 +104,9 @@ const heroComponents: Record<string, Component> = {
   ),
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/heroes/HeroEvergreen.vue"),
+  ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/heroes/HeroRoyalFantasy.vue"),
   ),
 };
 
@@ -128,6 +135,9 @@ const quoteComponents: Record<string, Component> = {
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/quotes/QuoteEvergreen.vue"),
   ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/quotes/QuoteRoyalFantasy.vue"),
+  ),
 };
 
 const coupleComponents: Record<string, Component> = {
@@ -154,6 +164,9 @@ const coupleComponents: Record<string, Component> = {
   ),
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/couples/CoupleEvergreen.vue"),
+  ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/couples/CoupleRoyalFantasy.vue"),
   ),
 };
 
@@ -182,6 +195,9 @@ const countdownComponents: Record<string, Component> = {
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/countdowns/CountdownEvergreen.vue"),
   ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/countdowns/CountdownRoyalFantasy.vue"),
+  ),
 };
 
 const eventsComponents: Record<string, Component> = {
@@ -208,6 +224,9 @@ const eventsComponents: Record<string, Component> = {
   ),
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/events/EventsEvergreen.vue"),
+  ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/events/EventsRoyalFantasy.vue"),
   ),
 };
 
@@ -236,6 +255,9 @@ const loveStoryComponents: Record<string, Component> = {
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/lovestory/LoveStoryEvergreen.vue"),
   ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/lovestory/LoveStoryRoyalFantasy.vue"),
+  ),
 };
 
 const galleryComponents: Record<string, Component> = {
@@ -262,6 +284,9 @@ const galleryComponents: Record<string, Component> = {
   ),
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/gallery/GalleryEvergreen.vue"),
+  ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/gallery/GalleryRoyalFantasy.vue"),
   ),
 };
 
@@ -290,6 +315,9 @@ const rsvpComponents: Record<string, Component> = {
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/rsvp/RsvpEvergreen.vue"),
   ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/rsvp/RsvpRoyalFantasy.vue"),
+  ),
 };
 
 const giftComponents: Record<string, Component> = {
@@ -317,6 +345,9 @@ const giftComponents: Record<string, Component> = {
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/gift/GiftEvergreen.vue"),
   ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/gift/GiftRoyalFantasy.vue"),
+  ),
 };
 
 const footerComponents: Record<string, Component> = {
@@ -343,6 +374,9 @@ const footerComponents: Record<string, Component> = {
   ),
   evergreen: defineAsyncComponent(
     () => import("@/components/invitation/footer/FooterEvergreen.vue"),
+  ),
+  royal_fantasy: defineAsyncComponent(
+    () => import("@/components/invitation/footer/FooterRoyalFantasy.vue"),
   ),
 };
 
@@ -457,6 +491,18 @@ const isClosingOverlay = ref(false);
 const isPlaying = ref(false);
 
 const invitationContainer = ref<HTMLElement | null>(null);
+
+// === COVER SCROLL LOCK ===
+// While the cover overlay is still visible (before the guest taps "Buka
+// Undangan"), the invitation content is not mounted, so the page must not
+// scroll. The 100dvh wrapper can slightly overflow the layout viewport on
+// some devices/themes (e.g. Royal Fantasy), which produced an unwanted
+// scrollbar on the cover screen. Locking overflow removes the scrollbar.
+watchEffect(() => {
+  if (typeof document === "undefined" || isDesktop.value) return;
+  const coverShowing = !loading.value && !!invitation.value && !isOpened.value;
+  document.documentElement.classList.toggle("cover-locked", coverShowing);
+});
 
 // Preload all images/backgrounds used in the invitation
 // Preload all images/backgrounds used in the invitation
@@ -992,9 +1038,10 @@ onMounted(async () => {
   // On desktop, we only render the iframe shell — skip all data loading
   if (isDesktop.value) return;
 
-  // Hide scrollbar when inside iframe (desktop phone frame)
-  if (isInsideIframe) {
+  // Hide native scrollbars on invitation view (mobile, iframe, and desktop preview)
+  if (typeof document !== "undefined") {
     document.documentElement.classList.add("hide-scrollbar");
+    document.body.classList.add("hide-scrollbar");
   }
 
   // -- STATIC SAMPLE MODE --
@@ -1073,6 +1120,11 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   document.removeEventListener("visibilitychange", handleVisibilityChange);
+  document.documentElement.classList.remove("cover-locked");
+  if (typeof document !== "undefined") {
+    document.documentElement.classList.remove("hide-scrollbar");
+    document.body.classList.remove("hide-scrollbar");
+  }
   if (countdownTimer) clearInterval(countdownTimer);
   destroySmoothScroll();
   ScrollTrigger.getAll().forEach((t) => t.kill());
@@ -1262,7 +1314,7 @@ onBeforeUnmount(() => {
             ref="heroOval"
             :class="[
               'flex flex-col gap-4 p-6 md:p-10 relative z-10 opacity-0',
-              !['elegant_blue', 'floral_blue', 'nyunda', 'fairytale_garden', 'evergreen'].includes(themeName)
+              !['elegant_blue', 'floral_blue', 'nyunda', 'fairytale_garden', 'evergreen', 'royal_fantasy'].includes(themeName)
                 ? 'items-center justify-center mx-auto text-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
                 : themeName === 'nyunda'
                   ? ''
@@ -1273,7 +1325,7 @@ onBeforeUnmount(() => {
                       : 'items-center justify-center mx-auto text-center w-full max-w-[600px]',
             ]"
             :style="
-              ['nyunda', 'fairytale_garden', 'evergreen'].includes(themeName)
+              ['nyunda', 'fairytale_garden', 'evergreen', 'royal_fantasy'].includes(themeName)
                 ? {
                     display: 'flex',
                     flexDirection: 'column',
@@ -1339,10 +1391,10 @@ onBeforeUnmount(() => {
         </component>
       </div>
 
-      <!-- QUOTE (Dynamic per theme) -->
+      <!-- QUOTE (Dynamic per theme) — royal_fantasy sudah jadi 1 section dengan hero -->
       <component
         :is="activeQuote"
-        v-if="invitation.quote && themeName !== 'evergreen'"
+        v-if="invitation.quote && themeName !== 'evergreen' && themeName !== 'royal_fantasy'"
         :quote="invitation.quote"
         :theme-config="activeTheme"
       />
@@ -1910,6 +1962,8 @@ onBeforeUnmount(() => {
 .desktop-phone-wrapper {
   min-height: 100vh;
   min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden; /* No scrollbar on the desktop phone-frame shell */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1926,6 +1980,8 @@ onBeforeUnmount(() => {
   perspective: 1000px;
   display: flex;
   justify-content: center;
+  /* Shrink the mockup on short windows so it always fits without scrolling */
+  transform: scale(min(1, calc(100dvh / 830px)));
 }
 
 .smartphone-frame {
@@ -1995,6 +2051,13 @@ onBeforeUnmount(() => {
   backface-visibility: hidden;
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.smartphone-screen::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .phone-iframe {
@@ -2010,10 +2073,13 @@ onBeforeUnmount(() => {
   transform-origin: top left;
   border: none;
   background: #fff;
-  scrollbar-width: none;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 .phone-iframe::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* WATERMARK OVERLAY */
@@ -2152,13 +2218,32 @@ onBeforeUnmount(() => {
 }
 </style>
 
-<!-- Non-scoped: targets html element inside iframe -->
+<!-- Non-scoped: targets html/body element across invitation views & iframe -->
 <style>
+html.hide-scrollbar,
+html.hide-scrollbar body,
+body.hide-scrollbar,
 .hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
 }
-.hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+
+html.hide-scrollbar::-webkit-scrollbar,
+html.hide-scrollbar body::-webkit-scrollbar,
+html.hide-scrollbar *::-webkit-scrollbar,
+body.hide-scrollbar::-webkit-scrollbar,
+body.hide-scrollbar *::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar,
+::-webkit-scrollbar {
+  display: none !important; /* Chrome/Safari/Edge */
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* Lock document scroll (and remove the scrollbar) while the cover is shown */
+html.cover-locked,
+html.cover-locked body {
+  overflow: hidden !important;
 }
 </style>

@@ -174,4 +174,5 @@ export const SAMPLE_INVITATIONS: Record<string, Invitation> = {
   nyunda: createSampleInvitation('nyunda', sharedSampleData),
   fairytale_garden: createSampleInvitation('fairytale_garden', sharedSampleData),
   evergreen: createSampleInvitation('evergreen', sharedSampleData),
+  royal_fantasy: createSampleInvitation('royal_fantasy', sharedSampleData),
 }
