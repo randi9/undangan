@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!--
+    ═══════════════════════════════════════════════════════════════
+    JARUM JAM EMAS (WARNA GOLD GOTHIC ORNAMENT)
+    ═══════════════════════════════════════════════════════════════
+    • PIVOT / pusat rotasi SEMUA jarum = titik (100,100).
+    • KECEPATAN: menit = 4s/putaran, jam = 12s/putaran.
+    • WARNA: Gradien emas mewah senada dengan ornamen lengkung istana.
+    ═══════════════════════════════════════════════════════════════
+  -->
+
+  <defs>
+    <!-- Gradien emas hangat senada dengan ornamen gothic filigree -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE6C1" />
+      <stop offset="28%" stop-color="#E2B170" />
+      <stop offset="62%" stop-color="#CA9754" />
+      <stop offset="85%" stop-color="#E5BC7E" />
+      <stop offset="100%" stop-color="#B88342" />
+    </linearGradient>
+
+    <linearGradient id="goldStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF4DC" />
+      <stop offset="50%" stop-color="#DCA865" />
+      <stop offset="100%" stop-color="#8F5E26" />
+    </linearGradient>
+
+    <!-- Gradien poros tengah -->
+    <radialGradient id="capGrad" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF8E7" />
+      <stop offset="40%" stop-color="#E5BC7E" />
+      <stop offset="100%" stop-color="#9E6C2E" />
+    </radialGradient>
+
+    <!-- Shadow halus untuk efek kedalaman -->
+    <filter id="handShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="1.2" stdDeviation="1.2" flood-color="#42260B" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <style>
+    .hand {
+      fill: #DCA865;
+      fill: url(#goldGrad);
+      stroke: #C28E4A;
+      stroke: url(#goldStroke);
+      stroke-width: 0.9;
+      stroke-linejoin: round;
+      filter: url(#handShadow);
+    }
+  </style>
+
+  <!-- pembungkus SEMUA elemen jarum emas -->
+  <g opacity="0.95">
+
+    <!-- ══ JARUM JAM (hour-hand): lebih PENDEK & sedikit lebih TEBAL ══ -->
+    <g id="hour-hand">
+      <!-- bilah: ujung y=46, pangkal+poros y=92 s/d 109, tebal 19.2 -->
+      <path class="hand" d="M100 46 L104.8 92 L100 109 L95.2 92 Z"/>
+      <!-- ornamen diamond kecil di dekat pangkal -->
+      <path class="hand" d="M100 72 L104.8 79 L100 86 L95.2 79 Z"/>
+      <animateTransform attributeName="transform" type="rotate"
+                        from="0 100 100" to="360 100 100"
+                        dur="12s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- ══ JARUM MENIT (minute-hand): lebih PANJANG & lebih RAMPING ══ -->
+    <g id="minute-hand">
+      <!-- bilah: ujung y=24, pangkal+poros y=92 s/d 109, tebal 13.2 -->
+      <path class="hand" d="M100 24 L103.4 92 L100 109 L96.6 92 Z"/>
+      <!-- ornamen diamond kecil di dekat pangkal -->
+      <path class="hand" d="M100 70 L103.4 77 L100 84 L96.6 77 Z"/>
+      <animateTransform attributeName="transform" type="rotate"
+                        from="0 100 100" to="360 100 100"
+                        dur="4s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- tutup poros (center cap) — statis, tidak ikut berputar -->
+    <circle cx="100" cy="100" r="4.8" fill="url(#capGrad)" stroke="#8F5E26" stroke-width="0.8" filter="url(#handShadow)"/>
+    <circle cx="100" cy="100" r="1.6" fill="#FFF2D6"/>
+  </g>
+</svg>
