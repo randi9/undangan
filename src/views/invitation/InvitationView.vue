@@ -350,6 +350,11 @@ const giftComponents: Record<string, Component> = {
   ),
 };
 
+// RSVP + GIFT + FOOTER digabung jadi 1 section 100dvh khusus tema royal_fantasy
+const RsvpGiftRoyalFantasy = defineAsyncComponent(
+  () => import("@/components/invitation/rsvp/RsvpGiftRoyalFantasy.vue"),
+);
+
 const footerComponents: Record<string, Component> = {
   elegant: defineAsyncComponent(
     () => import("@/components/invitation/footer/FooterElegant.vue"),
@@ -566,6 +571,11 @@ async function preloadAllAssets() {
     urls.add("https://media.mengundanganda.com/evergreen/rsvp/dewirandi_9fe27500-64c2-44a6-981e-91f7e7403647.webp");
     urls.add("https://media.mengundanganda.com/evergreen/doa%20section/dewirandi_8e39084d-974b-4077-8195-b34bb666f3e0.webp");
     urls.add("https://media.mengundanganda.com/evergreen/doa%20section/dewirandi_2128f278-e2d1-4cf0-9627-3a052bcaa028.webp");
+  }
+
+  if (themeName.value === "royal_fantasy") {
+    // Background shared section RSVP & Gift (gabungan 100dvh)
+    urls.add("https://media.mengundanganda.com/royalfantasy/rsvp%20section/dewirandi_3d0caf40-f0a4-473f-bc4f-48cc6a21e796.webp");
   }
 
   // Collect all <img> src attributes
@@ -1399,18 +1409,20 @@ onBeforeUnmount(() => {
         :theme-config="activeTheme"
       />
 
-      <!-- COUPLE PROFILES (Dynamic per theme) -->
+      <!-- COUPLE PROFILES (Dynamic per theme) — royal_fantasy: countdown ikut digabung di sini -->
       <component
         :is="activeCouple"
         :invitation="invitation"
         :theme-config="activeTheme"
         :api-base="apiBase"
+        :countdown="themeName === 'royal_fantasy' ? countdown : undefined"
+        :has-date="themeName === 'royal_fantasy' ? hasEventDate : undefined"
       />
 
-      <!-- COUNTDOWN (Dynamic per theme) -->
+      <!-- COUNTDOWN (Dynamic per theme) — royal_fantasy sudah digabung ke section couple -->
       <component
         :is="activeCountdown"
-        v-if="themeName !== 'evergreen'"
+        v-if="themeName !== 'evergreen' && themeName !== 'royal_fantasy'"
         :countdown="countdown"
         :theme-config="activeTheme"
         :has-date="hasEventDate"
@@ -1426,12 +1438,13 @@ onBeforeUnmount(() => {
         :has-date="hasEventDate"
       />
 
-      <!-- LOVE STORY (Dynamic per theme) -->
+      <!-- LOVE STORY (Dynamic per theme) — royal_fantasy: doa pengantin digabung jadi 1 section di sini -->
       <component
         :is="activeLoveStory"
         :stories="loveStory"
         :theme-config="activeTheme"
         :api-base="apiBase"
+        :show-doa="!!invitation.show_doa_pengantin"
       />
 
       <!-- GALLERY (Dynamic per theme) -->
@@ -1715,18 +1728,33 @@ onBeforeUnmount(() => {
           </div>
         </section>
 
-        <!-- RSVP (Dynamic per theme) -->
-        <component
-          :is="activeRsvp"
+        <!-- RSVP, GIFT & FOOTER GABUNGAN (royal_fantasy): 1 section 100dvh, bg
+             castle-cloud 1 gambar cover; info RSVP tampil dulu, saat
+             scroll fade out -> Gift fade in -> fade out lagi -> Footer
+             fade in (pinned GSAP, 3 fase) -->
+        <RsvpGiftRoyalFantasy
+          v-if="themeName === 'royal_fantasy'"
+          :invitation="invitation"
           :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"
           :theme-config="activeTheme"
           :submitting="rsvpSubmitting"
           @submit-rsvp="handleSubmitRsvp"
         />
 
-        <!-- GIFT (Dynamic per theme) -->
+        <!-- RSVP (Dynamic per theme) — royal_fantasy sudah digabung dgn GIFT -->
+        <component
+          :is="activeRsvp"
+          v-if="themeName !== 'royal_fantasy'"
+          :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"
+          :theme-config="activeTheme"
+          :submitting="rsvpSubmitting"
+          @submit-rsvp="handleSubmitRsvp"
+        />
+
+        <!-- GIFT (Dynamic per theme) — royal_fantasy sudah digabung dgn RSVP -->
         <component
           :is="activeGift"
+          v-if="themeName !== 'royal_fantasy'"
           :invitation="invitation"
           :theme-config="activeTheme"
         />
@@ -1853,9 +1881,11 @@ onBeforeUnmount(() => {
           />
         </div>
 
-        <!-- FOOTER (Dynamic per theme) -->
+        <!-- FOOTER (Dynamic per theme) — royal_fantasy sudah digabung ke
+             section RSVP & Gift (panel fade-in terakhir) -->
         <component
           :is="activeFooter"
+          v-if="themeName !== 'royal_fantasy'"
           :invitation="invitation"
           :theme-config="activeTheme"
           :rsvp-messages="rsvpMessages.filter((r: any) => !r.is_hidden)"

@@ -88,6 +88,13 @@
         "
       />
       <!-- =================================================== -->
+    </div>
+    <!-- ===== /ZOOM STAGE (BELAKANG — pulau-pulau kecil) ===== -->
+
+    <!-- ===== ZOOM STAGE DEPAN — istana, layer sendiri biar z-index-nya
+         BISA DI ATAS container quotes (quotes: z-20, istana: z-30, pulau: z-0).
+         Nge-zoom PERSIS SAMA dengan stage belakang (tween ganda di script). ===== -->
+    <div ref="stageFrontRef" class="absolute inset-0 z-[30] pointer-events-none will-change-transform">
 
       <!-- ===== CONTAINER ISTANA + AIR TERJUN =====
             Semua anak di dalam container ini diposisikan pakai PERSEN RELATIF KE GAMBAR ISTANA,
@@ -217,10 +224,10 @@
       </div>
       <!-- =================================================== -->
     </div>
-    <!-- ===== /ZOOM STAGE ===== -->
+    <!-- ===== /ZOOM STAGE DEPAN (istana) ===== -->
 
     <!-- Hero Content (Text via Slot) — polos, teks ngumpul di tengah, fades out pas mulai zoom -->
-    <div ref="heroTextRef" class="royal-hero-text relative z-10 w-[85vw] max-w-[420px] mx-auto py-14 flex flex-col items-center justify-center">
+    <div ref="heroTextRef" class="royal-hero-text relative z-[40] w-[85vw] max-w-[420px] mx-auto py-14 flex flex-col items-center justify-center">
       <slot />
     </div>
 
@@ -232,12 +239,14 @@
         style="background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.45) 0%, rgba(174, 212, 218, 0) 75%);"
       ></div>
 
-      <!-- Quote Text — container PIL TINGGI (ujung atas-bawah rounded penuh).
+      <!-- Quote Text — container FULL SELAYAR (inset-0). Putih polos TANPA blur,
+           sekarang menutupi seluruh layar; posisi z-nya DI ATAS pulau
+           kecil (stage z-0) dan DI BAWAH istana (stage depan z-30).
            Font sengaja Playfair Display, BUKAN fontHeading tema (Cinzel Decorative
            = semua glyph kapital). Ukuran teks kecil. -->
-      <div class="rf-quote-pill relative z-10 mx-auto flex items-center justify-center w-[72vw] max-w-[300px] min-h-[58vh] px-8 py-14 rounded-full border border-[#708478]/30 bg-white/45 backdrop-blur-md shadow-[0_12px_40px_rgba(36,48,41,0.18)]">
+      <div class="rf-quote-pill absolute inset-0 flex items-center justify-center bg-white/70">
         <blockquote
-          class="text-[#243029] text-sm md:text-base italic leading-relaxed tracking-wide"
+          class="text-[#243029] text-sm md:text-base italic leading-relaxed tracking-wide w-[72vw] max-w-[340px] mx-auto px-4"
           style="font-family: 'Playfair Display', serif"
         >
           "{{ quote }}"
@@ -272,6 +281,7 @@ withDefaults(
 const sectionRef = ref<HTMLElement | null>(null);
 const cloudLayerRef = ref<HTMLElement | null>(null);
 const stageRef = ref<HTMLElement | null>(null);
+const stageFrontRef = ref<HTMLElement | null>(null);
 const heroTextRef = ref<HTMLElement | null>(null);
 const quoteRef = ref<HTMLElement | null>(null);
 let ctx: gsap.Context | null = null;
@@ -285,21 +295,20 @@ let ctx: gsap.Context | null = null;
    ZOOM_END    : % selesainya zoom (0-1). Di titik ini pulau melayang
                  pertama (kanan atas) sudah BENAR-BENAR di tengah layar —
                  penengahannya dihitung otomatis, tidak pakai FOCUS X/Y lagi.
-   HERO_TEXT_OUT : % akhir memudarnya teks hero (0-1)
-   QUOTE_IN    : % mulai fade-IN teks quotes (setelah pulau di tengah)
-   QUOTE_FADE  : lama fade-IN teks quotes (0-1)
-   QUOTE_OUT   : % mulai fade-OUT quotes; fade-outnya selalu pas
-                 selesai di 100% scroll (tepat sebelum section berikutnya)
-   CLOUD_SHIFT : geser awan ke kiri selama scroll (px, angka negatif = kiri).
-                 Awan TIDAK ikut zoom — dia cuma jalan geser.
-===================================================== */
+    HERO_TEXT_OUT : % akhir memudarnya teks hero (0-1)
+    QUOTE_IN    : % mulai fade-IN teks quotes (setelah pulau di tengah)
+    QUOTE_FADE  : lama fade-IN teks quotes (0-1)
+    Quotes TIDAK fade-out lagi — tetap tampil penuh sampai pin selesai
+    dan section berikutnya (couple) masuk.
+    CLOUD_SHIFT : geser awan ke kiri selama scroll (px, angka negatif = kiri).
+                  Awan TIDAK ikut zoom — dia cuma jalan geser.
+ ===================================================== */
 const SCROLL = '200%';
 const SCALE = 3;
 const ZOOM_END = 0.55;
 const HERO_TEXT_OUT = 0.35;
 const QUOTE_IN = 0.62;
 const QUOTE_FADE = 0.15;
-const QUOTE_OUT = 0.9;
 const CLOUD_SHIFT = -50;
 /* =================================================== */
 
@@ -327,23 +336,26 @@ onMounted(() => {
     // Kita paksa hasilnya = tengah viewport: x = w/2 - s*ix, y = h/2 - s*iy.
     // offsetLeft/offsetTop = nilai layout (tidak terpengaruh transform), jadi
     // aman dihitung ulang tiap GSAP invalidate saat scrub/resize.
+    // TWEEN DIPAKAI DUA KALI (stage belakang + stage depan/istana) supaya
+    // istana bisa punya z-index di ATAS quotes sementara pulau tetap di bawah.
+    const stageFront = stageFrontRef.value as HTMLElement | null;
     if (island) {
-      tl.to(
-        stage,
-        {
-          scale: SCALE,
-          transformOrigin: '0 0',
-          x: () => stage.offsetWidth / 2 - SCALE * (island.offsetLeft + island.offsetWidth / 2),
-          // island punya translateY(-50%) → pusat rendernya persis di offsetTop
-          y: () => stage.offsetHeight / 2 - SCALE * island.offsetTop,
-          ease: 'none',
-          duration: ZOOM_END,
-        },
-        0
-      );
+      const zoomVars = {
+        scale: SCALE,
+        transformOrigin: '0 0',
+        x: () => stage.offsetWidth / 2 - SCALE * (island.offsetLeft + island.offsetWidth / 2),
+        // island punya translateY(-50%) → pusat rendernya persis di offsetTop
+        y: () => stage.offsetHeight / 2 - SCALE * island.offsetTop,
+        ease: 'none',
+        duration: ZOOM_END,
+      };
+      tl.to(stage, zoomVars, 0);
+      if (stageFront) tl.to(stageFront, zoomVars, 0);
     } else {
       // fallback kalau aset pulau tidak ketemu: zoom ke tengah biasa
-      tl.to(stage, { scale: SCALE, transformOrigin: '50% 50%', ease: 'none', duration: ZOOM_END }, 0);
+      const zoomVars = { scale: SCALE, transformOrigin: '50% 50%', ease: 'none', duration: ZOOM_END };
+      tl.to(stage, zoomVars, 0);
+      if (stageFront) tl.to(stageFront, zoomVars, 0);
     }
 
     // awan TIDAK ikut zoom — layer sendiri, cuma digeser ke kiri pelan
@@ -356,8 +368,8 @@ onMounted(() => {
       tl.to(heroTextRef.value, { opacity: 0, ease: 'none', duration: HERO_TEXT_OUT }, 0);
     }
 
-    // teks quotes: fade-IN setelah pulau di tengah, lalu fade-OUT
-    // sebelum pin selesai (hilang sebelum section berikutnya datang)
+    // teks quotes: fade-IN setelah pulau di tengah, lalu HOLD sampai pin
+    // selesai — TIDAK ada fade-out lagi sebelum section couple datang
     if (quoteRef.value) {
       tl.fromTo(
         quoteRef.value,
@@ -372,11 +384,19 @@ onMounted(() => {
         },
         QUOTE_IN
       );
-      // hold penuh dari QUOTE_IN+QUOTE_FADE sampai QUOTE_OUT,
-      // fade-out persis pas pin selesai (habis di 1.0, tidak molor)
-      tl.to(quoteRef.value, { opacity: 0, ease: 'none', duration: 1 - QUOTE_OUT }, QUOTE_OUT);
     }
+
+    // penahan durasi: total timeline dipaksa habis tepat di posisi 1.0
+    // supaya semua angka persentase di atas (QUOTE_IN, ZOOM_END, dll)
+    // tetap memetakan lurus ke progres scroll, sama seperti sebelumnya
+    // (dulu diisi oleh tween fade-out quotes yang sekarang dihapus).
+    tl.to({ hold: 0 }, { hold: 0, duration: 0.001 }, 0.999);
   }, sectionRef.value);
+
+  // Setelah pin spacer Hero dibuat, sort & refresh agar section
+  // berikutnya (Couple, Events, dll) menghitung posisi dengan benar.
+  ScrollTrigger.sort();
+  ScrollTrigger.refresh();
 });
 
 onBeforeUnmount(() => {
