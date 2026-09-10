@@ -313,7 +313,7 @@
       }"
     />
 
-    <!-- HIASAN KANAN BAWAH #4 (paling atas di kanan, z-[8] di atas SEMUA aset kanan): cukup ubah angka di config decoBottomRight4 -->
+    <!-- HIASAN KANAN BAWAH #4 (paling atas di kanan, z-[8] di atas SEMUA aset kanan, mirror decoBottomLeft4): cukup ubah angka di config decoBottomRight4 -->
     <img
       v-if="decoBottomRight4.src"
       :src="decoBottomRight4.src"
@@ -330,41 +330,58 @@
         height: 'auto',
         opacity: decoBottomRight4.opacity,
         transformOrigin: decoBottomRight4.swayOrigin,
-        transform: `rotate(${decoBottomRight4.rotate})`,
+        transform: `rotate(${decoBottomRight4.rotate}) scaleX(-1)`,
         '--sway-base': decoBottomRight4.rotate,
         '--sway-angle': decoBottomRight4.swayAngle,
         '--sway-speed': decoBottomRight4.swaySpeed,
         '--sway-delay': decoBottomRight4.swayDelay,
+        '--sway-dir': '-1',
+        '--flip': '-1',
       }"
     />
 
     </div>
     <!-- /Scene Wrapper -->
 
-    <!-- All Text Centered -->
+    <!-- ================= GRUP TEKS 1: "The Wedding Of" + nama mempelai =================
+         Tengah vertikal terhadap SELURUH layar: absolute inset-0 + flex justify-center.
+         pointer-events-none: murni display, tidak menghalangi apa pun di belakangnya. -->
     <div
-      class="relative z-10 flex flex-col items-center justify-center text-center px-6 w-full max-w-[460px] transition-all duration-700 ease-out"
+      class="absolute inset-0 z-10 mx-auto flex max-w-[840px] flex-col items-center justify-center text-center px-6 pointer-events-none transition-all duration-700 ease-out"
       :class="[
         entering ? 'scale-[1.35]' : isClosing ? 'scale-95' : 'scale-100',
         entering || isClosing ? 'opacity-0' : 'opacity-100',
       ]"
     >
-      <p class="text-[#B0808A] text-[10px] md:text-xs tracking-[0.4em] uppercase font-semibold mb-4">
-        The Royal Wedding Of
+      <p class="text-[#B0808A] text-[15px] md:text-[18px] tracking-[0.4em] uppercase font-semibold mb-4">
+        The Wedding Of
       </p>
 
       <h1
-        class="text-4xl md:text-5xl lg:text-6xl text-[#243029] font-normal leading-tight tracking-wide"
+        class="text-[54px] md:text-[72px] lg:text-[90px] text-[#243029] font-normal leading-tight tracking-wide"
         :style="{ fontFamily: fontHeading || `'Cinzel Decorative', 'Playfair Display', serif` }"
       >
         {{ groomName }}
-        <span class="block text-2xl md:text-3xl text-[#B0808A] my-1 font-serif italic opacity-90">&amp;</span>
+        <span class="block text-[36px] md:text-[48px] text-[#B0808A] my-1 font-serif italic opacity-90">&amp;</span>
         {{ brideName }}
       </h1>
+    </div>
 
-      <div class="text-center mt-8 mb-8">
-        <p class="text-[#4A5B52] text-[10px] tracking-[0.3em] uppercase font-medium mb-1.5">
-          Kepada Yth. Bapak/Ibu/Saudara/i
+    <!-- ================= GRUP TEKS 2: "Kepada Yth" + tamu + tombol Buka =================
+         Nempel ke bawah layar. Jarak dari bawah = KENOP textBottom.margin,
+         jarak nama tamu -> tombol = KENOP textBottom.gap (lihat script). -->
+    <div
+      class="absolute inset-x-0 z-10 flex flex-col items-center text-center px-6 transition-all duration-700 ease-out"
+      :style="{ bottom: textBottom.margin }"
+      :class="[
+        entering ? 'scale-[1.35]' : isClosing ? 'scale-95' : 'scale-100',
+        entering || isClosing ? 'opacity-0' : 'opacity-100',
+      ]"
+    >
+      <div>
+        <p class="text-[#4A5B52] text-[10px] tracking-[0.3em] uppercase font-medium mb-1.5 leading-relaxed">
+          <span class="block">Kepada Yth.</span>
+          <span class="block">Bapak/Ibu/Saudara/i</span>
         </p>
         <h3 class="text-[#243029] text-base md:text-lg font-semibold tracking-wide">
           {{ guestName || 'Tamu Undangan' }}
@@ -375,7 +392,8 @@
       <button
         @click="startEnter"
         :disabled="entering"
-        class="royal-open-btn relative group overflow-hidden px-8 py-3.5 rounded-full text-xs md:text-sm font-semibold tracking-[0.25em] uppercase text-[#18201B] bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] shadow-[0_4px_25px_rgba(212,166,173,0.35)] hover:shadow-[0_6px_35px_rgba(236,224,211,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer"
+        :style="{ marginTop: textBottom.gap, padding: textBottom.padding }"
+        class="royal-open-btn relative group overflow-hidden rounded-full text-xs md:text-sm font-semibold tracking-[0.25em] uppercase text-[#18201B] bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] shadow-[0_4px_25px_rgba(212,166,173,0.35)] hover:shadow-[0_6px_35px_rgba(236,224,211,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer"
       >
         <span class="relative z-10 flex items-center gap-2">
           <svg class="w-4 h-4 text-[#18201B]" fill="currentColor" viewBox="0 0 24 24">
@@ -441,6 +459,16 @@ onBeforeUnmount(() => {
 });
 // =====================================================================================
 
+// ====== GRUP TEKS BAWAH ("Kepada Yth" + tamu + tombol): cukup ubah angka di sini ======
+const textBottom = reactive({
+  margin: '10%',   // jarak grup dari BAWAH layar (bebas: '10%', '60px', '8vh', ...)
+  gap: '2rem',     // jarak nama tamu -> tombol "Buka Undangan"
+  // PADDING DALAM TOMBOL (style inline -> selalu menang vs class CSS).
+  // Format: 'vertikal horizontal' — gedein biar teks ga nempel tepi.
+  padding: '0.8rem 1.5rem',
+});
+// ==========================================================================
+
 // ====== NGODAK-NGATIK AWAN: cukup ubah angka di sini ======
 const cloud = reactive({
   src: 'https://media.mengundanganda.com/royalfantasy/cover%20section/dewirandi_127365b5-5cae-4f3b-8c6b-28b824071fdf.webp',
@@ -503,7 +531,7 @@ const cornerTopRight = reactive({
   sway: true,                      // false = matikan animasi
   swayOrigin: 'bottom right',      // titik pivot ayunan (bisa 'top left', 'center', dll.)
   swayAngle: '2deg',               // besar ayunan ke kiri & kanan dari posisi awal
-  swaySpeed: '10s',                 // durasi 1 siklus penuh (makin besar = makin lambat)
+  swaySpeed: '7s',                 // durasi 1 siklus penuh (makin besar = makin lambat)
 });
 // =========================================================
 
@@ -518,9 +546,9 @@ const decoBottomLeft = reactive({
   // --- ANIMASI SWAY BUNGA ---
   sway: true,                    // false = bunga diam
   swayOrigin: 'bottom center',   // titik pivot ayunan (bawah = pangkal batang)
-  swayAngle: '2deg',             // besar ayunan (pelan = angka kecil)
-  swaySpeed: '11s',              // durasi 1 siklus (makin besar = makin pelan)
-  swayDelay: '-2.4s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
+  swayAngle: '3deg',             // besar ayunan (pelan = angka kecil)
+  swaySpeed: '6s',               // durasi 1 siklus (makin besar = makin pelan)
+  swayDelay: '-1.2s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
 });
 // ==========================================================================
 
@@ -535,9 +563,9 @@ const decoBottomLeft3 = reactive({
   // --- ANIMASI SWAY BUNGA ---
   sway: true,                    // false = bunga diam
   swayOrigin: 'bottom center',   // titik pivot ayunan (bawah = pangkal batang)
-  swayAngle: '1.5deg',           // besar ayunan (pelan = angka kecil)
-  swaySpeed: '9s',               // durasi 1 siklus (makin besar = makin pelan)
-  swayDelay: '-5.7s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
+  swayAngle: '2.5deg',           // besar ayunan (pelan = angka kecil)
+  swaySpeed: '5.5s',             // durasi 1 siklus (makin besar = makin pelan)
+  swayDelay: '-2.9s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
 });
 // ==========================================================================
 
@@ -552,9 +580,9 @@ const decoBottomLeft4 = reactive({
   // --- ANIMASI SWAY BUNGA ---
   sway: true,                    // false = bunga diam
   swayOrigin: 'bottom center',   // titik pivot ayunan (bawah = pangkal batang)
-  swayAngle: '2deg',             // besar ayunan (pelan = angka kecil)
-  swaySpeed: '12.5s',            // durasi 1 siklus (makin besar = makin pelan)
-  swayDelay: '-7.3s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
+  swayAngle: '3deg',             // besar ayunan (pelan = angka kecil)
+  swaySpeed: '6.5s',             // durasi 1 siklus (makin besar = makin pelan)
+  swayDelay: '-3.6s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
 });
 // ==========================================================================
 
@@ -569,9 +597,9 @@ const decoBottomRight = reactive({
   // --- ANIMASI SWAY BUNGA ---
   sway: true,                    // false = bunga diam
   swayOrigin: 'bottom center',   // titik pivot ayunan (bawah = pangkal batang)
-  swayAngle: '2deg',             // besar ayunan (pelan = angka kecil)
-  swaySpeed: '10s',              // durasi 1 siklus (makin besar = makin pelan)
-  swayDelay: '-6.8s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
+  swayAngle: '3deg',             // besar ayunan (pelan = angka kecil)
+  swaySpeed: '5.5s',             // durasi 1 siklus (makin besar = makin pelan)
+  swayDelay: '-1.9s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
 });
 // NOTE: flip horizontal (scaleX(-1)) sudah otomatis dipasang di template, tidak perlu diatur di sini.
 // =========================================================================================================
@@ -587,9 +615,9 @@ const decoBottomRight2 = reactive({
   // --- ANIMASI SWAY BUNGA ---
   sway: true,                    // false = bunga diam
   swayOrigin: 'bottom center',   // titik pivot ayunan (bawah = pangkal batang)
-  swayAngle: '1.5deg',           // besar ayunan (pelan = angka kecil)
-  swaySpeed: '12s',              // durasi 1 siklus (makin besar = makin pelan)
-  swayDelay: '-1.9s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
+  swayAngle: '2.5deg',           // besar ayunan (pelan = angka kecil)
+  swaySpeed: '6.5s',             // durasi 1 siklus (makin besar = makin pelan)
+  swayDelay: '-4.6s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
 });
 // ===============================================================================
 
@@ -604,15 +632,15 @@ const decoBottomRight3 = reactive({
   // --- ANIMASI SWAY BUNGA ---
   sway: true,                    // false = bunga diam
   swayOrigin: 'bottom center',   // titik pivot ayunan (bawah = pangkal batang)
-  swayAngle: '2.5deg',           // besar ayunan (pelan = angka kecil)
-  swaySpeed: '8.5s',             // durasi 1 siklus (makin besar = makin pelan)
-  swayDelay: '-4.5s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
+  swayAngle: '3.5deg',           // besar ayunan (pelan = angka kecil)
+  swaySpeed: '5s',               // durasi 1 siklus (makin besar = makin pelan)
+  swayDelay: '-2.2s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
 });
 // =============================================================================================================
 
 // ====== HIASAN KANAN BAWAH #4 (paling atas di kanan, z-[8]): cukup ubah angka di sini ======
 const decoBottomRight4 = reactive({
-  src: 'https://media.mengundanganda.com/dewirandi/dewirandi_27174b41-0cd2-4308-9ef6-6ccd73f6e22e.webp',
+  src: 'https://media.mengundanganda.com/royalfantasy/cover%20section/dewirandi_65898184-f020-40ce-9bf7-673762952552.webp',
   bottom: '-60px',       // jarak dari BAWAH layar (naikkan mis. '20px', negatif biar tenggelam)
   right: '80px',        // jarak dari KANAN layar (geser masuk mis. '16px', negatif biar keluar)
   width: '100px',        // lebar gambar (tinggi otomatis ikut rasio) — mis. '30%', '300px'
@@ -621,9 +649,9 @@ const decoBottomRight4 = reactive({
   // --- ANIMASI SWAY BUNGA ---
   sway: true,                    // false = bunga diam
   swayOrigin: 'bottom center',   // titik pivot ayunan (bawah = pangkal batang)
-  swayAngle: '2deg',             // besar ayunan (pelan = angka kecil)
-  swaySpeed: '11.5s',            // durasi 1 siklus (makin besar = makin pelan)
-  swayDelay: '-9.1s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
+  swayAngle: '3deg',             // besar ayunan (pelan = angka kecil)
+  swaySpeed: '6s',               // durasi 1 siklus (makin besar = makin pelan)
+  swayDelay: '-3.4s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
 });
 // =============================================================================================================
 
@@ -638,9 +666,9 @@ const decoBottomLeft2 = reactive({
   // --- ANIMASI SWAY BUNGA ---
   sway: true,                    // false = bunga diam
   swayOrigin: 'bottom center',   // titik pivot ayunan (bawah = pangkal batang)
-  swayAngle: '1.5deg',           // besar ayunan (pelan = angka kecil)
-  swaySpeed: '13s',              // durasi 1 siklus (makin besar = makin pelan)
-  swayDelay: '-8.2s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
+  swayAngle: '2.5deg',           // besar ayunan (pelan = angka kecil)
+  swaySpeed: '7s',               // durasi 1 siklus (makin besar = makin pelan)
+  swayDelay: '-4.3s',            // delay NEGATIF = mulai di tengah siklus => terlihat random
 });
 // ================================================================================
 </script>
