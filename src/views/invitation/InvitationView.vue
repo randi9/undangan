@@ -672,7 +672,11 @@ function animateHeroOval() {
   gsap.set(heroTextItems.value, { y: 30, opacity: 0 });
 
   // Wait for all flowers to finish their entry animation (delay + duration = 5.3s) in fairytale garden theme
-  const startDelay = themeName.value === 'fairytale_garden' ? 7.3 : 0.2;
+  // royal_fantasy: jeda ±1.0s dulu (heroOval-nya tak terlihat, jadi murni memamerkan
+  // bg langit/awan/pulau) → teks baru slide-up di ±2.0s setelah hero dibuka.
+  // PENTING: sinkronkan PILL_DELAY di HeroRoyalFantasy.vue = startDelay + 0.99
+  const startDelay =
+    themeName.value === 'fairytale_garden' ? 7.3 : themeName.value === 'royal_fantasy' ? 1.0 : 0.2;
   const tl = gsap.timeline({ 
     delay: startDelay,
     onComplete: () => {

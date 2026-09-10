@@ -226,8 +226,51 @@
     </div>
     <!-- ===== /ZOOM STAGE DEPAN (istana) ===== -->
 
-    <!-- Hero Content (Text via Slot) — polos, teks ngumpul di tengah, fades out pas mulai zoom -->
+    <!-- ===== OVERLAY PEMGELAP BG (VEIL) =====
+         Wrapper (veilWrapRef) : dipudarkan scrub BARENG teks & pil saat zoom
+         (durasi HERO_TEXT_OUT) → veil hilang sebelum quotes masuk.
+         Dalam (veilRef)       : opacity 0 dulu → di-fade-IN-kan GSAP bareng
+         munculnya teks & pil (delay PILL_DELAY, lihat script).
+         GELAPnya : ubah alpha rgba() — 0.15 nyaris tak terasa, 0.25 lumayan.
+         Warna hijau gelap senada teks (#243029) biar "shadow", bukan "malam".
+         z-35 : di ATAS semua bg (langit/pulau/istana), di BAWAH teks & pil (z-40). -->
+    <div ref="veilWrapRef" class="absolute inset-0 z-[35] pointer-events-none">
+      <div
+        ref="veilRef"
+        class="royal-veil"
+        style="
+          position: absolute;
+          inset: 0;
+          background: rgba(36, 48, 41, 0.2);
+        "
+      ></div>
+    </div>
+
+    <!-- Hero Content (Text via Slot) — teks ngumpul di tengah, fades out pas mulai zoom -->
     <div ref="heroTextRef" class="royal-hero-text relative z-[40] w-[85vw] max-w-[420px] mx-auto py-14 flex flex-col items-center justify-center">
+      <!-- ===== CONTAINER PIL TEGAK (BELAKANG SEMUA TEKS) =====
+           Pil = persegi panjang dengan border-radius full.
+           BENTAK PIL DIKUNCI oleh proporsi asli: top/bottom -18vh (tinggi
+           jauh > lebar). JANGAN ubah vh untuk mengecilkan — nanti jadi bulet!
+           U.KURAN = SATU ANGKA SKALA di "transform: scale(...)" di bawah:
+           tinggi & lebar mengecil MEMPER SAMA → bentuk tetap pil ramping.
+           (1 = penuh, 0.8 = 80%, 0.65 = lebih kecil lagi)
+           TEBAL WARNA : alpha rgba background (makin besar makin pekat). -->
+      <div
+        ref="textPillRef"
+        class="royal-text-pill"
+        style="
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: -18vh;
+          bottom: -18vh;
+          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.75);
+          transform: scale(0.8);
+          pointer-events: none;
+        "
+      ></div>
       <slot />
     </div>
 
@@ -245,11 +288,13 @@
            Font sengaja Playfair Display, BUKAN fontHeading tema (Cinzel Decorative
            = semua glyph kapital). Ukuran teks kecil. -->
       <div class="rf-quote-pill absolute inset-0 flex items-center justify-center bg-white/70">
-        <blockquote
-          class="text-[#243029] text-sm md:text-base italic leading-relaxed tracking-wide w-[72vw] max-w-[340px] mx-auto px-4"
-          style="font-family: 'Playfair Display', serif"
-        >
-          "{{ quote }}"
+        <blockquote class="rf-quote w-[72vw] max-w-[340px] mx-auto px-4">
+          <p class="rf-quote-body"
+            ><span class="rf-quote-mark rf-quote-mark-open" aria-hidden="true">&ldquo;</span>{{
+              quoteParts.body
+            }}<span class="rf-quote-mark rf-quote-mark-close" aria-hidden="true">&rdquo;</span></p
+          >
+          <p v-if="quoteParts.source" class="rf-quote-source">{{ quoteParts.source }}</p>
         </blockquote>
       </div>
     </div>
@@ -258,13 +303,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     overlayGradient?: string;
     heroImage?: string;
@@ -278,11 +323,38 @@ withDefaults(
   }
 );
 
+/* ===== PEMECAH TEKS QUOTES =====
+   Pisahkan isi quotes dan atribusi "Q.S. ..." (mendukung varian Q.S., Q.S, QS, Q S).
+   Kutip pembuka/penutup bawaan data dibuang dulu — tanda kutip digambar sendiri
+   oleh template biar bisa di-styling. Kalau tidak ada "Q.S.", seluruh teks
+   dianggap isi quotes. */
+const quoteParts = computed(() => {
+  const raw = (props.quote || '').trim();
+  const q = raw.replace(/^[\u201C\u201D"]+|[\u201C\u201D"]+$/g, '').trim();
+  const m = q.match(/\bQ\.?\s?S\.?\b/i);
+  const idx = m?.index ?? 0;
+  if (m && idx > 0) {
+    // ekor body: kupas kutip penutup / tanda baca / strip yang nempel "Q.S."
+    // (diloop supaya urutan apapun — mis. `..." — Q.S.` — bersih semua)
+    let body = q.slice(0, idx).trim();
+    let prev;
+    do {
+      prev = body;
+      body = body.replace(/["\u201C\u201D]+$/, '').replace(/[,;:.–—\s]+$/, '');
+    } while (body !== prev);
+    return { body, source: q.slice(idx).trim() };
+  }
+  return { body: q, source: '' };
+});
+
 const sectionRef = ref<HTMLElement | null>(null);
 const cloudLayerRef = ref<HTMLElement | null>(null);
 const stageRef = ref<HTMLElement | null>(null);
 const stageFrontRef = ref<HTMLElement | null>(null);
 const heroTextRef = ref<HTMLElement | null>(null);
+const textPillRef = ref<HTMLElement | null>(null);
+const veilWrapRef = ref<HTMLElement | null>(null);
+const veilRef = ref<HTMLElement | null>(null);
 const quoteRef = ref<HTMLElement | null>(null);
 let ctx: gsap.Context | null = null;
 
@@ -302,6 +374,13 @@ let ctx: gsap.Context | null = null;
     dan section berikutnya (couple) masuk.
     CLOUD_SHIFT : geser awan ke kiri selama scroll (px, angka negatif = kiri).
                   Awan TIDAK ikut zoom — dia cuma jalan geser.
+    PILL_DELAY  : kapan pil teks mulai slide-up (detik setelah cover dibuka).
+                  2.0 = bareng teks pertama muncul, setelah bg dipamerkan ±2s
+                  (startDelay royal_fantasy 1.0 + 1.0 anim heroOval − overlap
+                  0.01 di animateHeroOval — kalau startDelay diubah, ikutin juga).
+                  MELESET? geser angkanya (lebih besar = telat).
+    VEIL_FADE_IN: lama memudarnya overlay gelap masuk (detik). Lebih panjang
+                  dari anim teks (0.9) → bg jelas dulu, gelapnya nyusul pelan.
  ===================================================== */
 const SCROLL = '200%';
 const SCALE = 3;
@@ -310,6 +389,8 @@ const HERO_TEXT_OUT = 0.35;
 const QUOTE_IN = 0.62;
 const QUOTE_FADE = 0.15;
 const CLOUD_SHIFT = -50;
+const PILL_DELAY = 2.0;
+const VEIL_FADE_IN = 1.4;
 /* =================================================== */
 
 onMounted(() => {
@@ -368,6 +449,12 @@ onMounted(() => {
       tl.to(heroTextRef.value, { opacity: 0, ease: 'none', duration: HERO_TEXT_OUT }, 0);
     }
 
+    // veil juga ikut memudar di awal zoom (bareng teks & pil) —
+    // cukup wrapper-nya yang di-scrub; isi veil (veilRef) punya fade-in sendiri di bawah.
+    if (veilWrapRef.value) {
+      tl.to(veilWrapRef.value, { opacity: 0, ease: 'none', duration: HERO_TEXT_OUT }, 0);
+    }
+
     // teks quotes: fade-IN setelah pulau di tengah, lalu HOLD sampai pin
     // selesai — TIDAK ada fade-out lagi sebelum section couple datang
     if (quoteRef.value) {
@@ -391,6 +478,32 @@ onMounted(() => {
     // tetap memetakan lurus ke progres scroll, sama seperti sebelumnya
     // (dulu diisi oleh tween fade-out quotes yang sekarang dihapus).
     tl.to({ hold: 0 }, { hold: 0, duration: 0.001 }, 0.999);
+
+    // ===== PIL TEKS — animasi MASUK sendiri (bukan bagian timeline scrub) =====
+    // Kurva disamakan persis dengan slide-up teks di animateHeroOval
+    // (InvitationView.vue): y 30→0, 0.9s, power3.out → muncul "bareng" teks.
+    // Fade-out ke quotes TIDAK perlu diurus di sini: pil ada di dalam
+    // heroTextRef yang sudah dipudarkan scrub (HERO_TEXT_OUT) sebelum
+    // quotes fade-in (QUOTE_IN).
+    if (textPillRef.value) {
+      gsap.fromTo(
+        textPillRef.value,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', delay: PILL_DELAY }
+      );
+    }
+
+    // ===== VEIL — fade-IN bareng teks & pil (bukan scrub) =====
+    // Opasitas efektif = veilRef (0→1, ini) × veilWrapRef (1→0, scrub di atas),
+    // jadi veil "hadir" persis saat teks muncul & hilang saat mulai zoom.
+    // Durasinya dibikin lebih panjang biar bg dulu yang tampil, baru gelapnya merayap.
+    if (veilRef.value) {
+      gsap.fromTo(
+        veilRef.value,
+        { opacity: 0 },
+        { opacity: 1, duration: VEIL_FADE_IN, ease: 'power2.out', delay: PILL_DELAY }
+      );
+    }
   }, sectionRef.value);
 
   // Setelah pin spacer Hero dibuat, sort & refresh agar section
@@ -546,6 +659,84 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
+/* ===== QUOTES — isi miring + kutip dekoratif, "Q.S. ..." di baris baru =====
+   MARK kutip pakai satuan em → otomatis ikut besar-kecilnya font isi.
+   MAU GANTI WARNA KUTIP? ubah #B0808A (rose senada "&" di nama). */
+.rf-quote {
+  font-family: 'Playfair Display', serif;
+  color: #243029;
+  text-align: center;
+}
+
+/* isi quotes: tetap italic seperti aslinya */
+.rf-quote-body {
+  margin: 0;
+  font-style: italic;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+}
+
+/* tanda kutip dekoratif: gede, bold, warna aksen */
+.rf-quote-mark {
+  font-style: normal;
+  font-weight: 700;
+  color: #b0808a;
+  line-height: 0;
+  text-shadow: 0 2px 10px rgba(176, 128, 138, 0.35);
+}
+.rf-quote-mark-open {
+  font-size: 2.4em;
+  vertical-align: -0.45em;
+  margin-right: 0.06em;
+}
+.rf-quote-mark-close {
+  font-size: 1.5em;
+  vertical-align: -0.28em;
+  margin-left: 0.06em;
+}
+
+/* baris "Q.S. ...": TIDAK italic, bold, sedikit lebih besar + garis pemisah halus */
+.rf-quote-source {
+  margin: 0.9rem 0 0;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  color: #243029;
+}
+.rf-quote-source::before {
+  content: '';
+  display: block;
+  width: 42px;
+  height: 2px;
+  margin: 0 auto 0.65rem;
+  background: linear-gradient(90deg, transparent, #b0808a, transparent);
+}
+
+@media (min-width: 768px) {
+  .rf-quote-body {
+    font-size: 1.05rem;
+  }
+  .rf-quote-source {
+    font-size: 1.15rem;
+  }
+}
+
+/* ===== PIL TEGAK DI BELAKANG TEKS HERO =====
+   Sisanya (ukuran, jarak atas-bawah, warna) sudah jadi CSS inline di template.
+   Class ini cuma menjaga pil tetap tersembunyi sebelum GSAP slide-up —
+   mencegah "kedip" pas komponen baru mount */
+.royal-text-pill {
+  opacity: 0;
+}
+
+/* Overlay gelap (veil) — awal tersembunyi biar tidak "kedip" sebelum GSAP fade-in.
+   Warna/kegelapan sudah jadi CSS inline di template (background rgba). */
+.royal-veil {
+  opacity: 0;
+}
+
 /* Hormati pengguna yang mengurangi animasi */
 @media (prefers-reduced-motion: reduce) {
   .royal-island,
@@ -562,19 +753,42 @@ onBeforeUnmount(() => {
   text-transform: uppercase !important;
   font-size: 0.8rem !important;
   font-family: 'Plus Jakarta Sans', sans-serif !important;
+  /* shadow biar teks menonjol dari pil — geser angka terakhir buat ngatur pekat */
+  text-shadow: 0 2px 10px rgba(36, 48, 41, 0.25) !important;
 }
 
+/* UKURAN NAMA — dulu ikut kelas Tailwind slot (3rem / 4.5rem / 6rem),
+   sekarang di-diskon ~20% di sini: 2.4rem → 3.6rem (tablet) → 4.8rem (desktop).
+   MAU LEBIH KECIL/BESAR ? ubah tiga angka rem ini. */
 .royal-hero-text h1 {
   color: #243029 !important;
   font-family: 'Cinzel Decorative', 'Playfair Display', serif !important;
   font-weight: 500 !important;
   line-height: 1.15 !important;
   margin: 0.75rem 0 !important;
+  font-size: 2.4rem !important;
+  /* shadow lembut biar nama timbul di atas pil putih */
+  text-shadow: 0 3px 14px rgba(36, 48, 41, 0.3) !important;
+}
+
+@media (min-width: 768px) {
+  .royal-hero-text h1 {
+    font-size: 3.6rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .royal-hero-text h1 {
+    font-size: 4.8rem !important;
+  }
 }
 
 .royal-hero-text h1 span {
   color: #B0808A !important;
   font-style: italic !important;
   font-family: 'Cinzel Decorative', 'Playfair Display', serif !important;
+  /* "&" ikut proporsi nama (0.63 × ukuran h1) — tidak perlu rem terpisah,
+     dan text-shadow otomatis warisan dari h1 */
+  font-size: 0.63em !important;
 }
 </style>
