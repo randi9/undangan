@@ -2,7 +2,7 @@
   <section
     v-if="invitation.akad_venue || invitation.resepsi_venue"
     ref="eventsSection"
-    class="relative h-[100dvh] overflow-hidden bg-[#aed4da] text-center"
+    class="relative h-[100dvh] overflow-hidden bg-[#aa8352] text-center"
   >
     <!-- ============================================================
          GAMBAR PANORAMA (latar)
@@ -77,57 +77,62 @@
         class="absolute top-0 h-full flex items-center justify-center px-4"
         style="left: 0; z-index: 2;"
       >
-        <div class="relative p-6 md:p-8 text-left w-full max-w-sm">
-          <span class="absolute top-3 left-4 text-[#B0808A]/60 text-xs">❖</span>
-          <span class="absolute top-3 right-4 text-[#B0808A]/60 text-xs">❖</span>
+        <div style="position:relative;width:100%;max-width:360px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;border:none;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;transform:perspective(750px) rotateY(20deg) rotateX(1.5deg) skewY(-2deg) translateY(-55px) translateX(22px);transform-origin:50% 50%;">
+          <span style="position:absolute;top:0;left:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
+          <span style="position:absolute;top:0;right:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
 
-          <div class="w-12 h-12 rounded-2xl border border-white/60 bg-white/70 flex items-center justify-center mb-5 shadow-[0_4px_15px_rgba(31,38,135,0.12)]">
-            <Icon icon="ph:rings-duotone" class="w-6 h-6 text-[#B0808A]" />
-          </div>
-
+          <svg width="110" height="14" viewBox="0 0 110 14" fill="none" style="display:block;margin:0 auto 10px;">
+            <line x1="0" y1="7" x2="40" y2="7" stroke="#aa8352" stroke-width="1" opacity="0.55" />
+            <line x1="70" y1="7" x2="110" y2="7" stroke="#aa8352" stroke-width="1" opacity="0.55" />
+            <rect x="51" y="3" width="8" height="8" transform="rotate(45 55 7)" fill="none" stroke="#aa8352" stroke-width="1" />
+            <circle cx="55" cy="7" r="1.4" fill="#aa8352" />
+            <circle cx="44" cy="7" r="1" fill="#aa8352" opacity="0.6" />
+            <circle cx="66" cy="7" r="1" fill="#aa8352" opacity="0.6" />
+          </svg>
           <h3
-            class="text-2xl md:text-3xl font-bold text-slate-900 mb-5"
-            :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+            :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`, margin: '0', color: '#2b2118', fontSize: '22px', lineHeight: '1.2', fontWeight: '700' }"
           >
             Akad Nikah
           </h3>
 
-          <div class="space-y-3.5 text-xs md:text-sm text-slate-700">
-            <div v-if="invitation.akad_date" class="flex gap-3.5 items-start">
-              <Icon icon="ph:calendar-blank-duotone" class="w-5 h-5 flex-shrink-0 text-[#B0808A] mt-0.5" />
-              <span class="font-medium text-slate-900">{{ formatDateLong(invitation.akad_date) }}</span>
+          <div style="width:52px;height:1.5px;margin:10px auto 14px;border-radius:999px;background:linear-gradient(to right, transparent, #aa8352, transparent);"></div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;font-size:12px;line-height:1.6;color:#57534e;text-align:left;padding-left:52px;">
+            <div v-if="invitation.akad_date" style="display:flex;gap:8px;align-items:center;justify-content:flex-start;">
+              <Icon icon="ph:calendar-blank-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;" />
+              <span style="font-weight:600;color:#292524;">{{ formatDateLong(invitation.akad_date) }}</span>
             </div>
-            <div v-if="invitation.akad_time" class="flex gap-3.5 items-start">
-              <Icon icon="ph:clock-duotone" class="w-5 h-5 flex-shrink-0 text-[#B0808A] mt-0.5" />
+            <div v-if="invitation.akad_time" style="display:flex;gap:8px;align-items:center;justify-content:flex-start;">
+              <Icon icon="ph:clock-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;" />
               <span>{{ invitation.akad_time }}</span>
             </div>
-            <div v-if="invitation.akad_venue" class="flex gap-3.5 items-start">
-              <Icon icon="ph:map-pin-duotone" class="w-5 h-5 flex-shrink-0 text-[#B0808A] mt-0.5" />
-              <div>
-                <strong class="text-slate-900 block text-sm">{{ invitation.akad_venue }}</strong>
-                <span v-if="invitation.akad_address" class="text-xs text-slate-700 leading-relaxed block mt-1">
+            <div v-if="invitation.akad_venue" style="display:flex;gap:8px;align-items:flex-start;justify-content:flex-start;text-align:left;">
+              <Icon icon="ph:map-pin-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;margin-top:2px;" />
+              <div style="text-align:left;">
+                <strong style="display:block;color:#292524;font-size:13px;line-height:1.4;">{{ invitation.akad_venue }}</strong>
+                <span v-if="invitation.akad_address" style="display:block;margin-top:3px;font-size:11px;line-height:1.7;color:#57534e;max-width:250px;">
                   {{ invitation.akad_address }}
                 </span>
               </div>
             </div>
           </div>
 
-          <div class="flex flex-wrap gap-3 mt-6 pt-4 border-t border-slate-900/10">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(170,131,82,0.28);">
             <a
               v-if="invitation.akad_map_url"
               :href="invitation.akad_map_url"
               target="_blank"
-              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider text-slate-900 bg-gradient-to-r from-white via-[#E7F4F7] to-white border border-white/80 shadow-md hover:scale-105 transition-all"
+              style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#ffffff;background:#aa8352;border:1px solid #aa8352;box-shadow:0 4px 14px rgba(170,131,82,0.32);text-decoration:none;transition:transform 0.2s ease;"
             >
-              <Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Buka Google Maps
+              <Icon icon="ph:map-trifold-duotone" style="width:14px;height:14px;" /> Buka Google Maps
             </a>
             <a
               v-if="invitation.akad_date"
               :href="getAkadCalendarUrl()"
               target="_blank"
-              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider text-slate-900 border border-[#B0808A]/60 hover:bg-[#B0808A]/15 transition-all"
+              style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;transition:background 0.2s ease;"
             >
-              <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4 text-[#B0808A]" /> Simpan Kalender
+              <Icon icon="ph:calendar-plus-duotone" style="width:14px;height:14px;color:#aa8352;" /> Simpan Kalender
             </a>
           </div>
         </div>
@@ -139,82 +144,86 @@
         class="absolute top-0 h-full flex items-center justify-center px-4"
         style="left: 0; z-index: 2;"
       >
-        <div class="w-full max-w-4xl flex flex-col md:flex-row items-stretch justify-center gap-6">
-          <!-- Resepsi Card -->
+        <div class="w-full max-w-4xl flex flex-col md:flex-row items-center justify-center gap-6">
+          <!-- Resepsi : gaya Akad — tanpa miring, posisi tengah -->
           <div
             v-if="invitation.resepsi_venue"
-            class="relative p-6 md:p-8 text-left flex flex-col w-full md:w-80"
+            style="position:relative;width:100%;max-width:360px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;border:none;border-radius:0;box-shadow:none;transform:translateY(-55px);"
           >
-            <span class="absolute top-3 left-4 text-[#B0808A]/60 text-xs">❖</span>
-            <span class="absolute top-3 right-4 text-[#B0808A]/60 text-xs">❖</span>
+            <span style="position:absolute;top:0;left:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
+            <span style="position:absolute;top:0;right:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
 
-            <div class="w-12 h-12 rounded-2xl border border-white/60 bg-white/70 flex items-center justify-center mb-5 shadow-[0_4px_15px_rgba(31,38,135,0.12)]">
-              <Icon icon="ph:confetti-duotone" class="w-6 h-6 text-[#B0808A]" />
-            </div>
-
+            <svg width="110" height="14" viewBox="0 0 110 14" fill="none" style="display:block;margin:0 auto 10px;">
+              <line x1="0" y1="7" x2="40" y2="7" stroke="#aa8352" stroke-width="1" opacity="0.55" />
+              <line x1="70" y1="7" x2="110" y2="7" stroke="#aa8352" stroke-width="1" opacity="0.55" />
+              <rect x="51" y="3" width="8" height="8" transform="rotate(45 55 7)" fill="none" stroke="#aa8352" stroke-width="1" />
+              <circle cx="55" cy="7" r="1.4" fill="#aa8352" />
+              <circle cx="44" cy="7" r="1" fill="#aa8352" opacity="0.6" />
+              <circle cx="66" cy="7" r="1" fill="#aa8352" opacity="0.6" />
+            </svg>
             <h3
-              class="text-xl md:text-2xl font-bold text-slate-900 mb-4"
-              :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+              :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`, margin: '0', color: '#2b2118', fontSize: '20px', lineHeight: '1.25', fontWeight: '700' }"
             >
               Resepsi Pernikahan
             </h3>
 
-            <div class="space-y-3 text-xs md:text-sm text-slate-700">
-              <div v-if="invitation.resepsi_date" class="flex gap-3.5 items-start">
-                <Icon icon="ph:calendar-blank-duotone" class="w-5 h-5 flex-shrink-0 text-[#B0808A] mt-0.5" />
-                <span class="font-medium text-slate-900">{{ formatDateLong(invitation.resepsi_date) }}</span>
+            <div style="width:52px;height:1.5px;margin:10px auto 14px;border-radius:999px;background:linear-gradient(to right, transparent, #aa8352, transparent);"></div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;font-size:12px;line-height:1.6;color:#57534e;text-align:left;padding-left:52px;">
+              <div v-if="invitation.resepsi_date" style="display:flex;gap:8px;align-items:center;justify-content:flex-start;">
+                <Icon icon="ph:calendar-blank-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;" />
+                <span style="font-weight:600;color:#292524;">{{ formatDateLong(invitation.resepsi_date) }}</span>
               </div>
-              <div v-if="invitation.resepsi_time" class="flex gap-3.5 items-start">
-                <Icon icon="ph:clock-duotone" class="w-5 h-5 flex-shrink-0 text-[#B0808A] mt-0.5" />
+              <div v-if="invitation.resepsi_time" style="display:flex;gap:8px;align-items:center;justify-content:flex-start;">
+                <Icon icon="ph:clock-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;" />
                 <span>{{ invitation.resepsi_time }}</span>
               </div>
-              <div v-if="invitation.resepsi_venue" class="flex gap-3.5 items-start">
-                <Icon icon="ph:map-pin-duotone" class="w-5 h-5 flex-shrink-0 text-[#B0808A] mt-0.5" />
-                <div>
-                  <strong class="text-slate-900 block text-sm">{{ invitation.resepsi_venue }}</strong>
-                  <span v-if="invitation.resepsi_address" class="text-xs text-slate-700 leading-relaxed block mt-1">
+              <div v-if="invitation.resepsi_venue" style="display:flex;gap:8px;align-items:flex-start;justify-content:flex-start;text-align:left;">
+                <Icon icon="ph:map-pin-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;margin-top:2px;" />
+                <div style="text-align:left;">
+                  <strong style="display:block;color:#292524;font-size:13px;line-height:1.4;">{{ invitation.resepsi_venue }}</strong>
+                  <span v-if="invitation.resepsi_address" style="display:block;margin-top:3px;font-size:11px;line-height:1.7;color:#57534e;max-width:250px;">
                     {{ invitation.resepsi_address }}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div class="flex flex-wrap gap-2.5 mt-5 pt-4 border-t border-slate-900/10">
+            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(170,131,82,0.28);">
               <a
                 v-if="invitation.resepsi_map_url"
                 :href="invitation.resepsi_map_url"
                 target="_blank"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-semibold tracking-wider text-slate-900 bg-gradient-to-r from-white via-[#E7F4F7] to-white border border-white/80 shadow-md hover:scale-105 transition-all"
+                style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#ffffff;background:#aa8352;border:1px solid #aa8352;box-shadow:0 4px 14px rgba(170,131,82,0.32);text-decoration:none;"
               >
-                <Icon icon="ph:map-trifold-duotone" class="w-4 h-4" /> Google Maps
+                <Icon icon="ph:map-trifold-duotone" style="width:14px;height:14px;" /> Google Maps
               </a>
               <a
                 v-if="invitation.resepsi_date"
                 :href="getResepsiCalendarUrl()"
                 target="_blank"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-semibold tracking-wider text-slate-900 border border-[#B0808A]/60 hover:bg-[#B0808A]/15 transition-all"
+                style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;"
               >
-                <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4 text-[#B0808A]" /> Kalender
+                <Icon icon="ph:calendar-plus-duotone" style="width:14px;height:14px;color:#aa8352;" /> Kalender
               </a>
             </div>
           </div>
 
-          <!-- Live Streaming Card -->
+          <!-- Live Streaming : samakan gaya (ramping, tengah, tanpa card) -->
           <div
             v-if="invitation.streaming_enabled && invitation.streaming_url"
-            class="p-6 md:p-8 text-center flex flex-col justify-center w-full md:w-96"
+            style="width:100%;max-width:360px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;"
           >
-            <Icon icon="ph:video-camera-duotone" class="w-8 h-8 mx-auto mb-2 text-[#B0808A]" />
+            <Icon icon="ph:video-camera-duotone" style="width:22px;height:22px;margin:0 auto 8px;color:#aa8352;" />
             <h3
-              class="text-xl font-bold text-slate-900 mb-2"
-              :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+              :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`, margin: '0 0 6px', color: '#2b2118', fontSize: '20px', lineHeight: '1.25', fontWeight: '700' }"
             >
               Live Streaming
             </h3>
-            <p class="text-[11px] md:text-xs text-slate-700 mb-4 leading-relaxed">
+            <p style="margin:0 0 12px;font-size:11px;line-height:1.7;color:#57534e;">
               Berhalangan hadir? Ikuti prosesi pernikahan kami secara daring:
             </p>
-            <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl border border-white/60 bg-black/60">
+            <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.25);border:1px solid rgba(170,131,82,0.4);background:rgba(0,0,0,0.6);">
               <iframe
                 :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''"
                 class="absolute top-0 left-0 w-full h-full"
@@ -235,24 +244,30 @@
       >
         <div
           v-if="invitation.khutbah_nikah"
-          class="relative p-8 md:p-10 text-center w-full max-w-md"
+          style="position:relative;width:100%;max-width:340px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;border:none;box-shadow:none;transform:perspective(750px) rotateY(-20deg) rotateX(1.5deg) skewY(2deg) translateY(-55px) translateX(-22px);transform-origin:50% 50%;"
         >
-          <span class="absolute top-3 left-4 text-[#B0808A]/60 text-xs">❖</span>
-          <span class="absolute top-3 right-4 text-[#B0808A]/60 text-xs">❖</span>
+          <span style="position:absolute;top:0;left:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
+          <span style="position:absolute;top:0;right:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
 
-          <Icon icon="ph:book-open-duotone" class="w-10 h-10 mx-auto mb-4 text-[#B0808A]" />
+          <svg width="110" height="14" viewBox="0 0 110 14" fill="none" style="display:block;margin:0 auto 10px;">
+            <line x1="0" y1="7" x2="40" y2="7" stroke="#aa8352" stroke-width="1" opacity="0.55" />
+            <line x1="70" y1="7" x2="110" y2="7" stroke="#aa8352" stroke-width="1" opacity="0.55" />
+            <rect x="51" y="3" width="8" height="8" transform="rotate(45 55 7)" fill="none" stroke="#aa8352" stroke-width="1" />
+            <circle cx="55" cy="7" r="1.4" fill="#aa8352" />
+            <circle cx="44" cy="7" r="1" fill="#aa8352" opacity="0.6" />
+            <circle cx="66" cy="7" r="1" fill="#aa8352" opacity="0.6" />
+          </svg>
           <h3
-            class="text-2xl font-bold text-slate-900 mb-3"
-            :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+            :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`, margin: '0', color: '#2b2118', fontSize: '20px', lineHeight: '1.25', fontWeight: '700' }"
           >
             Khutbah Nikah
           </h3>
-          <p class="text-xs md:text-sm text-slate-700 mb-2 leading-relaxed">
+          <div style="width:52px;height:1.5px;margin:10px auto 12px;border-radius:999px;background:linear-gradient(to right, transparent, #aa8352, transparent);"></div>
+          <p style="margin:0 0 6px;font-size:11px;line-height:1.7;color:#57534e;">
             Prosesi akad nikah insya Allah akan dibekali khutbah nikah oleh:
           </p>
           <p
-            class="text-base md:text-lg font-semibold text-slate-900"
-            :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+            :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`, margin: '0', color: '#292524', fontSize: '15px', lineHeight: '1.5', fontWeight: '600' }"
           >
             {{ invitation.khutbah_nikah }}
           </p>
@@ -286,19 +301,52 @@
     ></div>
 
     <!-- Section Header (diam di atas, semua fase) -->
-    <div ref="headerRef" class="absolute top-[5%] inset-x-0 z-20 opacity-0 translate-y-6 px-4 text-center">
-      <div class="flex items-center justify-center gap-2 mb-2">
-        <span class="text-[#B0808A] text-xs">✦</span>
-        <span class="text-xs uppercase tracking-[0.35em] text-[#B0808A] font-semibold">Rangkaian Acara</span>
-        <span class="text-[#B0808A] text-xs">✦</span>
-      </div>
-      <h2
-        class="text-3xl md:text-5xl font-bold text-slate-900"
-        :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+    <div ref="headerRef" class="absolute top-[10%] inset-x-0 z-20 opacity-0 px-4 text-center pointer-events-none">
+      <div
+        ref="headerTiltRef"
+        style="
+          position: relative;
+          display: inline-block;
+          width: 100%;
+          max-width: 320px;
+          padding: 20px 44px 22px;
+          transform: perspective(750px) translateX(22px) rotateY(20deg) rotateX(1.5deg);
+          transform-origin: 50% 50%;
+        "
       >
-        Agenda Pernikahan
-      </h2>
-      <div class="w-16 h-[1.5px] bg-gradient-to-r from-transparent via-[#7FB3C0] to-transparent mx-auto mt-4"></div>
+        <img
+          src="https://media.mengundanganda.com/royalfantasy/event%20section/dewirandi_e516f8ae-df2e-4040-b705-081948195982.webp"
+          alt=""
+          style="
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 12px rgba(170, 131, 82, 0.2));
+          "
+        />
+        <div style="position: relative; z-index: 1; text-align: center;">
+          <div class="flex items-center justify-center gap-1.5 mb-1.5">
+            <span class="text-[#aa8352] text-[10px]">✦</span>
+            <span class="text-[9.5px] uppercase tracking-[0.28em] text-[#aa8352] font-bold">Rangkaian Acara</span>
+            <span class="text-[#aa8352] text-[10px]">✦</span>
+          </div>
+          <h2
+            class="font-bold text-[#2b2118]"
+            :style="{
+              fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`,
+              fontSize: 'clamp(17px, 4.5vw, 21px)',
+              lineHeight: '1.2',
+              whiteSpace: 'nowrap',
+              letterSpacing: '0.02em',
+            }"
+          >
+            Agenda Pernikahan
+          </h2>
+        </div>
+      </div>
     </div>
     <ScrollCueRoyalFantasy />
   </section>
@@ -329,6 +377,7 @@ const panoWrapRef = ref<HTMLElement | null>(null); // kanvas: bg + stage info + 
 const panoRef = ref<HTMLImageElement | null>(null);
 const panoTopRef = ref<HTMLImageElement | null>(null); // aset nempel di atas panorama (paling atas)
 const headerRef = ref<HTMLElement | null>(null);
+const headerTiltRef = ref<HTMLElement | null>(null);
 const akadStageRef = ref<HTMLElement | null>(null);
 const resepsiStageRef = ref<HTMLElement | null>(null);
 const khutbahStageRef = ref<HTMLElement | null>(null);
@@ -445,6 +494,17 @@ const setupAnimation = () => {
   const panTarget = panoWrapRef.value;
   gsap.set(panTarget, { x: () => xFor(X_AKAD) });
 
+  // Judul 1 grup dengan dinding melengkung gazebo:
+  // FASE 1 (Akad): x=22 (sejajar sumbu vertikal kartu Akad), ry=20, rx=1.5
+  // FASE 2 (Resepsi): x=0 (tengah melurus), ry=0, rx=0
+  // FASE 3 (Khutbah): x=0, ry=-20 (melengkung simetris), rx=1.5
+  const headerState = { x: 22, ry: 20, rx: 1.5 };
+  const applyHeaderTilt = () => {
+    if (!headerTiltRef.value) return;
+    headerTiltRef.value.style.transform = `perspective(750px) translateX(${headerState.x}px) rotateY(${headerState.ry}deg) rotateX(${headerState.rx}deg)`;
+  };
+  applyHeaderTilt();
+
   // ===== timeline utama: SCROLL-BASED (scrub) + PIN =====
   // Tidak ada fade in/out stage — hanya pergeseran kamera.
   const tl = gsap.timeline({
@@ -463,13 +523,17 @@ const setupAnimation = () => {
   tl.to({}, { duration: HOLD })
 
     // geser kamera ke fase 2: gambar meluncur, stage resepsi sudah nempel di tempatnya
+    // judul ikut melurus (1 grup dengan dinding tengah)
     .to(panTarget, { x: () => xFor(X_RESEPSI), duration: 1.6, ease: 'power1.inOut' })
+    .to(headerState, { x: 0, ry: 0, rx: 0, duration: 1.6, ease: 'power1.inOut', onUpdate: applyHeaderTilt }, '<')
 
     // FASE 2 — RESEPSI + STREAMING (kamera di tengah)
     .to({}, { duration: HOLD })
 
     // geser kamera ke fase 3: gambar meluncur lagi, stage khutbah sudah nempel
+    // judul ikut melengkung cermin (1 grup dengan teks khutbah)
     .to(panTarget, { x: () => xFor(X_KHUTBAH), duration: 1.6, ease: 'power1.inOut' })
+    .to(headerState, { x: 0, ry: -20, rx: 1.5, duration: 1.6, ease: 'power1.inOut', onUpdate: applyHeaderTilt }, '<')
 
     // FASE 3 — KHUTBAH (kamera di kanan)
     .to({}, { duration: HOLD });
@@ -485,7 +549,6 @@ const setupAnimation = () => {
 
   intro.to(headerRef.value, {
     opacity: 1,
-    y: 0,
     duration: 0.9,
     ease: 'power3.out',
   });
