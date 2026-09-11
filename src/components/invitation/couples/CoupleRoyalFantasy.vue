@@ -432,7 +432,7 @@
                             membuat gambar ketarik saat aslinya lebih lebar
                             dari layar. Dengan none → rasio asli terjaga,
                             bagian kiri/kanan yang berlebih ter-crop (zoom). */
-        z-index: 0;
+        z-index: 25;
         pointer-events: none;
         opacity: 0;
       "
@@ -472,20 +472,26 @@
         top: 25%;
         left: 50%;
         transform: translateX(-50%);
-        z-index: -1;
+        z-index: 30;
         pointer-events: none;
       "
     >
       <!-- gambar jam (acuan ukuran & posisi jarum) -->
+      <div
+        ref="cdClockRef"
+        style="position: relative;"
+      >
       <img
         src="https://media.mengundanganda.com/royalfantasy/countdown%20section/dewirandi_56f18bc4-e860-4aa4-bd3c-95594b5d2697.webp"
         alt=""
         style="
+          position: relative;
           display: block;
           height: 70dvh;
           width: auto;
           max-width: none;
           opacity: 0.9;
+          z-index: 30;
         "
       />
       <!-- jarum jam SVG — menempel pada gambar jam, bukan viewport.
@@ -498,67 +504,189 @@
         style="
           position: absolute;
           left: 50%;
-          top: 50%;
+          top: 48%;
           width: 40%;
           transform: translate(-50%, -50%) scaleX(-1);
+          z-index: 31;
         "
       />
+      <!-- ===== 4 WAKTU — seolah membagi jam jadi 4 kuadran =====
+           Gambar jam TETAP 1 utuh; angka hanya overlay di 4 sudutnya.
+           Tanpa background/border — warna GELAP biar kebaca di atas
+           jam yang terang + glow putih tipis.
+           PENTING: gambar jam hampir persegi → height:70dvh membuat
+           lebarnya melebihi viewport HP sehingga kiri-kanan ter-crop.
+           Karena itu inset dipakai 22% (BUKAN 6%): 6% jatuh di area
+           yang terpotong & kena overflow-hidden section → angka hilang.
+           Area 22% selalu di dalam potongan viewport yang terlihat.
+           Geser tiap blok: ubah left/right/top/bottom persen thd
+           kotak gambar jam. Ukuran angka: ubah clamp(). -->
+      <div
+        style="
+          position: absolute;
+          left: 31%;
+          top: 33%;
+          z-index: 32;
+          text-align: center;
+          color: #243029;
+          text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 14px rgba(212, 175, 55, 0.65);
+          white-space: nowrap;
+        "
+      >
+        <div
+          :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+          style="font-weight: 400; font-size: clamp(36px, 11vw, 60px); line-height: 1; color: rgba(255, 255, 255, 0.95); text-shadow: 0 0 16px rgba(212, 175, 55, 0.9), 0 2px 8px rgba(120, 85, 15, 0.85);"
+        >
+          {{ padZero(countdown?.days ?? 0) }}
+        </div>
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.25em; text-indent: 0.25em; text-transform: uppercase; color: #4A5B52; margin-top: 5px;">
+          Hari
+        </div>
+      </div>
+      <div
+        style="
+          position: absolute;
+          right: 31%;
+          top: 33%;
+          z-index: 32;
+          text-align: center;
+          color: #243029;
+          text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 14px rgba(212, 175, 55, 0.65);
+          white-space: nowrap;
+        "
+      >
+        <div
+          :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+          style="font-weight: 400; font-size: clamp(36px, 11vw, 60px); line-height: 1; color: rgba(255, 255, 255, 0.95); text-shadow: 0 0 16px rgba(212, 175, 55, 0.9), 0 2px 8px rgba(120, 85, 15, 0.85);"
+        >
+          {{ padZero(countdown?.hours ?? 0) }}
+        </div>
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.25em; text-indent: 0.25em; text-transform: uppercase; color: #4A5B52; margin-top: 5px;">
+          Jam
+        </div>
+      </div>
+      <div
+        style="
+          position: absolute;
+          left: 31%;
+          bottom: 33%;
+          z-index: 32;
+          text-align: center;
+          color: #243029;
+          text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 14px rgba(212, 175, 55, 0.65);
+          white-space: nowrap;
+        "
+      >
+        <div
+          :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+          style="font-weight: 400; font-size: clamp(36px, 11vw, 60px); line-height: 1; color: rgba(255, 255, 255, 0.95); text-shadow: 0 0 16px rgba(212, 175, 55, 0.9), 0 2px 8px rgba(120, 85, 15, 0.85);"
+        >
+          {{ padZero(countdown?.minutes ?? 0) }}
+        </div>
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.25em; text-indent: 0.25em; text-transform: uppercase; color: #4A5B52; margin-top: 5px;">
+          Menit
+        </div>
+      </div>
+      <div
+        style="
+          position: absolute;
+          right: 31%;
+          bottom: 33%;
+          z-index: 32;
+          text-align: center;
+          color: #243029;
+          text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6), 0 2px 14px rgba(212, 175, 55, 0.65);
+          white-space: nowrap;
+        "
+      >
+        <div
+          :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+          style="font-weight: 400; font-size: clamp(36px, 11vw, 60px); line-height: 1; color: rgba(255, 255, 255, 0.95); text-shadow: 0 0 16px rgba(212, 175, 55, 0.9), 0 2px 8px rgba(120, 85, 15, 0.85);"
+        >
+          {{ padZero(countdown?.seconds ?? 0) }}
+        </div>
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.25em; text-indent: 0.25em; text-transform: uppercase; color: #4A5B52; margin-top: 5px;">
+          Detik
+        </div>
+      </div>
+      </div>
+      <!-- ===== JUDUL — di atas jam, ikut wrapper jam ===== -->
+      <div
+        ref="cdTitleRef"
+        style="
+          position: absolute;
+          top: -9%;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 32;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          white-space: nowrap;
+          pointer-events: none;
+          width: clamp(300px, 82vw, 430px);
+        "
+      >
+        <img
+          src="https://media.mengundanganda.com/royalfantasy/countdown%20section/dewirandi_c2d88414-9dd3-461a-87cb-bdde53073667.webp"
+          alt=""
+          style="display: block; width: 100%; height: auto; pointer-events: none;"
+        />
+        <span
+          style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel Decorative', 'Playfair Display', serif;
+            font-size: clamp(20px, 5.4vw, 29px);
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-indent: 0.12em;
+            font-kerning: none;
+            font-feature-settings: 'kern' off, 'liga' off;
+            color: #243029;
+            white-space: nowrap;
+          "
+          >Save The Date</span
+        >
+      </div>
     </div>
 
-    <!-- Countdown Foggy Card — GABUNGAN section countdown: muncul setelah
-         gambar slide ke tengah lalu zoom ke bagian tengah-atasnya -->
+    <!-- Tombol kalender countdown — styling SAMA dengan tombol
+         "Buka Undangan" di CoverRoyalFantasy.vue (royal-open-btn +
+         gradient pink-krem + shimmer). ref="cdRef" dipakai GSAP —
+         JANGAN hapus. Naik/turun: ubah bottom. -->
     <div
       v-if="hasDate"
       ref="cdRef"
-      class="absolute z-20 w-[90%] max-w-sm px-6 py-6 rounded-3xl text-slate-900 text-center shadow-2xl"
       style="
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(12px) saturate(180%);
-        -webkit-backdrop-filter: blur(12px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 12px 32px rgba(31, 38, 135, 0.15);
-        top: 32%;
+        position: absolute;
+        bottom: 6%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, 0);
+        z-index: 40;
+        width: 100%;
+        text-align: center;
+        padding-bottom: 22px;
+        padding-left: 16px;
+        padding-right: 16px;
         opacity: 0;
         pointer-events: none;
       "
     >
-      <span class="text-[10px] uppercase tracking-[0.35em] text-[#B0808A] font-semibold block mb-1">Save The Date</span>
-      <h3
-        class="text-xl sm:text-2xl font-bold text-slate-900 mb-4"
-        :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
-      >
-        Menghitung Hari
-      </h3>
-
-      <div class="grid grid-cols-4 gap-2">
-        <div class="flex flex-col items-center py-3 px-1 rounded-2xl border border-[#708478]/50 bg-[#243029]/85">
-          <span class="text-lg sm:text-2xl font-bold text-[#ECE0D3]">{{ padZero(countdown?.days ?? 0) }}</span>
-          <span class="text-[9px] md:text-[10px] uppercase tracking-widest text-[#D4A6AD] mt-1 font-medium">Hari</span>
-        </div>
-        <div class="flex flex-col items-center py-3 px-1 rounded-2xl border border-[#708478]/50 bg-[#243029]/85">
-          <span class="text-lg sm:text-2xl font-bold text-[#ECE0D3]">{{ padZero(countdown?.hours ?? 0) }}</span>
-          <span class="text-[9px] md:text-[10px] uppercase tracking-widest text-[#D4A6AD] mt-1 font-medium">Jam</span>
-        </div>
-        <div class="flex flex-col items-center py-3 px-1 rounded-2xl border border-[#708478]/50 bg-[#243029]/85">
-          <span class="text-lg sm:text-2xl font-bold text-[#ECE0D3]">{{ padZero(countdown?.minutes ?? 0) }}</span>
-          <span class="text-[9px] md:text-[10px] uppercase tracking-widest text-[#D4A6AD] mt-1 font-medium">Menit</span>
-        </div>
-        <div class="flex flex-col items-center py-3 px-1 rounded-2xl border border-[#708478]/50 bg-[#243029]/85">
-          <span class="text-lg sm:text-2xl font-bold text-[#ECE0D3]">{{ padZero(countdown?.seconds ?? 0) }}</span>
-          <span class="text-[9px] md:text-[10px] uppercase tracking-widest text-[#D4A6AD] mt-1 font-medium">Detik</span>
-        </div>
-      </div>
-
       <a
         v-if="invitation && (invitation.akad_date || invitation.resepsi_date)"
         :href="getCalendarUrl()"
         target="_blank"
-        class="inline-flex items-center gap-2 mt-5 px-6 py-2.5 rounded-full text-[11px] sm:text-xs font-semibold tracking-wider text-[#18201B] bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] shadow-[0_4px_20px_rgba(212,166,173,0.35)] hover:scale-105 transition-transform duration-300"
+        style="padding: 0.55rem 1.1rem; color: #18201B; background: #ffffff; border: 2px solid #D4AF37;"
+        class="royal-open-btn relative group overflow-hidden rounded-full text-[10px] font-semibold tracking-[0.18em] uppercase text-[#18201B] bg-white shadow-[0_4px_25px_rgba(212,166,173,0.35)] hover:shadow-[0_6px_35px_rgba(236,224,211,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer"
       >
-        <Icon icon="ph:calendar-plus-duotone" class="w-4 h-4 text-[#18201B]" />
-        Simpan ke Google Calendar
+        <span class="relative z-10 flex items-center gap-1.5" style="color: #18201B;">
+          <Icon icon="ph:calendar-plus-duotone" class="w-3.5 h-3.5 text-[#18201B]" style="color: #18201B;" />
+          Simpan ke Google Calendar
+        </span>
+        <div class="absolute inset-0 bg-white/30 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
       </a>
     </div>
     <ScrollCueRoyalFantasy />
@@ -663,6 +791,8 @@ const startSparkles = () => {
 const cdRef = ref<HTMLElement | null>(null);
 const cdAssetRef = ref<HTMLImageElement | null>(null);
 const cdAsset2Ref = ref<HTMLElement | null>(null); // wrapper JAM tunggal/tengah (gambar + jarum SVG)
+const cdTitleRef = ref<HTMLElement | null>(null); // judul Save The Date
+const cdClockRef = ref<HTMLElement | null>(null); // jam + angka countdown
 
 const padZero = (val: number) => val.toString().padStart(2, '0');
 
@@ -738,12 +868,18 @@ const setupAnimation = () => {
     gsap.set(brideRef.value, { xPercent: -50, yPercent: -50 });
   }
 
-  // Initial state aset countdown: jam mengecil & tersembunyi, kartu tersembunyi
+  // Initial state aset countdown: judul & jam tersembunyi terpisah, tombol tersembunyi
   if (props.hasDate) {
     if (cdAsset2Ref.value) {
-      // JANGAN sentuh xPercent/x — inline translateX(-50%) menjaga jam tetap
-      // tengah; animasi masuk cukup fade + scale kecil membesar.
-      gsap.set(cdAsset2Ref.value, { opacity: 0, scale: 0.85 });
+      // Wrapper luar tetap terlihat (hanya positioning); yang di-fade judul & jam terpisah.
+      gsap.set(cdAsset2Ref.value, { opacity: 1 });
+    }
+    if (cdTitleRef.value) {
+      gsap.set(cdTitleRef.value, { opacity: 0, y: -16, scale: 0.92 });
+    }
+    if (cdClockRef.value) {
+      // JANGAN sentuh x — animasi masuk cukup fade + scale kecil membesar.
+      gsap.set(cdClockRef.value, { opacity: 0, scale: 0.85 });
     }
     if (cdRef.value) {
       gsap.set(cdRef.value, { opacity: 0, scale: 0.92, y: 20, pointerEvents: 'none' });
@@ -755,7 +891,7 @@ const setupAnimation = () => {
     scrollTrigger: {
       trigger: container,
       start: 'top top',
-      end: props.hasDate ? '+=400%' : '+=300%',
+      end: props.hasDate ? '+=350%' : '+=300%',
       pin: true,
       scrub: 1,
       anticipatePin: 1,
@@ -900,13 +1036,20 @@ const setupAnimation = () => {
         '<',
       )
 
-      // Step 3f: JAM + KARTU INFO COUNTDOWN muncul berurutan cepat
-      .to(cdAsset2Ref.value, {
+      // Step 3f: JUDUL -> JAM -> BUTTON, satu-satu, scroll ringan (durasi pendek + overlap)
+      .to(cdTitleRef.value, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.3,
+        ease: 'power1.out',
+      })
+      .to(cdClockRef.value, {
         scale: 1,
         opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-      })
+        duration: 0.35,
+        ease: 'power1.out',
+      }, '-=0.15')
       .to(
         cdRef.value,
         {
@@ -914,10 +1057,10 @@ const setupAnimation = () => {
           scale: 1,
           y: 0,
           pointerEvents: 'auto',
-          duration: 0.8,
-          ease: 'power2.out',
+          duration: 0.3,
+          ease: 'power1.out',
         },
-        '-=0.3'
+        '-=0.15'
       )
 
       // Buffer baca singkat sebelum unpin
