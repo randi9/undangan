@@ -458,10 +458,12 @@
         />
       </div>
     </div>
+    <ScrollCueRoyalFantasy />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScrollCueRoyalFantasy from '@/components/invitation/royal/ScrollCueRoyalFantasy.vue';
 import { reactive, ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -602,6 +604,9 @@ onMounted(() => {
     // full-screen sampai ukuran rest, lalu cover buku auto-close.
     gsap.set(rsvpPanel.value, { opacity: 1, scale: 1, y: 0 });
     gsap.set(footerPanel.value, { opacity: 0, scale: 0.92, y: 30 });
+    // Cue scroll-down: sembunyi permanen saat fase footer dimulai
+    // (footer = ujung undangan, tidak ada scroll lanjutan).
+    const cueEl = rgSection.value?.querySelector<HTMLElement>('.rf-scroll-cue');
     if (giftPanel.value) {
       gsap.set(giftPanel.value, { opacity: 0, scale: 0.92, y: 30 });
     }
@@ -698,6 +703,15 @@ onMounted(() => {
     // muncul di fase RSVP!). Dengan false, nilai awal direkam saat playhead
     // pertama kali lewat, dan scrub reverse otomatis mengembalikan keadaan semula.
     const footerStart = '-=0.4'; // menyambung ekor fade-out Gift
+    // Cue scroll ikut fade-out tepat saat fase footer dimulai; scrub balik
+    // otomatis memunculkannya lagi (immediateRender false).
+    if (cueEl) {
+      tl.to(
+        cueEl,
+        { autoAlpha: 0, duration: 0.5, ease: 'power1.out', immediateRender: false },
+        footerStart,
+      );
+    }
     tl.set(
       footerPanel.value,
       {

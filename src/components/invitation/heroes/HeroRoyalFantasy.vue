@@ -299,10 +299,12 @@
       </div>
     </div>
     <!-- ===== /QUOTE SCENE ===== -->
+    <ScrollCueRoyalFantasy />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScrollCueRoyalFantasy from '@/components/invitation/royal/ScrollCueRoyalFantasy.vue';
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';

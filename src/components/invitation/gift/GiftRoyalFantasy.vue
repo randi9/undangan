@@ -140,10 +140,12 @@
         </div>
       </div>
     </div>
+    <ScrollCueRoyalFantasy light />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScrollCueRoyalFantasy from '@/components/invitation/royal/ScrollCueRoyalFantasy.vue';
 import { ref, computed, onMounted } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';

@@ -561,10 +561,12 @@
         Simpan ke Google Calendar
       </a>
     </div>
+    <ScrollCueRoyalFantasy />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScrollCueRoyalFantasy from '@/components/invitation/royal/ScrollCueRoyalFantasy.vue';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';

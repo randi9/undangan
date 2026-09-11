@@ -68,10 +68,12 @@
         Simpan ke Google Calendar
       </a>
     </div>
+    <ScrollCueRoyalFantasy light />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScrollCueRoyalFantasy from '@/components/invitation/royal/ScrollCueRoyalFantasy.vue';
 import { ref } from 'vue';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation } from '@/types/invitation';

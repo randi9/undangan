@@ -300,10 +300,12 @@
       </h2>
       <div class="w-16 h-[1.5px] bg-gradient-to-r from-transparent via-[#7FB3C0] to-transparent mx-auto mt-4"></div>
     </div>
+    <ScrollCueRoyalFantasy />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScrollCueRoyalFantasy from '@/components/invitation/royal/ScrollCueRoyalFantasy.vue';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
