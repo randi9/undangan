@@ -83,119 +83,303 @@
       />
     </div>
 
-    <!-- Initial White Layer Overlay (50% opacity, fades out on scroll) -->
+    <!-- Thin white veil over background (very low opacity), fades out on scroll
+         bersama header agar tidak menimpa aset countdown -->
     <div
       ref="whiteOverlayRef"
       style="
         position: absolute;
         inset: 0;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(255, 255, 255, 0.15);
         z-index: 5;
         pointer-events: none;
       "
     ></div>
 
-    <!-- Header Text (Initially visible over the white layer, dark text color) -->
+    <!-- Header Text — di tengah layar, di atas kabut oval horizontal.
+         Fog dirender div tersendiri di BELAKANG teks (tepi memudar via
+         mask radial → menyatu dengan background), jadi teks tetap tajam.
+         GSAP memudarkan seluruh wrapper ini (fog + teks) saat scroll. -->
+    <!-- ===== KOTAK TEKS (headerRef — dipakai GSAP, JANGAN hapus ref) =====
+         TENGAH LAYAR : top 50% + left 50% + translate -50% -50% = pas tengah.
+                        Geser NAIK  : kecilkan top (mis. 45%).
+                        Geser TURUN : besarkan top (mis. 55%).
+                        Geser KIRI/KANAN : ubah left (50% = tengah).
+         LEBAR        : width 94% dari layar; max-width 560px = batas maksimal
+                        di layar besar. Kecilkan max-width biar kolom teks menyempit. -->
     <div
       ref="headerRef"
-      class="px-6 py-4 rounded-2xl max-w-md mx-auto"
-      style="position: absolute; top: 15%; z-index: 10; color: #1e293b;"
+      style="position: absolute; top: 50%; left: 50%; translate: -50% -50%; z-index: 10; width: 94%; max-width: 560px;"
     >
-      <h2
-        class="text-2xl sm:text-3xl font-bold mb-2 tracking-wide text-slate-900"
-        :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
-      >
-        Pasangan Mempelai
-      </h2>
-      <p class="text-sm sm:text-base text-slate-800 leading-relaxed font-medium">
-        Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan pernikahan kami:
-      </p>
+      <!-- ===== KABUT OVAL (di belakang teks) =====
+           TINGGI/LEBAR KABUT : dua angka di "inset" = (atas-bawah) (kiri-kanan).
+                        Makin negatif makin melebar. Contoh: -120% -60%.
+           KEPUTIHAN          : angka alpha di background (0 transparan – 1 solid).
+                        Contoh: 0.95 = hampir solid, 0.7 = lebih tipis.
+           KEPUDARAN TEPI     : dua persen di mask-image. Persen pertama = zona
+                        putih solid tengah; persen kedua = titik hilang total.
+                        Contoh: black 5%, transparent 80% = pudar sangat bertahap. -->
+      <div
+        aria-hidden="true"
+        style="
+          position: absolute;
+          inset: -100% -80%;
+          background: rgba(255, 255, 255, 0.92);
+          border-radius: 50%;
+          -webkit-mask-image: radial-gradient(ellipse at center, black 12%, transparent 72%);
+          mask-image: radial-gradient(ellipse at center, black 12%, transparent 72%);
+          pointer-events: none;
+        "
+      ></div>
+      <!-- ===== ISI TEKS =====
+           RUANG DALAM : padding (atas-bawah 28px, kiri-kanan 32px).
+                         Besarkan biar teks tidak mepet kabut. -->
+      <div style="position: relative; padding: 28px 32px; text-align: center;">
+        <!-- ===== ORNAMEN ATAS =====
+             LEBAR            : ganti angka width (px). max-width 65% = tidak
+                                boleh lebih lebar dari 65% kotak teks.
+             TENGAH/KIRI/KANAN: "margin: 0 auto ..." = tengah. Rata kiri:
+                                "margin: 0 auto 16px 0". Rata kanan:
+                                "margin: 0 0 16px auto".
+             JARAK KE JUDUL   : angka 16px di margin (bawah ornamen).
+             NAIK/TURUN       : tambah "position: relative; top: -10px" (naik)
+                                atau "top: 10px" (turun). -->
+        <img
+          src="https://media.mengundanganda.com/royalfantasy/couple%20section/dewirandi_511c7bc5-f397-4cc0-820e-97761d953707%20(1).webp"
+          alt=""
+          style="display: block; position: relative; top: 14px; width: 340px; max-width: 90%; height: auto; margin: 0 auto 16px auto; pointer-events: none;"
+        />
+        <!-- ===== JUDUL "Pasangan Mempelai" =====
+             UKURAN HURUF     : tiga angka di clamp(MIN, FLEKSIBEL, MAX).
+                                MIN 19px = paling kecil di HP; MAX 28px = di
+                                layar besar; 5.8vw = mengikuti lebar layar.
+                                "white-space: nowrap" = paksa 1 baris, JANGAN hapus.
+             TEBAL            : font-weight (400 normal, 500 medium, 700 bold).
+             JARAK KE ORNAMEN BAWAH : margin judul 0 = mepet. Jarak diatur dari
+                                margin ornamen bawah (16px di margin-nya). -->
+        <h2
+          style="margin: 0; font-family: 'Cinzel Decorative', 'Playfair Display', serif; font-weight: 500; font-size: clamp(19px, 5.8vw, 28px); white-space: nowrap; letter-spacing: 0.05em; color: #243029; text-shadow: 0 3px 14px rgba(36, 48, 41, 0.3);"
+        >
+          Pasangan Mempelai
+        </h2>
+        <!-- ===== ORNAMEN BAWAH (cermin ornamen atas) =====
+             Pengaturan SAMA seperti ornamen atas (width, margin, top).
+             "transform: scaleY(-1)" = cermin atas-bawah. JANGAN hapus baris
+             itu kalau mau tetap mirror. -->
+        <img
+          src="https://media.mengundanganda.com/royalfantasy/couple%20section/dewirandi_511c7bc5-f397-4cc0-820e-97761d953707%20(1).webp"
+          alt=""
+          style="display: block; width: 180px; max-width: 60%; height: auto; margin: 16px auto 0 auto; transform: scaleY(-1); pointer-events: none;"
+        />
+      </div>
     </div>
 
-    <!-- Groom Info Foggy Card -->
+    <!-- ===== INFO GROOM — container = gambar frame (bukan kartu putih) =====
+         POSISI       : top 50% + left 50% + "translate: -50% -50%" = pas tengah
+                        layar horizontal & vertikal. (Pakai properti "translate",
+                        BUKAN "transform", supaya tidak ketimpa animasi GSAP.)
+                        Geser: ubah top/left.
+         UKURAN FRAME : ganti angka width (px). max-width 92vw = tidak lebih
+                        lebar dari layar HP. height auto = ikut rasio asli.
+         ref="groomRef" dipakai GSAP (fade/scale saat scroll) — JANGAN hapus. -->
+    <!-- ===== OVERLAY GELAP INFO GROOM =====
+         Muncul saat kartu groom tampil (layar jadi agak gelap supaya frame
+         menonjol), hilang bareng fade-out kartu groom (diatur di timeline).
+         KEGELAPAN : angka alpha di background (0 transparan – 1 hitam pekat).
+                     Contoh: 0.35 = samar, 0.65 = gelap.
+         z-index 15 = di ATAS background & veil putih, di BAWAH frame (z 20). -->
+    <div
+      ref="groomVeilRef"
+      style="
+        position: absolute;
+        inset: 0;
+        background: rgba(24, 32, 27, 0.5);
+        z-index: 15;
+        opacity: 0;
+        pointer-events: none;
+      "
+    >
+      <!-- ===== BLING-BLING GROOM: sparkle cenit-cenit acak =====
+           Hidup/mati & pindah posisi diatur di script (startSparkles).
+           left/top di bawah cuma TITIK MULAI — nanti pindah sendiri. -->
+      <span
+        v-for="s in groomSparkles"
+        :key="'groom-' + s.id"
+        class="rf-sparkle"
+        :style="{ position: 'absolute', left: s.x + '%', top: s.y + '%', width: s.size + 'px', height: s.size + 'px', opacity: 0, pointerEvents: 'none' }"
+      >
+        <svg viewBox="0 0 24 24" style="display: block; width: 100%; height: 100%; overflow: visible;">
+          <path
+            :fill="s.color"
+            d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"
+            style="filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));"
+          />
+        </svg>
+      </span>
+    </div>
     <div
       ref="groomRef"
-      class="absolute z-20 w-[90%] max-w-sm px-6 py-6 rounded-3xl text-slate-900 text-center shadow-2xl"
       style="
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(12px) saturate(180%);
-        -webkit-backdrop-filter: blur(12px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 12px 32px rgba(31, 38, 135, 0.15);
+        position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        translate: -50% -50%;
+        width: 340px;
+        max-width: 92vw;
+        z-index: 20;
         opacity: 0;
         pointer-events: none;
       "
     >
+      <!-- gambar frame sebagai wadah -->
       <img
-        v-if="invitation.groom_photo"
-        :src="resolveUrl(invitation.groom_photo)"
-        :alt="invitation.groom_name"
-        class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full mx-auto mb-3 border-2 border-white/80 shadow-md"
+        src="https://media.mengundanganda.com/royalfantasy/couple%20section/dewirandi_1ecf7fbb-a059-4ed1-a72f-79df06749b44.webp"
+        alt=""
+        style="display: block; width: 100%; height: auto; pointer-events: none;"
       />
-      <h3
-        class="text-xl sm:text-2xl font-bold text-slate-900 mb-1"
-        :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+      <!-- ISI TEKS — menempel di tengah frame.
+           POSISI ISI : inset 0 + flex center = pas tengah frame.
+                        Geser isi ke BAWAH : tambah "padding-top: 20px".
+                        Geser isi ke ATAS  : tambah "padding-bottom: 20px".
+           RUANG TEPI : padding 12% (atas-bawah) 14% (kiri-kanan) biar teks
+                        tidak keluar dari bingkai frame. -->
+      <div
+        class="text-slate-900 text-center"
+        style="
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 12% 14%;
+        "
       >
-        {{ invitation.groom_name }}
-      </h3>
-      <p class="text-sm font-semibold text-slate-800 mb-2">
-        {{ invitation.groom_full_name || invitation.groom_name }}
-      </p>
-      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-        Putra tercinta dari: <br />
-        <strong class="text-slate-900 font-bold">{{ invitation.groom_father }}</strong> <br />
-        &amp; <br />
-        <strong class="text-slate-900 font-bold">{{ invitation.groom_mother }}</strong>
-      </p>
-      <p v-if="invitation.groom_origin" class="text-xs text-slate-800 mt-2 font-medium">
-        📍 {{ invitation.groom_origin }}
-      </p>
+        <img
+          v-if="invitation.groom_photo"
+          :src="resolveUrl(invitation.groom_photo)"
+          :alt="invitation.groom_name"
+          class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full mx-auto mb-3 border-2 border-white/80 shadow-md"
+        />
+        <h3
+          class="text-xl sm:text-2xl font-bold text-slate-900 mb-1"
+          :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+        >
+          {{ invitation.groom_name }}
+        </h3>
+        <p class="text-sm font-semibold text-slate-800 mb-2">
+          {{ invitation.groom_full_name || invitation.groom_name }}
+        </p>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+          Putra tercinta dari: <br />
+          <strong class="text-slate-900 font-bold">{{ invitation.groom_father }}</strong> <br />
+          &amp; <br />
+          <strong class="text-slate-900 font-bold">{{ invitation.groom_mother }}</strong>
+        </p>
+        <p v-if="invitation.groom_origin" class="text-xs text-slate-800 mt-2 font-medium">
+          📍 {{ invitation.groom_origin }}
+        </p>
+      </div>
     </div>
 
-    <!-- Bride Info Foggy Card -->
+    <!-- ===== INFO BRIDE — container = gambar frame (bukan kartu putih) =====
+         POSISI       : top 50% + left 50%, penengahannya via xPercent/yPercent
+                        GSAP (di setupAnimation) — dijamin tidak ketimpa animasi
+                        scale/y. Geser manual: ubah top/left.
+         UKURAN FRAME : ganti angka width (px). max-width 92vw = tidak lebih
+                        lebar dari layar HP. height auto = ikut rasio asli.
+         ref="brideRef" dipakai GSAP (fade/scale saat scroll) — JANGAN hapus. -->
+    <!-- ===== OVERLAY GELAP INFO BRIDE =====
+         Muncul saat kartu bride tampil, hilang bareng fade-out-nya.
+         KEGELAPAN : angka alpha di background (0 transparan – 1 hitam pekat). -->
     <div
-      ref="brideRef"
-      class="absolute z-20 w-[90%] max-w-sm px-6 py-6 rounded-3xl text-slate-900 text-center shadow-2xl"
+      ref="brideVeilRef"
       style="
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(12px) saturate(180%);
-        -webkit-backdrop-filter: blur(12px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 12px 32px rgba(31, 38, 135, 0.15);
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        position: absolute;
+        inset: 0;
+        background: rgba(24, 32, 27, 0.5);
+        z-index: 15;
         opacity: 0;
         pointer-events: none;
       "
     >
-      <img
-        v-if="invitation.bride_photo"
-        :src="resolveUrl(invitation.bride_photo)"
-        :alt="invitation.bride_name"
-        class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full mx-auto mb-3 border-2 border-white/80 shadow-md"
-      />
-      <h3
-        class="text-xl sm:text-2xl font-bold text-slate-900 mb-1"
-        :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+      <!-- ===== BLING-BLING BRIDE: sparkle cenit-cenit acak =====
+           Hidup/mati & pindah posisi diatur di script (startSparkles).
+           left/top di bawah cuma TITIK MULAI — nanti pindah sendiri. -->
+      <span
+        v-for="s in brideSparkles"
+        :key="'bride-' + s.id"
+        class="rf-sparkle"
+        :style="{ position: 'absolute', left: s.x + '%', top: s.y + '%', width: s.size + 'px', height: s.size + 'px', opacity: 0, pointerEvents: 'none' }"
       >
-        {{ invitation.bride_name }}
-      </h3>
-      <p class="text-sm font-semibold text-slate-800 mb-2">
-        {{ invitation.bride_full_name || invitation.bride_name }}
-      </p>
-      <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-        Putri tercinta dari: <br />
-        <strong class="text-slate-900 font-bold">{{ invitation.bride_father }}</strong> <br />
-        &amp; <br />
-        <strong class="text-slate-900 font-bold">{{ invitation.bride_mother }}</strong>
-      </p>
-      <p v-if="invitation.bride_origin" class="text-xs text-slate-800 mt-2 font-medium">
-        📍 {{ invitation.bride_origin }}
-      </p>
+        <svg viewBox="0 0 24 24" style="display: block; width: 100%; height: 100%; overflow: visible;">
+          <path
+            :fill="s.color"
+            d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z"
+            style="filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));"
+          />
+        </svg>
+      </span>
+    </div>
+    <div
+      ref="brideRef"
+      style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300px;
+        max-width: 92vw;
+        z-index: 20;
+        opacity: 0;
+        pointer-events: none;
+      "
+    >
+      <!-- gambar frame sebagai wadah -->
+      <img
+        src="https://media.mengundanganda.com/royalfantasy/couple%20section/dewirandi_862ab3ae-ada6-47fe-91d8-ecb5a5670869.webp"
+        alt=""
+        style="display: block; width: 100%; height: auto; pointer-events: none;"
+      />
+      <!-- ISI TEKS — menempel di tengah frame.
+           Geser isi ke BAWAH : tambah "padding-top: 20px".
+           Geser isi ke ATAS  : tambah "padding-bottom: 20px". -->
+      <div
+        class="text-slate-900 text-center"
+        style="
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 12% 14%;
+        "
+      >
+        <img
+          v-if="invitation.bride_photo"
+          :src="resolveUrl(invitation.bride_photo)"
+          :alt="invitation.bride_name"
+          class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full mx-auto mb-3 border-2 border-white/80 shadow-md"
+        />
+        <h3
+          class="text-xl sm:text-2xl font-bold text-slate-900 mb-1"
+          :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+        >
+          {{ invitation.bride_name }}
+        </h3>
+        <p class="text-sm font-semibold text-slate-800 mb-2">
+          {{ invitation.bride_full_name || invitation.bride_name }}
+        </p>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+          Putri tercinta dari: <br />
+          <strong class="text-slate-900 font-bold">{{ invitation.bride_father }}</strong> <br />
+          &amp; <br />
+          <strong class="text-slate-900 font-bold">{{ invitation.bride_mother }}</strong>
+        </p>
+        <p v-if="invitation.bride_origin" class="text-xs text-slate-800 mt-2 font-medium">
+          📍 {{ invitation.bride_origin }}
+        </p>
+      </div>
     </div>
 
     <!-- ============================================================
@@ -387,8 +571,75 @@ const canvasWrapRef = ref<HTMLElement | null>(null); // kanvas utuh: bg utama + 
 const bgImageRef = ref<HTMLImageElement | null>(null);
 const whiteOverlayRef = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
+const groomVeilRef = ref<HTMLElement | null>(null);
 const groomRef = ref<HTMLElement | null>(null);
+const brideVeilRef = ref<HTMLElement | null>(null);
 const brideRef = ref<HTMLElement | null>(null);
+
+// ===== BLING-BLING / SPARKLE di overlay groom & bride =====
+// Sparkle dirender DI DALAM div veil, jadi otomatis ikut fade in/out
+// ngikutin veil-nya (tidak perlu animasi scrub sendiri).
+// JUMLAH    : ganti SPARKLE_COUNT (makin banyak makin rame).
+// UKURAN    : rentang size di makeSparkles (px).
+// KECEPATAN : durasi fade in/out di twinkleOne (makin kecil makin cepat).
+// AREA ACAK : rentang persen posisi (3-97 = hampir seluruh layar).
+interface Sparkle { id: number; x: number; y: number; size: number; color: string; }
+const SPARKLE_COUNT = 16;
+const SPARKLE_COLORS = ['#FFFFFF', '#FFF6D8', '#FFE9A8'];
+const makeSparkles = (): Sparkle[] =>
+  Array.from({ length: SPARKLE_COUNT }, (_, i) => ({
+    id: i,
+    x: gsap.utils.random(3, 97),
+    y: gsap.utils.random(3, 97),
+    size: gsap.utils.random(8, 20, 1),
+    color: SPARKLE_COLORS[i % SPARKLE_COLORS.length] ?? '#FFFFFF',
+  }));
+const groomSparkles = ref<Sparkle[]>(makeSparkles());
+const brideSparkles = ref<Sparkle[]>(makeSparkles());
+
+// Semua timeline sparkle yang hidup — di-kill saat komponen dilepas.
+const sparkleTls: gsap.core.Timeline[] = [];
+
+// Satu sparkle: muncul (cenit) → hilang → pindah posisi acak → ulangi.
+const twinkleOne = (el: HTMLElement) => {
+  gsap.set(el, { xPercent: -50, yPercent: -50, opacity: 0, scale: 0.15 });
+  const loop = () => {
+    const tl = gsap.timeline({
+      delay: gsap.utils.random(0.5, 2.5),
+      onComplete: () => {
+        const i = sparkleTls.indexOf(tl);
+        if (i > -1) sparkleTls.splice(i, 1);
+        loop();
+      },
+    });
+    sparkleTls.push(tl);
+    tl.to(el, {
+        opacity: gsap.utils.random(0.6, 1),
+        scale: gsap.utils.random(0.8, 1.4),
+        duration: gsap.utils.random(0.9, 1.8),
+        ease: 'sine.inOut',
+      })
+      .to(el, {
+        opacity: 0,
+        scale: 0.15,
+        duration: gsap.utils.random(0.9, 1.8),
+        ease: 'sine.inOut',
+      }, '+=0.5')
+      // pindah ke titik acak baru (instan, dilakukan saat tak terlihat)
+      .set(el, {
+        left: () => `${gsap.utils.random(3, 97)}%`,
+        top: () => `${gsap.utils.random(3, 97)}%`,
+      });
+  };
+  loop();
+};
+
+// Jalankan cenit-cenit untuk semua sparkle di kedua veil.
+const startSparkles = () => {
+  [groomVeilRef.value, brideVeilRef.value].forEach((veil) => {
+    veil?.querySelectorAll<HTMLElement>('.rf-sparkle').forEach(twinkleOne);
+  });
+};
 const cdRef = ref<HTMLElement | null>(null);
 const cdAssetRef = ref<HTMLImageElement | null>(null);
 const cdAsset2Ref = ref<HTMLElement | null>(null); // wrapper JAM tunggal/tengah (gambar + jarum SVG)
@@ -457,10 +708,14 @@ const setupAnimation = () => {
   const rightStairsX = -(vw) - cropX0; // area tangga kanan
   const restY = -(canvasH - vh) / 2; // posisi diam: kanvas terpusat vertikal
 
-  // Initial state: kanvas terpusat di archway, scale 1, overlay putih tampil
+  // Initial state: kanvas terpusat di archway, scale 1
   gsap.set(wrap, { x: centerX, y: restY, scale: 1, transformOrigin: O(0.5, 0.5) });
-  if (whiteOverlayRef.value) {
-    gsap.set(whiteOverlayRef.value, { opacity: 1 });
+
+  // Penengah frame BRIDE via GSAP (xPercent/yPercent) — didaftarkan sekali di
+  // sini supaya tween scale/y di timeline TIDAK bisa menggesernya (tengah
+  // vertikal & horizontal dijaga GSAP sendiri, bukan CSS).
+  if (brideRef.value) {
+    gsap.set(brideRef.value, { xPercent: -50, yPercent: -50 });
   }
 
   // Initial state aset countdown: jam mengecil & tersembunyi, kartu tersembunyi
@@ -488,7 +743,7 @@ const setupAnimation = () => {
     },
   });
 
-  // Step 1a: Fade out header & initial white overlay, slide image to Left Stairs (x = 0)
+  // Step 1a: Fade out header & thin white veil, slide image to Left Stairs (x = 0)
   tl.to(headerRef.value, {
     opacity: 0,
     y: -30,
@@ -516,7 +771,7 @@ const setupAnimation = () => {
       ease: 'power1.inOut',
     })
 
-    // Step 1c: Show Groom card
+    // Step 1c: Show Groom card + overlay gelap masuk bareng
     .to(groomRef.value, {
       opacity: 1,
       scale: 1,
@@ -525,11 +780,16 @@ const setupAnimation = () => {
       duration: 1,
       ease: 'power2.out',
     }, '-=0.5')
+    .to(groomVeilRef.value, {
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+    }, '<')
 
     // Pause on Groom card
     .to({}, { duration: 1.5 })
 
-    // Step 2a: Hide Groom card & ZOOM OUT FIRST back to normal scale
+    // Step 2a: Hide Groom card + overlay gelap ikut memudar bareng
     .to(groomRef.value, {
       opacity: 0,
       scale: 0.9,
@@ -538,6 +798,11 @@ const setupAnimation = () => {
       duration: 0.8,
       ease: 'power2.in',
     })
+    .to(groomVeilRef.value, {
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.in',
+    }, '<')
     .to(wrap, {
       scale: 1,
       transformOrigin: O(0.15, 0.5),
@@ -560,7 +825,7 @@ const setupAnimation = () => {
       ease: 'power1.inOut',
     })
 
-    // Step 2d: Show Bride card
+    // Step 2d: Show Bride card + overlay gelap masuk bareng
     .to(brideRef.value, {
       opacity: 1,
       scale: 1,
@@ -569,6 +834,11 @@ const setupAnimation = () => {
       duration: 1,
       ease: 'power2.out',
     }, '-=0.5')
+    .to(brideVeilRef.value, {
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.out',
+    }, '<')
 
     // Pause on Bride card
     .to({}, { duration: 1.5 });
@@ -584,7 +854,7 @@ const setupAnimation = () => {
     // Scroll balik ke atas? GSAP scrub otomatis mengembalikannya ke z:1.
     tl.set(wrap, { zIndex: -2 })
 
-      // Step 3a: Hide Bride card
+      // Step 3a: Hide Bride card + overlay gelap ikut memudar bareng
       .to(brideRef.value, {
         opacity: 0,
         scale: 0.9,
@@ -593,6 +863,11 @@ const setupAnimation = () => {
         duration: 0.8,
         ease: 'power2.in',
       })
+      .to(brideVeilRef.value, {
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.in',
+      }, '<')
 
       // Step 3b: ZOOM OUT back to normal scale
       .to(wrap, {
@@ -696,6 +971,10 @@ onMounted(() => {
       initAndRefresh();
     };
   }
+
+  // Sparkle bling-bling jalan terus (independen dari scroll); kelihatan
+  // hanya saat veil-nya tampil karena sparkle ada DI DALAM veil.
+  startSparkles();
 });
 
 onBeforeUnmount(() => {
@@ -705,5 +984,8 @@ onBeforeUnmount(() => {
       st.kill();
     }
   });
+  // Matikan semua animasi sparkle
+  sparkleTls.forEach((tl) => tl.kill());
+  sparkleTls.length = 0;
 });
 </script>
