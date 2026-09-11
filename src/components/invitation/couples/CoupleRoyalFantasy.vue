@@ -244,7 +244,7 @@
            RUANG TEPI : padding 12% (atas-bawah) 14% (kiri-kanan) biar teks
                         tidak keluar dari bingkai frame. -->
       <div
-        class="text-slate-900 text-center"
+        class="text-center"
         style="
           position: absolute;
           inset: 0;
@@ -252,32 +252,41 @@
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 12% 14%;
+          padding: 20% 13% 10%;
+          gap: 0;
         "
       >
         <img
           v-if="invitation.groom_photo"
           :src="resolveUrl(invitation.groom_photo)"
           :alt="invitation.groom_name"
-          class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full mx-auto mb-3 border-2 border-white/80 shadow-md"
+          class="object-cover rounded-full mx-auto border-2 border-white/80 shadow-md"
+          style="width: 76px; height: 76px; margin-bottom: 10px;"
         />
         <h3
-          class="text-xl sm:text-2xl font-bold text-slate-900 mb-1"
           :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+          style="margin: 0 0 4px 0; font-weight: 700; font-size: clamp(22px, 6.4vw, 30px); line-height: 1.2; letter-spacing: 0.04em; color: #243029;"
         >
           {{ invitation.groom_name }}
         </h3>
-        <p class="text-sm font-semibold text-slate-800 mb-2">
+        <p style="margin: 0 0 10px 0; font-size: 12.5px; font-weight: 500; letter-spacing: 0.08em; color: #5a6b60; line-height: 1.5;">
           {{ invitation.groom_full_name || invitation.groom_name }}
         </p>
-        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-          Putra tercinta dari: <br />
-          <strong class="text-slate-900 font-bold">{{ invitation.groom_father }}</strong> <br />
-          &amp; <br />
-          <strong class="text-slate-900 font-bold">{{ invitation.groom_mother }}</strong>
+        <div style="width: 44px; height: 1.5px; background: linear-gradient(90deg, transparent, #b0808a, transparent); margin: 0 0 10px 0;"></div>
+        <p style="margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #8a9a90; line-height: 1.6;">
+          Putra tercinta dari
         </p>
-        <p v-if="invitation.groom_origin" class="text-xs text-slate-800 mt-2 font-medium">
-          📍 {{ invitation.groom_origin }}
+        <p style="margin: 4px 0 0 0; font-size: 13.5px; font-weight: 700; color: #243029; line-height: 1.7;">
+          {{ invitation.groom_father }}<br />
+          <span style="font-weight: 400; font-style: italic; font-size: 12px; color: #b0808a;">&amp;</span><br />
+          {{ invitation.groom_mother }}
+        </p>
+        <p
+          v-if="invitation.groom_origin"
+          style="margin: 8px 0 0 0; display: inline-flex; align-items: center; justify-content: center; gap: 5px; background: none; border: none; padding: 0; color: #6b7d72; font-size: 12px; font-weight: 500; font-style: italic; letter-spacing: 0.04em; line-height: 1.5;"
+        >
+          <Icon icon="ph:map-pin-duotone" style="width: 13px; height: 13px; flex-shrink: 0; color: #b0808a;" />
+          {{ invitation.groom_origin }}
         </p>
       </div>
     </div>
@@ -344,7 +353,7 @@
            Geser isi ke BAWAH : tambah "padding-top: 20px".
            Geser isi ke ATAS  : tambah "padding-bottom: 20px". -->
       <div
-        class="text-slate-900 text-center"
+        class="text-center"
         style="
           position: absolute;
           inset: 0;
@@ -352,32 +361,41 @@
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 12% 14%;
+          padding: 20% 13% 10%;
+          gap: 0;
         "
       >
         <img
           v-if="invitation.bride_photo"
           :src="resolveUrl(invitation.bride_photo)"
           :alt="invitation.bride_name"
-          class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full mx-auto mb-3 border-2 border-white/80 shadow-md"
+          class="object-cover rounded-full mx-auto border-2 border-white/80 shadow-md"
+          style="width: 76px; height: 76px; margin-bottom: 10px;"
         />
         <h3
-          class="text-xl sm:text-2xl font-bold text-slate-900 mb-1"
           :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+          style="margin: 0 0 4px 0; font-weight: 700; font-size: clamp(22px, 6.4vw, 30px); line-height: 1.2; letter-spacing: 0.04em; color: #243029;"
         >
           {{ invitation.bride_name }}
         </h3>
-        <p class="text-sm font-semibold text-slate-800 mb-2">
+        <p style="margin: 0 0 10px 0; font-size: 12.5px; font-weight: 500; letter-spacing: 0.08em; color: #5a6b60; line-height: 1.5;">
           {{ invitation.bride_full_name || invitation.bride_name }}
         </p>
-        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
-          Putri tercinta dari: <br />
-          <strong class="text-slate-900 font-bold">{{ invitation.bride_father }}</strong> <br />
-          &amp; <br />
-          <strong class="text-slate-900 font-bold">{{ invitation.bride_mother }}</strong>
+        <div style="width: 44px; height: 1.5px; background: linear-gradient(90deg, transparent, #b0808a, transparent); margin: 0 0 10px 0;"></div>
+        <p style="margin: 0; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #8a9a90; line-height: 1.6;">
+          Putri tercinta dari
         </p>
-        <p v-if="invitation.bride_origin" class="text-xs text-slate-800 mt-2 font-medium">
-          📍 {{ invitation.bride_origin }}
+        <p style="margin: 4px 0 0 0; font-size: 13.5px; font-weight: 700; color: #243029; line-height: 1.7;">
+          {{ invitation.bride_father }}<br />
+          <span style="font-weight: 400; font-style: italic; font-size: 12px; color: #b0808a;">&amp;</span><br />
+          {{ invitation.bride_mother }}
+        </p>
+        <p
+          v-if="invitation.bride_origin"
+          style="margin: 8px 0 0 0; display: inline-flex; align-items: center; justify-content: center; gap: 5px; background: none; border: none; padding: 0; color: #6b7d72; font-size: 12px; font-weight: 500; font-style: italic; letter-spacing: 0.04em; line-height: 1.5;"
+        >
+          <Icon icon="ph:map-pin-duotone" style="width: 13px; height: 13px; flex-shrink: 0; color: #b0808a;" />
+          {{ invitation.bride_origin }}
         </p>
       </div>
     </div>
