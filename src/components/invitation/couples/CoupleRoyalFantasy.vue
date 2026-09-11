@@ -753,7 +753,7 @@ const setupAnimation = () => {
     scrollTrigger: {
       trigger: container,
       start: 'top top',
-      end: props.hasDate ? '+=620%' : '+=450%',
+      end: props.hasDate ? '+=400%' : '+=300%',
       pin: true,
       scrub: 1,
       anticipatePin: 1,
@@ -761,7 +761,7 @@ const setupAnimation = () => {
     },
   });
 
-  // Step 1a: Fade out header & thin white veil, slide image to Left Stairs (x = 0)
+  // Step 1a: Fade out header & thin white veil, SLIDE tengah -> kiri (tanpa zoom)
   tl.to(headerRef.value, {
     opacity: 0,
     y: -30,
@@ -781,14 +781,6 @@ const setupAnimation = () => {
       ease: 'power2.inOut',
     }, 0)
 
-    // Step 1b: Smooth Zoom-in into Left Staircase
-    .to(wrap, {
-      scale: 1.35,
-      transformOrigin: O(0.15, 0.5),
-      duration: 1.5,
-      ease: 'power1.inOut',
-    })
-
     // Step 1c: Show Groom card + overlay gelap masuk bareng
     .to(groomRef.value, {
       opacity: 1,
@@ -797,7 +789,7 @@ const setupAnimation = () => {
       pointerEvents: 'auto',
       duration: 1,
       ease: 'power2.out',
-    }, '-=0.5')
+    })
     .to(groomVeilRef.value, {
       opacity: 1,
       duration: 1,
@@ -805,7 +797,7 @@ const setupAnimation = () => {
     }, '<')
 
     // Pause on Groom card
-    .to({}, { duration: 1.5 })
+    .to({}, { duration: 1 })
 
     // Step 2a: Hide Groom card + overlay gelap ikut memudar bareng
     .to(groomRef.value, {
@@ -821,26 +813,12 @@ const setupAnimation = () => {
       duration: 0.8,
       ease: 'power2.in',
     }, '<')
-    .to(wrap, {
-      scale: 1,
-      transformOrigin: O(0.15, 0.5),
-      duration: 1.3,
-      ease: 'power1.inOut',
-    })
 
-    // Step 2b: Slide image across to Right Stairs
+    // Step 2b: SLIDE kiri -> kanan (tanpa zoom)
     .to(wrap, {
       x: rightStairsX,
       duration: 1.8,
       ease: 'power2.inOut',
-    })
-
-    // Step 2c: Smooth Zoom-in into Right Staircase
-    .to(wrap, {
-      scale: 1.35,
-      transformOrigin: O(0.85, 0.5),
-      duration: 1.5,
-      ease: 'power1.inOut',
     })
 
     // Step 2d: Show Bride card + overlay gelap masuk bareng
@@ -851,7 +829,7 @@ const setupAnimation = () => {
       pointerEvents: 'auto',
       duration: 1,
       ease: 'power2.out',
-    }, '-=0.5')
+    })
     .to(brideVeilRef.value, {
       opacity: 1,
       duration: 1,
@@ -859,17 +837,12 @@ const setupAnimation = () => {
     }, '<')
 
     // Pause on Bride card
-    .to({}, { duration: 1.5 });
+    .to({}, { duration: 1 });
 
-  // ===== FASE COUNTDOWN (SCROLL-BASED) =====
+  // ===== FASE COUNTDOWN (DIPADATKAN: bride -> countdown singkat) =====
   if (props.hasDate && cdRef.value) {
     const CD_ZOOM = 1.18;
 
-    // Step 3-0: Saat memasuki fase countdown, TURUNKAN SELURUH kanvas
-    // (gambar utama + aset latar tambahan yang menempel) ke lapisan
-    // PALING BELAKANG: z-index -2 → di bawah jam (z:-1) & aset countdown
-    // (z:0). Gambar utama tak terpengaruh (setelah ini di-fade-out).
-    // Scroll balik ke atas? GSAP scrub otomatis mengembalikannya ke z:1.
     tl.set(wrap, { zIndex: -2 })
 
       // Step 3a: Hide Bride card + overlay gelap ikut memudar bareng
@@ -878,80 +851,60 @@ const setupAnimation = () => {
         scale: 0.9,
         y: -20,
         pointerEvents: 'none',
-        duration: 0.8,
+        duration: 0.6,
         ease: 'power2.in',
       })
       .to(brideVeilRef.value, {
         opacity: 0,
-        duration: 0.8,
+        duration: 0.6,
         ease: 'power2.in',
       }, '<')
 
-      // Step 3b: ZOOM OUT back to normal scale
-      .to(wrap, {
-        scale: 1,
-        transformOrigin: O(0.85, 0.5),
-        duration: 1.3,
-        ease: 'power1.inOut',
-      })
-
-      // Step 3c: SLIDE image kembali ke TENGAH (posisi archway)
+      // Step 3b-c: SLIDE kanan -> TENGAH + geser ke ATAS dalam 1 gerakan
+      // (digabung supaya tidak ada 2x scroll panjang berurutan)
       .to(wrap, {
         x: centerX,
-        duration: 1.8,
-        ease: 'power2.inOut',
-      })
-
-      // Step 3d: SLIDE kamera geser ke ATAS
-      .to(wrap, {
         y: 0,
+        scale: 1,
+        transformOrigin: '50% 0%',
         duration: 1.4,
         ease: 'power2.inOut',
       })
 
-      // Step 3e: LALU ZOOM ke ATAS
+      // Step 3d: ZOOM ringan ke ATAS (dipersingkat)
       .to(wrap, {
         scale: CD_ZOOM,
-        transformOrigin: '50% 0%',
-        duration: 1,
+        duration: 0.7,
         ease: 'power1.inOut',
       })
 
-      // Step 3f: ASET countdown fade-in
+      // Step 3e: ASET countdown + background couple CROSSFADE bareng
       .to(
         cdAssetRef.value,
         {
           opacity: 1,
-          duration: 0.4,
+          duration: 0.6,
           ease: 'power1.out',
         },
-        '-=0.4'
+        '-=0.2'
       )
-
-      // Step 3g: background couple FADE OUT crossfade ke aset countdown.
-      // HANYA gambar utama yang pudar — wrapper (dan aset latar tambahan
-      // yang menempel padanya) tetap di posisinya, tetap tampil, dan
-      // sudah berada di lapisan paling belakang (z:-2 sejak Step 3-0).
       .to(
         img,
         {
           opacity: 0,
-          duration: 1.8,
+          duration: 0.8,
           ease: 'power1.inOut',
         },
+        '<',
       )
 
-      // Step 3h: JAM MELUNCUR MASUK (SCROLL-BASED)
-      // Fade-in sambil membesar dari 0.85 → 1 (tengah layar, xPercent tidak
-      // disentuh supaya translateX(-50) penjaga posisi tengah tetap utuh).
+      // Step 3f: JAM + KARTU INFO COUNTDOWN muncul berurutan cepat
       .to(cdAsset2Ref.value, {
         scale: 1,
         opacity: 1,
-        duration: 1.6,
+        duration: 0.8,
         ease: 'power2.out',
       })
-
-      // Step 3i: TEKS & KARTU INFO COUNTDOWN MUNCUL (SCROLL-BASED)
       .to(
         cdRef.value,
         {
@@ -959,14 +912,14 @@ const setupAnimation = () => {
           scale: 1,
           y: 0,
           pointerEvents: 'auto',
-          duration: 1.2,
+          duration: 0.8,
           ease: 'power2.out',
         },
-        '-=0.4'
+        '-=0.3'
       )
 
-      // Pocket buffer scroll agar info countdown tetap tampil dan terbaca sebelum unpin ke section selanjutnya
-      .to({}, { duration: 2.2 });
+      // Buffer baca singkat sebelum unpin
+      .to({}, { duration: 1 });
   }
 };
 
