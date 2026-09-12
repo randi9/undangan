@@ -310,7 +310,7 @@
           width: 100%;
           max-width: 320px;
           padding: 20px 44px 22px;
-          transform: perspective(750px) translateX(22px) rotateY(20deg) rotateX(1.5deg);
+          transform: perspective(750px) translateX(22px) rotateY(14deg) rotateX(1deg);
           transform-origin: 50% 50%;
         "
       >
@@ -337,7 +337,7 @@
             class="font-bold text-[#2b2118]"
             :style="{
               fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`,
-              fontSize: 'clamp(17px, 4.5vw, 21px)',
+              fontSize: 'clamp(15px, 4vw, 19px)',
               lineHeight: '1.2',
               whiteSpace: 'nowrap',
               letterSpacing: '0.02em',
@@ -490,15 +490,39 @@ const setupAnimation = () => {
   // tempatkan stage info di koordinat gambar masing-masing fase
   layoutStages();
 
-  // awal: kamera di pinggir kiri gambar — wrapper (bg + stage + aset atas) digeser bersama
+  // awal: kamera di fase pertama yang ADA datanya
   const panTarget = panoWrapRef.value;
-  gsap.set(panTarget, { x: () => xFor(X_AKAD) });
 
-  // Judul 1 grup dengan dinding melengkung gazebo:
-  // FASE 1 (Akad): x=22 (sejajar sumbu vertikal kartu Akad), ry=20, rx=1.5
-  // FASE 2 (Resepsi): x=0 (tengah melurus), ry=0, rx=0
-  // FASE 3 (Khutbah): x=0, ry=-20 (melengkung simetris), rx=1.5
-  const headerState = { x: 22, ry: 20, rx: 1.5 };
+  // Fase yang aktif mengikuti data user:
+  //  hanya akad               -> [akad] (tanpa slide, langsung ke Love Story)
+  //  akad + resepsi           -> [akad, resepsi] (slide sekali, lalu ke Love Story)
+  //  lengkap                  -> [akad, resepsi, khutbah]
+  type Phase = 'akad' | 'resepsi' | 'khutbah';
+  const hasAkad = !!(props.invitation.akad_venue || props.invitation.akad_date);
+  const hasResepsi = !!(
+    props.invitation.resepsi_venue ||
+    props.invitation.resepsi_date ||
+    (props.invitation.streaming_enabled && props.invitation.streaming_url)
+  );
+  const hasKhutbah = !!props.invitation.khutbah_nikah;
+  const phases: Phase[] = [];
+  if (hasAkad) phases.push('akad');
+  if (hasResepsi) phases.push('resepsi');
+  if (hasKhutbah) phases.push('khutbah');
+  if (!phases.length) phases.push('akad');
+
+  // Posisi kamera + pose judul per fase (judul 1 grup dengan dinding gazebo).
+  const camFrac: Record<Phase, number> = { akad: X_AKAD, resepsi: X_RESEPSI, khutbah: X_KHUTBAH };
+  const headerPose: Record<Phase, { x: number; ry: number; rx: number }> = {
+    akad: { x: 22, ry: 14, rx: 1 },
+    resepsi: { x: 0, ry: 0, rx: 0 },
+    khutbah: { x: -22, ry: -14, rx: 1 },
+  };
+
+  gsap.set(panTarget, { x: () => xFor(camFrac[phases[0]]) });
+
+  // Judul 1 grup dengan dinding melengkung gazebo (pose awal = fase pertama).
+  const headerState = { ...headerPose[phases[0]] };
   const applyHeaderTilt = () => {
     if (!headerTiltRef.value) return;
     headerTiltRef.value.style.transform = `perspective(750px) translateX(${headerState.x}px) rotateY(${headerState.ry}deg) rotateX(${headerState.rx}deg)`;
@@ -506,12 +530,14 @@ const setupAnimation = () => {
   applyHeaderTilt();
 
   // ===== timeline utama: SCROLL-BASED (scrub) + PIN =====
-  // Tidak ada fade in/out stage — hanya pergeseran kamera.
+  // Jumlah slide = jumlah fase aktif - 1. Tidak ada fade in/out stage —
+  // hanya pergeseran kamera. Jarak pin menyesuaikan jumlah slide.
+  const slideCount = phases.length - 1;
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: container,
       start: 'top top',
-      end: '+=380%',
+      end: `+=${130 + slideCount * 125}%`,
       pin: true,
       scrub: 1,
       anticipatePin: 1,
@@ -519,24 +545,16 @@ const setupAnimation = () => {
     },
   });
 
-  // FASE 1 — AKAD (kamera di kiri; stage akad sudah nempel di sini)
-  tl.to({}, { duration: HOLD })
-
-    // geser kamera ke fase 2: gambar meluncur, stage resepsi sudah nempel di tempatnya
-    // judul ikut melurus (1 grup dengan dinding tengah)
-    .to(panTarget, { x: () => xFor(X_RESEPSI), duration: 1.6, ease: 'power1.inOut' })
-    .to(headerState, { x: 0, ry: 0, rx: 0, duration: 1.6, ease: 'power1.inOut', onUpdate: applyHeaderTilt }, '<')
-
-    // FASE 2 — RESEPSI + STREAMING (kamera di tengah)
-    .to({}, { duration: HOLD })
-
-    // geser kamera ke fase 3: gambar meluncur lagi, stage khutbah sudah nempel
-    // judul ikut melengkung cermin (1 grup dengan teks khutbah)
-    .to(panTarget, { x: () => xFor(X_KHUTBAH), duration: 1.6, ease: 'power1.inOut' })
-    .to(headerState, { x: 0, ry: -20, rx: 1.5, duration: 1.6, ease: 'power1.inOut', onUpdate: applyHeaderTilt }, '<')
-
-    // FASE 3 — KHUTBAH (kamera di kanan)
-    .to({}, { duration: HOLD });
+  // Tahan di fase pertama, lalu geser ke tiap fase aktif berikutnya.
+  // Judul ikut berubah pose paralel dengan gerakan kamera ('<').
+  tl.to({}, { duration: HOLD });
+  for (let i = 1; i < phases.length; i++) {
+    const frac = camFrac[phases[i]];
+    const pose = headerPose[phases[i]];
+    tl.to(panTarget, { x: () => xFor(frac), duration: 1.6, ease: 'power1.inOut' })
+      .to(headerState, { ...pose, duration: 1.6, ease: 'power1.inOut', onUpdate: applyHeaderTilt }, '<')
+      .to({}, { duration: HOLD });
+  }
 
   // ===== entrance (bukan scrub): hanya header muncul saat section terlihat =====
   const intro = gsap.timeline({
