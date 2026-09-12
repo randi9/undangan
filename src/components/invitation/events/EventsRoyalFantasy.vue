@@ -519,10 +519,11 @@ const setupAnimation = () => {
     khutbah: { x: -22, ry: -14, rx: 1 },
   };
 
-  gsap.set(panTarget, { x: () => xFor(camFrac[phases[0]]) });
+  const firstPhase: Phase = phases[0] ?? 'akad';
+  gsap.set(panTarget, { x: () => xFor(camFrac[firstPhase]) });
 
   // Judul 1 grup dengan dinding melengkung gazebo (pose awal = fase pertama).
-  const headerState = { ...headerPose[phases[0]] };
+  const headerState = { ...headerPose[firstPhase] };
   const applyHeaderTilt = () => {
     if (!headerTiltRef.value) return;
     headerTiltRef.value.style.transform = `perspective(750px) translateX(${headerState.x}px) rotateY(${headerState.ry}deg) rotateX(${headerState.rx}deg)`;
@@ -549,8 +550,9 @@ const setupAnimation = () => {
   // Judul ikut berubah pose paralel dengan gerakan kamera ('<').
   tl.to({}, { duration: HOLD });
   for (let i = 1; i < phases.length; i++) {
-    const frac = camFrac[phases[i]];
-    const pose = headerPose[phases[i]];
+    const phase: Phase = phases[i] ?? 'akad';
+    const frac = camFrac[phase];
+    const pose = headerPose[phase];
     tl.to(panTarget, { x: () => xFor(frac), duration: 1.6, ease: 'power1.inOut' })
       .to(headerState, { ...pose, duration: 1.6, ease: 'power1.inOut', onUpdate: applyHeaderTilt }, '<')
       .to({}, { duration: HOLD });
