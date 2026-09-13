@@ -1,13 +1,9 @@
 <template>
   <section
     ref="rgSection"
-    class="relative h-[100dvh] w-full bg-[#AED4DA] overflow-hidden text-center flex items-center justify-center isolate"
+    class="relative w-full overflow-hidden text-center flex items-center justify-center isolate"
+    style="background:#AED4DA;height:100dvh;min-height:100dvh;max-height:100dvh;"
   >
-    <!-- Background Cover (mencakup panel RSVP, Gift & Footer sekaligus)
-         tinggi full, lebar mengikuti rasio gambar, ngecover seluruh section.
-         ref=bgLayer: di-fade-out saat fase footer dimulai — posisinya
-         digantikan GAMBAR YANG SAMA di halaman kanan buku (.page-art di
-         FooterRoyalFantasy) yang sedang di-zoom-in raksasa (lihat ZOOM). -->
     <div
       ref="bgLayer"
       aria-hidden="true"
@@ -32,208 +28,164 @@
     <!-- ================= -->
     <div
       ref="rsvpPanel"
-      class="rg-scroll absolute inset-0 z-10 w-full overflow-y-auto px-4 md:px-8 py-8 md:py-12"
+      class="rg-scroll absolute inset-0 z-10 w-full overflow-y-auto"
+      style="padding:20px 14px;pointer-events:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;"
     >
-      <div class="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
-        <!-- Section Header -->
-        <div class="mb-8 md:mb-10 text-center">
-          <div class="flex items-center justify-center gap-2 mb-2">
-            <span class="text-[#B0808A] text-xs">✦</span>
-            <span class="text-xs uppercase tracking-[0.35em] text-[#B0808A] font-semibold">Buku Tamu &amp; Kehadiran</span>
-            <span class="text-[#B0808A] text-xs">✦</span>
+      <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;">
+        <!-- Margin atas: ruang napas sebelum konten -->
+        <div style="height:48px;flex-shrink:0;" aria-hidden="true"></div>
+        <!-- Header -->
+        <div style="margin:0 0 16px;text-align:center;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:10px;color:#B0808A;">✦</span>
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:#B0808A;">Buku Tamu &amp; Kehadiran</span>
+            <span style="font-size:10px;color:#B0808A;">✦</span>
           </div>
-          <h2
-            class="text-2xl md:text-4xl font-serif text-[#243029] font-normal"
-            :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
-          >
+          <h2 style="margin:0;font-size:24px;line-height:1.2;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">
             Konfirmasi Kehadiran &amp; Doa
           </h2>
-          <p class="text-[11px] md:text-sm text-[#4A5B52] mt-2 max-w-md mx-auto leading-relaxed">
+          <p style="margin:6px auto 0;max-width:420px;font-size:12px;line-height:1.6;color:#4A5B52;">
             Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
           </p>
-          <div class="w-16 h-[1.5px] bg-gradient-to-r from-transparent via-[#708478] to-transparent mx-auto mt-3"></div>
+          <div style="width:48px;height:2px;margin:10px auto 0;background:linear-gradient(to right,transparent,#708478,transparent);border-radius:2px;"></div>
         </div>
 
-        <!-- Main Two Column Grid (Form & Wishes) -->
-        <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch text-left">
-          <!-- Form Column -->
-          <div class="rg-card p-5 sm:p-7 md:p-8 rounded-3xl border border-[#708478]/50 bg-white/70 backdrop-blur-md shadow-[0_10px_35px_rgba(36,48,41,0.25),0_0_20px_rgba(176,128,138,0.15)] relative overflow-hidden flex flex-col justify-between">
-            <span class="absolute top-3 left-4 text-[#B0808A]/60 text-xs">❖</span>
-            <span class="absolute top-3 right-4 text-[#B0808A]/60 text-xs">❖</span>
+        <!-- Grid -->
+        <div style="width:100%;display:grid;grid-template-columns:1fr;gap:12px;text-align:left;" class="rg-grid">
+          <!-- Form -->
+          <div style="position:relative;border-radius:16px;border:1px solid rgba(112,132,120,0.45);background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(36,48,41,0.16);padding:16px;">
+            <h3 style="margin:0 0 12px;display:flex;align-items:center;gap:7px;font-size:16px;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">
+              <svg style="width:17px;height:17px;color:#B0808A;flex-shrink:0;" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-7 4.5L5 8V6l7 4.5L19 6v2z"/>
+              </svg>
+              Kirim Konfirmasi
+            </h3>
 
-            <div>
-              <h3
-                class="text-xl md:text-2xl font-normal text-[#243029] mb-5 flex items-center gap-2"
-                :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+            <form @submit.prevent="onSubmit" style="display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <label style="display:block;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#8A6E75;margin-bottom:5px;">Nama Lengkap</label>
+                <input
+                  v-model="form.guest_name"
+                  type="text"
+                  maxlength="50"
+                  placeholder="Masukkan nama Anda"
+                  required
+                  autocomplete="name"
+                  inputmode="text"
+                  enterkeyhint="next"
+                  style="width:100%;height:40px;padding:0 12px;border-radius:10px;border:1px solid rgba(112,132,120,0.5);background:rgba(255,255,255,0.9);color:#243029;font-size:13px;outline:none;box-sizing:border-box;"
+                />
+              </div>
+
+              <div>
+                <label style="display:block;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#8A6E75;margin-bottom:5px;">Konfirmasi Kehadiran</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <button
+                    type="button"
+                    @click="form.attendance = 'hadir'"
+                    :style="form.attendance === 'hadir'
+                      ? 'height:38px;border-radius:10px;border:1px solid #B0808A;background:linear-gradient(to right,#D4A6AD,#ECE0D3);color:#243029;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 12px rgba(176,128,138,0.35);'
+                      : 'height:38px;border-radius:10px;border:1px solid rgba(112,132,120,0.4);background:rgba(255,255,255,0.6);color:rgba(36,48,41,0.75);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;'"
+                  >
+                    <span>✓</span> Hadir
+                  </button>
+                  <button
+                    type="button"
+                    @click="form.attendance = 'tidak_hadir'"
+                    :style="form.attendance === 'tidak_hadir'
+                      ? 'height:38px;border-radius:10px;border:1px solid #F5C1C1;background:#FDECEC;color:#A33A3A;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 12px rgba(163,58,58,0.2);'
+                      : 'height:38px;border-radius:10px;border:1px solid rgba(112,132,120,0.4);background:rgba(255,255,255,0.6);color:rgba(36,48,41,0.75);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;'"
+                  >
+                    <span>✕</span> Tidak Hadir
+                  </button>
+                </div>
+              </div>
+
+              <div v-show="form.attendance === 'hadir'">
+                <label style="display:block;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#8A6E75;margin-bottom:5px;">Jumlah Tamu</label>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 4px;border-radius:10px;border:1px solid rgba(112,132,120,0.5);background:rgba(255,255,255,0.9);">
+                  <button
+                    type="button"
+                    @click="form.guest_count = Math.max(1, form.guest_count - 1)"
+                    style="width:32px;height:32px;border-radius:8px;border:none;background:transparent;color:#243029;font-size:16px;cursor:pointer;"
+                  >−</button>
+                  <div style="font-size:13px;font-weight:700;color:#243029;">{{ form.guest_count }} Orang</div>
+                  <button
+                    type="button"
+                    @click="form.guest_count = Math.min(10, form.guest_count + 1)"
+                    style="width:32px;height:32px;border-radius:8px;border:none;background:transparent;color:#243029;font-size:16px;cursor:pointer;"
+                  >+</button>
+                </div>
+              </div>
+
+              <div>
+                <label style="display:block;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#8A6E75;margin-bottom:5px;">Ucapan &amp; Doa Restu</label>
+                <textarea
+                  v-model="form.message"
+                  rows="2"
+                  maxlength="500"
+                  placeholder="Tulis doa restu Anda untuk kedua mempelai..."
+                  enterkeyhint="send"
+                  @keydown="onTextareaKeydown"
+                  style="width:100%;min-height:70px;padding:10px 12px;border-radius:10px;border:1px solid rgba(112,132,120,0.5);background:rgba(255,255,255,0.9);color:#243029;font-size:13px;line-height:1.55;outline:none;resize:none;box-sizing:border-box;font-family:inherit;"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                :disabled="submitting"
+                style="width:100%;min-height:42px;border:none;border-radius:10px;background:linear-gradient(to right,#D4A6AD,#ECE0D3,#D4A6AD);color:#243029;font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(176,128,138,0.35);opacity:1;"
               >
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-[#B0808A]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-7 4.5L5 8V6l7 4.5L19 6v2z"/>
+                <svg v-if="submitting" style="width:16px;height:16px;animation:spin 1s linear infinite;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle style="opacity:0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path style="opacity:0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Kirim Konfirmasi
-              </h3>
-
-              <form @submit.prevent="onSubmit" class="space-y-4 md:space-y-5">
-                <!-- Name Input -->
-                <div>
-                  <label class="block text-xs font-semibold uppercase tracking-wider text-[#B0808A] mb-2">Nama Lengkap</label>
-                  <input
-                    v-model="form.guest_name"
-                    type="text"
-                    maxlength="50"
-                    placeholder="Masukkan nama Anda"
-                    required
-                    class="w-full px-4 py-3 rounded-2xl border border-[#708478]/50 bg-white/70 text-[#243029] placeholder-[#243029]/40 focus:outline-none focus:border-[#B0808A] focus:ring-1 focus:ring-[#B0808A] transition-all text-sm"
-                  />
-                </div>
-
-                <!-- Attendance Choice -->
-                <div>
-                  <label class="block text-xs font-semibold uppercase tracking-wider text-[#B0808A] mb-2">Konfirmasi Kehadiran</label>
-                  <div class="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      @click="form.attendance = 'hadir'"
-                      class="py-3 px-4 rounded-2xl border text-xs font-semibold tracking-wider transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
-                      :class="
-                        form.attendance === 'hadir'
-                          ? 'border-[#B0808A] bg-gradient-to-r from-[#D4A6AD] to-[#ECE0D3] text-[#243029] shadow-md'
-                          : 'border-[#708478]/30 bg-white/50 text-[#243029]/80 hover:border-[#B0808A]/50'
-                      "
-                    >
-                      <span>✓</span> Hadir
-                    </button>
-                    <button
-                      type="button"
-                      @click="form.attendance = 'tidak_hadir'"
-                      class="py-3 px-4 rounded-2xl border text-xs font-semibold tracking-wider transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
-                      :class="
-                        form.attendance === 'tidak_hadir'
-                          ? 'border-red-300 bg-red-50 text-red-700 shadow-md'
-                          : 'border-[#708478]/30 bg-white/50 text-[#243029]/80 hover:border-[#B0808A]/50'
-                      "
-                    >
-                      <span>✕</span> Tidak Hadir
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Guest Count -->
-                <div v-show="form.attendance === 'hadir'">
-                  <label class="block text-xs font-semibold uppercase tracking-wider text-[#B0808A] mb-2">Jumlah Tamu</label>
-                  <div class="flex items-center justify-between px-3 py-1.5 rounded-2xl border border-[#708478]/50 bg-white/70">
-                    <button
-                      type="button"
-                      @click="form.guest_count = Math.max(1, form.guest_count - 1)"
-                      class="w-10 h-10 rounded-xl flex items-center justify-center text-lg text-[#243029] hover:bg-[#B0808A]/20 transition-all cursor-pointer"
-                    >
-                      −
-                    </button>
-                    <div class="text-sm font-semibold text-[#243029]">
-                      {{ form.guest_count }} Orang
-                    </div>
-                    <button
-                      type="button"
-                      @click="form.guest_count = Math.min(10, form.guest_count + 1)"
-                      class="w-10 h-10 rounded-xl flex items-center justify-center text-lg text-[#243029] hover:bg-[#B0808A]/20 transition-all cursor-pointer"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Message -->
-                <div>
-                  <label class="block text-xs font-semibold uppercase tracking-wider text-[#B0808A] mb-2">Ucapan &amp; Doa Restu</label>
-                  <textarea
-                    v-model="form.message"
-                    rows="3"
-                    maxlength="500"
-                    placeholder="Tulis doa restu Anda untuk kedua mempelai..."
-                    class="w-full px-4 py-3 rounded-2xl border border-[#708478]/50 bg-white/70 text-[#243029] placeholder-[#243029]/40 focus:outline-none focus:border-[#B0808A] focus:ring-1 focus:ring-[#B0808A] transition-all text-sm resize-none"
-                  ></textarea>
-                </div>
-
-                <!-- Submit Button -->
-                <button
-                  type="submit"
-                  :disabled="submitting"
-                  class="w-full py-3.5 px-6 rounded-2xl text-xs md:text-sm font-semibold uppercase tracking-[0.2em] text-[#243029] bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] shadow-[0_4px_20px_rgba(176,128,138,0.35)] hover:shadow-[0_6px_25px_rgba(176,128,138,0.55)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <svg v-if="submitting" class="animate-spin h-4 w-4 text-[#243029]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span>{{ submitting ? 'Mengirim...' : 'Kirim Ucapan & Konfirmasi' }}</span>
-                </button>
-              </form>
-            </div>
+                <span>{{ submitting ? 'Mengirim...' : 'Kirim Ucapan & Konfirmasi' }}</span>
+              </button>
+            </form>
           </div>
 
-          <!-- Wishes List Column -->
-          <div class="rg-card p-5 sm:p-7 md:p-8 rounded-3xl border border-[#708478]/50 bg-white/70 backdrop-blur-md shadow-[0_10px_35px_rgba(36,48,41,0.25),0_0_20px_rgba(176,128,138,0.15)] relative overflow-hidden flex flex-col">
-            <span class="absolute top-3 left-4 text-[#B0808A]/60 text-xs">❖</span>
-            <span class="absolute top-3 right-4 text-[#B0808A]/60 text-xs">❖</span>
-
-            <div class="flex justify-between items-center mb-4 pb-3 border-b border-[#708478]/30">
-              <h3
-                class="text-xl md:text-2xl font-normal text-[#243029]"
-                :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
-              >
-                Ucapan Doa
-              </h3>
-              <span class="px-3 py-1 rounded-full text-xs font-semibold border border-[#B0808A]/40 text-[#B0808A] bg-white/60">
-                {{ rsvpMessages.length }} Pesan
-              </span>
+          <!-- Wishes -->
+          <div style="position:relative;border-radius:16px;border:1px solid rgba(112,132,120,0.45);background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(36,48,41,0.16);padding:16px;display:flex;flex-direction:column;min-height:220px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid rgba(112,132,120,0.3);">
+              <h3 style="margin:0;font-size:16px;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">Ucapan Doa</h3>
+              <span style="padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid rgba(176,128,138,0.4);color:#B0808A;background:rgba(255,255,255,0.7);white-space:nowrap;">{{ rsvpMessages.length }} Pesan</span>
             </div>
 
-            <!-- Empty State -->
-            <div v-if="rsvpMessages.length === 0" class="flex-1 flex flex-col items-center justify-center text-center text-[#4A5B52] py-8">
-              <div class="w-14 h-14 rounded-full border border-[#708478]/50 bg-white/60 flex items-center justify-center text-2xl mb-3">
-                💌
-              </div>
-              <p class="text-xs text-[#B0808A]">
-                Belum ada ucapan.<br />Jadilah yang pertama menyampaikan doa restu!
-              </p>
+            <div v-if="rsvpMessages.length === 0" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 0;">
+              <div style="width:52px;height:52px;border-radius:50%;border:1px solid rgba(112,132,120,0.4);background:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px;">💌</div>
+              <p style="margin:0;font-size:12px;line-height:1.7;color:#B0808A;">Belum ada ucapan.<br />Jadilah yang pertama menyampaikan doa restu!</p>
             </div>
 
-            <!-- Messages Scrollable List -->
-            <div v-else class="rg-scroll flex-1 overflow-y-auto space-y-3 md:space-y-4 pr-2 custom-scroll max-h-[30dvh] lg:max-h-[46dvh]">
+            <div v-else class="rg-scroll custom-scroll" data-lenis-prevent style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px;max-height:220px;min-height:0;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;">
               <div
                 v-for="msg in rsvpMessages"
                 :key="msg.id"
-                class="p-4 rounded-2xl border border-[#708478]/30 bg-white/60 space-y-2"
+                style="padding:13px 14px;border-radius:14px;border:1px solid rgba(112,132,120,0.3);background:rgba(255,255,255,0.7);"
               >
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full border border-[#B0808A]/50 bg-gradient-to-br from-[#D4A6AD] to-[#708478] text-[#243029] font-bold flex items-center justify-center text-sm shadow-sm">
-                      {{ msg.guest_name.charAt(0).toUpperCase() }}
-                    </div>
-                    <div>
-                      <h4 class="text-sm font-semibold text-[#243029]">{{ msg.guest_name }}</h4>
-                      <span
-                        class="text-[10px] font-medium flex items-center gap-1"
-                        :class="msg.attendance === 'hadir' ? 'text-[#B0808A]' : 'text-gray-500'"
-                      >
-                        <span>●</span> {{ msg.attendance === 'hadir' ? 'Akan Hadir' : 'Berhalangan' }}
-                        <span v-if="msg.attendance === 'hadir' && msg.guest_count > 1">({{ msg.guest_count }} orang)</span>
-                      </span>
-                    </div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                  <div style="width:36px;height:36px;border-radius:50%;flex-shrink:0;border:1px solid rgba(176,128,138,0.5);background:linear-gradient(135deg,#D4A6AD,#708478);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;">
+                    {{ msg.guest_name.charAt(0).toUpperCase() }}
+                  </div>
+                  <div style="min-width:0;">
+                    <h4 style="margin:0;font-size:13.5px;font-weight:700;color:#243029;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ msg.guest_name }}</h4>
+                    <span style="font-size:10.5px;font-weight:600;display:flex;align-items:center;gap:4px;" :style="{ color: msg.attendance === 'hadir' ? '#B0808A' : '#9AA5A0' }">
+                      <span style="font-size:8px;">●</span> {{ msg.attendance === 'hadir' ? 'Akan Hadir' : 'Berhalangan' }}
+                      <span v-if="msg.attendance === 'hadir' && msg.guest_count > 1">({{ msg.guest_count }} orang)</span>
+                    </span>
                   </div>
                 </div>
-
-                <p class="text-xs text-[#243029]/80 leading-relaxed pt-2 border-t border-[#708478]/20 whitespace-pre-wrap">
-                  {{ msg.message }}
-                </p>
-
-                <!-- Couple Reply (if any) -->
-                <div v-if="msg.reply_text" class="mt-2 p-3 rounded-xl bg-white/80 border-l-2 border-[#B0808A] text-xs">
-                  <div class="text-[10px] font-semibold uppercase tracking-wider text-[#B0808A] mb-1">Balasan Mempelai</div>
-                  <p class="text-[#243029]">{{ msg.reply_text }}</p>
+                <p style="margin:0;padding-top:8px;border-top:1px solid rgba(112,132,120,0.2);font-size:13px;line-height:1.65;color:rgba(36,48,41,0.85);white-space:pre-wrap;word-break:break-word;">{{ msg.message }}</p>
+                <div v-if="msg.reply_text" style="margin-top:8px;padding:9px 11px;border-radius:10px;background:#fff;border-left:3px solid #B0808A;font-size:12px;">
+                  <div style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#B0808A;margin-bottom:3px;">Balasan Mempelai</div>
+                  <p style="margin:0;color:#243029;line-height:1.6;">{{ msg.reply_text }}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <!-- Margin bawah: fade-out baru boleh jalan setelah margin ini tampil (mentok scroll) -->
+        <div style="height:64px;flex-shrink:0;" aria-hidden="true"></div>
       </div>
     </div>
 
@@ -243,133 +195,85 @@
     <div
       v-if="hasGift"
       ref="giftPanel"
-      class="rg-scroll absolute inset-0 z-10 w-full flex overflow-y-auto px-4 md:px-8 py-8 md:py-12"
-      style="pointer-events: none;"
+      class="rg-scroll absolute inset-0 z-10 w-full overflow-y-auto"
+      style="padding:20px 14px 40px;pointer-events:none;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;"
     >
-      <div class="relative z-10 w-full max-w-md mx-auto flex flex-col items-center my-auto">
-        <!-- Section Header -->
-        <div class="mb-8 md:mb-10 text-center">
-          <div class="flex items-center justify-center gap-2 mb-2">
-            <span class="text-[#B0808A] text-xs">✦</span>
-            <span class="text-xs uppercase tracking-[0.35em] text-[#B0808A] font-semibold">Tanda Kasih</span>
-            <span class="text-[#B0808A] text-xs">✦</span>
+      <div style="width:100%;max-width:400px;margin:auto;display:flex;flex-direction:column;align-items:center;">
+        <div style="margin:0 0 12px;text-align:center;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:10px;color:#B0808A;">✦</span>
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:#B0808A;">Tanda Kasih</span>
+            <span style="font-size:10px;color:#B0808A;">✦</span>
           </div>
-          <h2
-            class="text-2xl md:text-4xl font-serif text-[#243029] font-normal"
-            :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
-          >
+          <h2 style="margin:0;font-size:22px;line-height:1.2;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">
             Wedding Gift
           </h2>
-          <p class="text-[11px] md:text-sm text-[#4A5B52] mt-2 max-w-md mx-auto leading-relaxed">
-            Doa restu Anda merupakan karunia terindah bagi kami. Namun apabila Anda ingin memberikan tanda kasih secara digital, Anda dapat menggunakan amplop di bawah ini:
+          <p style="margin:6px auto 0;max-width:320px;font-size:11.5px;line-height:1.6;color:#4A5B52;">
+            Doa restu Anda merupakan karunia terindah bagi kami. Namun apabila Anda ingin memberikan tanda kasih, Anda dapat menggunakan amplop di bawah ini:
           </p>
-          <div class="w-16 h-[1.5px] bg-gradient-to-r from-transparent via-[#708478] to-transparent mx-auto mt-3"></div>
+          <div style="width:48px;height:2px;margin:8px auto 0;background:linear-gradient(to right,transparent,#708478,transparent);border-radius:2px;"></div>
         </div>
 
-        <!-- Bank Cards List -->
-        <div class="w-full flex flex-col items-center gap-6 md:gap-8">
-          <div
-            v-for="(bank, index) in bankList"
-            :key="index"
-            class="w-full flex flex-col items-center"
-          >
-            <!-- Royal Glassmorphic Debit Card -->
-            <div class="w-full aspect-[1.58] rounded-3xl p-5 sm:p-6 md:p-8 border border-[#708478]/50 bg-gradient-to-br from-white via-[#FBF3EE] to-[#E9D9DE] shadow-[0_12px_35px_rgba(36,48,41,0.25),0_0_25px_rgba(176,128,138,0.2)] relative overflow-hidden flex flex-col justify-between text-left">
-              <!-- Shimmer Animation Overlay -->
-              <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent pointer-events-none transform -skew-x-12 animate-shimmer"></div>
-
-              <!-- Top Row: Chip & Bank Name -->
-              <div class="flex justify-between items-center relative z-10">
-                <!-- Golden EMV Chip Icon -->
-                <div class="w-12 h-9 rounded-lg border border-[#B0808A]/60 bg-gradient-to-br from-[#ECE0D3] to-[#D4A6AD] flex items-center justify-center shadow-md">
-                  <div class="w-8 h-5 border border-[#708478]/40 rounded-sm grid grid-cols-2 gap-0.5 opacity-60">
-                    <div class="border-r border-[#708478]/40"></div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:10px;">
+          <div v-for="(bank, index) in bankList" :key="index" style="width:100%;">
+            <div style="width:100%;box-sizing:border-box;aspect-ratio:1.586;border-radius:16px;padding:16px 18px;border:1px solid rgba(112,132,120,0.45);background:linear-gradient(135deg,#FFFFFF 0%,#FBF3EE 55%,#EADAE0 100%);box-shadow:0 8px 20px rgba(36,48,41,0.18);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;text-align:left;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                <div style="width:42px;height:30px;border-radius:7px;border:1px solid rgba(176,128,138,0.6);background:linear-gradient(135deg,#ECE0D3,#D4A6AD);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <div style="width:26px;height:16px;border:1px solid rgba(112,132,120,0.5);border-radius:2px;display:grid;grid-template-columns:1fr 1fr;opacity:0.7;">
+                    <div style="border-right:1px solid rgba(112,132,120,0.5);"></div>
                     <div></div>
                   </div>
                 </div>
-
-                <!-- Bank Name Badge -->
-                <span
-                  class="text-lg md:text-xl font-bold uppercase tracking-wider text-[#243029]"
-                  :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
-                >
+                <span style="font-size:15px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#243029;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">
                   {{ bank.bank_name }}
                 </span>
               </div>
 
-              <!-- Middle: Account Number -->
-              <div class="relative z-10 my-2">
-                <span class="text-[10px] uppercase tracking-widest text-[#B0808A] block mb-1">Nomor Rekening</span>
-                <div class="text-xl md:text-2xl font-mono font-bold tracking-widest text-[#243029] drop-shadow-sm">
-                  {{ bank.bank_account }}
-                </div>
+              <div style="margin:0;">
+                <span style="display:block;font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#B0808A;margin-bottom:2px;">Nomor Rekening</span>
+                <div style="font-size:19px;font-weight:800;letter-spacing:1.8px;color:#243029;font-family:ui-monospace,monospace;word-break:break-all;line-height:1.3;">{{ bank.bank_account }}</div>
               </div>
 
-              <!-- Bottom Row: Card Holder & Copy Button -->
-              <div class="flex justify-between items-end relative z-10">
-                <div>
-                  <span class="text-[9px] uppercase tracking-widest text-[#B0808A] block">Atas Nama</span>
-                  <span class="text-sm font-semibold uppercase tracking-wider text-[#243029]">
-                    {{ bank.bank_holder || '-' }}
-                  </span>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                <div style="min-width:0;flex:1;">
+                  <span style="display:block;font-size:8px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#B0808A;">Atas Nama</span>
+                  <span style="font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#243029;word-break:break-word;line-height:1.3;">{{ bank.bank_holder || '-' }}</span>
                 </div>
-
                 <button
                   @click="copyAccount(index)"
-                  class="px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-md"
-                  :class="
-                    copiedIndex === index
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] text-[#243029] hover:scale-105'
-                  "
+                  :style="copiedIndex === index
+                    ? 'flex-shrink:0;padding:8px 14px;border:none;border-radius:8px;background:#10B981;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;'
+                    : 'flex-shrink:0;padding:8px 14px;border:none;border-radius:8px;background:linear-gradient(to right,#D4A6AD,#ECE0D3,#D4A6AD);color:#243029;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 3px 10px rgba(176,128,138,0.35);'"
                 >
-                  <Icon v-if="copiedIndex === index" icon="ph:check-bold" class="w-3.5 h-3.5" />
-                  <Icon v-else icon="ph:copy-duotone" class="w-3.5 h-3.5 text-[#243029]" />
+                  <Icon v-if="copiedIndex === index" icon="ph:check-bold" style="width:12px;height:12px;" />
+                  <Icon v-else icon="ph:copy-duotone" style="width:12px;height:12px;" />
                   {{ copiedIndex === index ? 'Tersalin' : 'Salin' }}
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- Gift Delivery Address (if provided) -->
           <div
             v-if="invitation.gift_address"
-            class="w-full p-5 sm:p-6 md:p-8 rounded-3xl border border-[#708478]/50 bg-white/70 backdrop-blur-md shadow-[0_10px_35px_rgba(36,48,41,0.25)] text-left relative"
+            style="width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;border:1px solid rgba(112,132,120,0.45);background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 20px rgba(36,48,41,0.15);text-align:left;"
           >
-            <div class="flex items-center gap-3 mb-4">
-              <Icon icon="ph:gift-duotone" class="w-6 h-6 text-[#B0808A]" />
-              <h3
-                class="text-lg md:text-xl font-normal text-[#243029]"
-                :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
-              >
-                Kirim Kado Fisik
-              </h3>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <Icon icon="ph:gift-duotone" style="width:18px;height:18px;color:#B0808A;flex-shrink:0;" />
+              <h3 style="margin:0;font-size:14px;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">Kirim Kado Fisik</h3>
             </div>
-
-            <p class="text-xs md:text-sm text-[#243029]/80 leading-relaxed mb-4">
-              {{ invitation.gift_address }}
-            </p>
-
-            <div v-if="invitation.gift_recipient || invitation.gift_phone" class="text-xs text-[#B0808A] space-y-1 mb-4">
-              <p v-if="invitation.gift_recipient">
-                Penerima: <strong class="text-[#243029]">{{ invitation.gift_recipient }}</strong>
-              </p>
-              <p v-if="invitation.gift_phone">
-                No. Telepon: <strong class="text-[#243029]">{{ invitation.gift_phone }}</strong>
-              </p>
+            <p style="margin:0 0 8px;font-size:12px;line-height:1.6;color:rgba(36,48,41,0.85);">{{ invitation.gift_address }}</p>
+            <div v-if="invitation.gift_recipient || invitation.gift_phone" style="margin-bottom:10px;display:flex;flex-direction:column;gap:3px;font-size:11px;color:#B0808A;">
+              <p v-if="invitation.gift_recipient" style="margin:0;">Penerima: <strong style="color:#243029;">{{ invitation.gift_recipient }}</strong></p>
+              <p v-if="invitation.gift_phone" style="margin:0;">No. Telepon: <strong style="color:#243029;">{{ invitation.gift_phone }}</strong></p>
             </div>
-
             <button
               @click="copyAddress"
-              class="px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 shadow-md"
-              :class="
-                copiedAddress
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] text-[#243029] hover:scale-105'
-              "
+              :style="copiedAddress
+                ? 'padding:8px 16px;border:none;border-radius:999px;background:#10B981;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:6px;'
+                : 'padding:8px 16px;border:none;border-radius:999px;background:linear-gradient(to right,#D4A6AD,#ECE0D3,#D4A6AD);color:#243029;font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(176,128,138,0.35);'"
             >
-              <Icon v-if="copiedAddress" icon="ph:check-bold" class="w-4 h-4" />
-              <Icon v-else icon="ph:copy-duotone" class="w-4 h-4 text-[#243029]" />
+              <Icon v-if="copiedAddress" icon="ph:check-bold" style="width:13px;height:13px;" />
+              <Icon v-else icon="ph:copy-duotone" style="width:13px;height:13px;" />
               {{ copiedAddress ? 'Alamat Tersalin' : 'Salin Alamat' }}
             </button>
           </div>
@@ -602,13 +506,13 @@ onMounted(() => {
     // Gift fade in -> fade out lagi -> FOOTER: buku (yang gambar bg-nya
     // adalah halaman kanan buku sendiri) di-scrub ZOOM-OUT dari raksasa
     // full-screen sampai ukuran rest, lalu cover buku auto-close.
-    gsap.set(rsvpPanel.value, { opacity: 1, scale: 1, y: 0 });
+    gsap.set(rsvpPanel.value, { opacity: 1, scale: 1, y: 0, scrollTop: 0 });
     gsap.set(footerPanel.value, { opacity: 0, scale: 0.92, y: 30 });
     // Cue scroll-down: sembunyi permanen saat fase footer dimulai
     // (footer = ujung undangan, tidak ada scroll lanjutan).
     const cueEl = rgSection.value?.querySelector<HTMLElement>('.rf-scroll-cue');
     if (giftPanel.value) {
-      gsap.set(giftPanel.value, { opacity: 0, scale: 0.92, y: 30 });
+      gsap.set(giftPanel.value, { opacity: 0, scale: 0.92, y: 30, scrollTop: 0 });
     }
     // Elemen zoom buku disetel ke posisi zoom raksasa sejak awal mount,
     // sehingga saat footerPanel pertama kali muncul, buku PASTI sudah dalam keadaan zoom!
@@ -622,10 +526,9 @@ onMounted(() => {
       scrollTrigger: {
         trigger: rgSection.value,
         start: 'top top',
-        // Scroll lebih panjang kalau panel Gift ikut ada (3 fase).
-        // Diperpanjang dari 300/220 karena fase footer sekarang memuat
-        // animasi zoom-out buku (1.6) + hold auto-close (3.0).
-        end: giftPanel.value ? '+=400%' : '+=320%',
+        // Gift selalu ada (3 fase tetap): RSVP slide-up -> Gift -> Footer buku.
+        // end dikunci 480% agar ritme footer tidak berubah-ubah.
+        end: '+=480%',
         pin: true,
         scrub: 1,
         anticipatePin: 1,
@@ -636,7 +539,19 @@ onMounted(() => {
     });
 
     // Tahan (hold) sejenak agar user sempat mengisi form RSVP
-    tl.to({}, { duration: 0.8 })
+    tl.to({}, { duration: 0.5 });
+    // SLIDE-UP OTOMATIS: konten RSVP yang melebihi 100vh di-scroll ke bawah
+    // dulu (info atas naik, info bawah + margin bawah tampil di viewport),
+    // BARU fade-out ke Gift. Terdorong scrub scroll window, berlaku
+    // mouse + touch tanpa perlu scroll manual di dalam panel.
+    tl.to(rsvpPanel.value, {
+      scrollTop: () =>
+        Math.max(0, rsvpPanel.value!.scrollHeight - rsvpPanel.value!.clientHeight),
+      duration: 1.6,
+      ease: 'none',
+    });
+    // Jeda saat posisi mentok bawah (margin bawah sudah tampil)
+    tl.to({}, { duration: 0.4 })
       // RSVP fade out & bergeser ke atas
       .to(rsvpPanel.value, {
         opacity: 0,
@@ -671,8 +586,17 @@ onMounted(() => {
         },
         '-=0.4'
       )
-        // Tahan agar user sempat melihat & menyalin rekening
-        .to({}, { duration: 1.0 })
+        // Tahan agar user sempat melihat awal kartu rekening
+        .to({}, { duration: 0.5 })
+        // SLIDE-UP OTOMATIS gift juga: sampai kartu terakhir + margin
+        // bawah tampil penuh, baru fade-out ke footer.
+        .to(giftPanel.value, {
+          scrollTop: () =>
+            Math.max(0, giftPanel.value!.scrollHeight - giftPanel.value!.clientHeight),
+          duration: 1.2,
+          ease: 'none',
+        })
+        .to({}, { duration: 0.4 })
         // Gift fade out & bergeser ke atas
         .to(giftPanel.value, {
           opacity: 0,
@@ -767,6 +691,21 @@ onMounted(() => {
       });
     }
   }, rgSection.value);
+
+  // NOTE: tidak ada wheel-gate manual lagi. Slide-up konten RSVP/Gift yang
+  // melebihi 100dvh kini didorong timeline scrub (tween scrollTop di atas),
+  // jadi scroll window/page otomatis menggeser isi panel sampai margin bawah
+  // tampil penuh sebelum fade-out. Berlaku untuk mouse & touch.
+  // Refresh sekali setelah layout stabil agar scrollHeight (mentok) terukur
+  // tepat setelah font/image/list ucapan render. Tidak mengubah timeline footer.
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh();
+  });
+  if (typeof document !== 'undefined' && document.fonts) {
+    document.fonts.ready.then(() => {
+      ScrollTrigger.refresh();
+    });
+  }
 });
 
 onBeforeUnmount(() => {
@@ -785,42 +724,41 @@ function onSubmit() {
   form.guest_count = 1;
   form.message = '';
 }
+
+// Kirim dari keyboard: Ctrl/Cmd+Enter di textarea (Enter biasa = baris baru).
+// Tombol fisik tetap utama karena ada pilihan Hadir + jumlah tamu yang butuh tap.
+function onTextareaKeydown(e: KeyboardEvent) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    onSubmit();
+  }
+}
 </script>
 
 <style scoped>
+/* 2 kolom di desktop */
+@media (min-width: 1024px) {
+  .rg-grid { grid-template-columns: 1fr 1fr !important; }
+  .rg-grid .rg-scroll, .rg-scroll { max-height: none !important; }
+}
+@media (min-width: 768px) {
+  section > div { padding-left: 32px !important; padding-right: 32px !important; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 /* Sembunyikan scrollbar pada panel (scroll tetap jalan) */
 .rg-scroll {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.rg-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-/* Scrollbar halus untuk daftar ucapan */
-.custom-scroll::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scroll::-webkit-scrollbar-track {
-  background: rgba(36, 48, 41, 0.06);
-  border-radius: 4px;
-}
-.custom-scroll::-webkit-scrollbar-thumb {
-  background: rgba(176, 128, 138, 0.4);
-  border-radius: 4px;
-}
-.custom-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(176, 128, 138, 0.7);
-}
-
+.rg-scroll::-webkit-scrollbar { display: none; }
+.custom-scroll { scrollbar-width: thin; }
+.custom-scroll::-webkit-scrollbar { width: 4px; display: block; }
+.custom-scroll::-webkit-scrollbar-track { background: rgba(36,48,41,0.06); border-radius: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: rgba(176,128,138,0.4); border-radius: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(176,128,138,0.7); }
 @keyframes shimmer {
   0% { transform: translateX(-100%) skewX(-12deg); }
   100% { transform: translateX(200%) skewX(-12deg); }
 }
-
-.animate-shimmer {
-  animation: shimmer 6s infinite ease-in-out;
-}
-
-
+.animate-shimmer { animation: shimmer 6s infinite ease-in-out; }
 </style>

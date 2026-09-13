@@ -4,259 +4,89 @@
     ref="storySection"
     class="relative h-[100dvh] w-full bg-[#AED4DA] overflow-hidden text-center flex items-center justify-center isolate"
   >
-    <!-- Background Cover (mencakup section Love Story & Doa sekaligus)
-         tinggi full (auto 100%), lebar mengikuti rasio gambar, di-center -->
     <div
       aria-hidden="true"
-      style="
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: -20;
-        pointer-events: none;
-        user-select: none;
-        background-image: url('https://media.mengundanganda.com/royalfantasy/lovestory%20section/dewirandi_94877491-73ef-4791-a079-c3df9522c320.webp');
-        background-size: auto 100%;
-        background-position: center center;
-        background-repeat: no-repeat;
-      "
+      style="position:absolute;inset:0;z-index:-20;pointer-events:none;background-image:url('https://media.mengundanganda.com/royalfantasy/lovestory%20section/dewirandi_94877491-73ef-4791-a079-c3df9522c320.webp');background-size:auto 100%;background-position:center center;background-repeat:no-repeat;"
     ></div>
+    <div class="absolute inset-0 pointer-events-none -z-10" style="background:radial-gradient(ellipse at 50% 36%, rgba(255,252,245,0.6) 0%, rgba(255,252,245,0.22) 40%, transparent 68%), linear-gradient(to bottom, rgba(174,212,218,0.12) 0%, transparent 30%, transparent 72%, rgba(36,48,41,0.16) 100%);"></div>
 
-    <!-- Ambient Glow -->
-    <div
-      class="absolute inset-0 pointer-events-none -z-10"
-      style="background: radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.5) 0%, transparent 70%);"
-    ></div>
+    <img src="https://media.mengundanganda.com/royalfantasy/lovestory%20section/dewirandi_a21322ca-2a29-4a60-b174-4e40e3d70375.webp" alt="" class="flower-float"
+      style="position:absolute;z-index:5;pointer-events:none;left:50%;bottom:36px;transform:translateX(-50%);width:132px;max-width:none;height:auto;filter:drop-shadow(0 10px 16px rgba(36,48,41,0.25));" />
+    <img src="https://media.mengundanganda.com/royalfantasy/lovestory%20section/dewirandi_66fc97bc-c597-4c78-a56e-22ee6922ff81.webp" alt=""
+      style="position:absolute;z-index:6;pointer-events:none;left:50%;bottom:36px;transform:translateX(-50%);width:228px;max-width:none;height:auto;" />
 
-    <!-- ===== ASSET BUNGA — tinggal ubah ANGKA =====
-         UKURAN        : ganti width (420px) → makin besar makin lebar
-         KIRI / KANAN  : ganti "50%" di left (50% = tengah pas)
-         NAIK / TURUN  : ganti bottom (0px) → positif = naik, negatif = turun / tenggelam
-         Z-INDEX       : 5 (di bawah card info story & doa, di bawah KACA)
-    -->
-    <img
-      src="https://media.mengundanganda.com/royalfantasy/lovestory%20section/dewirandi_a21322ca-2a29-4a60-b174-4e40e3d70375.webp"
-      alt=""
-      class="flower-float"
-      style="
-        position: absolute;
-        z-index: 5;
-        pointer-events: none;
-        user-select: none;
-        left: 50%;
-        bottom: 50px;
-        transform: translateX(-50%);
-        width: 150px;
-        max-width: none;
-        height: auto;
-      "
-    />
-    <!-- ============================================ -->
+    <!-- PART 1 : judul di atas, semua card tampil utuh tanpa scroll -->
+    <div v-if="hasStories" ref="storyPanel" class="absolute inset-0 z-10 w-full h-full flex flex-col items-center" style="justify-content:flex-start;padding:34px 16px 158px 16px;">
+      <div style="width:100%;max-width:380px;margin:0 auto;display:flex;flex-direction:column;align-items:center;">
 
-    <!-- ===== ASSET KACA PELINDUNG — tinggal ubah ANGKA =====
-         UKURAN        : ganti width (520px) → makin besar makin lebar
-         KIRI / KANAN  : ganti "50%" di left (50% = tengah pas)
-         NAIK / TURUN  : ganti bottom (0px) → positif = naik, negatif = turun / tenggelam
-         Z-INDEX       : 6 (DI ATAS bunga, tetap DI BAWAH card info story & doa)
-    -->
-    <img
-      src="https://media.mengundanganda.com/royalfantasy/lovestory%20section/dewirandi_66fc97bc-c597-4c78-a56e-22ee6922ff81.webp"
-      alt=""
-      style="
-        position: absolute;
-        z-index: 6;
-        pointer-events: none;
-        user-select: none;
-        left: 50%;
-        bottom: 50px;
-        transform: translateX(-50%);
-        width: 250px;
-        max-width: none;
-        height: auto;
-      "
-    />
-    <!-- ============================================ -->
-
-    <!-- ============ PART 1: LOVE STORY (100dvh, pinned) ============ -->
-    <div
-      v-if="hasStories"
-      ref="storyPanel"
-      class="absolute inset-0 z-10 w-full h-full flex flex-col items-center justify-center px-4 md:px-8"
-      :class="{ 'pointer-events-auto': true }"
-    >
-      <div class="w-full max-w-3xl mx-auto flex flex-col items-center">
-        <!-- Section Header -->
-        <div class="mb-5 md:mb-7 text-center">
-          <div class="flex items-center justify-center gap-2 mb-1">
-            <span class="text-[#B0808A] text-xs">✦</span>
-            <span class="text-[10px] md:text-xs uppercase tracking-[0.35em] text-[#B0808A] font-semibold">Kisah Cinta</span>
-            <span class="text-[#B0808A] text-xs">✦</span>
+        <!-- Header : tanpa mahkota, hanya ornamen daun + hati -->
+        <div style="text-align:center;margin-bottom:10px;flex-shrink:0;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:5px;">
+            <svg width="44" height="12" viewBox="0 0 44 12" fill="none"><path d="M1 6 H16" stroke="#9A7D4A" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M17 6 c2-3 5-4 8-2 c-3 0-5 1-8 2 Z" fill="#8FA79B"/><path d="M17 6 c2 3 5 4 8 2 c-3 0-5-1-8-2 Z" fill="#B0808A" opacity="0.8"/></svg>
+            <span style="font-size:10px;letter-spacing:0.36em;text-indent:0.36em;text-transform:uppercase;color:#6E6250;font-weight:600;">Kisah Cinta</span>
+            <svg width="44" height="12" viewBox="0 0 44 12" fill="none" style="transform:scaleX(-1);"><path d="M1 6 H16" stroke="#9A7D4A" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M17 6 c2-3 5-4 8-2 c-3 0-5 1-8 2 Z" fill="#8FA79B"/><path d="M17 6 c2 3 5 4 8 2 c-3 0-5-1-8-2 Z" fill="#B0808A" opacity="0.8"/></svg>
           </div>
-          <h2
-            class="text-2xl sm:text-3xl md:text-4xl font-serif text-[#243029] font-normal"
-            :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }"
-          >
-            Cerita Perjalanan Kami
-          </h2>
-          <p class="text-[11px] md:text-xs text-[#4A5B52] mt-1 max-w-md mx-auto leading-relaxed font-medium">
-            Setiap momen dan cerita indah yang mengantarkan kami menuju gerbang kebahagiaan
-          </p>
-          <div class="w-12 md:w-16 h-[1.5px] bg-gradient-to-r from-transparent via-[#B0808A] to-transparent mx-auto mt-2"></div>
-        </div>
-
-        <!-- Single Story Layout (jika hanya ada 1 item) -->
-        <div
-          v-if="stories.length === 1 && firstStory"
-          class="w-full max-w-md mx-auto"
-        >
-          <div
-            class="story-card relative p-5 sm:p-6 md:p-7 rounded-3xl border border-[#708478]/50 bg-white/70 backdrop-blur-md shadow-[0_10px_35px_rgba(36,48,41,0.25),0_0_20px_rgba(176,128,138,0.15)] text-left flex flex-col"
-          >
-            <span class="absolute top-3 left-4 text-[#B0808A]/60 text-xs">❖</span>
-            <span class="absolute top-3 right-4 text-[#B0808A]/60 text-xs">❖</span>
-
-            <div class="mb-2.5">
-              <span class="inline-flex items-center px-3.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider text-[#18201B] bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] shadow-sm">
-                {{ firstStory.date }}
-              </span>
-            </div>
-
-            <h3
-              class="text-lg sm:text-xl font-normal text-[#243029] mb-1.5"
-              :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }"
-            >
-              {{ firstStory.title }}
-            </h3>
-
-            <p class="text-xs sm:text-sm text-[#4A5B52] leading-relaxed whitespace-pre-line mb-3 font-light max-h-28 overflow-y-auto">
-              {{ firstStory.description }}
-            </p>
-
-            <div
-              v-if="firstStory.photo"
-              class="w-full rounded-2xl overflow-hidden border border-[#708478]/40 aspect-[16/9] max-h-40 sm:max-h-44 shadow-md bg-black/40"
-            >
-              <img
-                :src="resolveUrl(firstStory.photo)"
-                :alt="firstStory.title"
-                class="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </div>
+          <h2 style="margin:0;color:#22302A;font-weight:400;font-size:clamp(23px,6.4vw,30px);line-height:1.2;" :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }">Cerita Perjalanan Kami</h2>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;">
+            <span style="display:block;width:46px;height:1px;background:linear-gradient(to right,transparent,#9A7D4A);"></span>
+            <svg width="15" height="13" viewBox="0 0 24 22" fill="none"><path d="M12 20 C7.5 16 3.5 12.6 3.5 8.6 C3.5 6 5.5 4.2 7.9 4.2 C9.5 4.2 11 5.2 12 6.7 C13 5.2 14.5 4.2 16.1 4.2 C18.5 4.2 20.5 6 20.5 8.6 C20.5 12.6 16.5 16 12 20 Z" fill="none" stroke="#B0808A" stroke-width="1.3"/><path d="M12 17 C9 14.4 6.2 12 6.2 9 C6.2 7.4 7.4 6.3 8.8 6.3 C9.8 6.3 10.9 7 11.5 8 L12 8.8 L12.5 8 C13.1 7 14.2 6.3 15.2 6.3 C16.6 6.3 17.8 7.4 17.8 9 C17.8 12 15 14.4 12 17 Z" fill="#B0808A" opacity="0.9"/></svg>
+            <span style="display:block;width:46px;height:1px;background:linear-gradient(to left,transparent,#9A7D4A);"></span>
           </div>
         </div>
 
-        <!-- Multiple Stories Layout (list vertikal ke bawah, scroll di dalam 100dvh) -->
-        <div
-          v-else
-          class="w-full flex justify-center"
-        >
-          <div
-            class="w-full max-w-xl mx-auto max-h-[58dvh] overflow-y-auto py-2 px-2 sm:px-4 no-scrollbar flex flex-col gap-4 sm:gap-5"
-            style="scrollbar-width: none; -ms-overflow-style: none;"
-          >
-            <div
-              v-for="(item, idx) in stories"
-              :key="idx"
-              class="story-card w-full relative p-5 sm:p-6 rounded-3xl border border-[#708478]/50 bg-white/70 backdrop-blur-md shadow-[0_10px_35px_rgba(36,48,41,0.25),0_0_20px_rgba(176,128,138,0.15)] text-left flex flex-col justify-between"
-            >
-              <span class="absolute top-3 left-4 text-[#B0808A]/60 text-xs">❖</span>
-              <span class="absolute top-3 right-4 text-[#B0808A]/60 text-xs">❖</span>
+        <!-- SINGLE : card biasa, tampil utuh -->
+        <div v-if="stories.length === 1 && firstStory" style="width:100%;max-width:330px;flex-shrink:0;">
+          <div style="background:rgba(255,253,247,0.94);border:1px solid rgba(154,125,74,0.35);border-radius:16px;padding:14px 16px 14px 16px;box-shadow:0 12px 28px rgba(36,48,41,0.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;">
+            <div v-if="firstStory.photo" style="border-radius:10px;overflow:hidden;height:110px;background:#22302A;margin-bottom:10px;">
+              <img :src="resolveUrl(firstStory.photo)" :alt="firstStory.title" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" />
+            </div>
+            <div style="display:inline-block;padding:3px 12px;border-radius:999px;background:#22302A;margin-bottom:6px;">
+              <span style="font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#F2E8D2;">{{ firstStory.date }}</span>
+            </div>
+            <h3 style="margin:0 0 4px 0;font-size:16px;line-height:1.4;color:#22302A;font-weight:400;" :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }">{{ firstStory.title }}</h3>
+            <div style="width:40px;height:1px;background:#C8AC7A;margin:0 auto 6px auto;opacity:0.8;"></div>
+            <p style="margin:0;font-size:12px;line-height:1.65;color:#55655D;">{{ firstStory.description }}</p>
+          </div>
+        </div>
 
-              <div>
-                <div class="mb-2">
-                  <span class="inline-flex items-center px-3 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-[#18201B] bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] shadow-sm">
-                    {{ item.date }}
-                  </span>
-                </div>
-
-                <h3
-                  class="text-base sm:text-lg font-normal text-[#243029] mb-1"
-                  :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }"
-                >
-                  {{ item.title }}
-                </h3>
-
-                <p class="text-xs text-[#4A5B52] leading-relaxed whitespace-pre-line mb-3 font-light">
-                  {{ item.description }}
-                </p>
+        <!-- MULTIPLE : semua card tampil, tanpa scroll, tanpa kepotong -->
+        <div v-else style="width:100%;max-width:340px;flex-shrink:0;">
+          <div style="position:relative;display:flex;flex-direction:column;gap:8px;padding:2px 2px 2px 18px;">
+            <div aria-hidden="true" style="position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:rgba(154,125,74,0.5);"></div>
+            <div v-for="(item, idx) in stories" :key="idx" style="position:relative;background:rgba(255,253,247,0.94);border:1px solid rgba(154,125,74,0.3);border-radius:12px;padding:10px 12px;box-shadow:0 6px 16px rgba(36,48,41,0.13);text-align:left;">
+              <span aria-hidden="true" :style="{position:'absolute',left:'-17px',top:'16px',width:'8px',height:'8px',borderRadius:'50%',background: idx===0 ? '#B0808A' : '#C8AC7A', border:'1px solid #FFFDF6', boxShadow:'0 0 0 1px rgba(154,125,74,0.5)'}"></span>
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;">
+                <span style="font-size:9.5px;font-weight:700;letter-spacing:0.08em;color:#9A7D4A;">0{{ idx+1 }}</span>
+                <span style="display:inline-block;padding:2px 9px;border-radius:999px;background:#22302A;">
+                  <span style="font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#F2E8D2;">{{ item.date }}</span>
+                </span>
               </div>
-
-              <div
-                v-if="item.photo"
-                class="w-full rounded-2xl overflow-hidden border border-[#708478]/40 aspect-[16/9] max-h-40 shadow-md bg-black/40 mt-auto"
-              >
-                <img
-                  :src="resolveUrl(item.photo)"
-                  :alt="item.title"
-                  class="w-full h-full object-cover"
-                  loading="lazy"
-                />
+              <h3 style="margin:0 0 2px 0;font-size:13.5px;line-height:1.35;color:#22302A;font-weight:400;" :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }">{{ item.title }}</h3>
+              <p style="margin:0 0 6px 0;font-size:11.5px;line-height:1.6;color:#55655D;">{{ item.description }}</p>
+              <div v-if="item.photo" style="border-radius:8px;overflow:hidden;height:76px;background:#22302A;">
+                <img :src="resolveUrl(item.photo)" :alt="item.title" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" />
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
-    <!-- ============ PART 2: DOA PENGANTIN (100dvh, pinned/fading in) ============ -->
-    <div
-      v-if="showDoa"
-      ref="doaPanel"
-      class="absolute inset-0 z-10 w-full h-full flex items-center justify-center px-4 md:px-8"
-      :style="{ pointerEvents: hasStories ? 'none' : 'auto' }"
-    >
-      <div
-        ref="doaCard"
-        class="doa-card relative w-full max-w-xl p-6 sm:p-8 md:p-10 rounded-3xl border border-[#708478]/50 bg-white/70 backdrop-blur-md shadow-[0_10px_35px_rgba(36,48,41,0.25),0_0_20px_rgba(176,128,138,0.15)] text-center"
-      >
-        <!-- Corner Accents -->
-        <span class="absolute top-3 left-4 text-[#B0808A]/60 text-xs">❖</span>
-        <span class="absolute top-3 right-4 text-[#B0808A]/60 text-xs">❖</span>
-
-        <!-- Label -->
-        <div class="flex items-center justify-center gap-2 mb-3">
-          <span class="text-[#B0808A] text-xs">✦</span>
-          <span class="text-[10px] md:text-xs uppercase tracking-[0.35em] text-[#B0808A] font-semibold">Doa Pengantin</span>
-          <span class="text-[#B0808A] text-xs">✦</span>
+    <!-- PART 2 : DOA card biasa -->
+    <div v-if="showDoa" ref="doaPanel" class="absolute inset-0 z-10 w-full h-full flex items-center justify-center" style="padding:18px 18px 170px 18px;" :style="{ pointerEvents: hasStories ? 'none' : 'auto' }">
+      <div ref="doaCard" style="width:100%;max-width:330px;background:rgba(255,253,247,0.94);border:1px solid rgba(154,125,74,0.35);border-radius:16px;padding:22px 20px 18px 20px;box-shadow:0 12px 28px rgba(36,48,41,0.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;">
+        <div style="font-size:10px;letter-spacing:0.32em;text-indent:0.32em;text-transform:uppercase;color:#7A6A4A;font-weight:600;margin-bottom:6px;">Doa Pengantin</div>
+        <h3 style="margin:0 0 8px 0;font-size:clamp(20px,5.6vw,24px);color:#22302A;font-weight:400;" :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }">Bārakallāhu Laka</h3>
+        <div style="display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:8px;">
+          <span style="width:36px;height:1px;background:linear-gradient(to right,transparent,#B0808A);"></span>
+          <svg width="12" height="11" viewBox="0 0 24 22" fill="#B0808A"><path d="M12 20 C7.5 16 3.5 12.6 3.5 8.6 C3.5 6 5.5 4.2 7.9 4.2 C9.5 4.2 11 5.2 12 6.7 C13 5.2 14.5 4.2 16.1 4.2 C18.5 4.2 20.5 6 20.5 8.6 C20.5 12.6 16.5 16 12 20 Z"/></svg>
+          <span style="width:36px;height:1px;background:linear-gradient(to left,transparent,#B0808A);"></span>
         </div>
-
-        <!-- Title -->
-        <h3
-          class="text-xl sm:text-2xl md:text-3xl font-normal text-[#243029] mb-4 sm:mb-6"
-          :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }"
-        >
-          Bārakallāhu Laka
-        </h3>
-
-        <!-- Teks Arab -->
-        <p
-          class="text-[#243029] mb-4 sm:mb-6 w-full text-center"
-          style="
-            font-family: 'Amiri', 'Traditional Arabic', serif;
-            direction: rtl;
-            font-size: clamp(17px, 4.5vw, 25px);
-            line-height: 2;
-          "
-        >
-          بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ
-        </p>
-
-        <!-- Divider -->
-        <div class="w-16 h-[1.5px] bg-gradient-to-r from-transparent via-[#708478] to-transparent mx-auto mb-4 sm:mb-6"></div>
-
-        <!-- Terjemahan -->
-        <p class="text-xs sm:text-sm text-[#4A5B52] leading-relaxed font-light italic max-w-md mx-auto mb-3 sm:mb-4">
-          &ldquo;Semoga Allah memberkahimu dan memberkahi apa yang menjadi tanggung
-          jawabmu, serta menyatukan kalian berdua dalam kebaikan.&rdquo;
-        </p>
-
-        <!-- Sumber -->
-        <p class="text-[10px] md:text-xs text-[#B0808A] font-semibold tracking-wider">
-          (HR. Abu Dawud no. 2130)
-        </p>
+        <p style="margin:0 0 8px 0;color:#22302A;text-align:center;font-family:'Amiri','Traditional Arabic',serif;direction:rtl;font-size:clamp(17px,4.8vw,21px);line-height:1.9;">بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ</p>
+        <div style="width:48px;height:1px;background:#C8AC7A;margin:0 auto 8px auto;opacity:0.8;"></div>
+        <p style="margin:0 0 6px 0;font-size:12px;line-height:1.7;color:#55655D;font-style:italic;">&ldquo;Semoga Allah memberkahimu dan menyatukan kalian berdua dalam kebaikan.&rdquo;</p>
+        <p style="margin:0;font-size:10px;letter-spacing:0.08em;color:#9A7D4A;font-weight:600;">(HR. Abu Dawud no. 2130)</p>
       </div>
     </div>
     <ScrollCueRoyalFantasy />
@@ -301,8 +131,6 @@ onMounted(() => {
   if (!storySection.value) return;
 
   ctx = gsap.context(() => {
-    // KASUS 1: Keduanya ada (Love Story + Doa) -> Section di-PINNING pada 100dvh,
-    // Love Story tampil dulu, lalu fade out dan digantikan oleh Doa.
     if (hasBoth.value && storyPanel.value && doaPanel.value) {
       gsap.set(storyPanel.value, { opacity: 1, scale: 1, y: 0 });
       gsap.set(doaPanel.value, { opacity: 0, scale: 0.92, y: 30 });
@@ -311,22 +139,21 @@ onMounted(() => {
         scrollTrigger: {
           trigger: storySection.value,
           start: 'top top',
-          end: '+=160%',
+          end: '+=130%',
           pin: true,
-          scrub: 1,
+          pinSpacing: true,
+          scrub: 0.8,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      // Tahan (hold) sejenak agar user sempat melihat Love Story
-      tl.to({}, { duration: 0.8 })
-        // Love story fade out & bergeser ke atas
+      tl.to({}, { duration: 0.6 })
         .to(storyPanel.value, {
           opacity: 0,
           scale: 0.95,
           y: -30,
-          duration: 1.2,
+          duration: 1,
           ease: 'power2.inOut',
           onStart: () => {
             if (storyPanel.value) storyPanel.value.style.pointerEvents = 'none';
@@ -335,14 +162,13 @@ onMounted(() => {
             if (storyPanel.value) storyPanel.value.style.pointerEvents = 'auto';
           },
         })
-        // Doa fade in & masuk ke tengah layar
         .to(
           doaPanel.value,
           {
             opacity: 1,
             scale: 1,
             y: 0,
-            duration: 1.2,
+            duration: 1,
             ease: 'power2.out',
             onStart: () => {
               if (doaPanel.value) doaPanel.value.style.pointerEvents = 'auto';
@@ -353,10 +179,18 @@ onMounted(() => {
           },
           '-=0.4'
         )
-        // Tahan (hold) pada Doa agar user sempat membaca sebelum section unpin
-        .to({}, { duration: 1.6 });
+        // tahan doa agar terbaca
+        .to({}, { duration: 0.8 })
+        // exit halus : doa memudar ke atas sebelum unpin, jadi tidak loncat ke RSVP
+        .to(doaPanel.value, {
+          opacity: 0,
+          scale: 0.96,
+          y: -50,
+          duration: 0.8,
+          ease: 'power2.inOut',
+        })
+        .to({}, { duration: 0.3 });
     }
-    // KASUS 2: Hanya Love Story (tanpa Doa) -> 100dvh tampil dengan entrance halus
     else if (hasStories.value && storyPanel.value) {
       gsap.from(storyPanel.value, {
         opacity: 0,
@@ -369,7 +203,6 @@ onMounted(() => {
         },
       });
     }
-    // KASUS 3: Hanya Doa (tanpa Love Story) -> 100dvh tampil dengan entrance halus
     else if (props.showDoa && doaPanel.value) {
       gsap.from(doaPanel.value, {
         opacity: 0,
@@ -397,7 +230,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Animasi bunga melayang naik-turun (terbang perlahan) */
 .flower-float {
   animation: flower-hover 4.5s ease-in-out infinite;
   will-change: transform;
@@ -419,7 +251,8 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Hormati preferensi reduced motion */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .flower-float {
     animation: none;

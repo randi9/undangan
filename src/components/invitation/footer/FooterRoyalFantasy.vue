@@ -111,19 +111,20 @@
                   <svg
                     viewBox="0 0 1384 1920"
                     preserveAspectRatio="none"
-                    class="w-full h-full block"
+                    class="w-full h-full block leaf-svg"
                     xmlns="http://www.w3.org/2000/svg"
+                    style="transform: skewX(calc(var(--leaf-rot) - var(--leaf-lean))); transform-origin: 100% 50%;"
                   >
                     <!--
-                      Bentuk daun: trapesium, BUKAN kotak + CSS rotate.
-                      Catatan geometri: .flipper-front punya rotateY(180deg) sendiri
-                      yang membatalkan mirror dari flipper -180deg, jadi sisi KANAN
-                      viewBox = sisi engsel/spine yang tampil di layar.
-                      Sisi x=1384: lurus VERTIKAL penuh 195-1920, sudut tajam —
-                      sisi ini jatuh presisi di atas sumbu rotateY, sehingga
-                      kanan-atas & kanan-bawah daun DIAM TOTAL saat flip.
-                      Kemiringan (≈8°, kiri lebih tinggi seperti tuning lama)
-                      digambar lewat tepi atas/bawah + sisi kiri yang lebih pendek
+                      Bentuk daun: trapesium + rotate CSS ke kanan (20deg) dengan
+                      SISA LEAN 8deg (lihat --leaf-rot / --leaf-lean).
+                      TRIK ENGSEL: frame di-rotate 20deg, ISI svg di-skewX 12deg
+                      dengan pivot yang SAMA (kanan-tengah, 100% 50%). Skew yang
+                      TIDAK penuh ini menyisakan condongan kanan yang kasat mata,
+                      tapi menekan penyimpangan spine dari sumbu jadi kecil —
+                      ujung kanan-atas & kanan-bawah praktis DIAM sebagai engsel
+                      saat flip. Sisi x=1384 vertikal penuh 195-1920;
+                      kemiringan (≈8°) dari tepi atas/bawah + sisi kiri pendek
                       dengan sudut rounded (r≈36 unit ≈ 8px).
                     -->
                     <path
@@ -207,14 +208,35 @@ onMounted(() => {
     // posisi buka awal = rotateY(-180deg), sama seperti kondisi awal sebelumnya.
     gsap.set('.book-flipper', { rotateY: -180 });
 
+    // === KOMPENSASI SKEW DINAMIS (posisi istirahat DIKUNCI, animasi diperhalus) ===
+    // Daun istirahat: rotate(20°) + skew(12°) = sisa lean 8° ke kanan.
+    // Sisa 8° ini = penyimpangan dari sumbu engsel, makanya ujung kanan
+    // terlihat ngangkat di tengah animasi flip (twist maksimal saat daun
+    // setengah jalan). Solusi: skew dianimasikan mengikuti progres flip —
+    // 12° saat terbuka (look tidak berubah), memuncak 20° (= full, spine
+    // TEPAT di sumbu, twist NOL) saat daun edge-on, kembali 12° saat
+    // tertutup (daun tak terlihat dari depan, jadi aman).
+    const leafSvg = footerRef.value?.querySelector<HTMLElement>('.leaf-svg') ?? null;
+    const sceneEl = footerRef.value?.querySelector<HTMLElement>('.book-scene') ?? null;
+    const readDeg = (v: string, fb: number) => {
+      const n = parseFloat(v);
+      return Number.isFinite(n) ? n : fb;
+    };
+    const rotDeg = sceneEl ? readDeg(getComputedStyle(sceneEl).getPropertyValue('--leaf-rot'), 20) : 20;
+    const leanDeg = sceneEl ? readDeg(getComputedStyle(sceneEl).getPropertyValue('--leaf-lean'), 8) : 8;
+    const baseSkew = rotDeg - leanDeg;
+    const paintSkew = (sk: number) => {
+      if (leafSvg) leafSvg.style.transform = `skewX(${sk}deg)`;
+    };
+
     const tl = gsap.timeline({ paused: true });
 
     // Tutup buku (rotateY -180deg -> 0deg) — jalan OTOMATIS begitu bg
     // mendarat di halaman (flag `landed` dari parent, lihat check()/watch).
     tl.to('.book-flipper', {
       rotateY: 0,
-      duration: 1.6,
-      ease: 'power2.inOut',
+      duration: 0.4,
+      ease: 'power2.in',
       // WAJIB false: default immediateRender=true bikin GSAP ngerender nilai
       // AKHIR (rotateY 0 = TERTUTUP) begitu tween ini ditambahkan ke timeline,
       // menimpa gsap.set(rotateY:-180) di atas -> buku kelihatan sudah nutup
@@ -222,6 +244,17 @@ onMounted(() => {
       immediateRender: false,
       onStart: () => {
         isClosed.value = true;
+      },
+      // Sinkronisasi kompensasi skew dengan progres tutup-buka.
+      // Koreksi dibatasi SETENGAH lean (0.5x) + kurva sin²: NOL di awal &
+      // akhir (bentuk istirahat 100% sama, tidak ada kesan rotate-kiri saat
+      // mulai nutup), memuncak HANYA di tengah flip saat daun edge-on /
+      // paling rentan twist (bentuknya pun tak terbaca). Full correction
+      // sengaja TIDAK dipakai karena shear-nya terbaca sebagai muter kiri.
+      onUpdate: function (this: gsap.core.Tween) {
+        const p = this.progress();
+        const k = Math.pow(Math.sin(p * Math.PI), 2);
+        paintSkew(baseSkew + leanDeg * 0.5 * k);
       },
     });
 
@@ -278,6 +311,7 @@ onMounted(() => {
       if (offscreen || effectiveOpacity(el) <= 0.05) {
         tl.pause();
         tl.progress(0);
+        paintSkew(baseSkew);
         isClosed.value = false;
       }
     };
@@ -319,6 +353,14 @@ watch(
     } else if (tl.progress() > 0 || tl.isActive()) {
       tl.pause();
       tl.progress(0);
+      const svg = footerRef.value?.querySelector<HTMLElement>('.leaf-svg') ?? null;
+      if (svg) {
+        const sc = footerRef.value?.querySelector<HTMLElement>('.book-scene') ?? null;
+        const css = sc ? getComputedStyle(sc) : null;
+        const r = css ? parseFloat(css.getPropertyValue('--leaf-rot')) : NaN;
+        const l = css ? parseFloat(css.getPropertyValue('--leaf-lean')) : NaN;
+        svg.style.transform = `skewX(${(Number.isFinite(r) ? r : 20) - (Number.isFinite(l) ? l : 8)}deg)`;
+      }
       isClosed.value = false;
     }
   },
@@ -334,9 +376,11 @@ onUnmounted(() => {
    3D BOOK THEATER STYLES
    ========================================================================== */
 
-/* Perspective Container */
+/* Perspective Container — 3400px (lebih datar) supaya pop-out sudut yang
+   tersisa tidak terbaca sebagai ngangkat; tidak mengubah posisi istirahat
+   karena daun menghadap viewer secara flat. */
 .book-viewport {
-  perspective: 2400px;
+  perspective: 3400px;
   perspective-origin: 50% 50%;
   overflow: visible;
 }
@@ -428,7 +472,16 @@ onUnmounted(() => {
   --leaf-h: 90%;
   --leaf-x: calc(-10px * var(--book-scale));
   --leaf-y: calc(-20px * var(--book-scale));
-  --leaf-rot: 10deg;
+  /* Diputar ke kanan lebih banyak (20deg) agar ujung kanan tidak lagi
+     terlihat seperti jajar genjang miring ke kiri.
+     --leaf-lean = sisa kemiringan yang SENGAJA disisakan ke kanan (8deg):
+     skew penetral TIDAK penuh (20-8=12deg), jadi spine tetap condong kanan
+     secara kasat mata, tapi penyimpangannya dari sumbu tinggal ±27px
+     (dulu ±60px) sehingga efek ngangkat saat flip jauh berkurang.
+     Kalau mau lebih tegak: naikkan lean mendekati rot. Kalau mau lebih
+     rebah ke kanan: kecilkan lean. */
+  --leaf-rot: 20deg;
+  --leaf-lean: 8deg;
   --leaf-radius: 0px;
   --leaf-color: #7CA2BE;
 
@@ -462,7 +515,10 @@ onUnmounted(() => {
   transform: translate(-50%, -50%) translate(var(--leaf-x), var(--leaf-y)) rotate(var(--leaf-rot));
   transform-origin: 100% 50%;
   border-radius: var(--leaf-radius);
-  overflow: hidden;
+  /* visible: bentuk daun = path SVG itu sendiri (transparan di luarnya),
+     jadi tidak butuh clip; hidden justru memotong ujung luar halaman
+     setelah koreksi skewX. */
+  overflow: visible;
 }
 
 /* Base book dimensions responsive: spread open = 2x page width.

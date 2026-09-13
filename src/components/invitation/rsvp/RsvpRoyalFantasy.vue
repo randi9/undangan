@@ -246,13 +246,14 @@ onMounted(() => {
   if (!rsvpWrapper.value) return;
   ctx = gsap.context(() => {
     gsap.from(rsvpWrapper.value, {
-      y: 60,
+      y: 30,
       opacity: 0,
-      duration: 1.2,
-      ease: 'power3.out',
+      duration: 1,
+      ease: 'power2.out',
       scrollTrigger: {
-        trigger: rsvpWrapper.value,
-        start: 'top 80%',
+        trigger: rsvpSection.value,
+        start: 'top 85%',
+        toggleActions: 'play none none reverse',
       },
     });
   }, rsvpSection.value || undefined);
