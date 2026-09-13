@@ -28,10 +28,10 @@
     <!-- ================= -->
     <div
       ref="rsvpPanel"
-      class="rg-scroll absolute inset-0 z-10 w-full overflow-y-auto"
-      style="padding:20px 14px;pointer-events:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;"
+      class="absolute inset-0 z-10 w-full overflow-hidden"
+      style="padding:20px 14px;pointer-events:auto;"
     >
-      <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;">
+      <div ref="rsvpTrack" style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;will-change:transform;">
         <!-- Margin atas: ruang napas sebelum konten -->
         <div style="height:48px;flex-shrink:0;" aria-hidden="true"></div>
         <!-- Header -->
@@ -157,7 +157,7 @@
               <p style="margin:0;font-size:12px;line-height:1.7;color:#B0808A;">Belum ada ucapan.<br />Jadilah yang pertama menyampaikan doa restu!</p>
             </div>
 
-            <div v-else class="rg-scroll custom-scroll" data-lenis-prevent style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px;max-height:220px;min-height:0;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;">
+            <div v-else class="rg-scroll custom-scroll" data-lenis-prevent style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:4px;max-height:220px;min-height:0;overscroll-behavior:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch;">
               <div
                 v-for="msg in rsvpMessages"
                 :key="msg.id"
@@ -195,8 +195,8 @@
     <div
       v-if="hasGift"
       ref="giftPanel"
-      class="rg-scroll absolute inset-0 z-10 w-full overflow-y-auto"
-      style="padding:20px 14px 40px;pointer-events:none;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;"
+      class="absolute inset-0 z-10 w-full overflow-hidden flex"
+      style="padding:20px 14px 40px;pointer-events:none;"
     >
       <div style="width:100%;max-width:400px;margin:auto;display:flex;flex-direction:column;align-items:center;">
         <div style="margin:0 0 12px;text-align:center;">
@@ -398,6 +398,7 @@ const form = reactive({
 
 const rgSection = ref<HTMLElement | null>(null);
 const rsvpPanel = ref<HTMLElement | null>(null);
+const rsvpTrack = ref<HTMLElement | null>(null);
 const giftPanel = ref<HTMLElement | null>(null);
 const footerPanel = ref<HTMLElement | null>(null);
 const crownRef = ref<HTMLElement | null>(null);
@@ -502,17 +503,19 @@ onMounted(() => {
 
   ctx = gsap.context(() => {
     // Section di-PINNING pada 100dvh dengan 1 background yang sama.
-    // Info bergantian saat scroll: RSVP tampil dulu -> fade out ->
-    // Gift fade in -> fade out lagi -> FOOTER: buku (yang gambar bg-nya
-    // adalah halaman kanan buku sendiri) di-scrub ZOOM-OUT dari raksasa
-    // full-screen sampai ukuran rest, lalu cover buku auto-close.
-    gsap.set(rsvpPanel.value, { opacity: 1, scale: 1, y: 0, scrollTop: 0 });
+    // Fase RSVP: section kepin dulu (top top, belum scrollable), lalu TRACK
+    // digeser via y-transform mengikuti scrub sampai margin bawah tampil
+    // (mentok), BARU fade-out ke Gift. y-transform (bukan scrollTop / inner
+    // overflow-y-auto) supaya satu-satunya sumber scroll = window/Lenis:
+    // sentuhan mobile tidak lagi ditangkap panel dan membekukan scrub.
+    gsap.set(rsvpPanel.value, { opacity: 1, scale: 1, y: 0 });
+    if (rsvpTrack.value) gsap.set(rsvpTrack.value, { y: 0 });
     gsap.set(footerPanel.value, { opacity: 0, scale: 0.92, y: 30 });
     // Cue scroll-down: sembunyi permanen saat fase footer dimulai
     // (footer = ujung undangan, tidak ada scroll lanjutan).
     const cueEl = rgSection.value?.querySelector<HTMLElement>('.rf-scroll-cue');
     if (giftPanel.value) {
-      gsap.set(giftPanel.value, { opacity: 0, scale: 0.92, y: 30, scrollTop: 0 });
+      gsap.set(giftPanel.value, { opacity: 0, scale: 0.92, y: 30 });
     }
     // Elemen zoom buku disetel ke posisi zoom raksasa sejak awal mount,
     // sehingga saat footerPanel pertama kali muncul, buku PASTI sudah dalam keadaan zoom!
@@ -538,18 +541,20 @@ onMounted(() => {
       },
     });
 
-    // Tahan (hold) sejenak agar user sempat mengisi form RSVP
+    // Tahan (hold) sejenak agar user sempat melihat awal form RSVP.
+    // Panel belum scrollable sebelum kepin penuh (start 'top top' di atas).
     tl.to({}, { duration: 0.5 });
-    // SLIDE-UP OTOMATIS: konten RSVP yang melebihi 100vh di-scroll ke bawah
-    // dulu (info atas naik, info bawah + margin bawah tampil di viewport),
-    // BARU fade-out ke Gift. Terdorong scrub scroll window, berlaku
-    // mouse + touch tanpa perlu scroll manual di dalam panel.
-    tl.to(rsvpPanel.value, {
-      scrollTop: () =>
-        Math.max(0, rsvpPanel.value!.scrollHeight - rsvpPanel.value!.clientHeight),
-      duration: 1.6,
-      ease: 'none',
-    });
+    // SLIDE-UP via y-transform: konten RSVP yang melebihi 100dvh digeser
+    // ke atas dulu (margin bawah tampil = mentok), BARU fade-out ke Gift.
+    // Didorong scrub scroll window (mouse + touch sama), tanpa inner scroller.
+    if (rsvpTrack.value) {
+      tl.to(rsvpTrack.value, {
+        y: () =>
+          -Math.max(0, rsvpTrack.value!.offsetHeight - rsvpPanel.value!.clientHeight),
+        duration: 1.6,
+        ease: 'none',
+      });
+    }
     // Jeda saat posisi mentok bawah (margin bawah sudah tampil)
     tl.to({}, { duration: 0.4 })
       // RSVP fade out & bergeser ke atas
@@ -586,16 +591,9 @@ onMounted(() => {
         },
         '-=0.4'
       )
-        // Tahan agar user sempat melihat awal kartu rekening
+        // Tahan agar user sempat melihat kartu rekening.
+        // Gift muat 100dvh (tanpa slide-up): tahan lalu fade-out ke footer.
         .to({}, { duration: 0.5 })
-        // SLIDE-UP OTOMATIS gift juga: sampai kartu terakhir + margin
-        // bawah tampil penuh, baru fade-out ke footer.
-        .to(giftPanel.value, {
-          scrollTop: () =>
-            Math.max(0, giftPanel.value!.scrollHeight - giftPanel.value!.clientHeight),
-          duration: 1.2,
-          ease: 'none',
-        })
         .to({}, { duration: 0.4 })
         // Gift fade out & bergeser ke atas
         .to(giftPanel.value, {
@@ -692,11 +690,14 @@ onMounted(() => {
     }
   }, rgSection.value);
 
-  // NOTE: tidak ada wheel-gate manual lagi. Slide-up konten RSVP/Gift yang
-  // melebihi 100dvh kini didorong timeline scrub (tween scrollTop di atas),
-  // jadi scroll window/page otomatis menggeser isi panel sampai margin bawah
-  // tampil penuh sebelum fade-out. Berlaku untuk mouse & touch.
-  // Refresh sekali setelah layout stabil agar scrollHeight (mentok) terukur
+  // NOTE: RSVP tidak lagi pakai inner overflow-y-auto + tween scrollTop.
+  // Isi digeser via y-transform pada rsvpTrack yang didorong scrub window,
+  // jadi swipe mobile di mana saja (kecuali kotak list ucapan 220px yang
+  // memang dibatasi) menggerakkan page/Lenis dan memajukan timeline.
+  // List ucapan tetap max-height 220px + overflow-y-auto + data-lenis-prevent;
+  // overscroll-behavior:auto supaya saat mentok atas/bawah, scroll chaining
+  // ke window tetap jalan dan scrub tidak macet.
+  // Refresh sekali setelah layout stabil agar overflow (mentok) terukur
   // tepat setelah font/image/list ucapan render. Tidak mengubah timeline footer.
   requestAnimationFrame(() => {
     ScrollTrigger.refresh();
