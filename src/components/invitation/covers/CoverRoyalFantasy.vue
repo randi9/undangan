@@ -353,16 +353,16 @@
         entering || isClosing ? 'opacity-0' : 'opacity-100',
       ]"
     >
-      <p class="text-[#B0808A] text-[15px] md:text-[18px] tracking-[0.4em] uppercase font-semibold mb-4">
+      <p class="text-[#B0808A] uppercase font-semibold mb-4 whitespace-nowrap rf-eyebrow">
         The Wedding Of
       </p>
 
       <h1
-        class="text-[54px] md:text-[72px] lg:text-[90px] text-[#243029] font-normal leading-tight tracking-wide"
+        class="text-[#243029] font-normal rf-couple-name"
         :style="{ fontFamily: fontHeading || `'Cinzel Decorative', 'Playfair Display', serif` }"
       >
         {{ groomName }}
-        <span class="block text-[36px] md:text-[48px] text-[#B0808A] my-1 font-serif italic opacity-90">&amp;</span>
+        <span class="block text-[#B0808A] font-serif italic opacity-90 rf-amp">&amp;</span>
         {{ brideName }}
       </h1>
     </div>
@@ -372,7 +372,7 @@
          jarak nama tamu -> tombol = KENOP textBottom.gap (lihat script). -->
     <div
       class="absolute inset-x-0 z-10 flex flex-col items-center text-center px-6 transition-all duration-700 ease-out"
-      :style="{ bottom: textBottom.margin }"
+      :style="{ bottom: `calc(${textBottom.margin} + env(safe-area-inset-bottom, 0px))` }"
       :class="[
         entering ? 'scale-[1.35]' : isClosing ? 'scale-95' : 'scale-100',
         entering || isClosing ? 'opacity-0' : 'opacity-100',
@@ -383,7 +383,7 @@
           <span class="block">Kepada Yth.</span>
           <span class="block">Bapak/Ibu/Saudara/i</span>
         </p>
-        <h3 class="text-[#243029] text-base md:text-lg font-semibold tracking-wide">
+        <h3 class="text-[#243029] font-semibold tracking-wide" :style="{ fontSize: 'clamp(14px, 4vw, 18px)', maxWidth: '80vw' }">
           {{ guestName || 'Tamu Undangan' }}
         </h3>
       </div>
@@ -392,8 +392,8 @@
       <button
         @click="startEnter"
         :disabled="entering"
-        :style="{ marginTop: textBottom.gap, padding: textBottom.padding }"
-        class="royal-open-btn relative group overflow-hidden rounded-full text-xs md:text-sm font-semibold tracking-[0.25em] uppercase text-[#18201B] bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] shadow-[0_4px_25px_rgba(212,166,173,0.35)] hover:shadow-[0_6px_35px_rgba(236,224,211,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer"
+        :style="{ marginTop: textBottom.gap, padding: textBottom.padding, fontSize: 'clamp(11px, 3.2vw, 14px)' }"
+        class="royal-open-btn relative group overflow-hidden rounded-full font-semibold tracking-[0.25em] uppercase text-[#18201B] bg-gradient-to-r from-[#D4A6AD] via-[#ECE0D3] to-[#D4A6AD] shadow-[0_4px_25px_rgba(212,166,173,0.35)] hover:shadow-[0_6px_35px_rgba(236,224,211,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer"
       >
         <span class="relative z-10 flex items-center gap-2">
           <svg class="w-4 h-4 text-[#18201B]" fill="currentColor" viewBox="0 0 24 24">
@@ -461,18 +461,18 @@ onBeforeUnmount(() => {
 
 // ====== GRUP TEKS BAWAH ("Kepada Yth" + tamu + tombol): cukup ubah angka di sini ======
 const textBottom = reactive({
-  margin: '10%',   // jarak grup dari BAWAH layar (bebas: '10%', '60px', '8vh', ...)
-  gap: '2rem',     // jarak nama tamu -> tombol "Buka Undangan"
+  margin: 'clamp(72px, 12dvh, 108px)', // fluid HP kecil-besar + aman dari gerbang/bunga bawah
+  gap: 'clamp(1rem, 3.5vw + 0.5rem, 2rem)', // jarak nama tamu -> tombol "Buka Undangan"
   // PADDING DALAM TOMBOL (style inline -> selalu menang vs class CSS).
-  // Format: 'vertikal horizontal' — gedein biar teks ga nempel tepi.
-  padding: '0.8rem 1.5rem',
+  // Format: 'vertikal horizontal' — fluid biar tombol mengecil di HP kecil.
+  padding: 'clamp(0.65rem, 2.5vw + 0.5rem, 0.8rem) clamp(1.1rem, 5vw + 0.5rem, 1.5rem)',
 });
 // ==========================================================================
 
 // ====== NGODAK-NGATIK AWAN: cukup ubah angka di sini ======
 const cloud = reactive({
   src: 'https://media.mengundanganda.com/royalfantasy/cover%20section/dewirandi_127365b5-5cae-4f3b-8c6b-28b824071fdf.webp',
-  bottom: '200px',    // jarak dari bawah layar (naikkan mis. '20px' biar naik)
+  bottom: 'clamp(140px, 26dvh, 220px)',    // fluid ikut tinggi HP pendek vs tinggi (dulu 200px fixed)
   left: '50%',       // posisi horizontal ('50%' pas di tengah jika translateX '-50%')
   width: '200%',    // lebar awan (mis. '150%', '200%', '300%', '800px')
   translateX: '-50%', // geser -50% agar titik pusat awan tepat di tengah layar
@@ -522,9 +522,9 @@ const cornerLeft = reactive({
 // ====== SUDUT KANAN ATAS: cukup ubah angka di sini ======
 const cornerTopRight = reactive({
   src: 'https://media.mengundanganda.com/royalfantasy/cover%20section/dewirandi_c6c09b17-ed2f-4988-b528-1b94a8247d4c.webp',
-  top: '-30px',          // jarak dari ATAS layar (turunkan mis. '20px', negatif juga boleh '-10px')
-  right: '-50px',        // jarak dari KANAN layar (geser masuk mis. '16px', negatif biar keluar)
-  width: '500px',      // lebar gambar (tinggi otomatis ikut rasio) — mis. '25%', '180px'
+  top: '-30px',          // tetap px biar bleed konsisten, jangan ganti ke %
+  right: '-50px',        // tetap px biar porsi keluar stabil di semua HP
+  width: 'clamp(300px, 118vw, 500px)', // fluid: HP kecil ~377px, HP besar mentok 500px (dulu 500px fixed bikin nutup)
   rotate: '0deg',      // kemiringan awal gambar
   opacity: 1,
   // --- ANIMASI SWAY (ayunan) ---
@@ -693,6 +693,42 @@ const decoBottomLeft2 = reactive({
 
 .rf-flash {
   will-change: opacity;
+}
+
+/* ====== TEKS COVER: default = ukuran normal (HP besar / desktop, sama kaya awal) ====== */
+.rf-eyebrow {
+  font-size: clamp(11px, 3.5vw, 18px);
+  letter-spacing: 0.35em;
+  margin-right: -0.35em; /* kompensasi tracking biar tetap center */
+}
+.rf-couple-name {
+  font-size: clamp(28px, 12.5vw, 90px);
+  line-height: 1.1;
+  letter-spacing: 0.025em;
+  max-width: 90vw;
+  margin: 0 auto;
+  overflow-wrap: break-word;
+}
+.rf-amp {
+  font-size: clamp(22px, 8.5vw, 48px);
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* ====== HP KECIL (<=380px): kecilin dikit aja, HP besar (>=381px) tetap ukuran awal ====== */
+@media (max-width: 380px) {
+  .rf-eyebrow {
+    font-size: clamp(10px, 3vw, 12px);
+    letter-spacing: 0.28em;
+    margin-right: -0.28em;
+  }
+  .rf-couple-name {
+    font-size: clamp(24px, 10vw, 38px);
+    max-width: 86vw;
+  }
+  .rf-amp {
+    font-size: clamp(18px, 6.8vw, 24px);
+  }
 }
 
 .cloud-decor {
