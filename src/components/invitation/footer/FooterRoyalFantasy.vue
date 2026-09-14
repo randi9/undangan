@@ -10,21 +10,61 @@
     ></div>
 
 
-    <!-- ================================================================= -->
-    <!-- (INFO TULISAN FOOTER SEMENTARA DI-HIDE SESUAI REQUEST)            -->
-    <!-- ================================================================= -->
-    <div v-if="false" class="hidden-original-footer-info">
-      <div ref="crownRef" class="w-14 h-14 rounded-full border border-[#708478]/50 bg-[#243029]/80 flex items-center justify-center mb-6">
-        <svg class="w-7 h-7 text-[#D4A6AD]" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
-        </svg>
+    <!-- VEIL PUTIH TIPIS SELAYAR (muncul bareng info footer, di atas buku) -->
+    <div
+      v-if="showFooterInfo"
+      aria-hidden="true"
+      style="position:absolute;top:50%;left:50%;translate:-50% -50%;width:100vw;height:100dvh;background:rgba(255,255,255,0.15);pointer-events:none;z-index:20;"
+    ></div>
+
+    <!-- ================================================================ -->
+    <!-- INFO FOOTER — CONTAINER SELAYAR (100dvh), fog putih ala Couple    -->
+    <!-- Muncul setelah animasi tutup buku selesai + jeda (showFooterInfo) -->
+    <!-- POSISI : top/left 50% + translate -50% -50% = pas tengah layar.   -->
+    <!-- TINGGI : 100dvh (selayar); LEBAR: 94%, max 560px.                -->
+    <!-- SUSUNAN: SEMUA gabung di TENGAH (nama + ucapan + powered-by).     -->
+    <!-- Semua styling teks INLINE di bawah (gampang diotak-atik).        -->
+    <!-- ================================================================ -->
+    <div
+      v-if="showFooterInfo"
+      class="footer-info-in"
+      style="position:absolute;top:50%;left:50%;translate:-50% -50%;z-index:30;width:94%;max-width:560px;height:100dvh;display:flex;align-items:center;justify-content:center;pointer-events:none;"
+    >
+      <div style="position:relative;width:100%;">
+      <!-- KABUT OVAL (di belakang teks; tepi memudar via mask radial) -->
+      <div
+        aria-hidden="true"
+        style="position:absolute;inset:-100% -80%;background:rgba(255,255,255,0.78);border-radius:50%;-webkit-mask-image:radial-gradient(ellipse at center, black 12%, transparent 72%);mask-image:radial-gradient(ellipse at center, black 12%, transparent 72%);pointer-events:none;"
+      ></div>
+      <!-- ISI TEKS -->
+      <div style="position:relative;padding:28px 32px;text-align:center;">
+        <!-- Eyebrow -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:10px;color:#B0808A;">✦</span>
+          <span style="font-size:10px;font-weight:700;letter-spacing:0.3em;text-indent:0.3em;text-transform:uppercase;color:#B0808A;">Terima Kasih</span>
+          <span style="font-size:10px;color:#B0808A;">✦</span>
+        </div>
+        <!-- Nama mempelai -->
+        <h2 :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }" style="margin:0;font-weight:400;font-size:clamp(24px,7vw,40px);line-height:1.25;color:#243029;">
+          {{ invitation.groom_name }} &amp; {{ invitation.bride_name }}
+        </h2>
+        <!-- Divider -->
+        <div style="width:48px;height:2px;margin:12px auto 0 auto;background:linear-gradient(to right,transparent,#708478,transparent);border-radius:2px;"></div>
+        <!-- Ucapan -->
+        <p style="margin:10px auto 0 auto;max-width:420px;font-size:12.5px;line-height:1.7;color:#4A5B52;font-weight:400;">
+          Terima kasih yang terdalam telah menjadi bagian dari kisah dan hari bahagia kami. Doa restu Anda adalah anugerah terbesar bagi awal perjalanan rumah tangga kami.
+        </p>
+        <!-- Powered by (gabung di tengah, di bawah ucapan — di dalam fog
+             utama sehingga teks rose tetap kebaca) -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:16px;padding-top:12px;border-top:1px solid rgba(112,132,120,0.3);">
+          <span style="font-size:9px;font-weight:700;letter-spacing:0.3em;text-indent:0.3em;text-transform:uppercase;color:#B0808A;text-shadow:0 1px 6px rgba(255,255,255,0.9);">Powered By</span>
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+            <img src="/images/logo.webp" alt="MengundangAnda Logo" style="width:30px;height:30px;object-fit:contain;" />
+            <span style="font-size:14px;font-weight:800;letter-spacing:0.12em;color:#243029;text-shadow:0 1px 6px rgba(255,255,255,0.9);">Mengundang<span style="color:#B0808A;">Anda</span></span>
+          </div>
+        </div>
       </div>
-      <h2 class="text-3xl md:text-5xl font-serif text-[#ECE0D3]">
-        {{ invitation.groom_name }} &amp; {{ invitation.bride_name }}
-      </h2>
-      <p class="text-xs md:text-sm text-[#ECE0D3]/80">
-        Terima kasih yang terdalam telah menjadi bagian dari kisah dan hari bahagia kami.
-      </p>
+      </div>
     </div>
 
     <!-- ================================================================= -->
@@ -143,6 +183,30 @@
                   class="book-img pointer-events-none select-none block"
                   loading="eager"
                 />
+                <!-- INISIAL PENGANTIN DI ATAS COVER: anak dari .flipper-back
+                     sehingga MATOK COVER (ikut flip + zoom + tilt buku, bukan
+                     terhadap layar). Otomatis hanya terlihat saat buku
+                     TERTUTUP (backface). Posisi/ukuran cukup utak-atik kenop
+                     --cover-text-* di .book-scene di bawah. -->
+                <div class="cover-initials" aria-hidden="true">
+                  <!-- ORNAMEN ATAS: asset couple, diperkecil biar muat di cover -->
+                  <img
+                    src="https://media.mengundanganda.com/royalfantasy/couple%20section/dewirandi_511c7bc5-f397-4cc0-820e-97761d953707%20(1).webp"
+                    alt=""
+                    aria-hidden="true"
+                    class="cover-orn"
+                    loading="eager"
+                  />
+                  <div class="initials-row"><span class="initial" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">{{ groomInitial }}</span><span class="amp" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">&amp;</span><span class="initial" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">{{ brideInitial }}</span></div>
+                  <!-- ORNAMEN BAWAH: asset couple yang sama, dicerminkan -->
+                  <img
+                    src="https://media.mengundanganda.com/royalfantasy/couple%20section/dewirandi_511c7bc5-f397-4cc0-820e-97761d953707%20(1).webp"
+                    alt=""
+                    aria-hidden="true"
+                    class="cover-orn cover-orn-bottom"
+                    loading="eager"
+                  />
+                </div>
               </div>
             </div>
 
@@ -157,7 +221,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
@@ -186,8 +250,30 @@ const props = withDefaults(
 const paperSrc = 'https://media.mengundanganda.com/royalfantasy/footer%20section/dewirandi_e412f2c9-74f2-4e63-bf81-d78702018027.webp';
 const coverSrc = 'https://media.mengundanganda.com/royalfantasy/footer%20section/dewirandi_59bd6dcf-6ea2-4d6d-8875-f88f3c56e0aa.webp';
 
+// Inisial nama DEPAN groom & bride dari data form (huruf pertama kata
+// pertama, kapital). Mis. "Randi Pratama" -> "R". Dipakai overlay
+// .cover-initials di atas cover buku.
+const firstInitial = (name?: string): string => {
+  if (!name) return '';
+  const first = name.trim().split(/\s+/)[0] ?? '';
+  return (first.charAt(0) || '').toUpperCase();
+};
+const groomInitial = computed(() => firstInitial(props.invitation.groom_name));
+const brideInitial = computed(() => firstInitial(props.invitation.bride_name));
+
 // State: hanya untuk menampilkan teks "— Tamat —" (dikendalikan timeline GSAP)
 const isClosed = ref(false);
+// Info footer tengah layar: muncul SETELAH animasi tutup buku selesai +
+// jeda INFO_DELAY detik (ganti angkanya buat atur jeda). Reset bareng
+// timeline saat user scroll balik / footer keluar layar.
+const INFO_DELAY = 0.7;
+const showFooterInfo = ref(false);
+let infoDelay: gsap.core.Tween | null = null;
+const hideFooterInfo = () => {
+  infoDelay?.kill();
+  infoDelay = null;
+  showFooterInfo.value = false;
+};
 const footerRef = ref<HTMLElement | null>(null);
 let ctx: gsap.Context | null = null;
 // Reference timeline close, dipakai watch `landed` di luar gsap.context
@@ -231,12 +317,13 @@ onMounted(() => {
 
     const tl = gsap.timeline({ paused: true });
 
-    // Tutup buku (rotateY -180deg -> 0deg) — jalan OTOMATIS begitu bg
-    // mendarat di halaman (flag `landed` dari parent, lihat check()/watch).
+    // Tutup buku (rotateY -180deg -> 0deg, 1.1dtk, diperlambat) — jalan
+    // OTOMATIS saat zoom-out parent sudah ~75% (flag `landed` dari parent,
+    // lihat check()/watch).
     tl.to('.book-flipper', {
       rotateY: 0,
-      duration: 0.4,
-      ease: 'power2.in',
+      duration: 1.1,
+      ease: 'power2.inOut',
       // WAJIB false: default immediateRender=true bikin GSAP ngerender nilai
       // AKHIR (rotateY 0 = TERTUTUP) begitu tween ini ditambahkan ke timeline,
       // menimpa gsap.set(rotateY:-180) di atas -> buku kelihatan sudah nutup
@@ -244,6 +331,14 @@ onMounted(() => {
       immediateRender: false,
       onStart: () => {
         isClosed.value = true;
+      },
+      // Buku sudah nutup sempurna -> jeda bentar -> info footer fade-in
+      // di tengah layar (di atas buku + fog putih).
+      onComplete: () => {
+        infoDelay?.kill();
+        infoDelay = gsap.delayedCall(INFO_DELAY, () => {
+          showFooterInfo.value = true;
+        });
       },
       // Sinkronisasi kompensasi skew dengan progres tutup-buka.
       // Koreksi dibatasi SETENGAH lean (0.5x) + kurva sin²: NOL di awal &
@@ -313,6 +408,7 @@ onMounted(() => {
         tl.progress(0);
         paintSkew(baseSkew);
         isClosed.value = false;
+        hideFooterInfo();
       }
     };
 
@@ -362,11 +458,14 @@ watch(
         svg.style.transform = `skewX(${(Number.isFinite(r) ? r : 20) - (Number.isFinite(l) ? l : 8)}deg)`;
       }
       isClosed.value = false;
+      hideFooterInfo();
     }
   },
 );
 
 onUnmounted(() => {
+  infoDelay?.kill();
+  infoDelay = null;
   ctx?.revert();
 });
 </script>
@@ -375,6 +474,17 @@ onUnmounted(() => {
 /* ==========================================================================
    3D BOOK THEATER STYLES
    ========================================================================== */
+
+/* INFO FOOTER fade-in (class .footer-info-in di overlay info).
+   Animasikan `transform` (translateY/scale) — TIDAK bentrok dengan penengah
+   `translate: -50% -50%` karena itu properti CSS terpisah. */
+@keyframes footer-info-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.footer-info-in {
+  animation: footer-info-in 0.8s ease-out both;
+}
 
 /* Perspective Container — 3400px (lebih datar) supaya pop-out sudut yang
    tersisa tidak terbaca sebagai ngangkat; tidak mengubah posisi istirahat
@@ -489,6 +599,30 @@ onUnmounted(() => {
   --art-y: calc(0px * var(--book-scale));
   --art-s: 0.65;
   --art-rot: 0deg;
+
+  /* === KENOP TEKS INISIAL DI ATAS COVER (.cover-initials) ===
+     Serba dikali --book-scale supaya proporsional ikut besar buku.
+     --cover-text-x/y : geser dari titik TENGAH cover (px, +x kanan, +y bawah)
+     --cover-text-size: besar font inisial (huruf)
+     --cover-text-amp-scale: skala "&" terhadap huruf (0.55 = & lebih kecil)
+     --cover-text-gap: jarak antar huruf-& (kecil = nempel)
+     --cover-text-spacing: letter-spacing huruf (0 = nempel)
+     --cover-text-opacity: opasitas teks (0.5 = setengah transparan)
+     --cover-text-orn-w: lebar asset ornamen atas/bawah (diperkecil biar muat cover)
+     --cover-text-orn-gap: jarak vertikal ornamen ke huruf
+     --cover-text-rot : putaran teks (10deg = ngikutin tilt istirahat buku)
+     --cover-text-color: gelap karena bg cover putih */
+  --cover-text-x: calc(0px * var(--book-scale));
+  --cover-text-y: calc(0px * var(--book-scale));
+  --cover-text-size: calc(30px * var(--book-scale));
+  --cover-text-amp-scale: 0.55;
+  --cover-text-gap: 0.12em;
+  --cover-text-spacing: 0em;
+  --cover-text-opacity: 0.5;
+  --cover-text-orn-w: calc(120px * var(--book-scale));
+  --cover-text-orn-gap: calc(6px * var(--book-scale));
+  --cover-text-rot: 10deg;
+  --cover-text-color: #2b2118;
 
   position: relative;
   display: flex;
@@ -651,6 +785,68 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* TEKS INISIAL PENGANTIN — overlay tepat di tengah cover (inset:0 + flex
+   center), matok plane cover karena ia anak .flipper-back. Jangan taruh
+   position fixed/absolute terhadap layar di sini. */
+.cover-initials {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cover-text-orn-gap);
+  font-size: var(--cover-text-size);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  opacity: var(--cover-text-opacity);
+  transform: translate(var(--cover-text-x), var(--cover-text-y)) rotate(var(--cover-text-rot));
+  transform-origin: 50% 50%;
+}
+
+/* Baris huruf inisial (diapit ornamen atas & bawah) */
+.cover-initials .initials-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cover-text-gap);
+}
+
+/* Ornamen asset couple di atas & bawah inisial (diperkecil biar muat cover) */
+.cover-initials .cover-orn {
+  display: block;
+  width: var(--cover-text-orn-w);
+  max-width: 80%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Ornamen bawah = cermin vertikal ornamen atas (ala couple) */
+.cover-initials .cover-orn-bottom {
+  transform: scaleY(-1);
+}
+
+/* Huruf inisial: TIDAK bold, spacing nempel (0) */
+.cover-initials .initial {
+  font-size: var(--cover-text-size);
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: var(--cover-text-spacing);
+  color: var(--cover-text-color);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* "&" lebih kecil dari huruf */
+.cover-initials .amp {
+  font-size: calc(var(--cover-text-size) * var(--cover-text-amp-scale));
+  line-height: 1;
+  font-weight: 400;
+  color: var(--cover-text-color);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 

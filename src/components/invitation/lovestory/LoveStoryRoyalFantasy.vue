@@ -16,7 +16,7 @@
       style="position:absolute;z-index:6;pointer-events:none;left:50%;bottom:36px;transform:translateX(-50%);width:228px;max-width:none;height:auto;" />
 
     <!-- PART 1 : judul di atas, semua card tampil utuh tanpa scroll -->
-    <div v-if="hasStories" ref="storyPanel" class="absolute inset-0 z-10 w-full h-full flex flex-col items-center" style="justify-content:flex-start;padding:34px 16px 158px 16px;">
+    <div v-if="hasStories" ref="storyPanel" class="absolute inset-0 z-10 w-full h-full flex flex-col items-center" style="justify-content:flex-start;padding:52px 16px 158px 16px;">
       <div style="width:100%;max-width:380px;margin:0 auto;display:flex;flex-direction:column;align-items:center;">
 
         <!-- Header : tanpa mahkota, hanya ornamen daun + hati -->
@@ -36,7 +36,9 @@
 
         <!-- SINGLE : card biasa, tampil utuh -->
         <div v-if="stories.length === 1 && firstStory" style="width:100%;max-width:330px;flex-shrink:0;">
-          <div style="background:rgba(255,253,247,0.94);border:1px solid rgba(154,125,74,0.35);border-radius:16px;padding:14px 16px 14px 16px;box-shadow:0 12px 28px rgba(36,48,41,0.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;">
+          <div style="position:relative;overflow:hidden;background:rgba(248,244,238,0.96);border:1px solid rgba(154,125,74,0.35);border-radius:16px;padding:14px 16px 14px 16px;box-shadow:0 12px 28px rgba(36,48,41,0.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;--card-gold:#B89A62;">
+            <CardFrameRoyalFantasy />
+            <div style="position:relative;z-index:1;">
             <div v-if="firstStory.photo" style="border-radius:10px;overflow:hidden;height:110px;background:#22302A;margin-bottom:10px;">
               <img :src="resolveUrl(firstStory.photo)" :alt="firstStory.title" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" />
             </div>
@@ -46,15 +48,18 @@
             <h3 style="margin:0 0 4px 0;font-size:16px;line-height:1.4;color:#22302A;font-weight:400;" :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }">{{ firstStory.title }}</h3>
             <div style="width:40px;height:1px;background:#C8AC7A;margin:0 auto 6px auto;opacity:0.8;"></div>
             <p style="margin:0;font-size:12px;line-height:1.65;color:#55655D;">{{ firstStory.description }}</p>
+            </div>
           </div>
         </div>
 
         <!-- MULTIPLE : semua card tampil, tanpa scroll, tanpa kepotong -->
         <div v-else style="width:100%;max-width:340px;flex-shrink:0;">
-          <div style="position:relative;display:flex;flex-direction:column;gap:8px;padding:2px 2px 2px 18px;">
+          <div style="position:relative;display:flex;flex-direction:column;gap:18px;padding:2px 2px 2px 18px;">
             <div aria-hidden="true" style="position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:rgba(154,125,74,0.5);"></div>
-            <div v-for="(item, idx) in stories" :key="idx" style="position:relative;background:rgba(255,253,247,0.94);border:1px solid rgba(154,125,74,0.3);border-radius:12px;padding:10px 12px;box-shadow:0 6px 16px rgba(36,48,41,0.13);text-align:left;">
+            <div v-for="(item, idx) in stories" :key="idx" style="position:relative;background:rgba(248,244,238,0.96);border:1px solid rgba(154,125,74,0.3);border-radius:12px;padding:12px 14px 12px 26px;box-shadow:0 6px 16px rgba(36,48,41,0.13);text-align:left;--card-gold:#B89A62;">
+              <CardFrameRoyalFantasy :show-separator="false" />
               <span aria-hidden="true" :style="{position:'absolute',left:'-17px',top:'16px',width:'8px',height:'8px',borderRadius:'50%',background: idx===0 ? '#B0808A' : '#C8AC7A', border:'1px solid #FFFDF6', boxShadow:'0 0 0 1px rgba(154,125,74,0.5)'}"></span>
+              <div style="position:relative;z-index:1;">
               <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;">
                 <span style="font-size:9.5px;font-weight:700;letter-spacing:0.08em;color:#9A7D4A;">0{{ idx+1 }}</span>
                 <span style="display:inline-block;padding:2px 9px;border-radius:999px;background:#22302A;">
@@ -66,6 +71,7 @@
               <div v-if="item.photo" style="border-radius:8px;overflow:hidden;height:76px;background:#22302A;">
                 <img :src="resolveUrl(item.photo)" :alt="item.title" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" />
               </div>
+              </div>
             </div>
           </div>
         </div>
@@ -74,19 +80,22 @@
     </div>
 
     <!-- PART 2 : DOA card biasa -->
-    <div v-if="showDoa" ref="doaPanel" class="absolute inset-0 z-10 w-full h-full flex items-center justify-center" style="padding:18px 18px 170px 18px;" :style="{ pointerEvents: hasStories ? 'none' : 'auto' }">
-      <div ref="doaCard" style="width:100%;max-width:330px;background:rgba(255,253,247,0.94);border:1px solid rgba(154,125,74,0.35);border-radius:16px;padding:22px 20px 18px 20px;box-shadow:0 12px 28px rgba(36,48,41,0.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;">
-        <div style="font-size:10px;letter-spacing:0.32em;text-indent:0.32em;text-transform:uppercase;color:#7A6A4A;font-weight:600;margin-bottom:6px;">Doa Pengantin</div>
-        <h3 style="margin:0 0 8px 0;font-size:clamp(20px,5.6vw,24px);color:#22302A;font-weight:400;" :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }">Bārakallāhu Laka</h3>
+    <div v-if="showDoa" ref="doaPanel" class="absolute inset-0 z-10 w-full h-full flex items-center justify-center" style="padding:18px 18px 130px 18px;" :style="{ pointerEvents: hasStories ? 'none' : 'auto' }">
+      <div ref="doaCard" style="position:relative;width:100%;max-width:400px;text-align:center;filter:drop-shadow(0 12px 24px rgba(36,48,41,0.25));">
+        <img src="https://media.mengundanganda.com/royalfantasy/doa%20section/dewirandi_16bc6976-f979-497c-8ff9-67aa87bbb82a.webp" alt="" style="display:block;width:100%;height:auto;pointer-events:none;user-select:none;opacity:1;transform:scale(1.18);transform-origin:center;" />
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:21% 11% 23% 11%;">
+        <h3 style="margin:0 0 8px 0;font-size:clamp(19px,5.2vw,23px);color:#22302A;font-weight:400;" :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }">Doa Untuk Pengantin</h3>
         <div style="display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:8px;">
           <span style="width:36px;height:1px;background:linear-gradient(to right,transparent,#B0808A);"></span>
           <svg width="12" height="11" viewBox="0 0 24 22" fill="#B0808A"><path d="M12 20 C7.5 16 3.5 12.6 3.5 8.6 C3.5 6 5.5 4.2 7.9 4.2 C9.5 4.2 11 5.2 12 6.7 C13 5.2 14.5 4.2 16.1 4.2 C18.5 4.2 20.5 6 20.5 8.6 C20.5 12.6 16.5 16 12 20 Z"/></svg>
           <span style="width:36px;height:1px;background:linear-gradient(to left,transparent,#B0808A);"></span>
         </div>
-        <p style="margin:0 0 8px 0;color:#22302A;text-align:center;font-family:'Amiri','Traditional Arabic',serif;direction:rtl;font-size:clamp(17px,4.8vw,21px);line-height:1.9;">بَارَكَ اللهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ</p>
+        <p style="margin:0 0 8px 0;color:#22302A;text-align:center;font-family:'Amiri','Traditional Arabic',serif;direction:rtl;white-space:nowrap;font-size:clamp(12px,3.4vw,14px);line-height:1.9;">باركَ الله لكما وبارك عليكما وجمع بينكما في خير</p>
+        <p style="margin:0 0 8px 0;font-size:12px;line-height:1.7;color:#7A6A4A;font-weight:500;letter-spacing:0.02em;">Baarakallaahu laka wa baaraka 'alaika wa jama-'a bainakumaa fii khair.</p>
         <div style="width:48px;height:1px;background:#C8AC7A;margin:0 auto 8px auto;opacity:0.8;"></div>
         <p style="margin:0 0 6px 0;font-size:12px;line-height:1.7;color:#55655D;font-style:italic;">&ldquo;Semoga Allah memberkahimu dan menyatukan kalian berdua dalam kebaikan.&rdquo;</p>
         <p style="margin:0;font-size:10px;letter-spacing:0.08em;color:#9A7D4A;font-weight:600;">(HR. Abu Dawud no. 2130)</p>
+        </div>
       </div>
     </div>
     <ScrollCueRoyalFantasy />
@@ -95,6 +104,7 @@
 
 <script setup lang="ts">
 import ScrollCueRoyalFantasy from '@/components/invitation/royal/ScrollCueRoyalFantasy.vue';
+import CardFrameRoyalFantasy from './CardFrameRoyalFantasy.vue';
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -179,17 +189,11 @@ onMounted(() => {
           },
           '-=0.4'
         )
-        // tahan doa agar terbaca
-        .to({}, { duration: 0.8 })
-        // exit halus : doa memudar ke atas sebelum unpin, jadi tidak loncat ke RSVP
-        .to(doaPanel.value, {
-          opacity: 0,
-          scale: 0.96,
-          y: -50,
-          duration: 0.8,
-          ease: 'power2.inOut',
-        })
-        .to({}, { duration: 0.3 });
+        // tahan doa agar terbaca, lalu LEPAS PIN — doa SENGAJA tidak di-fade-out:
+        // section bergulir pergi dengan konten utuh sehingga gerakannya
+        // menyambung mulus ke pin RSVP berikutnya (fade-out sebelum unpin
+        // justru bikin momen diam + sentakan saat pin dilepas).
+        .to({}, { duration: 1.2 });
     }
     else if (hasStories.value && storyPanel.value) {
       gsap.from(storyPanel.value, {
@@ -217,6 +221,18 @@ onMounted(() => {
       });
     }
   }, storySection.value);
+
+  // Stabilisasi posisi pin setelah layout final (gambar/bg/font render) agar
+  // handoff unpin LoveStory -> pin RSVP berikutnya tetap slide mulus 100vh
+  // tanpa loncat akibat start/end basi. Pola sama seperti RsvpGiftRoyalFantasy.
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh();
+  });
+  if (typeof document !== 'undefined' && document.fonts) {
+    document.fonts.ready.then(() => {
+      ScrollTrigger.refresh();
+    });
+  }
 });
 
 onBeforeUnmount(() => {

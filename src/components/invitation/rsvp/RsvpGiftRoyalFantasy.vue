@@ -32,8 +32,8 @@
       style="padding:20px 14px;pointer-events:auto;"
     >
       <div ref="rsvpTrack" style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;will-change:transform;">
-        <!-- Margin atas: ruang napas sebelum konten -->
-        <div style="height:48px;flex-shrink:0;" aria-hidden="true"></div>
+        <!-- Margin atas: ruang napas sebelum konten (diperkecil agar slide-up lebih pendek) -->
+        <div style="height:24px;flex-shrink:0;" aria-hidden="true"></div>
         <!-- Header -->
         <div style="margin:0 0 16px;text-align:center;">
           <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
@@ -185,7 +185,7 @@
           </div>
         </div>
         <!-- Margin bawah: fade-out baru boleh jalan setelah margin ini tampil (mentok scroll) -->
-        <div style="height:64px;flex-shrink:0;" aria-hidden="true"></div>
+        <div style="height:32px;flex-shrink:0;" aria-hidden="true"></div>
       </div>
     </div>
 
@@ -195,87 +195,163 @@
     <div
       v-if="hasGift"
       ref="giftPanel"
-      class="absolute inset-0 z-10 w-full overflow-hidden flex"
-      style="padding:20px 14px 40px;pointer-events:none;"
+      style="position:absolute;top:0;left:0;right:0;bottom:0;z-index:10;width:100%;overflow:hidden;display:flex;padding:6px 12px 16px;pointer-events:none;"
     >
-      <div style="width:100%;max-width:400px;margin:auto;display:flex;flex-direction:column;align-items:center;">
-        <div style="margin:0 0 12px;text-align:center;">
-          <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;">
+      <div style="width:100%;max-width:440px;margin:auto;display:flex;flex-direction:column;align-items:center;">
+        <!-- Header -->
+        <div style="margin:0 0 8px;text-align:center;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:3px;">
             <span style="font-size:10px;color:#B0808A;">✦</span>
-            <span style="font-size:10px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:#B0808A;">Tanda Kasih</span>
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:#8A4E56;">Tanda Kasih</span>
             <span style="font-size:10px;color:#B0808A;">✦</span>
           </div>
-          <h2 style="margin:0;font-size:22px;line-height:1.2;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">
+          <h2 style="margin:0;font-size:17px;line-height:1.2;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">
             Wedding Gift
           </h2>
-          <p style="margin:6px auto 0;max-width:320px;font-size:11.5px;line-height:1.6;color:#4A5B52;">
+          <p style="margin:3px auto 0;max-width:350px;font-size:10px;line-height:1.5;color:#4A5B52;">
             Doa restu Anda merupakan karunia terindah bagi kami. Namun apabila Anda ingin memberikan tanda kasih, Anda dapat menggunakan amplop di bawah ini:
           </p>
-          <div style="width:48px;height:2px;margin:8px auto 0;background:linear-gradient(to right,transparent,#708478,transparent);border-radius:2px;"></div>
+          <div style="width:48px;height:2px;margin:5px auto 0;background:linear-gradient(to right,transparent,#708478,transparent);border-radius:2px;"></div>
         </div>
 
-        <div style="width:100%;display:flex;flex-direction:column;gap:10px;">
-          <div v-for="(bank, index) in bankList" :key="index" style="width:100%;">
-            <div style="width:100%;box-sizing:border-box;aspect-ratio:1.586;border-radius:16px;padding:16px 18px;border:1px solid rgba(112,132,120,0.45);background:linear-gradient(135deg,#FFFFFF 0%,#FBF3EE 55%,#EADAE0 100%);box-shadow:0 8px 20px rgba(36,48,41,0.18);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;text-align:left;">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-                <div style="width:42px;height:30px;border-radius:7px;border:1px solid rgba(176,128,138,0.6);background:linear-gradient(135deg,#ECE0D3,#D4A6AD);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <div style="width:26px;height:16px;border:1px solid rgba(112,132,120,0.5);border-radius:2px;display:grid;grid-template-columns:1fr 1fr;opacity:0.7;">
-                    <div style="border-right:1px solid rgba(112,132,120,0.5);"></div>
-                    <div></div>
+        <!-- Cards List -->
+        <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <!-- Bank Cards -->
+          <div
+            v-for="(bank, index) in bankList"
+            :key="index"
+            style="width:100%;max-width:370px;position:relative;overflow:hidden;aspect-ratio:1.82;background:transparent;box-sizing:border-box;filter:drop-shadow(0 6px 16px rgba(36,48,41,0.12));"
+          >
+            <!-- Background Artwork: Royal Castle ATM Frame enlarged to fill container -->
+            <img
+              src="https://media.mengundanganda.com/royalfantasy/gift%20section/dewirandi_911a3cf8-d2a2-44b2-981c-a5b6f6ca5269.webp"
+              alt=""
+              style="display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:scale(1.22);transform-origin:center center;pointer-events:none;user-select:none;"
+            />
+
+            <!-- Content Overlay: positioned precisely inside the artwork's inner frame -->
+            <div
+              style="position:absolute;top:13%;bottom:29%;left:11%;right:10%;display:flex;flex-direction:column;justify-content:space-between;text-align:left;box-sizing:border-box;z-index:10;"
+            >
+              <!-- Top Row: Bank Name aligned cleanly inside the top-right corner of the golden frame -->
+              <div style="display:flex;align-items:flex-start;justify-content:flex-end;">
+                <div style="text-align:right;">
+                  <span
+                    style="font-size:14px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#243029;white-space:nowrap;line-height:1;text-shadow:0 1px 2px rgba(255,255,255,0.85);"
+                    :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+                  >
+                    {{ bank.bank_name }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Middle Row: Chip spacer on left, Nomor Rekening situated in the open canvas to the right -->
+              <div style="display:flex;align-items:center;gap:12px;margin:auto 0;">
+                <!-- Invisible spacer covering the EMV chip area in artwork -->
+                <div style="width:62px;height:38px;flex-shrink:0;" aria-hidden="true"></div>
+
+                <div style="min-width:0;flex:1;">
+                  <span
+                    style="display:block;font-size:8px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#7A4B53;margin-bottom:2px;text-shadow:0 1px 1px rgba(255,255,255,0.85);"
+                  >
+                    Nomor Rekening
+                  </span>
+                  <div
+                    style="font-size:16px;font-weight:800;letter-spacing:0.08em;color:#1C2520;font-family:'Courier New',Courier,monospace;word-break:break-all;line-height:1.2;text-shadow:0 1px 2px rgba(255,255,255,0.85);"
+                  >
+                    {{ bank.bank_account }}
                   </div>
                 </div>
-                <span style="font-size:15px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#243029;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">
-                  {{ bank.bank_name }}
-                </span>
               </div>
 
-              <div style="margin:0;">
-                <span style="display:block;font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#B0808A;margin-bottom:2px;">Nomor Rekening</span>
-                <div style="font-size:19px;font-weight:800;letter-spacing:1.8px;color:#243029;font-family:ui-monospace,monospace;word-break:break-all;line-height:1.3;">{{ bank.bank_account }}</div>
-              </div>
-
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <!-- Bottom Row: Cardholder Name & Salin Button positioned cleanly ABOVE the bottom gold border line -->
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px;">
                 <div style="min-width:0;flex:1;">
-                  <span style="display:block;font-size:8px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#B0808A;">Atas Nama</span>
-                  <span style="font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#243029;word-break:break-word;line-height:1.3;">{{ bank.bank_holder || '-' }}</span>
+                  <span
+                    style="display:block;font-size:7.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#7A4B53;margin-bottom:1px;text-shadow:0 1px 1px rgba(255,255,255,0.85);"
+                  >
+                    Atas Nama
+                  </span>
+                  <span
+                    style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#1C2520;line-height:1.2;text-shadow:0 1px 2px rgba(255,255,255,0.85);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;"
+                  >
+                    {{ bank.bank_holder || '-' }}
+                  </span>
                 </div>
+
                 <button
                   @click="copyAccount(index)"
                   :style="copiedIndex === index
-                    ? 'flex-shrink:0;padding:8px 14px;border:none;border-radius:8px;background:#10B981;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;'
-                    : 'flex-shrink:0;padding:8px 14px;border:none;border-radius:8px;background:linear-gradient(to right,#D4A6AD,#ECE0D3,#D4A6AD);color:#243029;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 3px 10px rgba(176,128,138,0.35);'"
+                    ? 'flex-shrink:0;padding:4px 11px;border:1px solid #10B981;border-radius:6px;background:#10B981;color:#fff;font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(16,185,129,0.35);transition:all 0.2s;'
+                    : 'flex-shrink:0;padding:4px 11px;border:1px solid rgba(176,128,138,0.45);border-radius:6px;background:linear-gradient(135deg,#D4A6AD 0%,#ECE0D3 50%,#C997A0 100%);color:#243029;font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(176,128,138,0.3);transition:all 0.2s;'"
                 >
-                  <Icon v-if="copiedIndex === index" icon="ph:check-bold" style="width:12px;height:12px;" />
-                  <Icon v-else icon="ph:copy-duotone" style="width:12px;height:12px;" />
+                  <Icon v-if="copiedIndex === index" icon="ph:check-bold" style="width:10px;height:10px;" />
+                  <Icon v-else icon="ph:copy-duotone" style="width:10px;height:10px;" />
                   {{ copiedIndex === index ? 'Tersalin' : 'Salin' }}
                 </button>
               </div>
             </div>
           </div>
 
+          <!-- Physical Gift Card -->
           <div
             v-if="invitation.gift_address"
-            style="width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;border:1px solid rgba(112,132,120,0.45);background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 20px rgba(36,48,41,0.15);text-align:left;"
+            style="width:100%;max-width:370px;position:relative;overflow:hidden;aspect-ratio:2.0;background:transparent;box-sizing:border-box;filter:drop-shadow(0 6px 16px rgba(36,48,41,0.12));"
           >
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-              <Icon icon="ph:gift-duotone" style="width:18px;height:18px;color:#B0808A;flex-shrink:0;" />
-              <h3 style="margin:0;font-size:14px;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">Kirim Kado Fisik</h3>
-            </div>
-            <p style="margin:0 0 8px;font-size:12px;line-height:1.6;color:rgba(36,48,41,0.85);">{{ invitation.gift_address }}</p>
-            <div v-if="invitation.gift_recipient || invitation.gift_phone" style="margin-bottom:10px;display:flex;flex-direction:column;gap:3px;font-size:11px;color:#B0808A;">
-              <p v-if="invitation.gift_recipient" style="margin:0;">Penerima: <strong style="color:#243029;">{{ invitation.gift_recipient }}</strong></p>
-              <p v-if="invitation.gift_phone" style="margin:0;">No. Telepon: <strong style="color:#243029;">{{ invitation.gift_phone }}</strong></p>
-            </div>
-            <button
-              @click="copyAddress"
-              :style="copiedAddress
-                ? 'padding:8px 16px;border:none;border-radius:999px;background:#10B981;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:6px;'
-                : 'padding:8px 16px;border:none;border-radius:999px;background:linear-gradient(to right,#D4A6AD,#ECE0D3,#D4A6AD);color:#243029;font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(176,128,138,0.35);'"
+            <!-- Background Artwork: Star Crest Frame enlarged to fill container -->
+            <img
+              src="https://media.mengundanganda.com/royalfantasy/gift%20section/dewirandi_38098647-8b91-48c7-a926-ae1dcc4d4781.webp"
+              alt=""
+              style="display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:fill;transform:scale(1.22);transform-origin:center center;pointer-events:none;user-select:none;"
+            />
+            <!-- Content Overlay: starts strictly below top star crest (top: 28%) and ends above bottom border (bottom: 26%) -->
+            <div
+              style="position:absolute;top:28%;bottom:26%;left:11%;right:11%;display:flex;flex-direction:column;justify-content:space-between;text-align:left;box-sizing:border-box;z-index:10;"
             >
-              <Icon v-if="copiedAddress" icon="ph:check-bold" style="width:13px;height:13px;" />
-              <Icon v-else icon="ph:copy-duotone" style="width:13px;height:13px;" />
-              {{ copiedAddress ? 'Alamat Tersalin' : 'Salin Alamat' }}
-            </button>
+              <!-- Top Row: Title sits cleanly below the top star ornament -->
+              <div style="display:flex;align-items:center;gap:6px;">
+                <Icon icon="ph:gift-duotone" style="width:13px;height:13px;color:#7A4B53;flex-shrink:0;" />
+                <h3
+                  style="margin:0;font-size:11.5px;font-weight:700;color:#243029;letter-spacing:0.05em;text-transform:uppercase;text-shadow:0 1px 1px rgba(255,255,255,0.85);"
+                  :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
+                >
+                  Kirim Kado Fisik
+                </h3>
+              </div>
+
+              <!-- Middle: Address text -->
+              <p
+                style="margin:2px 0 0;font-size:10px;line-height:1.35;color:#243029;font-weight:600;text-shadow:0 1px 1px rgba(255,255,255,0.85);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"
+              >
+                {{ invitation.gift_address }}
+              </p>
+
+              <!-- Bottom Row: Recipient & Phone on the left, Salin button on the right (above bottom gold border) -->
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:auto;">
+                <div
+                  v-if="invitation.gift_recipient || invitation.gift_phone"
+                  style="display:flex;flex-direction:column;gap:1px;font-size:8.5px;color:#7A4B53;text-shadow:0 1px 1px rgba(255,255,255,0.85);line-height:1.25;min-width:0;flex:1;"
+                >
+                  <div v-if="invitation.gift_recipient" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    Penerima: <strong style="color:#243029;font-weight:700;">{{ invitation.gift_recipient }}</strong>
+                  </div>
+                  <div v-if="invitation.gift_phone" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    No. Telp: <strong style="color:#243029;font-weight:700;">{{ invitation.gift_phone }}</strong>
+                  </div>
+                </div>
+
+                <button
+                  @click="copyAddress"
+                  :style="copiedAddress
+                    ? 'flex-shrink:0;padding:4px 10px;border:1px solid #10B981;border-radius:6px;background:#10B981;color:#fff;font-size:8.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(16,185,129,0.35);transition:all 0.2s;'
+                    : 'flex-shrink:0;padding:4px 10px;border:1px solid rgba(176,128,138,0.45);border-radius:6px;background:linear-gradient(135deg,#D4A6AD 0%,#ECE0D3 50%,#C997A0 100%);color:#243029;font-size:8.5px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(176,128,138,0.3);transition:all 0.2s;'"
+                >
+                  <Icon v-if="copiedAddress" icon="ph:check-bold" style="width:10px;height:10px;" />
+                  <Icon v-else icon="ph:copy-duotone" style="width:10px;height:10px;" />
+                  {{ copiedAddress ? 'Tersalin' : 'Salin Alamat' }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -410,7 +486,8 @@ let ctx: gsap.Context | null = null;
 const bgSrc =
   'https://media.mengundanganda.com/royalfantasy/rsvp%20section/dewirandi_3d0caf40-f0a4-473f-bc4f-48cc6a21e796.webp';
 
-// landed : 1 setelah buku selesai zoom-out mendarat -> anak boleh auto-close cover
+// landed : 1 = pemicu auto-close cover di anak. Dipicu saat zoom-out sudah
+// berjalan ~75% supaya buku hampir selesai mengecil dulu baru cover menutup.
 const footerState = reactive({ landed: 0 });
 
 // ===== KENOP ZOOM BUKU (animasi saja; posisi/ukuran buku = CSS kenop di
@@ -422,9 +499,9 @@ const ZOOM = {
   rotStartDeg: 0,    // AWAL (raksasa): TANPA rotasi — gambar langsung apa adanya
   rotEndDeg: 10,     // SELAMA zoom-out: buku berputar 10deg ke KANAN (miring rest)
   margin: 2.2,      // cadangan scale besar supaya layar tertutup rapat penuh di awal zoom
-  duration: 1.6,
+  duration: 1.2,
   ease: 'power1.inOut',
-  hold: 3.0,        // waktu cover anak merampungkan auto-close sebelum unpin
+  hold: 1.8,        // waktu cover anak merampungkan auto-close sebelum unpin (dipadatkan ikut end 300%)
 } as const;
 
 // S0: scale yang membuat rect halaman kanan (ukuran layout TANPA transform)
@@ -530,10 +607,10 @@ onMounted(() => {
         trigger: rgSection.value,
         start: 'top top',
         // Gift selalu ada (3 fase tetap): RSVP slide-up -> Gift -> Footer buku.
-        // end dikunci 480% agar ritme footer tidak berubah-ubah.
-        end: '+=480%',
+        // end dipadatkan 480% -> 300% agar scroll RSVP -> Gift terasa ringan.
+        end: '+=300%',
         pin: true,
-        scrub: 1,
+        scrub: 0.5,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         // Resize/rotate: S0 dihitung ulang otomatis oleh invalidateOnRefresh
@@ -543,7 +620,8 @@ onMounted(() => {
 
     // Tahan (hold) sejenak agar user sempat melihat awal form RSVP.
     // Panel belum scrollable sebelum kepin penuh (start 'top top' di atas).
-    tl.to({}, { duration: 0.5 });
+    // Durasi dipadatkan agar transisi RSVP -> Gift lebih cepat tercapai.
+    tl.to({}, { duration: 0.2 });
     // SLIDE-UP via y-transform: konten RSVP yang melebihi 100dvh digeser
     // ke atas dulu (margin bawah tampil = mentok), BARU fade-out ke Gift.
     // Didorong scrub scroll window (mouse + touch sama), tanpa inner scroller.
@@ -551,18 +629,18 @@ onMounted(() => {
       tl.to(rsvpTrack.value, {
         y: () =>
           -Math.max(0, rsvpTrack.value!.offsetHeight - rsvpPanel.value!.clientHeight),
-        duration: 1.6,
+        duration: 0.7,
         ease: 'none',
       });
     }
     // Jeda saat posisi mentok bawah (margin bawah sudah tampil)
-    tl.to({}, { duration: 0.4 })
+    tl.to({}, { duration: 0.15 })
       // RSVP fade out & bergeser ke atas
       .to(rsvpPanel.value, {
         opacity: 0,
         scale: 0.95,
         y: -30,
-        duration: 1.2,
+        duration: 0.6,
         ease: 'power2.inOut',
         onStart: () => {
           if (rsvpPanel.value) rsvpPanel.value.style.pointerEvents = 'none';
@@ -580,7 +658,7 @@ onMounted(() => {
           opacity: 1,
           scale: 1,
           y: 0,
-          duration: 1.2,
+          duration: 0.6,
           ease: 'power2.out',
           onStart: () => {
             if (giftPanel.value) giftPanel.value.style.pointerEvents = 'auto';
@@ -589,18 +667,18 @@ onMounted(() => {
             if (giftPanel.value) giftPanel.value.style.pointerEvents = 'none';
           },
         },
-        '-=0.4'
+        '-=0.3'
       )
         // Tahan agar user sempat melihat kartu rekening.
         // Gift muat 100dvh (tanpa slide-up): tahan lalu fade-out ke footer.
-        .to({}, { duration: 0.5 })
-        .to({}, { duration: 0.4 })
+        .to({}, { duration: 0.25 })
+        .to({}, { duration: 0.2 })
         // Gift fade out & bergeser ke atas
         .to(giftPanel.value, {
           opacity: 0,
           scale: 0.95,
           y: -30,
-          duration: 1.2,
+          duration: 0.6,
           ease: 'power2.inOut',
           onStart: () => {
             if (giftPanel.value) giftPanel.value.style.pointerEvents = 'none';
@@ -624,13 +702,13 @@ onMounted(() => {
     // nilai AKHIR begitu tween ditambahkan ke timeline (panel & bg hilang
     // muncul di fase RSVP!). Dengan false, nilai awal direkam saat playhead
     // pertama kali lewat, dan scrub reverse otomatis mengembalikan keadaan semula.
-    const footerStart = '-=0.4'; // menyambung ekor fade-out Gift
+    const footerStart = '-=0.3'; // menyambung ekor fade-out Gift
     // Cue scroll ikut fade-out tepat saat fase footer dimulai; scrub balik
     // otomatis memunculkannya lagi (immediateRender false).
     if (cueEl) {
       tl.to(
         cueEl,
-        { autoAlpha: 0, duration: 0.5, ease: 'power1.out', immediateRender: false },
+        { autoAlpha: 0, duration: 0.3, ease: 'power1.out', immediateRender: false },
         footerStart,
       );
     }
@@ -670,13 +748,15 @@ onMounted(() => {
         },
         footerStart,
       )
-      // Flag mendarat -> anak boleh menjalankan auto-close cover flipper
-      // (watch `landed` di FooterRoyalFantasy — tak diubah). Reverse scrub:
-      // landed turun -> anak reset instan; buku langsung tertutup lagi oleh
-      // zoom raksasanya sendiri, jadi pergantian tak kelihatan.
-      .to(footerState, { landed: 1, duration: 0.01 })
-      // Hold: beri waktu auto-close buku (~1.6dtk) selesai sebelum section unpin
-      .to({}, { duration: ZOOM.hold });
+      // Flag mendarat -> anak menjalankan auto-close cover flipper.
+      // DIPICU di 75% proses zoom-out: "<0.9" = 75% dari ZOOM.duration (1.2),
+      // sehingga buku hampir selesai mengecil dulu baru cover mulai menutup.
+      // Reverse scrub: landed turun -> anak reset instan ke terbuka; zoom
+      // raksasa yang membesar lagi menutupi pergantian itu.
+      .to(footerState, { landed: 1, duration: 0.01 }, '<0.9')
+      // Hold TETAP setelah zoom selesai (">") — close sudah beres di tengah
+      // zoom, sisa hold jadi jeda menikmati buku tertutup sebelum unpin.
+      .to({}, { duration: ZOOM.hold }, '>');
 
     // Mahkota melayang naik-turun halus di panel footer
     if (crownRef.value) {

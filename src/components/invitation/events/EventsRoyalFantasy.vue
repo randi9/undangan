@@ -401,7 +401,7 @@ const X_KHUTBAH = 1;
 
 // Scroll "tahan" (hold) per fase — makin besar makin lama kamera
 // diam sebelum bergeser ke fase berikutnya.
-const HOLD = 1.2;
+const HOLD = 0.7;
 
 // BATAS UJUNG KIRI-KANAN (px): bagian pinggir gambar panorama tidak
 // pernah ditampilkan — di ujung asli gambar ada tembok yang mengganggu.
@@ -538,9 +538,9 @@ const setupAnimation = () => {
     scrollTrigger: {
       trigger: container,
       start: 'top top',
-      end: `+=${130 + slideCount * 125}%`,
+      end: `+=${80 + slideCount * 70}%`,
       pin: true,
-      scrub: 1,
+      scrub: 0.6,
       anticipatePin: 1,
       invalidateOnRefresh: true,
     },
@@ -553,8 +553,8 @@ const setupAnimation = () => {
     const phase: Phase = phases[i] ?? 'akad';
     const frac = camFrac[phase];
     const pose = headerPose[phase];
-    tl.to(panTarget, { x: () => xFor(frac), duration: 1.6, ease: 'power1.inOut' })
-      .to(headerState, { ...pose, duration: 1.6, ease: 'power1.inOut', onUpdate: applyHeaderTilt }, '<')
+    tl.to(panTarget, { x: () => xFor(frac), duration: 1, ease: 'power1.inOut' })
+      .to(headerState, { ...pose, duration: 1, ease: 'power1.inOut', onUpdate: applyHeaderTilt }, '<')
       .to({}, { duration: HOLD });
   }
 

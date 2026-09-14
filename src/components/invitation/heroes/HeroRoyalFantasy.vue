@@ -384,7 +384,7 @@ let ctx: gsap.Context | null = null;
     VEIL_FADE_IN: lama memudarnya overlay gelap masuk (detik). Lebih panjang
                   dari anim teks (0.9) → bg jelas dulu, gelapnya nyusul pelan.
  ===================================================== */
-const SCROLL = '200%';
+const SCROLL = '120%';
 const SCALE = 3;
 const ZOOM_END = 0.55;
 const HERO_TEXT_OUT = 0.35;
