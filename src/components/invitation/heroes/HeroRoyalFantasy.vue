@@ -423,6 +423,10 @@ onMounted(() => {
     // TWEEN DIPAKAI DUA KALI (stage belakang + stage depan/istana) supaya
     // istana bisa punya z-index di ATAS quotes sementara pulau tetap di bawah.
     const stageFront = stageFrontRef.value as HTMLElement | null;
+    // Skala depan sedikit lebih besar biar kesan "ngezoom"-nya berasa,
+    // lalu didorong 1.1 layar ke bawah + fade-out → istana DIJAMIN keluar
+    // viewport di SEMUA ukuran HP (tidak ada ujung yang nyangkut).
+    const SCALE_FRONT = SCALE + 1;
     if (island) {
       const zoomVars = {
         scale: SCALE,
@@ -434,12 +438,45 @@ onMounted(() => {
         duration: ZOOM_END,
       };
       tl.to(stage, zoomVars, 0);
-      if (stageFront) tl.to(stageFront, zoomVars, 0);
+      if (stageFront) {
+        tl.to(
+          stageFront,
+          {
+            scale: SCALE_FRONT,
+            transformOrigin: '0 0',
+            x: () =>
+              stage.offsetWidth / 2 - SCALE_FRONT * (island.offsetLeft + island.offsetWidth / 2),
+            // sama kayak belakang (ngejar pulau) + dorongan ekstra ke bawah
+            // 1.1 × tinggi layar → kastil tenggelam total di bawah viewport
+            y: () =>
+              stage.offsetHeight / 2 -
+              SCALE_FRONT * island.offsetTop +
+              stage.offsetHeight * 1.1,
+            opacity: 0,
+            ease: 'none',
+            duration: ZOOM_END,
+          },
+          0
+        );
+      }
     } else {
-      // fallback kalau aset pulau tidak ketemu: zoom ke tengah biasa
+      // fallback kalau aset pulau tidak ketemu: zoom ke tengah biasa,
+      // istana tetap didorong ke bawah + fade sampai hilang
       const zoomVars = { scale: SCALE, transformOrigin: '50% 50%', ease: 'none', duration: ZOOM_END };
       tl.to(stage, zoomVars, 0);
-      if (stageFront) tl.to(stageFront, zoomVars, 0);
+      if (stageFront)
+        tl.to(
+          stageFront,
+          {
+            scale: SCALE_FRONT,
+            transformOrigin: '50% 50%',
+            y: () => stage.offsetHeight * 1.1,
+            opacity: 0,
+            ease: 'none',
+            duration: ZOOM_END,
+          },
+          0
+        );
     }
 
     // awan TIDAK ikut zoom — layer sendiri, cuma digeser ke kiri pelan
