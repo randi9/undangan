@@ -35,7 +35,7 @@
       -->
       <img
         class="royal-island"
-        src="https://media.mengundanganda.com/royalfantasy/quotes%20section/dewirandi_166a6302-36de-4993-8b89-c050c059387a.webp"
+        src="https://media.mengundanganda.com/royalfantasy/hero%20section/dewirandi_8209375d-fc92-4f3c-b4a0-eb3947abd2ac.webp"
         alt=""
         style="
           position: absolute;
@@ -53,7 +53,7 @@
       <!-- ===== ASET PULAU MELAYANG KEDUA (kiri) — posisi & ukuran sama, tinggal ubah ANGKA ===== -->
       <img
         class="royal-island royal-island-b"
-        src="https://media.mengundanganda.com/royalfantasy/hero%20section/dewirandi_f06437d6-c277-4827-b8ca-bb806a8a8d67.webp"
+        src="https://media.mengundanganda.com/royalfantasy/hero%20section/dewirandi_8209375d-fc92-4f3c-b4a0-eb3947abd2ac.webp"
         alt=""
         style="
           position: absolute;
@@ -72,7 +72,7 @@
       <!-- ===== ASET PULAU MELAYANG KETIGA (kanan bawah) — posisi & ukuran sama, tinggal ubah ANGKA ===== -->
       <img
         class="royal-island royal-island-c"
-        src="https://media.mengundanganda.com/royalfantasy/hero%20section/dewirandi_f06437d6-c277-4827-b8ca-bb806a8a8d67.webp"
+        src="https://media.mengundanganda.com/royalfantasy/hero%20section/dewirandi_8209375d-fc92-4f3c-b4a0-eb3947abd2ac.webp"
         alt=""
         style="
           position: absolute;
@@ -104,6 +104,7 @@
             GESER TENGAH      : translateX = minus dari setengah width
       -->
       <div
+        class="rf-castle"
         style="
           position: absolute;
           z-index: 0;
@@ -792,5 +793,50 @@ onBeforeUnmount(() => {
   /* "&" ikut proporsi nama (0.63 × ukuran h1) — tidak perlu rem terpisah,
      dan text-shadow otomatis warisan dari h1 */
   font-size: 0.63em !important;
+}
+
+/* ===== TANGGAL DI BAWAH NAMA — lebih kecil + tidak bold =====
+   (menang lawan .royal-hero-text p & class Tailwind font-semibold di slot) */
+.royal-hero-text .hero-wedding-date {
+  font-size: 0.68rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.18em !important;
+}
+
+@media (min-width: 768px) {
+  .royal-hero-text .hero-wedding-date {
+    font-size: 0.78rem !important;
+  }
+}
+
+/* ===== HP KECIL (<=380px): istana + pulau + awan disesuaikan =====
+   HP besar (>=381px) tetap pakai inline style di template (tidak tersentuh).
+   !important dipakai supaya menang lawan inline style, khusus layar kecil. */
+@media (max-width: 380px) {
+  .rf-castle {
+    width: 88vw !important;
+    transform: translateX(-44vw) !important;
+  }
+  .royal-cloud {
+    width: 430px !important;
+    left: 50% !important;
+    top: 70px !important;
+  }
+  .royal-island:not(.royal-island-b):not(.royal-island-c) {
+    width: 62px !important;
+    right: 8px !important;
+    top: 280px !important;
+  }
+  .royal-island-b {
+    width: 62px !important;
+    left: 8px !important;
+    top: 330px !important;
+  }
+  .royal-island-c {
+    width: 110px !important;
+    right: -50px !important;
+    top: auto !important;
+    bottom: 40px !important;
+  }
 }
 </style>

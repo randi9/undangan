@@ -39,7 +39,7 @@
             :src="resolveUrl(photo.url)"
             :alt="photo.caption || 'Foto Galeri'"
             class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-            loading="lazy"
+            loading="eager"
             @load="onImgLoad"
           />
           <div class="absolute inset-0 bg-[#18201B]/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -145,11 +145,11 @@ const nextSlide = () => {
   activeIndex.value = (activeIndex.value + 1) % props.photos.length;
 };
 
-// Gallery duduk DI ANTARA pin LoveStory dan pin RSVP. Foto lazy-load (masonry
-// h-auto) menambah tinggi section setelah pin dibuat -> start pin RSVP jadi
-// basi -> RSVP ke-pin terlalu awal dan terlihat "loncat" (snap ke fixed top).
-// Setiap gambar selesai load, jadwalkan refresh ter-debounce agar posisi pin
-// di bawah gallery selalu mengikuti tinggi aslinya dan handoff tetap slide.
+// Gallery duduk DI ANTARA pin LoveStory dan pin RSVP. Foto masonry (h-auto)
+// dimuat EAGER sejak mount agar tinggi final tercapai sebelum user tiba;
+// kalau lazy, tinggi bertambah di tengah jalan scroll -> start pin RSVP basi
+// -> RSVP ke-pin terlalu awal dan terlihat "loncat" (snap ke fixed top).
+// Refresh ter-debounce di bawah tinggal jadi pengaman.
 let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 function scheduleRefresh() {
   if (refreshTimer) clearTimeout(refreshTimer);

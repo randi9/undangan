@@ -109,7 +109,7 @@
                         di layar besar. Kecilkan max-width biar kolom teks menyempit. -->
     <div
       ref="headerRef"
-      style="position: absolute; top: 50%; left: 50%; translate: -50% -50%; z-index: 10; width: 94%; max-width: 560px;"
+      style="position: absolute; top: 50%; left: 50%; z-index: 10; width: 94%; max-width: 560px;"
     >
       <!-- ===== KABUT OVAL (di belakang teks) =====
            TINGGI/LEBAR KABUT : dua angka di "inset" = (atas-bawah) (kiri-kanan).
@@ -175,10 +175,11 @@
     </div>
 
     <!-- ===== INFO GROOM — container = gambar frame (bukan kartu putih) =====
-         POSISI       : top 50% + left 50% + "translate: -50% -50%" = pas tengah
-                        layar horizontal & vertikal. (Pakai properti "translate",
-                        BUKAN "transform", supaya tidak ketimpa animasi GSAP.)
-                        Geser: ubah top/left.
+         POSISI       : top 50% + left 50%, penengahannya via xPercent/yPercent
+                        GSAP (di setupAnimation, SAMA seperti bride) — dijamin
+                        tidak ketimpa animasi scale/y & jalan di semua browser
+                        (properti CSS "translate" tidak dipakai karena absen di
+                        Chrome lama). Geser manual: ubah top/left.
          UKURAN FRAME : ganti angka width (px). max-width 92vw = tidak lebih
                         lebar dari layar HP. height auto = ikut rasio asli.
          ref="groomRef" dipakai GSAP (fade/scale saat scroll) — JANGAN hapus. -->
@@ -223,8 +224,8 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        translate: -50% -50%;
         width: 340px;
+        width: min(340px, 92vw, 57.3dvh);
         max-width: 92vw;
         z-index: 20;
         opacity: 0;
@@ -244,7 +245,7 @@
            RUANG TEPI : padding 12% (atas-bawah) 14% (kiri-kanan) biar teks
                         tidak keluar dari bingkai frame. -->
       <div
-        class="text-center"
+        class="text-center rf-couple-body"
         style="
           position: absolute;
           inset: 0;
@@ -260,10 +261,11 @@
           v-if="invitation.groom_photo"
           :src="resolveUrl(invitation.groom_photo)"
           :alt="invitation.groom_name"
-          class="object-cover rounded-full mx-auto border-2 border-white/80 shadow-md"
+          class="object-cover rounded-full mx-auto border-2 border-white/80 shadow-md rf-couple-photo"
           style="width: 76px; height: 76px; margin-bottom: 10px;"
         />
         <h3
+          class="rf-couple-name"
           :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
           style="margin: 0 0 4px 0; font-weight: 700; font-size: clamp(22px, 6.4vw, 30px); line-height: 1.2; letter-spacing: 0.04em; color: #243029;"
         >
@@ -337,6 +339,7 @@
         top: 50%;
         left: 50%;
         width: 300px;
+        width: min(300px, 92vw, 57.3dvh);
         max-width: 92vw;
         z-index: 20;
         opacity: 0;
@@ -353,7 +356,7 @@
            Geser isi ke BAWAH : tambah "padding-top: 20px".
            Geser isi ke ATAS  : tambah "padding-bottom: 20px". -->
       <div
-        class="text-center"
+        class="text-center rf-couple-body"
         style="
           position: absolute;
           inset: 0;
@@ -369,10 +372,11 @@
           v-if="invitation.bride_photo"
           :src="resolveUrl(invitation.bride_photo)"
           :alt="invitation.bride_name"
-          class="object-cover rounded-full mx-auto border-2 border-white/80 shadow-md"
+          class="object-cover rounded-full mx-auto border-2 border-white/80 shadow-md rf-couple-photo"
           style="width: 76px; height: 76px; margin-bottom: 10px;"
         />
         <h3
+          class="rf-couple-name"
           :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
           style="margin: 0 0 4px 0; font-weight: 700; font-size: clamp(22px, 6.4vw, 30px); line-height: 1.2; letter-spacing: 0.04em; color: #243029;"
         >
@@ -861,9 +865,16 @@ const setupAnimation = () => {
   // Initial state: kanvas terpusat di archway, scale 1
   gsap.set(wrap, { x: centerX, y: restY, scale: 1, transformOrigin: O(0.5, 0.5) });
 
-  // Penengah frame BRIDE via GSAP (xPercent/yPercent) — didaftarkan sekali di
-  // sini supaya tween scale/y di timeline TIDAK bisa menggesernya (tengah
-  // vertikal & horizontal dijaga GSAP sendiri, bukan CSS).
+  // Penengah frame GROOM & BRIDE via GSAP (xPercent/yPercent) — didaftarkan
+  // sekali di sini supaya tween scale/y di timeline TIDAK bisa menggesernya
+  // (tengah vertikal & horizontal dijaga GSAP sendiri, bukan properti CSS
+  // "translate" yang absen di Chrome lama). Header ikut pola yang sama.
+  if (headerRef.value) {
+    gsap.set(headerRef.value, { xPercent: -50, yPercent: -50 });
+  }
+  if (groomRef.value) {
+    gsap.set(groomRef.value, { xPercent: -50, yPercent: -50 });
+  }
   if (brideRef.value) {
     gsap.set(brideRef.value, { xPercent: -50, yPercent: -50 });
   }
@@ -1105,3 +1116,24 @@ onBeforeUnmount(() => {
   sparkleTls.length = 0;
 });
 </script>
+
+<style scoped>
+/* ===== LAYAR PENDEK (tinggi <= 560px): kecilkan isi kartu couple =====
+   Frame dikunci proporsinya (tinggi maks 86dvh via width min()), jadi di
+   layar pendek frame mengecil — isi ikut dikecilkan biar tetap muat di
+   dalam bingkai. Layar besar/tinggi tidak tersentuh. */
+@media (max-height: 560px) {
+  .rf-couple-body {
+    padding: 12% 10% 7% !important;
+  }
+  .rf-couple-photo {
+    width: 52px !important;
+    height: 52px !important;
+    margin-bottom: 6px !important;
+  }
+  .rf-couple-name {
+    font-size: 19px !important;
+    margin-bottom: 2px !important;
+  }
+}
+</style>

@@ -205,7 +205,7 @@
             <span style="font-size:10px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:#8A4E56;">Tanda Kasih</span>
             <span style="font-size:10px;color:#B0808A;">✦</span>
           </div>
-          <h2 style="margin:0;font-size:17px;line-height:1.2;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">
+          <h2 class="rg-gift-title" style="margin:0;font-size:17px;line-height:1.2;font-weight:400;color:#243029;" :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }">
             Wedding Gift
           </h2>
           <p style="margin:3px auto 0;max-width:350px;font-size:10px;line-height:1.5;color:#4A5B52;">
@@ -220,6 +220,7 @@
           <div
             v-for="(bank, index) in bankList"
             :key="index"
+            class="rg-bank-card"
             style="width:100%;max-width:370px;position:relative;overflow:hidden;aspect-ratio:1.82;background:transparent;box-sizing:border-box;filter:drop-shadow(0 6px 16px rgba(36,48,41,0.12));"
           >
             <!-- Background Artwork: Royal Castle ATM Frame enlarged to fill container -->
@@ -237,6 +238,7 @@
               <div style="display:flex;align-items:flex-start;justify-content:flex-end;">
                 <div style="text-align:right;">
                   <span
+                    class="rg-bank-name"
                     style="font-size:14px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#243029;white-space:nowrap;line-height:1;text-shadow:0 1px 2px rgba(255,255,255,0.85);"
                     :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif` }"
                   >
@@ -257,6 +259,7 @@
                     Nomor Rekening
                   </span>
                   <div
+                    class="rg-bank-number"
                     style="font-size:16px;font-weight:800;letter-spacing:0.08em;color:#1C2520;font-family:'Courier New',Courier,monospace;word-break:break-all;line-height:1.2;text-shadow:0 1px 2px rgba(255,255,255,0.85);"
                   >
                     {{ bank.bank_account }}
@@ -296,6 +299,7 @@
           <!-- Physical Gift Card -->
           <div
             v-if="invitation.gift_address"
+            class="rg-physical-card"
             style="width:100%;max-width:370px;position:relative;overflow:hidden;aspect-ratio:2.0;background:transparent;box-sizing:border-box;filter:drop-shadow(0 6px 16px rgba(36,48,41,0.12));"
           >
             <!-- Background Artwork: Star Crest Frame enlarged to fill container -->
@@ -824,6 +828,25 @@ function onTextareaKeydown(e: KeyboardEvent) {
 }
 @media (min-width: 768px) {
   section > div { padding-left: 32px !important; padding-right: 32px !important; }
+}
+/* HP KECIL (<=380px) SAJA: judul gift digedein dikit, card ATM & kado
+   fisik dikecilin. HP gede (>=381px) tetap pakai inline style di atas
+   (tidak tersentuh). !important dipakai supaya menang lawan inline style. */
+@media (max-width: 380px) {
+  .rg-gift-title {
+    font-size: 19px !important;
+  }
+  .rg-bank-card,
+  .rg-physical-card {
+    width: 82vw !important;
+    max-width: 300px !important;
+  }
+  .rg-bank-name {
+    font-size: 12px !important;
+  }
+  .rg-bank-number {
+    font-size: 14px !important;
+  }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 /* Sembunyikan scrollbar pada panel (scroll tetap jalan) */

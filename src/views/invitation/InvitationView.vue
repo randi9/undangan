@@ -1387,7 +1387,7 @@ onBeforeUnmount(() => {
             <p
               v-if="formattedDate"
               :ref="setHeroTextRef"
-              class="text-[#3d4a40] mt-3 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold drop-shadow-sm opacity-0"
+              class="hero-wedding-date text-[#3d4a40] mt-3 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold drop-shadow-sm opacity-0"
             >
               {{ formattedDate }}
             </p>

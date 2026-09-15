@@ -17,7 +17,7 @@
 
     <!-- PART 1 : judul di atas, semua card tampil utuh tanpa scroll -->
     <div v-if="hasStories" ref="storyPanel" class="absolute inset-0 z-10 w-full h-full flex flex-col items-center" style="justify-content:flex-start;padding:52px 16px 158px 16px;">
-      <div style="width:100%;max-width:380px;margin:0 auto;display:flex;flex-direction:column;align-items:center;">
+      <div ref="storyTrack" style="width:100%;max-width:380px;margin:0 auto;display:flex;flex-direction:column;align-items:center;will-change:transform;">
 
         <!-- Header : tanpa mahkota, hanya ornamen daun + hati -->
         <div style="text-align:center;margin-bottom:10px;flex-shrink:0;">
@@ -81,7 +81,7 @@
 
     <!-- PART 2 : DOA card biasa -->
     <div v-if="showDoa" ref="doaPanel" class="absolute inset-0 z-10 w-full h-full flex items-center justify-center" style="padding:18px 18px 130px 18px;" :style="{ pointerEvents: hasStories ? 'none' : 'auto' }">
-      <div ref="doaCard" style="position:relative;width:100%;max-width:400px;text-align:center;filter:drop-shadow(0 12px 24px rgba(36,48,41,0.25));">
+      <div ref="doaCard" class="rf-doa-card" style="position:relative;width:100%;max-width:400px;text-align:center;filter:drop-shadow(0 12px 24px rgba(36,48,41,0.25));">
         <img src="https://media.mengundanganda.com/royalfantasy/doa%20section/dewirandi_16bc6976-f979-497c-8ff9-67aa87bbb82a.webp" alt="" style="display:block;width:100%;height:auto;pointer-events:none;user-select:none;opacity:1;transform:scale(1.18);transform-origin:center;" />
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:21% 11% 23% 11%;">
         <h3 style="margin:0 0 8px 0;font-size:clamp(19px,5.2vw,23px);color:#22302A;font-weight:400;" :style="{ fontFamily: themeConfig?.fontHeading || `'Cinzel Decorative', serif` }">Doa Untuk Pengantin</h3>
@@ -91,9 +91,9 @@
           <span style="width:36px;height:1px;background:linear-gradient(to left,transparent,#B0808A);"></span>
         </div>
         <p style="margin:0 0 8px 0;color:#22302A;text-align:center;font-family:'Amiri','Traditional Arabic',serif;direction:rtl;white-space:nowrap;font-size:clamp(12px,3.4vw,14px);line-height:1.9;">باركَ الله لكما وبارك عليكما وجمع بينكما في خير</p>
-        <p style="margin:0 0 8px 0;font-size:12px;line-height:1.7;color:#7A6A4A;font-weight:500;letter-spacing:0.02em;">Baarakallaahu laka wa baaraka 'alaika wa jama-'a bainakumaa fii khair.</p>
+        <p style="margin:0 0 8px 0;font-size:12px;line-height:1.7;color:#7A6A4A;font-weight:500;letter-spacing:0.02em;">Barakallahu lakuma wa baraka ‘alaikuma wa jama’a bainakuma fi khair.</p>
         <div style="width:48px;height:1px;background:#C8AC7A;margin:0 auto 8px auto;opacity:0.8;"></div>
-        <p style="margin:0 0 6px 0;font-size:12px;line-height:1.7;color:#55655D;font-style:italic;">&ldquo;Semoga Allah memberkahimu dan menyatukan kalian berdua dalam kebaikan.&rdquo;</p>
+        <p style="margin:0 0 6px 0;font-size:12px;line-height:1.7;color:#55655D;font-style:italic;">&ldquo;Semoga Allah memberkahi kalian berdua, melimpahkan keberkahan atas kalian, dan mengumpulkan kalian berdua dalam kebaikan.&rdquo;</p>
         <p style="margin:0;font-size:10px;letter-spacing:0.08em;color:#9A7D4A;font-weight:600;">(HR. Abu Dawud no. 2130)</p>
         </div>
       </div>
@@ -123,6 +123,7 @@ const props = defineProps<{
 
 const storySection = ref<HTMLElement | null>(null);
 const storyPanel = ref<HTMLElement | null>(null);
+const storyTrack = ref<HTMLElement | null>(null);
 const doaPanel = ref<HTMLElement | null>(null);
 const doaCard = ref<HTMLElement | null>(null);
 
@@ -137,29 +138,58 @@ const resolveUrl = (url: string | undefined) => {
   return resolveAssetUrl(url, props.apiBase || '');
 };
 
+// Clearance bawah konten story untuk bunga (px) — SINKRON dengan
+// padding-bottom 158px pada storyPanel di template. Dipakai mengukur
+// overflow agar slide-up berhenti saat margin bawah tampil (mentok).
+const STORY_BOTTOM_MARGIN = 158;
+
+// Kelebihan tinggi konten story terhadap viewport (0 = muat semua).
+// Diukur ulang tiap refresh/resize via tween function-based.
+const storyOverflow = () => {
+  if (!storyTrack.value || !storyPanel.value) return 0;
+  return Math.max(
+    0,
+    storyTrack.value.offsetHeight - (storyPanel.value.clientHeight - STORY_BOTTOM_MARGIN),
+  );
+};
+
 onMounted(() => {
   if (!storySection.value) return;
 
   ctx = gsap.context(() => {
     if (hasBoth.value && storyPanel.value && doaPanel.value) {
       gsap.set(storyPanel.value, { opacity: 1, scale: 1, y: 0 });
+      if (storyTrack.value) gsap.set(storyTrack.value, { y: 0 });
       gsap.set(doaPanel.value, { opacity: 0, scale: 0.92, y: 30 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: storySection.value,
           start: 'top top',
-          end: '+=130%',
+          end: '+=210%',
           pin: true,
           pinSpacing: true,
-          scrub: 0.8,
+          scrub: 0.5,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      tl.to({}, { duration: 0.6 })
-        .to(storyPanel.value, {
+      tl.to({}, { duration: 0.6 });
+      // SLIDE-UP ala RSVP-Gift: konten story yang melebihi viewport digeser
+      // ke atas dulu (margin bawah tampil = mentok), BARU fade ke doa.
+      // Didorong scrub window (tanpa inner scroller) supaya sentuhan mobile
+      // tidak ditangkap panel dan scrub tidak macet. Function-based +
+      // invalidateOnRefresh: overflow diukur ulang tiap refresh/resize.
+      // Konten muat (overflow 0) = no-op, HP besar perilakunya identik.
+      if (storyTrack.value) {
+        tl.to(storyTrack.value, {
+          y: () => -storyOverflow(),
+          duration: 0.8,
+          ease: 'none',
+        }).to({}, { duration: 0.3 });
+      }
+      tl.to(storyPanel.value, {
           opacity: 0,
           scale: 0.95,
           y: -30,
@@ -189,23 +219,50 @@ onMounted(() => {
           },
           '-=0.4'
         )
-        // tahan doa agar terbaca, lalu LEPAS PIN — doa SENGAJA tidak di-fade-out:
-        // section bergulir pergi dengan konten utuh sehingga gerakannya
-        // menyambung mulus ke pin RSVP berikutnya (fade-out sebelum unpin
-        // justru bikin momen diam + sentakan saat pin dilepas).
-        .to({}, { duration: 1.2 });
+        // tahan doa LAMA agar terbaca dan tidak kesentuh lewat saat scroll
+        // cepat (sebelumnya 1.2 terlalu singkat di HP), lalu LEPAS PIN — doa
+        // SENGAJA tidak di-fade-out (alasan sama seperti komentar awal).
+        .to({}, { duration: 2.4 });
     }
     else if (hasStories.value && storyPanel.value) {
-      gsap.from(storyPanel.value, {
-        opacity: 0,
-        y: 30,
-        duration: 0.9,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: storySection.value,
-          start: 'top 75%',
-        },
-      });
+      // Story saja (tanpa doa): konten muat -> entrance biasa tanpa pin
+      // (seperti semula). Konten berlebih (layar kecil / story panjang) ->
+      // pin + slide-up ala RSVP-Gift sampai margin bawah tampil, lalu unpin,
+      // agar bagian bawah tidak kepotong permanen.
+      if (storyTrack.value) gsap.set(storyTrack.value, { y: 0 });
+      if (storyTrack.value && storyOverflow() > 0) {
+        const tlSolo = gsap.timeline({
+          scrollTrigger: {
+            trigger: storySection.value,
+            start: 'top top',
+            end: '+=150%',
+            pin: true,
+            pinSpacing: true,
+            scrub: 0.5,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+        tlSolo
+          .to({}, { duration: 0.5 })
+          .to(storyTrack.value, {
+            y: () => -storyOverflow(),
+            duration: 1,
+            ease: 'none',
+          })
+          .to({}, { duration: 0.5 });
+      } else {
+        gsap.from(storyPanel.value, {
+          opacity: 0,
+          y: 30,
+          duration: 0.9,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: storySection.value,
+            start: 'top 75%',
+          },
+        });
+      }
     }
     else if (props.showDoa && doaPanel.value) {
       gsap.from(doaPanel.value, {
@@ -264,6 +321,50 @@ onBeforeUnmount(() => {
   }
   75% {
     transform: translateX(-50%) translateY(-10px) rotate(-1.5deg);
+  }
+}
+
+/* Kartu doa selalu muat viewport: di layar pendek, bingkai portrait
+   (x scale 1.18) dikecilkan agar judul & akhir doa tidak kepotong
+   atas-bawah. max-width inline 400px tetap jadi batas atas (kedua
+   constraint digabung, diambil yang terkecil). Baris pertama = fallback
+   browser lama tanpa dvh. */
+.rf-doa-card {
+  max-width: 400px;
+  max-width: min(400px, calc((100dvh - 148px) * 0.58));
+}
+
+/* HP KECIL (<=380px) SAJA: card doa dikecilin. HP gede (>=381px)
+   tetap pakai rule di atas (tidak tersentuh). !important dipakai
+   supaya menang lawan inline style, khusus layar kecil. */
+@media (max-width: 380px) {
+  .rf-doa-card {
+    width: 80vw;
+    max-width: 270px;
+    max-width: min(270px, 80vw, calc((100dvh - 148px) * 0.58));
+  }
+  .rf-doa-card > img {
+    transform: scale(1.12) !important;
+  }
+  .rf-doa-card > div {
+    padding: 20% 9% 22% 9% !important;
+  }
+  .rf-doa-card h3 {
+    font-size: 16px !important;
+    margin-bottom: 5px !important;
+  }
+  .rf-doa-card p:nth-of-type(1) {
+    font-size: 10.5px !important;
+    margin-bottom: 5px !important;
+  }
+  .rf-doa-card p:nth-of-type(2),
+  .rf-doa-card p:nth-of-type(3) {
+    font-size: 10.5px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 5px !important;
+  }
+  .rf-doa-card p:nth-of-type(4) {
+    font-size: 8.5px !important;
   }
 }
 

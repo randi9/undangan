@@ -77,7 +77,7 @@
         class="absolute top-0 h-full flex items-center justify-center px-4"
         style="left: 0; z-index: 2;"
       >
-        <div style="position:relative;width:100%;max-width:360px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;border:none;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;transform:perspective(750px) rotateY(20deg) rotateX(1.5deg) skewY(-2deg) translateY(-55px) translateX(22px);transform-origin:50% 50%;">
+        <div class="rf-ev-card rf-ev-shift-r" style="position:relative;width:100%;max-width:360px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;border:none;border-radius:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;transform:perspective(750px) rotateY(20deg) rotateX(1.5deg) skewY(-2deg) translateY(-55px) translateX(22px);transform-origin:50% 50%;">
           <span style="position:absolute;top:0;left:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
           <span style="position:absolute;top:0;right:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
 
@@ -97,7 +97,7 @@
 
           <div style="width:52px;height:1.5px;margin:10px auto 14px;border-radius:999px;background:linear-gradient(to right, transparent, #aa8352, transparent);"></div>
 
-          <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;font-size:12px;line-height:1.6;color:#57534e;text-align:left;padding-left:52px;">
+          <div class="rf-ev-rows" style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;font-size:12px;line-height:1.6;color:#57534e;text-align:left;padding-left:52px;">
             <div v-if="invitation.akad_date" style="display:flex;gap:8px;align-items:center;justify-content:flex-start;">
               <Icon icon="ph:calendar-blank-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;" />
               <span style="font-weight:600;color:#292524;">{{ formatDateLong(invitation.akad_date) }}</span>
@@ -110,7 +110,7 @@
               <Icon icon="ph:map-pin-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;margin-top:2px;" />
               <div style="text-align:left;">
                 <strong style="display:block;color:#292524;font-size:13px;line-height:1.4;">{{ invitation.akad_venue }}</strong>
-                <span v-if="invitation.akad_address" style="display:block;margin-top:3px;font-size:11px;line-height:1.7;color:#57534e;max-width:250px;">
+                <span v-if="invitation.akad_address" class="rf-ev-addr" style="display:block;margin-top:3px;font-size:11px;line-height:1.7;color:#57534e;max-width:250px;">
                   {{ invitation.akad_address }}
                 </span>
               </div>
@@ -148,6 +148,7 @@
           <!-- Resepsi : gaya Akad — tanpa miring, posisi tengah -->
           <div
             v-if="invitation.resepsi_venue"
+            class="rf-ev-card"
             style="position:relative;width:100%;max-width:360px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;border:none;border-radius:0;box-shadow:none;transform:translateY(-55px);"
           >
             <span style="position:absolute;top:0;left:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
@@ -169,7 +170,7 @@
 
             <div style="width:52px;height:1.5px;margin:10px auto 14px;border-radius:999px;background:linear-gradient(to right, transparent, #aa8352, transparent);"></div>
 
-            <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;font-size:12px;line-height:1.6;color:#57534e;text-align:left;padding-left:52px;">
+            <div class="rf-ev-rows" style="display:flex;flex-direction:column;gap:10px;align-items:flex-start;font-size:12px;line-height:1.6;color:#57534e;text-align:left;padding-left:52px;">
               <div v-if="invitation.resepsi_date" style="display:flex;gap:8px;align-items:center;justify-content:flex-start;">
                 <Icon icon="ph:calendar-blank-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;" />
                 <span style="font-weight:600;color:#292524;">{{ formatDateLong(invitation.resepsi_date) }}</span>
@@ -182,7 +183,7 @@
                 <Icon icon="ph:map-pin-duotone" style="width:17px;height:17px;flex-shrink:0;color:#aa8352;margin-top:2px;" />
                 <div style="text-align:left;">
                   <strong style="display:block;color:#292524;font-size:13px;line-height:1.4;">{{ invitation.resepsi_venue }}</strong>
-                  <span v-if="invitation.resepsi_address" style="display:block;margin-top:3px;font-size:11px;line-height:1.7;color:#57534e;max-width:250px;">
+                  <span v-if="invitation.resepsi_address" class="rf-ev-addr" style="display:block;margin-top:3px;font-size:11px;line-height:1.7;color:#57534e;max-width:250px;">
                     {{ invitation.resepsi_address }}
                   </span>
                 </div>
@@ -206,32 +207,30 @@
               >
                 <Icon icon="ph:calendar-plus-duotone" style="width:14px;height:14px;color:#aa8352;" /> Kalender
               </a>
+              <a
+                v-if="invitation.streaming_enabled && invitation.streaming_url"
+                :href="invitation.streaming_url"
+                target="_blank"
+                style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;flex-basis:100%;"
+              >
+                <Icon icon="ph:video-camera-duotone" style="width:14px;height:14px;color:#aa8352;" /> Live Streaming
+              </a>
             </div>
           </div>
 
-          <!-- Live Streaming : samakan gaya (ramping, tengah, tanpa card) -->
+          <!-- Live Streaming saja (tanpa info resepsi): tampilkan tombol saja -->
           <div
-            v-if="invitation.streaming_enabled && invitation.streaming_url"
-            style="width:100%;max-width:360px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;"
+            v-if="!invitation.resepsi_venue && invitation.streaming_enabled && invitation.streaming_url"
+            class="rf-ev-card"
+            style="width:100%;max-width:360px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;transform:translateY(-55px);"
           >
-            <Icon icon="ph:video-camera-duotone" style="width:22px;height:22px;margin:0 auto 8px;color:#aa8352;" />
-            <h3
-              :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`, margin: '0 0 6px', color: '#2b2118', fontSize: '20px', lineHeight: '1.25', fontWeight: '700' }"
+            <a
+              :href="invitation.streaming_url"
+              target="_blank"
+              style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;"
             >
-              Live Streaming
-            </h3>
-            <p style="margin:0 0 12px;font-size:11px;line-height:1.7;color:#57534e;">
-              Berhalangan hadir? Ikuti prosesi pernikahan kami secara daring:
-            </p>
-            <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.25);border:1px solid rgba(170,131,82,0.4);background:rgba(0,0,0,0.6);">
-              <iframe
-                :src="getEmbedUrl(invitation.streaming_url, invitation.streaming_platform || 'youtube') || ''"
-                class="absolute top-0 left-0 w-full h-full"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
-              ></iframe>
-            </div>
+              <Icon icon="ph:video-camera-duotone" style="width:14px;height:14px;color:#aa8352;" /> Live Streaming
+            </a>
           </div>
         </div>
       </div>
@@ -244,6 +243,7 @@
       >
         <div
           v-if="invitation.khutbah_nikah"
+          class="rf-ev-card rf-ev-shift-l"
           style="position:relative;width:100%;max-width:340px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;border:none;box-shadow:none;transform:perspective(750px) rotateY(-20deg) rotateX(1.5deg) skewY(2deg) translateY(-55px) translateX(-22px);transform-origin:50% 50%;"
         >
           <span style="position:absolute;top:0;left:6px;color:rgba(170,131,82,0.55);font-size:10px;line-height:1;">❖</span>
@@ -263,10 +263,11 @@
             Khutbah Nikah
           </h3>
           <div style="width:52px;height:1.5px;margin:10px auto 12px;border-radius:999px;background:linear-gradient(to right, transparent, #aa8352, transparent);"></div>
-          <p style="margin:0 0 6px;font-size:11px;line-height:1.7;color:#57534e;">
+          <p class="rf-ev-desc" style="margin:0 0 6px;font-size:11px;line-height:1.7;color:#57534e;">
             Prosesi akad nikah insya Allah akan dibekali khutbah nikah oleh:
           </p>
           <p
+            class="rf-ev-name"
             :style="{ fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`, margin: '0', color: '#292524', fontSize: '15px', lineHeight: '1.5', fontWeight: '600' }"
           >
             {{ invitation.khutbah_nikah }}
@@ -334,7 +335,7 @@
             <span class="text-[#aa8352] text-[10px]">✦</span>
           </div>
           <h2
-            class="font-bold text-[#2b2118]"
+            class="font-bold text-[#2b2118] rf-ev-head"
             :style="{
               fontFamily: themeConfig.fontHeading || `'Cinzel Decorative', serif`,
               fontSize: 'clamp(15px, 4vw, 19px)',
@@ -360,7 +361,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { ThemeConfig } from '@/types/theme';
 import type { Invitation } from '@/types/invitation';
 import { generateGoogleCalendarUrl } from '@/utils/calendar';
-import { getEmbedUrl } from '@/utils/streaming';
 import { Icon } from '@iconify/vue';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -526,7 +526,10 @@ const setupAnimation = () => {
   const headerState = { ...headerPose[firstPhase] };
   const applyHeaderTilt = () => {
     if (!headerTiltRef.value) return;
-    headerTiltRef.value.style.transform = `perspective(750px) translateX(${headerState.x}px) rotateY(${headerState.ry}deg) rotateX(${headerState.rx}deg)`;
+    // HP kecil (<=380px): pergeseran header dikurangi (22px -> 8px) agar tidak
+    // terlalu geser. HP besar memakai nilai pose penuh seperti semula.
+    const shiftScale = window.innerWidth <= 380 ? 8 / 22 : 1;
+    headerTiltRef.value.style.transform = `perspective(750px) translateX(${headerState.x * shiftScale}px) rotateY(${headerState.ry}deg) rotateX(${headerState.rx}deg)`;
   };
   applyHeaderTilt();
 
@@ -611,3 +614,50 @@ onBeforeUnmount(() => {
   });
 });
 </script>
+
+<style scoped>
+/* ===== HP KECIL (<=380px): info akad/resepsi/khutbah diperkecil =====
+   HP besar (>=381px) tetap pakai ukuran inline di template (tidak tersentuh).
+   !important dipakai supaya menang lawan inline style, khusus layar kecil. */
+@media (max-width: 380px) {
+  .rf-ev-card {
+    max-width: 300px !important;
+    padding: 10px 14px !important;
+  }
+  .rf-ev-card h3 {
+    font-size: 17px !important;
+  }
+  .rf-ev-rows {
+    font-size: 11px !important;
+    gap: 8px !important;
+    padding-left: 20px !important;
+  }
+  .rf-ev-rows strong {
+    font-size: 12px !important;
+  }
+  .rf-ev-addr {
+    font-size: 10px !important;
+  }
+  .rf-ev-card a {
+    font-size: 10px !important;
+    padding: 7px 13px !important;
+  }
+  .rf-ev-name {
+    font-size: 13px !important;
+  }
+  .rf-ev-desc {
+    font-size: 10px !important;
+  }
+  .rf-ev-head {
+    font-size: clamp(13px, 3.6vw, 19px) !important;
+  }
+  /* HP kecil: pergeseran akad (kanan) & khutbah (kiri) dikurangi 22px -> 8px.
+     Rotasi/miring tidak diubah, hanya jumlah gesernya. */
+  .rf-ev-shift-r {
+    transform: perspective(750px) rotateY(20deg) rotateX(1.5deg) skewY(-2deg) translateY(-55px) translateX(8px) !important;
+  }
+  .rf-ev-shift-l {
+    transform: perspective(750px) rotateY(-20deg) rotateX(1.5deg) skewY(2deg) translateY(-55px) translateX(-8px) !important;
+  }
+}
+</style>
