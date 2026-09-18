@@ -120,9 +120,10 @@
           <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(170,131,82,0.28);">
             <a
               v-if="invitation.akad_map_url"
-              :href="invitation.akad_map_url"
+              :href="getAkadMapUrl()"
               target="_blank"
-              style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#ffffff;background:#aa8352;border:1px solid #aa8352;box-shadow:0 4px 14px rgba(170,131,82,0.32);text-decoration:none;transition:transform 0.2s ease;"
+              rel="noopener"
+              style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#ffffff;background:#aa8352;border:1px solid #aa8352;box-shadow:0 4px 14px rgba(170,131,82,0.32);text-decoration:none;transition:transform 0.2s ease;pointer-events:auto;position:relative;z-index:10;"
             >
               <Icon icon="ph:map-trifold-duotone" style="width:14px;height:14px;" /> Buka Google Maps
             </a>
@@ -130,7 +131,8 @@
               v-if="invitation.akad_date"
               :href="getAkadCalendarUrl()"
               target="_blank"
-              style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;transition:background 0.2s ease;"
+              rel="noopener"
+              style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;transition:background 0.2s ease;pointer-events:auto;position:relative;z-index:10;"
             >
               <Icon icon="ph:calendar-plus-duotone" style="width:14px;height:14px;color:#aa8352;" /> Simpan Kalender
             </a>
@@ -193,9 +195,10 @@
             <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(170,131,82,0.28);">
               <a
                 v-if="invitation.resepsi_map_url"
-                :href="invitation.resepsi_map_url"
+                :href="getResepsiMapUrl()"
                 target="_blank"
-                style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#ffffff;background:#aa8352;border:1px solid #aa8352;box-shadow:0 4px 14px rgba(170,131,82,0.32);text-decoration:none;"
+                rel="noopener"
+                style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#ffffff;background:#aa8352;border:1px solid #aa8352;box-shadow:0 4px 14px rgba(170,131,82,0.32);text-decoration:none;pointer-events:auto;position:relative;z-index:10;"
               >
                 <Icon icon="ph:map-trifold-duotone" style="width:14px;height:14px;" /> Google Maps
               </a>
@@ -203,15 +206,17 @@
                 v-if="invitation.resepsi_date"
                 :href="getResepsiCalendarUrl()"
                 target="_blank"
-                style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;"
+                rel="noopener"
+                style="display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;pointer-events:auto;position:relative;z-index:10;"
               >
                 <Icon icon="ph:calendar-plus-duotone" style="width:14px;height:14px;color:#aa8352;" /> Kalender
               </a>
               <a
                 v-if="invitation.streaming_enabled && invitation.streaming_url"
-                :href="invitation.streaming_url"
+                :href="getStreamingUrl()"
                 target="_blank"
-                style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;flex-basis:100%;"
+                rel="noopener"
+                style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;flex-basis:100%;pointer-events:auto;position:relative;z-index:10;"
               >
                 <Icon icon="ph:video-camera-duotone" style="width:14px;height:14px;color:#aa8352;" /> Live Streaming
               </a>
@@ -225,9 +230,10 @@
             style="width:100%;max-width:360px;margin:0 auto;padding:12px 16px;text-align:center;background:transparent;transform:translateY(-55px);"
           >
             <a
-              :href="invitation.streaming_url"
+              :href="getStreamingUrl()"
               target="_blank"
-              style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;"
+              rel="noopener"
+              style="display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.04em;color:#aa8352;background:rgba(255,255,255,0.7);border:1px solid rgba(170,131,82,0.6);text-decoration:none;pointer-events:auto;position:relative;z-index:10;"
             >
               <Icon icon="ph:video-camera-duotone" style="width:14px;height:14px;color:#aa8352;" /> Live Streaming
             </a>
@@ -284,6 +290,7 @@
         ref="panoTopRef"
         src="https://media.mengundanganda.com/royalfantasy/event%20section/dewirandi_001e7c16-d887-4625-a1dd-0dce339969d2.webp"
         alt=""
+        draggable="false"
         style="
           position: absolute;
           inset: 0;
@@ -291,6 +298,7 @@
           height: 100%;
           object-fit: fill;
           z-index: 3;
+          pointer-events: none;
         "
       />
     </div>
@@ -409,10 +417,34 @@ const HOLD = 0.7;
 // X_PAD px sebelum tepi kanan. Ubah angka kalau 30px kurang/lebih.
 const X_PAD = 60;
 
+// Normalisasi URL eksternal: tambah https:// kalau user lupa tulis protokol,
+// supaya tidak dianggap path relatif (yang bikin tombol Maps/Streaming 404).
+function ensureHttpUrl(raw?: string | null): string {
+  if (!raw) return '#';
+  const url = raw.trim();
+  if (!url) return '#';
+  if (/^https?:\/\//i.test(url)) return url;
+  if (/^\/\//.test(url)) return `https:${url}`;
+  return `https://${url}`;
+}
+
+function getAkadMapUrl() {
+  return ensureHttpUrl(props.invitation.akad_map_url);
+}
+
+function getResepsiMapUrl() {
+  return ensureHttpUrl(props.invitation.resepsi_map_url);
+}
+
+function getStreamingUrl() {
+  return ensureHttpUrl(props.invitation.streaming_url);
+}
+
 function getAkadCalendarUrl() {
+  if (!props.invitation.akad_date) return '#';
   return generateGoogleCalendarUrl({
     title: `Akad Nikah ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
-    date: props.invitation.akad_date!,
+    date: props.invitation.akad_date,
     time: props.invitation.akad_time,
     venue: props.invitation.akad_venue,
     address: props.invitation.akad_address,
@@ -421,9 +453,10 @@ function getAkadCalendarUrl() {
 }
 
 function getResepsiCalendarUrl() {
+  if (!props.invitation.resepsi_date) return '#';
   return generateGoogleCalendarUrl({
     title: `Resepsi ${props.invitation.groom_name || ''} & ${props.invitation.bride_name || ''}`,
-    date: props.invitation.resepsi_date!,
+    date: props.invitation.resepsi_date,
     time: props.invitation.resepsi_time,
     venue: props.invitation.resepsi_venue,
     address: props.invitation.resepsi_address,

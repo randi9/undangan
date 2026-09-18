@@ -43,28 +43,58 @@ function parseEventTime(timeStr: string | undefined | null): {
 }
 
 /**
+ * Parse "YYYY-MM-DD" (atau ISO dengan T) secara manual agar TIDAK
+ * kena timezone-shift dari `new Date("YYYY-MM-DD")` (yang di-parse
+ * sebagai UTC tengah malam lalu digeser zona lokal).
+ */
+function parseDateParts(dateStr: string): { y: number; m: number; d: number } | null {
+  const match = dateStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (!match) return null;
+  const y = parseInt(match[1]!, 10);
+  const m = parseInt(match[2]!, 10);
+  const d = parseInt(match[3]!, 10);
+  if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+  return { y, m, d };
+}
+
+const pad2 = (n: number) => String(n).padStart(2, '0');
+
+/**
  * Format tanggal ke format Google Calendar (YYYYMMDDTHHMMSS)
- * Menggunakan waktu lokal (WIB/zona pengguna) tanpa konversi UTC.
+ * Menggunakan angka tanggal ASLI dari input (tanpa konversi UTC).
  */
 function formatGCalDate(dateStr: string, hour: number, minute: number): string {
-  const d = new Date(dateStr);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  const h = String(hour).padStart(2, '0');
-  const m = String(minute).padStart(2, '0');
-  return `${year}${month}${day}T${h}${m}00`;
+  const parts = parseDateParts(dateStr);
+  if (!parts) {
+    // Fallback terakhir: coba Date biasa
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    return `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}T${pad2(hour)}${pad2(minute)}00`;
+  }
+  return `${parts.y}${pad2(parts.m)}${pad2(parts.d)}T${pad2(hour)}${pad2(minute)}00`;
 }
 
 /**
  * Format tanggal untuk all-day event (YYYYMMDD)
  */
 function formatGCalAllDay(dateStr: string): string {
-  const d = new Date(dateStr);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}${month}${day}`;
+  const parts = parseDateParts(dateStr);
+  if (!parts) {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    return `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}`;
+  }
+  return `${parts.y}${pad2(parts.m)}${pad2(parts.d)}`;
+}
+
+/** Tambah N hari ke YYYYMMDD (untuk end-date all-day & lembur lewat tengah malam). */
+function addDaysToYMD(ymd: string, add: number): string {
+  const y = parseInt(ymd.slice(0, 4), 10);
+  const m = parseInt(ymd.slice(4, 6), 10) - 1;
+  const d = parseInt(ymd.slice(6, 8), 10);
+  const dt = new Date(y, m, d);
+  dt.setDate(dt.getDate() + add);
+  return `${dt.getFullYear()}${pad2(dt.getMonth() + 1)}${pad2(dt.getDate())}`;
 }
 
 export interface CalendarEventParams {
@@ -95,16 +125,37 @@ export function generateGoogleCalendarUrl(params: CalendarEventParams): string {
   const parsed = parseEventTime(time);
 
   if (parsed) {
-    const start = formatGCalDate(date, parsed.startHour, parsed.startMinute);
+    const clampH = (h: number) => Math.min(23, Math.max(0, h));
+    const clampM = (m: number) => Math.min(59, Math.max(0, m));
+    const sH = clampH(parsed.startHour);
+    const sM = clampM(parsed.startMinute);
+    const startDay = formatGCalAllDay(date);
+    const start = formatGCalDate(date, sH, sM);
+    if (!start || !startDay) return `${baseUrl}?${query.toString()}`;
 
     let end: string;
     if (parsed.endHour !== null && parsed.endMinute !== null) {
-      // Ada waktu akhir eksplisit
-      end = formatGCalDate(date, parsed.endHour, parsed.endMinute);
+      const eH = clampH(parsed.endHour);
+      const eM = clampM(parsed.endMinute);
+      // Lewat tengah malam (end <= start) → end jatuh keesokan harinya
+      if (eH * 60 + eM <= sH * 60 + sM) {
+        const nextDay = addDaysToYMD(startDay, 1);
+        end = `${nextDay}T${pad2(eH)}${pad2(eM)}00`;
+      } else {
+        end = formatGCalDate(date, eH, eM);
+      }
     } else {
-      // Tidak ada waktu akhir → default durasi 2 jam
-      const endHour = parsed.startHour + 2;
-      end = formatGCalDate(date, endHour, parsed.startMinute);
+      // Tidak ada waktu akhir → default durasi 2 jam (bisa lewat tengah malam)
+      const total = sH * 60 + sM + 120;
+      const eH = Math.floor(total / 60) % 24;
+      const eM = total % 60;
+      const dayShift = Math.floor(total / (24 * 60));
+      if (dayShift > 0) {
+        const nextDay = addDaysToYMD(startDay, dayShift);
+        end = `${nextDay}T${pad2(eH)}${pad2(eM)}00`;
+      } else {
+        end = formatGCalDate(date, eH, eM);
+      }
     }
 
     // Gunakan timezone Asia/Jakarta agar Google Calendar menampilkan jam WIB dengan benar
@@ -113,10 +164,9 @@ export function generateGoogleCalendarUrl(params: CalendarEventParams): string {
   } else {
     // Tidak bisa parse waktu → all-day event
     const startDay = formatGCalAllDay(date);
+    if (!startDay) return `${baseUrl}?${query.toString()}`;
     // All-day end date harus +1 hari (exclusive end)
-    const d = new Date(date);
-    d.setDate(d.getDate() + 1);
-    const endDay = formatGCalAllDay(d.toISOString());
+    const endDay = addDaysToYMD(startDay, 1);
     query.set('dates', `${startDay}/${endDay}`);
   }
 

@@ -80,6 +80,7 @@
               </div>
 
               <button
+                type="button"
                 @click="copyAccount(index)"
                 class="px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-1.5 shadow-md"
                 :class="
@@ -125,6 +126,7 @@
           </div>
 
           <button
+            type="button"
             @click="copyAddress"
             class="px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 shadow-md"
             :class="
@@ -187,17 +189,49 @@ const bankList = computed<BankAccount[]>(() => {
   return [];
 });
 
-function copyAccount(index: number) {
+async function copyText(text: string): Promise<boolean> {
+  if (!text) return false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // lanjut ke fallback di bawah
+  }
+  // Fallback untuk HTTP / browser lama / izin clipboard ditolak
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
+let accountTimer: ReturnType<typeof setTimeout> | null = null;
+let addressTimer: ReturnType<typeof setTimeout> | null = null;
+
+async function copyAccount(index: number) {
   const bank = bankList.value[index];
   if (!bank?.bank_account) return;
-  navigator.clipboard.writeText(bank.bank_account);
+  const ok = await copyText(bank.bank_account);
+  if (!ok) return;
   copiedIndex.value = index;
-  setTimeout(() => {
+  if (accountTimer) clearTimeout(accountTimer);
+  accountTimer = setTimeout(() => {
     copiedIndex.value = null;
   }, 2500);
 }
 
-function copyAddress() {
+async function copyAddress() {
   if (!props.invitation.gift_address) return;
   let text = props.invitation.gift_address;
   if (props.invitation.gift_recipient) {
@@ -205,9 +239,11 @@ function copyAddress() {
     if (props.invitation.gift_phone) text += `, Telp: ${props.invitation.gift_phone}`;
     text += `)`;
   }
-  navigator.clipboard.writeText(text);
+  const ok = await copyText(text);
+  if (!ok) return;
   copiedAddress.value = true;
-  setTimeout(() => {
+  if (addressTimer) clearTimeout(addressTimer);
+  addressTimer = setTimeout(() => {
     copiedAddress.value = false;
   }, 2500);
 }
