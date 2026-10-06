@@ -78,6 +78,9 @@ const coverComponents: Record<string, Component> = {
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/covers/CoverRoyalFantasy.vue"),
   ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/covers/CoverHaneul.vue"),
+  ),
 };
 
 const heroComponents: Record<string, Component> = {
@@ -107,6 +110,9 @@ const heroComponents: Record<string, Component> = {
   ),
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/heroes/HeroRoyalFantasy.vue"),
+  ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/heroes/HeroHaneul.vue"),
   ),
 };
 
@@ -138,6 +144,9 @@ const quoteComponents: Record<string, Component> = {
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/quotes/QuoteRoyalFantasy.vue"),
   ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/quotes/QuoteHaneul.vue"),
+  ),
 };
 
 const coupleComponents: Record<string, Component> = {
@@ -167,6 +176,9 @@ const coupleComponents: Record<string, Component> = {
   ),
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/couples/CoupleRoyalFantasy.vue"),
+  ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/couples/CoupleHaneul.vue"),
   ),
 };
 
@@ -198,6 +210,9 @@ const countdownComponents: Record<string, Component> = {
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/countdowns/CountdownRoyalFantasy.vue"),
   ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/countdowns/CountdownHaneul.vue"),
+  ),
 };
 
 const eventsComponents: Record<string, Component> = {
@@ -227,6 +242,9 @@ const eventsComponents: Record<string, Component> = {
   ),
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/events/EventsRoyalFantasy.vue"),
+  ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/events/EventsHaneul.vue"),
   ),
 };
 
@@ -258,6 +276,9 @@ const loveStoryComponents: Record<string, Component> = {
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/lovestory/LoveStoryRoyalFantasy.vue"),
   ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/lovestory/LoveStoryHaneul.vue"),
+  ),
 };
 
 const galleryComponents: Record<string, Component> = {
@@ -287,6 +308,9 @@ const galleryComponents: Record<string, Component> = {
   ),
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/gallery/GalleryRoyalFantasy.vue"),
+  ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/gallery/GalleryHaneul.vue"),
   ),
 };
 
@@ -318,6 +342,9 @@ const rsvpComponents: Record<string, Component> = {
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/rsvp/RsvpRoyalFantasy.vue"),
   ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/rsvp/RsvpHaneul.vue"),
+  ),
 };
 
 const giftComponents: Record<string, Component> = {
@@ -347,6 +374,9 @@ const giftComponents: Record<string, Component> = {
   ),
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/gift/GiftRoyalFantasy.vue"),
+  ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/gift/GiftHaneul.vue"),
   ),
 };
 
@@ -382,6 +412,9 @@ const footerComponents: Record<string, Component> = {
   ),
   royal_fantasy: defineAsyncComponent(
     () => import("@/components/invitation/footer/FooterRoyalFantasy.vue"),
+  ),
+  haneul: defineAsyncComponent(
+    () => import("@/components/invitation/footer/FooterHaneul.vue"),
   ),
 };
 
@@ -664,6 +697,31 @@ function animateHeroOval() {
         stagger: 0.12, // Muncul mulus bertahap tanpa delay
       },
       "-=0.3"
+    );
+    return;
+  }
+
+  if (themeName.value === 'haneul') {
+    gsap.set(heroOval.value, { opacity: 0, y: 12 });
+    gsap.set(heroTextItems.value, { y: 28, opacity: 0, filter: "blur(6px)" });
+
+    const tl = gsap.timeline({ delay: 0.3 });
+    tl.to(heroOval.value, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power2.out",
+    }).to(
+      heroTextItems.value,
+      {
+        y: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 1.1,
+        ease: "power2.out",
+        stagger: 0.22,
+      },
+      "-=0.45"
     );
     return;
   }
@@ -1328,7 +1386,7 @@ onBeforeUnmount(() => {
             ref="heroOval"
             :class="[
               'flex flex-col gap-4 p-6 md:p-10 relative z-10 opacity-0',
-              !['elegant_blue', 'floral_blue', 'nyunda', 'fairytale_garden', 'evergreen', 'royal_fantasy'].includes(themeName)
+              !['elegant_blue', 'floral_blue', 'nyunda', 'fairytale_garden', 'evergreen', 'royal_fantasy', 'haneul'].includes(themeName)
                 ? 'items-center justify-center mx-auto text-center w-[280px] md:w-[380px] lg:w-[450px] h-[420px] md:h-[570px] lg:h-[675px] rounded-full bg-white/30 backdrop-blur-sm shadow-[0_4px_16px_rgba(0,0,0,0.05)]'
                 : themeName === 'nyunda'
                   ? ''
@@ -1339,7 +1397,7 @@ onBeforeUnmount(() => {
                       : 'items-center justify-center mx-auto text-center w-full max-w-[600px]',
             ]"
             :style="
-              ['nyunda', 'fairytale_garden', 'evergreen', 'royal_fantasy'].includes(themeName)
+              ['nyunda', 'fairytale_garden', 'evergreen', 'royal_fantasy', 'haneul'].includes(themeName)
                 ? {
                     display: 'flex',
                     flexDirection: 'column',
@@ -1360,17 +1418,18 @@ onBeforeUnmount(() => {
               style="max-width: none"
             />
 
-
             <p
               :ref="setHeroTextRef"
-              class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-2 mt-1 text-[#3d4a40] drop-shadow-sm font-medium opacity-0"
+              class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-2 mt-1 drop-shadow-sm font-medium opacity-0"
+              :class="themeName === 'haneul' ? 'text-[#386B99]' : 'text-[#3d4a40]'"
               :style="themeName === 'nyunda' ? { textAlign: 'center' } : {}"
             >
               The Wedding of
             </p>
             <h1
               :ref="setHeroTextRef"
-              class="text-5xl md:text-7xl lg:text-8xl mb-1 text-[#3d4a40] drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)] opacity-0"
+              class="text-5xl md:text-7xl lg:text-8xl mb-1 drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)] opacity-0"
+              :class="themeName === 'haneul' ? 'text-[#1E354D] font-bold tracking-tight' : 'text-[#3d4a40]'"
               :style="
                 themeName === 'nyunda'
                   ? { fontFamily: activeTheme.fontHeading, textAlign: 'center' }
@@ -1379,7 +1438,8 @@ onBeforeUnmount(() => {
             >
               {{ invitation.groom_name }}
               <span
-                class="block text-3xl md:text-5xl lg:text-6xl text-[#3d4a40] my-2 drop-shadow-sm"
+                class="block text-3xl md:text-5xl lg:text-6xl my-2 drop-shadow-sm"
+                :class="themeName === 'haneul' ? 'text-[#D4AF37] font-semibold not-italic' : 'text-[#3d4a40]'"
                 >&amp;</span
               >
               {{ invitation.bride_name }}
@@ -1387,10 +1447,21 @@ onBeforeUnmount(() => {
             <p
               v-if="formattedDate"
               :ref="setHeroTextRef"
-              class="hero-wedding-date text-[#3d4a40] mt-3 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold drop-shadow-sm opacity-0"
+              class="hero-wedding-date mt-3 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold drop-shadow-sm opacity-0"
+              :class="themeName === 'haneul' ? 'text-[#5B7B99]' : 'text-[#3d4a40]'"
             >
               {{ formattedDate }}
             </p>
+
+            <!-- Bottom Divider & Undangan Pernikahan for Haneul -->
+            <div
+              v-if="themeName === 'haneul'"
+              :ref="setHeroTextRef"
+              class="mt-4 flex flex-col items-center gap-1.5 opacity-0"
+            >
+              <div class="w-12 h-[1px] bg-[#7DA8CC]/40"></div>
+              <span class="text-[10px] uppercase tracking-[0.25em] text-[#386B99] font-medium">The Wedding Day</span>
+            </div>
 
             <!-- Bottom Divider & Undangan Pernikahan for Evergreen -->
             <div
@@ -1442,20 +1513,22 @@ onBeforeUnmount(() => {
         :has-date="hasEventDate"
       />
 
-      <!-- LOVE STORY (Dynamic per theme) — royal_fantasy: doa pengantin digabung jadi 1 section di sini -->
+      <!-- LOVE STORY (Dynamic per theme) — royal_fantasy: doa pengantin digabung jadi 1 section di sini; haneul: digabung ke dalam galeri -->
       <component
         :is="activeLoveStory"
+        v-if="!(themeName === 'haneul' && invitation.photos && invitation.photos.length > 0)"
         :stories="loveStory"
         :theme-config="activeTheme"
         :api-base="apiBase"
         :show-doa="!!invitation.show_doa_pengantin"
       />
 
-      <!-- GALLERY (Dynamic per theme) -->
+      <!-- GALLERY (Dynamic per theme) — haneul: panel kanan diisi love story -->
       <component
         :is="activeGallery"
         v-if="invitation.photos && invitation.photos.length > 0"
         :photos="invitation.photos"
+        v-bind="themeName === 'haneul' ? { stories: loveStory } : {}"
         :theme-config="activeTheme"
         :api-base="apiBase"
         :gallery-type="invitation.gallery_type || 'carousel'"

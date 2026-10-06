@@ -10,7 +10,7 @@
 import type { ThemeConfig } from "@/types/theme";
 
 export interface ThemeRegistryEntry {
-  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen" | "royal_fantasy";
+  id: "elegant" | "minimalist" | "floral" | "elegant_blue" | "floral_blue" | "nyunda" | "fairytale_garden" | "evergreen" | "royal_fantasy" | "haneul";
   name: string;
   thumbnail: string;
   description: string;
@@ -368,6 +368,43 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
         "linear-gradient(180deg, rgba(24,32,27,0.5) 0%, rgba(24,32,27,0.92) 100%)",
       coverImage:
         "https://images.unsplash.com/photo-1519741497674-611481863552?w=1080&q=80",
+    },
+  },
+  haneul: {
+    id: "haneul",
+    name: "Haneul",
+    thumbnail:
+      "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?w=1080&q=80",
+    description: "Ethereal langit biru cerah, awan lembut dan pesona estetika Korea yang syahdu",
+    icon: "solar:clouds-bold-duotone",
+    color: "#386B99",
+    bgGradient: "linear-gradient(135deg, #7FA9CF 0%, #A8C8E8 50%, #F0F7FD 100%)",
+    sampleUrl: "/sample/haneul",
+    defaultGalleryType: "carousel",
+    previewStyle: {
+      bg: "#F0F7FD",
+      color: "#1E354D",
+      headerText: "The Wedding Of",
+      headerStyle:
+        "font-size: 8px; letter-spacing: 3px; color: #5B7B99; text-transform: uppercase;",
+      nameText: "Min-jun & Seo-yeon",
+      nameStyle:
+        "font-family: 'Caveat', cursive; font-size: 26px; font-weight: 600; margin-top: 4px; color: #1E354D;",
+    },
+    themeConfig: {
+      name: "haneul",
+      bg: "#F0F7FD",
+      surface: "#E3EEF8",
+      primary: "#386B99",
+      secondary: "#7DA8CC",
+      text: "#1E354D",
+      textLight: "#5B7B99",
+      fontHeading: "'Caveat', 'Plus Jakarta Sans', cursive",
+      fontBody: "'Plus Jakarta Sans', 'Inter', sans-serif",
+      overlayGradient:
+        "linear-gradient(180deg, rgba(30, 53, 77, 0.35) 0%, rgba(30, 53, 77, 0.85) 100%)",
+      coverImage:
+        "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?w=1080&q=80",
     },
   },
 };
