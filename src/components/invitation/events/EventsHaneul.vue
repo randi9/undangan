@@ -361,19 +361,19 @@ function buildStops(): Array<[number, number]> {
 
 function journeyAt(p: number): number {
   const stops = buildStops();
-  if (p <= stops[0][0]) return stops[0][1];
+  if (p <= stops[0]![0]) return stops[0]![1];
   for (let i = 1; i < stops.length; i++) {
-    if (p <= stops[i][0]) {
-      const p0 = stops[i - 1][0];
-      const j0 = stops[i - 1][1];
-      const p1 = stops[i][0];
-      const j1 = stops[i][1];
+    if (p <= stops[i]![0]) {
+      const p0 = stops[i - 1]![0];
+      const j0 = stops[i - 1]![1];
+      const p1 = stops[i]![0];
+      const j1 = stops[i]![1];
       if (p1 === p0) return j1;
       const k = (p - p0) / (p1 - p0);
       return j0 + (j1 - j0) * k;
     }
   }
-  return stops[stops.length - 1][1];
+  return stops[stops.length - 1]![1];
 }
 // card windows — info muncul bersamaan dengan animasi
 const showAkadCard = computed(() => {
