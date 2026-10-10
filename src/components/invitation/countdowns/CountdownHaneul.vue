@@ -10,6 +10,24 @@
       padding: 'clamp(48px, 10vw, 80px) clamp(16px, 5vw, 32px)',
     }"
   >
+    <!-- Vintage sine frame (line version dari HeroHaneul, single closed path biar sudut rapi) -->
+    <svg
+      class="absolute inset-0 w-full h-full z-[1] pointer-events-none block"
+      :viewBox="`0 0 ${frameW} ${frameH}`"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path
+        :d="framePath"
+        fill="none"
+        stroke="#95a987"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        vector-effect="non-scaling-stroke"
+      />
+    </svg>
+
     <!-- Tanpa background ambient / shadow tengah -->
 
     <div class="relative z-10 w-full mx-auto flex flex-col items-center text-center" style="max-width: 36rem; margin: 0 auto; padding: 0;">
@@ -142,7 +160,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Invitation } from "@/types/invitation";
@@ -323,7 +341,103 @@ const calendarUrl = computed(() => {
   });
 });
 
+// Sine line frame — bentuk sama persis kaya HeroHaneul, tapi cuma garis (stroke)
+// Single closed path (tanpa ujung keluar di sudut)
+const T = 30;
+const AMP = 12;
+const HALF = 32;
+const K = AMP * 1.25;
+
+const frameH = ref(800);
+const frameW = ref(400);
+
+function buildFramePath(W: number, H: number) {
+  const left = T;
+  const right = W - T;
+  const top = T;
+  const bottom = H - T;
+  if (right <= left || bottom <= top) return "";
+
+  // Atas: kiri -> kanan (bentuk sama kaya HeroHaneul)
+  const lenH = right - left;
+  const nH = Math.max(4, Math.round(lenH / HALF));
+  const LH = lenH / nH;
+  let d = `M${left},${top} `;
+  let x = left;
+  for (let i = 0; i < nH; i++) {
+    const s = i % 2 === 0 ? 1 : -1;
+    const cy = top + s * K;
+    const xEnd = x + LH;
+    if (i === 0) {
+      d += `C${(x + LH * 0.35).toFixed(1)},${cy} ${(x + LH * 0.65).toFixed(1)},${cy} ${xEnd.toFixed(1)},${top} `;
+    } else {
+      d += `S${(x + LH * 0.65).toFixed(1)},${cy} ${xEnd.toFixed(1)},${top} `;
+    }
+    x = xEnd;
+  }
+
+  // Kanan: atas -> bawah (mirrored kaya hero kanan)
+  const lenV = bottom - top;
+  const nV = Math.max(4, Math.round(lenV / HALF));
+  const LV = lenV / nV;
+  let y = top;
+  for (let i = 0; i < nV; i++) {
+    const s = i % 2 === 0 ? 1 : -1;
+    const cx = right - s * K;
+    const yEnd = y + LV;
+    if (i === 0) {
+      d += `C${cx},${(y + LV * 0.35).toFixed(1)} ${cx},${(y + LV * 0.65).toFixed(1)} ${right},${yEnd.toFixed(1)} `;
+    } else {
+      d += `S${cx},${(y + LV * 0.65).toFixed(1)} ${right},${yEnd.toFixed(1)} `;
+    }
+    y = yEnd;
+  }
+
+  // Bawah: kanan -> kiri (mirrored kaya hero bawah)
+  x = right;
+  for (let i = 0; i < nH; i++) {
+    const s = i % 2 === 0 ? 1 : -1;
+    const cy = bottom - s * K;
+    const xEnd = x - LH;
+    if (i === 0) {
+      d += `C${(x - LH * 0.35).toFixed(1)},${cy} ${(x - LH * 0.65).toFixed(1)},${cy} ${xEnd.toFixed(1)},${bottom} `;
+    } else {
+      d += `S${(x - LH * 0.65).toFixed(1)},${cy} ${xEnd.toFixed(1)},${bottom} `;
+    }
+    x = xEnd;
+  }
+
+  // Kiri: bawah -> atas (balik ke titik awal, tanpa sisa garis)
+  y = bottom;
+  for (let i = 0; i < nV; i++) {
+    const s = i % 2 === 0 ? 1 : -1;
+    const cx = left + s * K;
+    const yEnd = y - LV;
+    if (i === 0) {
+      d += `C${cx},${(y - LV * 0.35).toFixed(1)} ${cx},${(y - LV * 0.65).toFixed(1)} ${left},${yEnd.toFixed(1)} `;
+    } else {
+      d += `S${cx},${(y - LV * 0.65).toFixed(1)} ${left},${yEnd.toFixed(1)} `;
+    }
+    y = yEnd;
+  }
+
+  return d + "Z";
+}
+
+const framePath = computed(() => buildFramePath(frameW.value, frameH.value));
+
+let ro: ResizeObserver | null = null;
+
 onMounted(() => {
+  const updateFrame = () => {
+    if (!countdownSection.value) return;
+    frameH.value = countdownSection.value.clientHeight || 800;
+    frameW.value = countdownSection.value.clientWidth || 400;
+  };
+  updateFrame();
+  ro = new ResizeObserver(updateFrame);
+  if (countdownSection.value) ro.observe(countdownSection.value);
+
   if (!countdownSection.value) return;
 
   const tl = gsap.timeline({
@@ -372,9 +486,17 @@ onMounted(() => {
     );
   }
 });
+onUnmounted(() => ro?.disconnect());
 </script>
 
 <style scoped>
+svg {
+  animation: haneul-frame-in 1.8s ease both;
+}
+@keyframes haneul-frame-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .haneul-countdown-box {
   transition: background 0.3s ease;
 }
