@@ -155,7 +155,7 @@
         <span class="haneul-btn-glow" style="position:absolute; inset:-3px; border-radius:9999px; background:linear-gradient(90deg, #A8C8E8, #E2C285, #A8C8E8); opacity:0.4; z-index:-1; filter:blur(8px); animation:pulseGlow 3s ease-in-out infinite;"></span>
 
         <!-- IKON AMPLOP (ubah: ukuran=width/height | warna=color) -->
-        <svg style="width:clamp(0.9rem,4vw,1rem); height:clamp(0.9rem,4vw,1rem); color:#F9C5D5; transition:transform 0.3s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg style="width:clamp(0.9rem,4vw,1rem); height:clamp(0.9rem,4vw,1rem); color:#A8D0F0; transition:transform 0.3s;" fill="none" stroke="#A8D0F0" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
         <span>{{ isOpening ? 'Membuka...' : 'Buka Undangan' }}</span>

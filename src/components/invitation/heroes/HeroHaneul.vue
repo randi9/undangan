@@ -6,6 +6,31 @@
       background: '#F4EDE0',
     }"
   >
+    <!-- Kotak biru langit pastel (paling bawah, di bawah gambar.
+         Lebar selayar, tinggi setengah layar, bawah memudar sampai transparan 100%.) -->
+    <svg
+      aria-hidden="true"
+      preserveAspectRatio="none"
+      viewBox="0 0 100 100"
+      style="position:absolute; top:0; left:0; width:100%; height:50dvh; z-index:0; pointer-events:none; display:block;"
+    >
+      <defs>
+        <linearGradient id="haneulSkyFade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#C7E0F4" stop-opacity="1" />
+          <stop offset="100%" stop-color="#C7E0F4" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="100" height="100" fill="url(#haneulSkyFade)" />
+    </svg>
+    <!-- Gambar background hero (di atas kotak biru, di bawah frame & konten.
+         Ukuran atur pakai width / height di bawah (jangan pakai zoom/transform,
+         tidak mempan di sini). Makin kecil height = gambar makin pendek.) -->
+    <img
+      src="https://media.mengundanganda.com/haneul/hero%20section/dewirandi_f6d9fb79-3cb6-4c5d-905a-24f0c68585a2.webp"
+      alt=""
+      aria-hidden="true"
+      style="position:absolute; top:0; left:0; width:100%; height:80%; object-fit:cover; object-position:center top; z-index:1; pointer-events:none; opacity:0.7;"
+    />
       <!-- Vintage sine frame : tebal ke dalam, fully-rounded, ukuran sama semua sisi -->
       <!-- Kiri -->
       <svg
@@ -43,25 +68,43 @@
       >
         <path :d="pathH" fill="#95a987" />
       </svg>
-    <!-- Spacer atas (pengganti badge agar konten tetap center) -->
-    <div class="relative z-10 pt-2 h-8" aria-hidden="true"></div>
+    <!-- Teks pembuka di ATAS hero (bukan di blok tengah) -->
+    <div class="relative z-10 w-full flex justify-center px-10" style="padding-top:96px; padding-bottom:8px;">
+      <p class="haneul-top-text text-center font-medium text-[#74B8A3]" style="font-size:11px; letter-spacing:0.2em; line-height:1.8; max-width:270px; text-transform:uppercase; font-style:italic;">
+        We joyfully invite you to the marriage of
+      </p>
+    </div>
 
-    <!-- Center Hero Content Container (Wraps Slot) -->
-    <div class="relative z-10 w-full max-w-[360px] sm:max-w-[440px] my-auto flex flex-col items-center">
+    <!-- Center Hero Content Container (nama mempelai, posisi di TENGAH) -->
+    <div class="relative z-10 w-full max-w-[360px] sm:max-w-[440px] flex-1 flex flex-col items-center justify-center">
       <!-- Arch Aura Backdrop -->
       <div class="w-full p-6 sm:p-8 relative bg-transparent">
         <slot />
       </div>
     </div>
 
-    <!-- Bottom Scroll Cue -->
-    <div class="relative z-10 pb-2 flex flex-col items-center animate-bounce duration-1000 cursor-pointer select-none">
-      <span class="text-[10px] uppercase tracking-[0.25em] text-[#4A6984] font-medium mb-1.5">
-        Gulir Ke Bawah
-      </span>
-      <div class="w-7 h-10 rounded-full border-2 border-[#5B7B99]/40 flex items-start justify-center p-1.5 bg-white/40 backdrop-blur-xs">
-        <div class="w-1.5 h-2.5 rounded-full bg-[#386B99] animate-pulse"></div>
+    <!-- Tanggal pernikahan di BAWAH hero (model badge: hari di atas, MON | DD | YYYY di bawah) -->
+    <div class="relative z-10 w-full flex flex-col items-center px-10" style="padding-bottom:34px;">
+      <div class="haneul-date-wrapper haneul-bottom-date">
+        <div class="haneul-date-day">{{ dateData.dayName }}</div>
+        <div class="haneul-date-row">
+          <span class="haneul-date-month">{{ dateData.month }}</span>
+          <span class="haneul-date-divider" aria-hidden="true"></span>
+          <span class="haneul-date-num">{{ dateData.dayNum }}</span>
+          <span class="haneul-date-divider" aria-hidden="true"></span>
+          <span class="haneul-date-year">{{ dateData.year }}</span>
+        </div>
       </div>
+      <div style="width:48px; height:1px; background:rgba(125,168,204,0.4); margin-top:8px; margin-bottom:6px;"></div>
+      <span class="font-medium" style="font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:#74B8A3; font-style:italic;">The Wedding Day</span>
+    </div>
+
+    <!-- Bottom Scroll Cue (panah minimalis, bouncing) -->
+    <div class="relative z-10 flex flex-col items-center cursor-pointer select-none" style="padding-bottom:18px;">
+      <svg class="haneul-scroll-arrow" style="width:28px; height:28px;" viewBox="0 0 24 24" fill="none" stroke="#386B99" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 8.5l6 6 6-6" />
+        <path d="M6 13.5l6 6 6-6" opacity="0.35" />
+      </svg>
     </div>
   </section>
 </template>
@@ -69,7 +112,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     overlayGradient?: string;
     heroImage?: string;
@@ -82,6 +125,65 @@ withDefaults(
 );
 
 const heroSection = ref<HTMLElement | null>(null);
+
+function parseDateInput(raw: any): { dayName: string; month: string; dayNum: string; year: string } {
+  let d: Date | null = null;
+  if (raw instanceof Date && !isNaN(raw.getTime())) {
+    d = raw;
+  } else if (typeof raw === "string" && raw.trim()) {
+    const s = raw.trim();
+    const parsed = new Date(s);
+    if (!isNaN(parsed.getTime())) {
+      d = parsed;
+    } else {
+      const indoMonths: Record<string, number> = {
+        januari: 0, jan: 0,
+        februari: 1, feb: 1,
+        maret: 2, mar: 2,
+        april: 3, apr: 3,
+        mei: 4, may: 4,
+        juni: 5, jun: 5,
+        juli: 6, jul: 6,
+        agustus: 7, agu: 7, aug: 7,
+        september: 8, sep: 8,
+        oktober: 9, okt: 9, oct: 9,
+        november: 10, nov: 10,
+        desember: 11, des: 11, dec: 11,
+      };
+      const m = s.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+      if (m) {
+        const day = parseInt(m[1], 10);
+        const mKey = m[2].toLowerCase();
+        const month = indoMonths[mKey] ?? 0;
+        const yr = parseInt(m[3], 10);
+        d = new Date(yr, month, day);
+      }
+    }
+  }
+
+  if (!d || isNaN(d.getTime())) {
+    d = new Date(2026, 11, 16);
+  }
+
+  const daysEn = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+  const monthsEn = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+  return {
+    dayName: daysEn[d.getDay()],
+    month: monthsEn[d.getMonth()],
+    dayNum: String(d.getDate()).padStart(2, "0"),
+    year: String(d.getFullYear()),
+  };
+}
+
+const dateData = computed(() => {
+  const raw =
+    props.invitation?.akad_date ||
+    props.invitation?.resepsi_date ||
+    props.invitation?.wedding_date ||
+    props.invitation?.date;
+  return parseDateInput(raw);
+});
 
 // Ukuran gelombang dipatok (sama untuk vertikal & horizontal),
 // jumlah mengikuti panjang sisi. Fully sine, rounded dua arah.
@@ -135,6 +237,7 @@ const pathV = computed(() => buildVertical(frameH.value));
 const pathH = computed(() => buildHorizontal(frameW.value));
 
 let ro: ResizeObserver | null = null;
+
 onMounted(() => {
   const update = () => {
     if (!heroSection.value) return;
@@ -145,7 +248,10 @@ onMounted(() => {
   ro = new ResizeObserver(update);
   if (heroSection.value) ro.observe(heroSection.value);
 });
-onUnmounted(() => ro?.disconnect());
+
+onUnmounted(() => {
+  ro?.disconnect();
+});
 </script>
 
 <style scoped>
@@ -158,5 +264,142 @@ svg {
 @keyframes haneul-frame-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* Teks pembuka atas */
+.haneul-top-text {
+  animation: haneul-top-in 1.4s ease both;
+  animation-delay: 0.3s;
+}
+@keyframes haneul-top-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tanggal bawah — font & warna sama kayak teks atas (biru, bukan hitam) */
+.haneul-bottom-date {
+  animation: haneul-top-in 1.4s ease both;
+  animation-delay: 0.6s;
+}
+
+.haneul-date-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #74B8A3;
+  user-select: none;
+}
+
+.haneul-date-day {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #74B8A3;
+  line-height: 1;
+  margin-bottom: 7px;
+  text-align: center;
+  padding-left: 0.22em; /* offset letter-spacing for centered optical alignment */
+}
+
+@media (min-width: 640px) {
+  .haneul-date-day {
+    font-size: 19px;
+    letter-spacing: 0.24em;
+    padding-left: 0.24em;
+    margin-bottom: 8px;
+  }
+}
+
+.haneul-date-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  color: #74B8A3;
+}
+
+.haneul-date-month {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #74B8A3;
+  padding-right: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+@media (min-width: 640px) {
+  .haneul-date-month {
+    font-size: 28px;
+    padding-right: 16px;
+  }
+}
+
+.haneul-date-divider {
+  display: inline-block;
+  width: 2px;
+  height: 32px;
+  background-color: #74B8A3;
+  flex-shrink: 0;
+  border-radius: 1px;
+}
+
+@media (min-width: 640px) {
+  .haneul-date-divider {
+    height: 36px;
+    width: 2.2px;
+  }
+}
+
+.haneul-date-num {
+  font-size: 28px;
+  font-weight: 600;
+  color: #74B8A3;
+  padding: 0 14px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .haneul-date-num {
+    font-size: 34px;
+    padding: 0 16px;
+    min-width: 50px;
+  }
+}
+
+.haneul-date-year {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #74B8A3;
+  padding-left: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@media (min-width: 640px) {
+  .haneul-date-year {
+    font-size: 28px;
+    padding-left: 16px;
+  }
+}
+
+/* Panah scroll — bounce tegas + glow biar fokus ke bawah */
+.haneul-scroll-arrow {
+  animation: haneul-arrow-bounce 1.3s ease-in-out infinite;
+  filter: drop-shadow(0 2px 6px rgba(56, 107, 153, 0.45));
+}
+@keyframes haneul-arrow-bounce {
+  0%, 100% { transform: translateY(-4px); opacity: 1; }
+  50% { transform: translateY(8px); opacity: 0.45; }
 }
 </style>
