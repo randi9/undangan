@@ -26,36 +26,63 @@
          Pindah sudut: ubah "top:0; left:0;" mis. jadi top/right/bottom/left.
          Lapisan: ubah "z-index:20;" (makin gede = makin di depan). -->
     <img
-      src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_63e451ec-6f25-4bb9-893a-2a79f9d134ea.webp"
+      src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_2f2dc618-e99e-4423-b4ce-f5b6f11fd1ec.webp"
       alt="Dekorasi Corner"
-      style="position:absolute; top:0; left:0; z-index:20; width:min(48vw,210px); height:auto; display:block; pointer-events:none;"
+      style="position:absolute; top:-14px; left:-14px; z-index:20; opacity:1; width:min(52vw,230px); height:auto; display:block; pointer-events:none;"
     />
 
     <!-- DEKORASI CORNER KANAN ATAS (mirror horizontal dari kiri atas) -->
     <img
-      src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_63e451ec-6f25-4bb9-893a-2a79f9d134ea.webp"
+      src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_2f2dc618-e99e-4423-b4ce-f5b6f11fd1ec.webp"
       alt="Dekorasi Corner"
-      style="position:absolute; top:0; right:0; z-index:20; width:min(48vw,210px); height:auto; display:block; pointer-events:none; transform:scaleX(-1);"
+      style="position:absolute; top:-14px; right:-14px; z-index:20; opacity:1; width:min(52vw,230px); height:auto; display:block; pointer-events:none; transform:scaleX(-1);"
     />
 
     <!-- DEKORASI CORNER KIRI BAWAH (mirror vertikal dari kiri atas) -->
     <img
-      src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_63e451ec-6f25-4bb9-893a-2a79f9d134ea.webp"
+      src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_2f2dc618-e99e-4423-b4ce-f5b6f11fd1ec.webp"
       alt="Dekorasi Corner"
-      style="position:absolute; bottom:0; left:0; z-index:20; width:min(48vw,210px); height:auto; display:block; pointer-events:none; transform:scaleY(-1);"
+      style="position:absolute; bottom:-14px; left:-14px; z-index:20; opacity:1; width:min(52vw,230px); height:auto; display:block; pointer-events:none; transform:scaleY(-1);"
     />
 
     <!-- DEKORASI CORNER KANAN BAWAH (mirror horizontal + vertikal) -->
     <img
-      src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_63e451ec-6f25-4bb9-893a-2a79f9d134ea.webp"
+      src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_2f2dc618-e99e-4423-b4ce-f5b6f11fd1ec.webp"
       alt="Dekorasi Corner"
-      style="position:absolute; bottom:0; right:0; z-index:20; width:min(48vw,210px); height:auto; display:block; pointer-events:none; transform:scale(-1,-1);"
+      style="position:absolute; bottom:-14px; right:-14px; z-index:20; opacity:1; width:min(52vw,230px); height:auto; display:block; pointer-events:none; transform:scale(-1,-1);"
     />
 
+    <!-- BINTANG KERLAP-KERLIP (Eight-Pointed Star, celestial blue).
+         Tersebar di sekitar container kapsul, ukuran kecil acak (6-12px),
+         muncul & berkedip acak (atur animation-delay / animation-duration
+         tiap bintang di bawah). z-index:15 = di atas kapsul, di bawah corner. -->
+    <div style="position:absolute; inset:0; z-index:15; pointer-events:none;" aria-hidden="true">
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:6%; top:18%; width:9px; height:9px; animation-duration:2.2s; animation-delay:0s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:12%; top:32%; width:6px; height:6px; animation-duration:2.8s; animation-delay:0.4s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:4%; top:48%; width:12px; height:12px; animation-duration:2.4s; animation-delay:1.1s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:9%; top:63%; width:7px; height:7px; animation-duration:3s; animation-delay:0.7s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:14%; top:78%; width:10px; height:10px; animation-duration:2.1s; animation-delay:1.6s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:88%; top:22%; width:8px; height:8px; animation-duration:2.6s; animation-delay:0.2s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:93%; top:38%; width:11px; height:11px; animation-duration:2.3s; animation-delay:1.3s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:86%; top:55%; width:6px; height:6px; animation-duration:3.1s; animation-delay:0.9s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:92%; top:70%; width:9px; height:9px; animation-duration:2.5s; animation-delay:1.9s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:84%; top:82%; width:7px; height:7px; animation-duration:2.9s; animation-delay:0.5s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:30%; top:10%; width:8px; height:8px; animation-duration:2.4s; animation-delay:1s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:65%; top:12%; width:6px; height:6px; animation-duration:2.7s; animation-delay:2s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:48%; top:8%; width:10px; height:10px; animation-duration:3.2s; animation-delay:0.6s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:25%; top:88%; width:7px; height:7px; animation-duration:2.2s; animation-delay:1.4s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:55%; top:90%; width:9px; height:9px; animation-duration:2.8s; animation-delay:0.3s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+      <svg class="haneul-star" viewBox="0 0 24 24" style="position:absolute; left:75%; top:88%; width:6px; height:6px; animation-duration:2.5s; animation-delay:1.7s;"><path d="M12 0C13.2 7.8 16.2 10.8 24 12 16.2 13.2 13.2 16.2 12 24 10.8 16.2 7.8 13.2 0 12 7.8 10.8 10.8 7.8 12 0Z" fill="#A8D0F0"/></svg>
+    </div>
+
+    <!-- WRAPPER ISI (skala SEMUA isi sekaligus: container + teks tamu + tombol.
+         Ubah: scale(0.9) = 90% | makin kecil angkanya = makin mungil.
+         Dekorasi corner TIDAK ikut mengecil karena di luar wrapper ini.) -->
+    <div style="position:relative; z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; transform:scale(0.9); transform-origin:center center;">
     <!-- CONTAINER PIL (ubah: tinggi=height | lebar=width | warna=background | bentuk=border-radius) -->
     <div
       ref="centerCardRef"
-      style="position:relative; z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; gap:1.2dvh; width:min(86vw,22rem); height:66dvh; padding:7dvh 6vw 3.5dvh; border-radius:9999px; overflow:hidden; background:#95a987; border:6px solid #95a987; box-shadow:0 20px 50px rgba(70,90,65,0.28); box-sizing:border-box;"
+      style="position:relative; z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; gap:1.2dvh; width:min(86vw,22rem); height:66dvh; padding:7dvh 6vw 3.5dvh; border-radius:9999px; overflow:hidden; background:#95a987; border:none; box-shadow:0 0 0 2px #F4EDE0, 0 0 0 5px #95a987, 0 20px 50px rgba(70,90,65,0.28); box-sizing:border-box;"
     >
       <!-- LABEL THE WEDDING OF (di tengah atas container, di atas nama mempelai.
            Ubah: ukuran=font-size | warna=color | jarak huruf=letter-spacing) -->
@@ -98,10 +125,10 @@
            selebar container oleh aturan global img { max-width:100% }.
            Jangan dihapus! -->
       <img
-        src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_673e323c-ced2-46a8-a84b-2d7b6010060a.webp"
+        src="https://media.mengundanganda.com/haneul/cover%20section/dewirandi_63bd2aa6-28b2-4e5f-b748-4fef2e2d9beb.webp"
         alt="Foto Mempelai"
         class="haneul-cover-photo"
-        style="position:absolute; z-index:2; bottom:-62%; left:50%; transform:translateX(calc(-50% + 2.35%)); height:144%; width:auto; max-width:none; display:block;"
+        style="position:absolute; z-index:2; bottom:-15%; left:50%; transform:translateX(calc(-50% - 2.35%)) scaleX(-1); height:90%; width:auto; max-width:none; display:block;"
       />
     </div>
 
@@ -122,7 +149,7 @@
         @click="handleOpen"
         :disabled="isOpening"
         class="haneul-open-btn"
-        style="position:relative; display:inline-flex; align-items:center; gap:clamp(0.5rem,2.5vw,0.75rem); padding:2dvh 8vw; border-radius:9999px; border:none; background:linear-gradient(to right, #486B5C, #5D8373, #486B5C); color:#fff; font-size:clamp(0.72rem,3.4vw,0.875rem); font-weight:600; letter-spacing:0.05em; text-transform:uppercase; box-shadow:0 10px 25px rgba(72,107,92,0.4); cursor:pointer; transition:transform 0.3s, box-shadow 0.3s;"
+        style="position:relative; display:inline-flex; align-items:center; gap:clamp(0.5rem,2.5vw,0.75rem); padding:2dvh 8vw; border-radius:9999px; border:none; background:linear-gradient(to right, #486B5C, #5D8373, #486B5C); color:#fff; font-size:clamp(0.72rem,3.4vw,0.875rem); font-weight:600; letter-spacing:0.05em; text-transform:uppercase; box-shadow:0 0 0 2px #F4EDE0, 0 0 0 5px #95a987, 0 10px 25px rgba(72,107,92,0.4); cursor:pointer; transition:transform 0.3s, box-shadow 0.3s;"
       >
         <!-- GLOW TOMBOL (ubah: warna=background | redup-terang=opacity di keyframes bawah) -->
         <span class="haneul-btn-glow" style="position:absolute; inset:-3px; border-radius:9999px; background:linear-gradient(90deg, #A8C8E8, #E2C285, #A8C8E8); opacity:0.4; z-index:-1; filter:blur(8px); animation:pulseGlow 3s ease-in-out infinite;"></span>
@@ -133,6 +160,7 @@
         </svg>
         <span>{{ isOpening ? 'Membuka...' : 'Buka Undangan' }}</span>
       </button>
+    </div>
     </div>
   </div>
 </template>
@@ -212,7 +240,7 @@ const handleOpen = () => {
    Ubah: membesar=scale | bayangan=box-shadow) */
 .haneul-open-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 14px 30px rgba(72, 107, 92, 0.45);
+  box-shadow: 0 0 0 2px #F4EDE0, 0 0 0 5px #95a987, 0 14px 30px rgba(72, 107, 92, 0.45);
 }
 .haneul-open-btn:active {
   transform: scale(0.95);
@@ -226,6 +254,16 @@ const handleOpen = () => {
 @keyframes pulseGlow {
   0%, 100% { opacity: 0.3; transform: scale(0.98); }
   50% { opacity: 0.7; transform: scale(1.04); }
+}
+
+/* Bintang kerlap-kerlip (keyframes wajib di sini, tidak bisa inline.
+   Ubah: redup-terang=opacity | membesar-mengecil=scale | putar=rotate) */
+.haneul-star {
+  animation: starTwinkle 2.6s ease-in-out infinite;
+}
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.65) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(20deg); }
 }
 
 /* HP kecil (≤380px): foto diturunkan — makin minus = makin turun.
