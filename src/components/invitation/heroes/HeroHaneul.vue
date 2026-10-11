@@ -152,10 +152,10 @@ function parseDateInput(raw: any): { dayName: string; month: string; dayNum: str
       };
       const m = s.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
       if (m) {
-        const day = parseInt(m[1], 10);
-        const mKey = m[2].toLowerCase();
+        const day = parseInt(m[1] ?? "", 10);
+        const mKey = (m[2] ?? "").toLowerCase();
         const month = indoMonths[mKey] ?? 0;
-        const yr = parseInt(m[3], 10);
+        const yr = parseInt(m[3] ?? "", 10);
         d = new Date(yr, month, day);
       }
     }
@@ -169,8 +169,8 @@ function parseDateInput(raw: any): { dayName: string; month: string; dayNum: str
   const monthsEn = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
   return {
-    dayName: daysEn[d.getDay()],
-    month: monthsEn[d.getMonth()],
+    dayName: daysEn[d.getDay()] ?? "",
+    month: monthsEn[d.getMonth()] ?? "",
     dayNum: String(d.getDate()).padStart(2, "0"),
     year: String(d.getFullYear()),
   };
