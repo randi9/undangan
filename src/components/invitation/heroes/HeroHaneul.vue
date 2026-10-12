@@ -70,7 +70,7 @@
       </svg>
     <!-- Teks pembuka di ATAS hero (bukan di blok tengah) -->
     <div class="relative z-10 w-full flex justify-center px-10" style="padding-top:96px; padding-bottom:8px;">
-      <p class="haneul-top-text text-center font-medium text-[#74B8A3]" style="font-size:11px; letter-spacing:0.2em; line-height:1.8; max-width:270px; text-transform:uppercase; font-style:italic;">
+      <p class="haneul-top-text text-center font-medium text-[#3E5648]" style="font-size:11px; letter-spacing:0.2em; line-height:1.8; max-width:270px; text-transform:uppercase; font-style:italic;">
         We joyfully invite you to the marriage of
       </p>
     </div>
