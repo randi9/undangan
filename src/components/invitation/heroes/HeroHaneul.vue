@@ -84,7 +84,7 @@
     </div>
 
     <!-- Tanggal pernikahan di BAWAH hero (model badge: hari di atas, MON | DD | YYYY di bawah) -->
-    <div class="relative z-10 w-full flex flex-col items-center px-10" style="padding-bottom:34px;">
+    <div class="relative z-10 w-full flex flex-col items-center px-10" style="padding-bottom:50px;">
       <div class="haneul-date-wrapper haneul-bottom-date">
         <div class="haneul-date-day">{{ dateData.dayName }}</div>
         <div class="haneul-date-row">
@@ -96,7 +96,7 @@
         </div>
       </div>
       <div style="width:48px; height:1px; background:rgba(125,168,204,0.4); margin-top:8px; margin-bottom:6px;"></div>
-      <span class="font-medium" style="font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:#74B8A3; font-style:italic;">The Wedding Day</span>
+      <span class="font-medium" style="font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:#74B8A3; font-style:italic; font-family:'Cormorant Garamond', Georgia, serif; font-weight:500;">The Wedding Day</span>
     </div>
 
     <!-- Bottom Scroll Cue (panah minimalis, bouncing) -->
@@ -289,6 +289,8 @@ svg {
   justify-content: center;
   color: #74B8A3;
   user-select: none;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
 }
 
 .haneul-date-day {
@@ -322,7 +324,7 @@ svg {
 
 .haneul-date-month {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #74B8A3;
@@ -357,7 +359,7 @@ svg {
 
 .haneul-date-num {
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 500;
   color: #74B8A3;
   padding: 0 14px;
   min-width: 44px;
@@ -377,7 +379,7 @@ svg {
 
 .haneul-date-year {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.02em;
   color: #74B8A3;
   padding-left: 14px;

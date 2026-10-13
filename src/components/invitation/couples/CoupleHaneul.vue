@@ -32,7 +32,7 @@
     <div ref="headerRef" class="relative z-10 w-full flex flex-col items-center text-center px-4" style="margin-top: 28px; padding-top: 8px; padding-bottom: 4px;">
       <h2
         class="text-[#1E354D] leading-tight"
-        :style="{ fontFamily: themeConfig?.fontHeading || `'Caveat', cursive`, fontSize: 'clamp(48px, 12vw, 80px)', fontWeight: 700, letterSpacing: '0.01em', margin: 0 }"
+        :style="{ fontFamily: themeConfig?.fontHeading || `'Caveat', cursive`, fontSize: 'clamp(48px, 12vw, 80px)', fontWeight: 500, letterSpacing: '0.01em', margin: 0 }"
       >
         The Happy Couple
       </h2>

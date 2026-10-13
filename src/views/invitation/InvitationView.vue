@@ -1419,17 +1419,17 @@ onBeforeUnmount(() => {
             />
 
             <p
+              v-if="themeName !== 'haneul'"
               :ref="setHeroTextRef"
-              class="uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-2 mt-1 drop-shadow-sm font-medium opacity-0"
-              :class="themeName === 'haneul' ? 'text-[#386B99]' : 'text-[#3d4a40]'"
+              class="drop-shadow-sm font-medium opacity-0 text-[#3d4a40] uppercase tracking-[0.4em] text-sm md:text-base lg:text-lg mb-2 mt-1"
               :style="themeName === 'nyunda' ? { textAlign: 'center' } : {}"
             >
               The Wedding of
             </p>
             <h1
               :ref="setHeroTextRef"
-              class="text-5xl md:text-7xl lg:text-8xl mb-1 drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)] opacity-0"
-              :class="themeName === 'haneul' ? 'text-[#1E354D] font-bold tracking-tight' : 'text-[#3d4a40]'"
+              class="mb-1 opacity-0"
+              :class="themeName === 'haneul' ? 'text-[#3E5648] font-medium tracking-tight text-7xl md:text-9xl lg:text-9xl' : 'text-[#3d4a40] text-5xl md:text-7xl lg:text-8xl drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]'"
               :style="
                 themeName === 'nyunda'
                   ? { fontFamily: activeTheme.fontHeading, textAlign: 'center' }
@@ -1438,30 +1438,19 @@ onBeforeUnmount(() => {
             >
               {{ invitation.groom_name }}
               <span
-                class="block text-3xl md:text-5xl lg:text-6xl my-2 drop-shadow-sm"
-                :class="themeName === 'haneul' ? 'text-[#D4AF37] font-semibold not-italic' : 'text-[#3d4a40]'"
+                class="block my-2"
+                :class="themeName === 'haneul' ? 'text-[#74B8A3] font-semibold not-italic text-4xl md:text-6xl lg:text-7xl' : 'text-[#3d4a40] text-3xl md:text-5xl lg:text-6xl drop-shadow-sm'"
                 >&amp;</span
               >
               {{ invitation.bride_name }}
             </h1>
             <p
-              v-if="formattedDate"
+              v-if="formattedDate && themeName !== 'haneul'"
               :ref="setHeroTextRef"
-              class="hero-wedding-date mt-3 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold drop-shadow-sm opacity-0"
-              :class="themeName === 'haneul' ? 'text-[#5B7B99]' : 'text-[#3d4a40]'"
+              class="hero-wedding-date mt-3 text-sm md:text-base lg:text-lg tracking-[0.2em] font-semibold drop-shadow-sm opacity-0 text-[#3d4a40]"
             >
               {{ formattedDate }}
             </p>
-
-            <!-- Bottom Divider & Undangan Pernikahan for Haneul -->
-            <div
-              v-if="themeName === 'haneul'"
-              :ref="setHeroTextRef"
-              class="mt-4 flex flex-col items-center gap-1.5 opacity-0"
-            >
-              <div class="w-12 h-[1px] bg-[#7DA8CC]/40"></div>
-              <span class="text-[10px] uppercase tracking-[0.25em] text-[#386B99] font-medium">The Wedding Day</span>
-            </div>
 
             <!-- Bottom Divider & Undangan Pernikahan for Evergreen -->
             <div

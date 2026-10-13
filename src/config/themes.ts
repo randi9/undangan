@@ -389,7 +389,7 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
         "font-size: 8px; letter-spacing: 3px; color: #5B7B99; text-transform: uppercase;",
       nameText: "Min-jun & Seo-yeon",
       nameStyle:
-        "font-family: 'Caveat', cursive; font-size: 26px; font-weight: 600; margin-top: 4px; color: #1E354D;",
+        "font-family: 'Allura', cursive; font-size: 26px; font-weight: 600; margin-top: 4px; color: #1E354D;",
     },
     themeConfig: {
       name: "haneul",
@@ -399,8 +399,8 @@ export const THEME_REGISTRY: Record<string, ThemeRegistryEntry> = {
       secondary: "#7DA8CC",
       text: "#1E354D",
       textLight: "#5B7B99",
-      fontHeading: "'Caveat', 'Plus Jakarta Sans', cursive",
-      fontBody: "'Plus Jakarta Sans', 'Inter', sans-serif",
+      fontHeading: "'Allura', cursive",
+      fontBody: "'Cormorant Garamond', Georgia, serif",
       overlayGradient:
         "linear-gradient(180deg, rgba(30, 53, 77, 0.35) 0%, rgba(30, 53, 77, 0.85) 100%)",
       coverImage:
