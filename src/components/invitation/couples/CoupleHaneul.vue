@@ -11,6 +11,15 @@
       flexDirection: 'column',
     }"
   >
+    <!-- TOP DECOR (full width, h auto) -->
+    <img
+      src="https://media.mengundanganda.com/haneul/couple%20section/dewirandi_06625405-10ae-47b4-a849-81616c0eeca9.webp"
+      alt=""
+      aria-hidden="true"
+      draggable="false"
+      style="position: relative; z-index: 10; width: 100%; height: auto; display: block; flex-shrink: 0;"
+    />
+
     <!-- Background Decor -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
       <div class="absolute top-1/4 -left-20 w-96 h-96 bg-[#CDE0F2]/50 rounded-full blur-3xl"></div>
@@ -23,7 +32,7 @@
     <div ref="headerRef" class="relative z-10 w-full flex flex-col items-center text-center px-4" style="margin-top: 28px; padding-top: 8px; padding-bottom: 4px;">
       <h2
         class="text-[#1E354D] leading-tight"
-        :style="{ fontFamily: themeConfig?.fontHeading || `'Caveat', cursive`, fontSize: 'clamp(36px, 9vw, 60px)', fontWeight: 700, letterSpacing: '0.01em', margin: 0 }"
+        :style="{ fontFamily: themeConfig?.fontHeading || `'Caveat', cursive`, fontSize: 'clamp(48px, 12vw, 80px)', fontWeight: 700, letterSpacing: '0.01em', margin: 0 }"
       >
         The Happy Couple
       </h2>
@@ -204,11 +213,22 @@
           </div>
         </div>
       </div>
-      <div style="position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 20; display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none;">
-        <p style="margin: 0; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.5);">Scroll ke bawah</p>
-        <div style="font-size: 16px; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.5); animation: couple-bounce 1.4s infinite;">↓</div>
+      <div style="position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 20; display: flex; flex-direction: column; align-items: center; pointer-events: none;">
+        <svg class="haneul-scroll-arrow" style="width:28px; height:28px; filter: drop-shadow(0 1px 8px rgba(0,0,0,0.5));" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 8.5l6 6 6-6" />
+          <path d="M6 13.5l6 6 6-6" opacity="0.35" />
+        </svg>
       </div>
     </div>
+
+    <!-- BOTTOM DECOR (full width, h auto) -->
+    <img
+      src="https://media.mengundanganda.com/haneul/couple%20section/dewirandi_92c5b3f6-c26a-484b-b3f1-f489945ffc79.webp"
+      alt=""
+      aria-hidden="true"
+      draggable="false"
+      style="position: relative; z-index: 10; width: 100%; height: auto; display: block; flex-shrink: 0;"
+    />
   </section>
 </template>
 
@@ -238,8 +258,8 @@ const PHOTO_RIGHT =
 // ===== LOVE 1 = CONTAINER FOTO (gampang disetel) =====
 // size/top/left/rotate = posisi hati
 // imgX/imgY/imgZoom = foto DEFAULT | userImgX/userImgY/userImgZoom = foto UPLOAD user
-const love1 = { size: 38, top: 54, left: 31.5, rotate: -19, opacity: 1, imgX: 0, imgY: 5, imgZoom: 1.2, userImgX: 0, userImgY: 2, userImgZoom: 1.2 };
-const love2 = { size: 38, top: 54, left: 69.5, rotate: 17, opacity: 1, imgX: 0, imgY: 5, imgZoom: 1.2, userImgX: 0, userImgY: 2, userImgZoom: 1.2 };
+const love1 = { size: 45, top: 54, left: 31.5, rotate: -19, rotateY: -22, opacity: 1, imgX: 0, imgY: 5, imgZoom: 1.2, userImgX: 0, userImgY: 2, userImgZoom: 1.2 };
+const love2 = { size: 45, top: 54, left: 69.5, rotate: 17, rotateY: 22, opacity: 1, imgX: 0, imgY: 5, imgZoom: 1.2, userImgX: 0, userImgY: 2, userImgZoom: 1.2 };
 
 const coupleSection = ref<HTMLElement | null>(null);
 const headerRef = ref<HTMLElement | null>(null);
@@ -330,8 +350,12 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-@keyframes couple-bounce {
-  0%, 100% { transform: translateY(0); opacity: 0.9; }
-  50% { transform: translateY(6px); opacity: 0.5; }
+/* Panah scroll — sama kayak hero (bounce tegas biar fokus ke bawah) */
+.haneul-scroll-arrow {
+  animation: haneul-arrow-bounce 1.3s ease-in-out infinite;
+}
+@keyframes haneul-arrow-bounce {
+  0%, 100% { transform: translateY(-4px); opacity: 1; }
+  50% { transform: translateY(8px); opacity: 0.45; }
 }
 </style>
